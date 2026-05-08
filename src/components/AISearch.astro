@@ -1,0 +1,162 @@
+---
+interface Props {
+  placeholder?: string;
+}
+
+const { placeholder = "Pregunta sobre investigación..." } = Astro.props;
+---
+
+<section class="max-w-4xl mx-auto mb-12" id="ai-search-section">
+  <!-- Search Input -->
+  <div class="relative group mb-6">
+    <div class="absolute -inset-1 bg-gradient-to-r from-primary to-secondary rounded-2xl blur opacity-25 group-focus-within:opacity-50 transition duration-1000"></div>
+    <div class="relative glass-card rounded-2xl flex items-center px-6 py-4">
+      <span class="material-symbols-outlined text-primary mr-4 text-2xl" data-icon="search">search</span>
+      <input 
+        type="text" 
+        id="ai-search-input"
+        class="bg-transparent border-none focus:ring-0 text-headline-md font-display-lg w-full text-on-surface placeholder-on-surface-variant/50 outline-none"
+        placeholder={placeholder}
+        autocomplete="off"
+      />
+      <div class="flex gap-2">
+        <button 
+          id="ai-search-btn"
+          class="p-2 rounded-lg bg-surface-container hover:bg-surface-container-high transition-colors"
+          title="Buscar con IA"
+        >
+          <span class="material-symbols-outlined text-secondary filled" data-icon="auto_awesome">auto_awesome</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- AI Thinking State (Hidden by default) -->
+  <div id="ai-thinking" class="hidden glass-card rounded-3xl p-8 border-primary/20 bg-primary/5 mb-8">
+    <div class="noise-overlay"></div>
+    <div class="flex items-start gap-6 relative z-10">
+      <div class="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shrink-0 shadow-lg shadow-primary/20">
+        <span class="material-symbols-outlined text-on-primary filled" data-icon="psychology_alt">psychology_alt</span>
+      </div>
+      <div class="flex-1 space-y-4">
+        <div class="flex items-center gap-2">
+          <h3 class="text-primary font-label-mono text-label-mono uppercase tracking-widest">Sistematizando Resultados</h3>
+          <div class="flex gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style="animation-delay: 0s"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style="animation-delay: 0.2s"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style="animation-delay: 0.4s"></span>
+          </div>
+        </div>
+        <div class="space-y-3">
+          <div class="h-4 w-3/4 shimmer rounded-full bg-white/5"></div>
+          <div class="h-4 w-full shimmer rounded-full bg-white/5"></div>
+          <div class="h-4 w-5/6 shimmer rounded-full bg-white/5"></div>
+        </div>
+        <div class="flex gap-3 pt-4 overflow-x-auto no-scrollbar">
+          <span class="px-4 py-1.5 rounded-full border border-primary/30 bg-primary/10 text-primary font-label-mono text-label-mono whitespace-nowrap">Analizando grupos...</span>
+          <span class="px-4 py-1.5 rounded-full border border-secondary/30 bg-secondary/10 text-secondary font-label-mono text-label-mono whitespace-nowrap">Mapeando carreras...</span>
+          <span class="px-4 py-1.5 rounded-full border border-tertiary/30 bg-tertiary/10 text-tertiary font-label-mono text-label-mono whitespace-nowrap">Consultando semilleros...</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- AI Results (Hidden by default) -->
+  <div id="ai-results" class="hidden mb-8">
+    <div class="glass-card rounded-3xl p-8 border-secondary/20 bg-secondary/5">
+      <div class="noise-overlay"></div>
+      <div class="relative z-10">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-secondary to-tertiary flex items-center justify-center">
+            <span class="material-symbols-outlined text-on-secondary filled text-sm" data-icon="lightbulb">lightbulb</span>
+          </div>
+          <h3 class="text-secondary font-headline-md">Resultados de IA</h3>
+        </div>
+        <div id="ai-results-content" class="text-on-surface-variant text-body-base space-y-4">
+          <!-- Results will be inserted here -->
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const searchInput = document.getElementById('ai-search-input');
+  const searchBtn = document.getElementById('ai-search-btn');
+  const thinkingState = document.getElementById('ai-thinking');
+  const resultsState = document.getElementById('ai-results');
+  const resultsContent = document.getElementById('ai-results-content');
+  
+  let isSearching = false;
+  
+  async function performSearch() {
+    const query = searchInput?.value?.trim();
+    if (!query || isSearching) return;
+    
+    isSearching = true;
+    
+    // Show thinking state
+    thinkingState?.classList.remove('hidden');
+    resultsState?.classList.add('hidden');
+    
+    try {
+      const response = await fetch('/api/search', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query }),
+      });
+      
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      // Hide thinking, show results
+      thinkingState?.classList.add('hidden');
+      resultsState?.classList.remove('hidden');
+      
+      if (resultsContent) {
+        resultsContent.innerHTML = `
+          <p class="text-on-surface">${data.answer || data.response || 'No se encontraron resultados específicos.'}</p>
+          ${data.grupos && data.grupos.length > 0 ? `
+            <div class="mt-4">
+              <p class="text-sm text-on-surface-variant mb-2">Grupos recomendados:</p>
+              <div class="flex flex-wrap gap-2">
+                ${data.grupos.map((g: any) => `
+                  <span class="px-3 py-1 rounded-full bg-primary/10 text-primary text-sm">${g.nombre || g}</span>
+                `).join('')}
+              </div>
+            </div>
+          ` : ''}
+        `;
+      }
+    } catch (error) {
+      console.error('Search error:', error);
+      thinkingState?.classList.add('hidden');
+      resultsState?.classList.remove('hidden');
+      
+      if (resultsContent) {
+        resultsContent.innerHTML = `
+          <div class="flex items-center gap-2 text-error">
+            <span class="material-symbols-outlined" data-icon="error">error</span>
+            <p>Error al realizar la búsqueda. Intenta de nuevo más tarde.</p>
+          </div>
+        `;
+      }
+    } finally {
+      isSearching = false;
+    }
+  }
+  
+  // Event listeners
+  searchBtn?.addEventListener('click', performSearch);
+  
+  searchInput?.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+      performSearch();
+    }
+  });
+</script>

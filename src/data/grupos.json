@@ -1,0 +1,314 @@
+{
+  "metadata": {
+    "total": 13,
+    "por_tipo": {
+      "Grupo Estudiantil": 1,
+      "Grupo de Investigación": 3,
+      "Semillero": 9
+    },
+    "carreras": [
+      "Ingeniería Agrícola",
+      "Ingeniería Civil",
+      "Ingeniería Electrica",
+      "Ingeniería Electrónica",
+      "Ingeniería Mecatrónica",
+      "Ingeniería Mecánica",
+      "Ingeniería Química",
+      "Ingeniería de Sistemas",
+      "Ingeniería y Afines"
+    ],
+    "actualizado": "2026-05-08T22:14:58.301Z"
+  },
+  "data": [
+    {
+      "id": "unal-1-capitulo-estudiantil-de-ingeni",
+      "tipo": "Grupo Estudiantil",
+      "carreras": [
+        "Ingeniería Química"
+      ],
+      "carrera_str": "Ingeniería Química",
+      "nombre": "Capitulo Estudiantil de Ingenieros Químicos (AIChE)",
+      "docente": "Alvaro Orjuela",
+      "lider": "Nicolle Gutierrez Gaitán Juliana Mora Cortés",
+      "email": "",
+      "vinculacion": "",
+      "enfoque": "",
+      "descripcion": "",
+      "actividades": "",
+      "modalidad": "",
+      "horarios": "",
+      "requisitos": "",
+      "nivel_academico": "",
+      "redes": "",
+      "comentarios": ""
+    },
+    {
+      "id": "unal-2-grupo-de-investigaci-n-ace-air",
+      "tipo": "Grupo de Investigación",
+      "carreras": [
+        "Ingeniería Química"
+      ],
+      "carrera_str": "Ingeniería Química",
+      "nombre": "Grupo de Investigación ACE - Aire, Clima y Energía",
+      "docente": "Néstor Y. Rojas",
+      "lider": "-",
+      "email": "",
+      "vinculacion": "Proceso de vinculación ACTIVO",
+      "enfoque": "Calidad del aire y salud pública Caracterización de la contaminación del aire Fuentes y sumideros de gases de efecto invernadero Modelación de la atmósfera Transición energética",
+      "descripcion": "Este grupo está enfocado en generar evidencia científica que de soporte a procesos de política pública para el mejoramiento de la calidad del aire, la mitigación del cambio climático y el diseño de rutas de transición energética a través de la identificación, estudio y generación de soluciones a los problemas de alto impacto.",
+      "actividades": "Proyectos de investigación",
+      "modalidad": "Mixta",
+      "horarios": "N/A",
+      "requisitos": "Interés para apoyar/desarrollar proyectos de investigación",
+      "nivel_academico": "Intermedio (Con bases en el área)",
+      "redes": "Página web",
+      "comentarios": ""
+    },
+    {
+      "id": "unal-3-semillero-de-cerveza-y-destila",
+      "tipo": "Semillero",
+      "carreras": [
+        "Ingeniería Química"
+      ],
+      "carrera_str": "Ingeniería Química",
+      "nombre": "Semillero de Cerveza y Destilados",
+      "docente": "Gerardo Rodriguez",
+      "lider": "Camila Camacho Tania Fierro",
+      "email": "",
+      "vinculacion": "Proceso de vinculación ACTIVO",
+      "enfoque": "Fermentación",
+      "descripcion": "En el semillero nos enfocamos en el proceso cervecero y todas las propiedades de fermentación, buscamos innovar y estudiar propiedades, ademas hacemos trabajos de investigación con destilados como vino y vodka. Se ofertan cursos de cromatografía semestrales y hacemos talleres de activación y financiación para nuestros insumos y mejoras en planta.",
+      "actividades": "Talleres, cursos, charlas y fabricación de lotes.",
+      "modalidad": "Presencial",
+      "horarios": "Viernes 2:00pm a 6:00pm Sábados de 9:00 am a 11:00am",
+      "requisitos": "Mínimo 4 semestre/40% de avance Pedimos estudiar algunos procesos",
+      "nivel_academico": "Intermedio (Con bases en el área)",
+      "redes": "Instagram",
+      "comentarios": "El semillero requiere tiempo e intereses en el área ya que no es un proceso fácil y es bastante demorado."
+    },
+    {
+      "id": "unal-4-semillero-de-resiliencia-y-san",
+      "tipo": "Semillero",
+      "carreras": [
+        "Ingeniería Agrícola",
+        "Ingeniería Civil",
+        "Ingeniería Química"
+      ],
+      "carrera_str": "Ingeniería Agrícola, Ingeniería Civil, Ingeniería Química",
+      "nombre": "SEMILLERO DE RESILIENCIA Y SANEAMIENTO AMBIENTAL - SIRSA",
+      "docente": "Martha Cristina Bustos López Gabriela Arrieta Loyo",
+      "lider": "Keile Bruges Pineda",
+      "email": "",
+      "vinculacion": "Proceso de vinculación ACTIVO",
+      "enfoque": "Calidad del agua, ingenería social, saneamiento sostenible, manejo de resiudos sólidos",
+      "descripcion": "Es un semillero interdisciplinario cuya misisón es incentivar las aptitudes investigativas en los estudiantes de los diferentes programas académicos, a nivel de pregrado, posgrado y egresados mediante el trabajo interdisciplinario y colaborativo",
+      "actividades": "Las actividades del semillero estan orientadas en el trabajo con la comunidad principalmente al análisis de las variables relacionadas con la problematica del agua y del saneamiento ambiental",
+      "modalidad": "Presencial",
+      "horarios": "El semillero se reune los viernes a las 11:00 a.m en el edificio 406 laboratorio 228",
+      "requisitos": "No hay requisitos previos para el ingreso",
+      "nivel_academico": "No requerido (Abierto a todos los niveles)",
+      "redes": "Instagram",
+      "comentarios": ""
+    },
+    {
+      "id": "unal-5-alife",
+      "tipo": "Semillero",
+      "carreras": [
+        "Ingeniería de Sistemas"
+      ],
+      "carrera_str": "Ingeniería de Sistemas",
+      "nombre": "ALIFE",
+      "docente": "Jhonatan Gómez Perdomo",
+      "lider": "-",
+      "email": "",
+      "vinculacion": "Proceso de vinculación ACTIVO",
+      "enfoque": "Inteligencia artificial, programación",
+      "descripcion": "Describir fenómenos físicos y naturales y desarrollar modelos matemáticos y de programación de los mismos.",
+      "actividades": "Cátedras y proyectos",
+      "modalidad": "Presencial",
+      "horarios": "Martes 2-4 Viernes 11-1",
+      "requisitos": "Programación básica",
+      "nivel_academico": "Intermedio (Con bases en el área)",
+      "redes": "",
+      "comentarios": ""
+    },
+    {
+      "id": "unal-6-c-mulo-bogot",
+      "tipo": "Semillero",
+      "carreras": [
+        "Ingeniería y Afines"
+      ],
+      "carrera_str": "Ingeniería y Afines",
+      "nombre": "Cúmulo Bogotá",
+      "docente": "Santiago Vargas Domínguez Profesor Asociado del Observatorio Astronómico Nacional",
+      "lider": "",
+      "email": "",
+      "vinculacion": "Proceso de vinculación ACTIVO",
+      "enfoque": "Divulgación en colegios dentro y fuera de bogotá, visitas a observatorios de distintas universidades, festivales de astronomía dentro y fuera de bogotá, manteniento y arreglos a equipos e implementos del semillero.",
+      "descripcion": "Cúmulo es un semillero enfocado en la divulgación y apropiación de la astronomía, integrando enfoques de ingeniería para el diseño de experiencias, instrumentación y análisis de datos. En de dos años ha realizado de 100 actividades en regiones del país y dos festivales. En Bogotá mantiene programación semanal en el Observatorio Astronómico Nacional, consolidándose como uno de grupos de Astronomía más grandes del país.",
+      "actividades": "Charlas: espacios de divulgación sobre temas de astronomía y áreas afines. Talleres: actividades prácticas con distintos enfoques, dirigidas a diversas edades y públicos. Artículos: elaboración de contenidos para la revista del observatorio Spectra. Club de astrolecturas: lectura y discusión de libros de astronomía. Cine-foro: proyección de peliculas y series con conversatorio. Bienestar: actividades recreativas y deportivas para la integración de los miembros del semillero. Viajes: pequeñas salidas para miembros de Cúmulo destacados por su compromiso y participación. Eventos: organización de festivales, observaciones y capacitaciones.",
+      "modalidad": "Mixta",
+      "horarios": "Jueves, 4:00 PM a 6:00 PM Viernes, 2:00 PM a 5:00PM",
+      "requisitos": "Únicamente la disposición de aprender y participar",
+      "nivel_academico": "No requerido (Abierto a todos los niveles)",
+      "redes": "Whatsapp: +57 333 2503218",
+      "comentarios": "El semillero no pertenece a alguna facultad o carrera, busca divulgar Astronomía utilizando distintos enfoques y maneras."
+    },
+    {
+      "id": "unal-7-chem-e-car-unmed-medell-n",
+      "tipo": "Semillero",
+      "carreras": [
+        "Ingeniería Química"
+      ],
+      "carrera_str": "Ingeniería Química",
+      "nombre": "Chem E Car - UnMed (MEDELLÍN)",
+      "docente": "Alejandro Molina",
+      "lider": "Andrés Sebastian Cruz Delgado",
+      "email": "",
+      "vinculacion": "Proceso de vinculación ACTIVO",
+      "enfoque": "Electroquímica, electrónica, diseño, química.",
+      "descripcion": "Desarrollamos un carro propulsado y frenado por reacciones químicas, desde diseño, reacciones y funcionamiento.",
+      "actividades": "Desarrollar y entender los procesos químicos para facilitar la construcción del vehículo.",
+      "modalidad": "Presencial",
+      "horarios": "Lunes, martes, miércoles, jueves y viernes de 2 a 6 pm",
+      "requisitos": "Tener habilidades en electroquímica, diseño, electrónica y muchas disposición.",
+      "nivel_academico": "Intermedio (Con bases en el área)",
+      "redes": "Whatsapp: 321 671 3726",
+      "comentarios": "Es en la sede medellín, representamos a Colombia en múltiples competencias a nivel mundial, actualmente somos cuartos del mundo."
+    },
+    {
+      "id": "unal-8-grupo-de-investigaci-n-en-inge",
+      "tipo": "Grupo de Investigación",
+      "carreras": [
+        "Ingeniería Electrónica"
+      ],
+      "carrera_str": "Ingeniería Electrónica",
+      "nombre": "Grupo de investigación en ingeniería electrónica Universidad Nacional - GMUN",
+      "docente": "DIEGO ALEXANDER TIBADUIZA BURGOS",
+      "lider": "",
+      "email": "",
+      "vinculacion": "Proceso de vinculación ACTIVO",
+      "enfoque": "- ANÁLISIS Y PROCESAMIENTO DE SEÑALES - CLASIFICACIÓN Y RECONOCIMIENTO DE PATRONES - DISEÑO ELECTRÓNICO - INTELIGENCIA ARTIFICIAL",
+      "descripcion": "El grupo de investigación en electrónica de la Universidad Nacional de Colombia es un grupo de investigación del departamento de ingeniería eléctrica y electrónica que orienta su trabajo a investigación en las diferentes áreas de investigación de la ingeniería electrónica y sus tendencias.",
+      "actividades": "Investigación aplicada a la electrónica, principalmente en las ramas de electrónica digital, sistemas embebidos y diseño electrónico. Desarrollo de proyectos relacionados con la investigación",
+      "modalidad": "Mixta",
+      "horarios": "El horario lo decide cada grupo de trabajo, es flexible",
+      "requisitos": "Los profesores suelen asociar a los estudiantes a algún proyecto,por lo que el filtro suele ser si hay proyectos en los que participar y el compromiso que demuestre el estudiante con avances o trabajo semanal",
+      "nivel_academico": "Intermedio (Con bases en el área)",
+      "redes": "Instagram",
+      "comentarios": "El semillero recibe a estudiantes de otras carreras siempre y cuando realicen proyectos relacionados con electrónica, por ejemplo una estudiante de civil está vinculada con proyectos de salud estructural que requiere de mucha electrónica"
+    },
+    {
+      "id": "unal-9-semillero-de-investigaci-n-de-",
+      "tipo": "Semillero",
+      "carreras": [
+        "Ingeniería Química"
+      ],
+      "carrera_str": "Ingeniería Química",
+      "nombre": "Semillero de investigación de estudio de reacciones químicas para dispositivos electromecánicos",
+      "docente": "Alvaro Orjuela",
+      "lider": "CAROL VALENTINA CASTELLANOS",
+      "email": "",
+      "vinculacion": "Proceso de vinculación ACTIVO",
+      "enfoque": "Vehículos impulsados y controlados por reacciones químicas",
+      "descripcion": "Equipo Chem E Car. La sociedad actual requiere de profesionales capaces de integrar la ciencia y la tecnología, y su aplicación en los medios de transporte. En particular, es importante el entendimiento de como las reacciones químicas pueden dar lugar a la liberación de energía, la cual puede ser usada para impulsar y controlar dispositivos electromecánicos.",
+      "actividades": "Equipo Chem E Car de AIChE.",
+      "modalidad": "Presencial",
+      "horarios": "Viernes 1:00 a 6:00 PM",
+      "requisitos": "Compromiso con el trabajo",
+      "nivel_academico": "No requerido (Abierto a todos los niveles)",
+      "redes": "Instagram",
+      "comentarios": ""
+    },
+    {
+      "id": "unal-10-semillero-de-investigacion-en-",
+      "tipo": "Semillero",
+      "carreras": [
+        "Ingeniería Química"
+      ],
+      "carrera_str": "Ingeniería Química",
+      "nombre": "Semillero de investigacion en diseño e intensificación de procesos y productos",
+      "docente": "Alvaro Orjuela",
+      "lider": "",
+      "email": "",
+      "vinculacion": "Proceso de vinculación ACTIVO",
+      "enfoque": "Diseño de procesos y productos para transformación de materias primas de origen renovable",
+      "descripcion": "El semillero se enfoca en el diseño conceptual de procesos fisicoquímicos y bioprocesos, en el diseño,construcción, montaje y arranque de equipos en escala de planta piloto y/o semi-industrial, diseño e intensificación de procesos, diseño de producto, separaciones reactivas, obtención de biocombustibles y productos químicos biobasados, simulación y optimización de procesos asistida por computador, catálisis heterogénea aplicada, estudio experimental del equilibro de fases, aprovechamiento industrial de residuos, análisis de sostenibilidad, entro otros.",
+      "actividades": "Investigación experimental y simulación de procesos",
+      "modalidad": "Mixta",
+      "horarios": "Viernes de 7-9am, cada quice dias. Reuniones individuales con cada integrante a convenir",
+      "requisitos": "Estudiantes de ingeniería química, de quinto o sexto semestre en adelante",
+      "nivel_academico": "Avanzado (Requiere experiencia o conocimientos sólidos)",
+      "redes": "",
+      "comentarios": ""
+    },
+    {
+      "id": "unal-11-semillero-de-investigaci-n-en-",
+      "tipo": "Semillero",
+      "carreras": [
+        "Ingeniería Civil"
+      ],
+      "carrera_str": "Ingeniería Civil",
+      "nombre": "Semillero de investigación en pavimentos y materiales para carreteras - PAVUN",
+      "docente": "Carol Andrea Murillo Feo",
+      "lider": "María José Gómez Julián Ayala Espitia",
+      "email": "",
+      "vinculacion": "Proceso de vinculación ACTIVO",
+      "enfoque": "El semillero se enfoca en el estudio e implementación de materiales alternativos en mezclas asfálticas, especialmente aquellos provenientes de residuos con alto impacto ambiental, así como al análisis y mejoramiento de técnicas de construcción vial y la aplicación de nuevas metodologías en el diseño de pavimentos. En este sentido, se plantean preguntas de investigación relacionadas con el desempeño, viabilidad y sostenibilidad de estas alternativas, buscando aportar soluciones innovadoras que mejoren la eficiencia y sostenibilidad de la infraestructura vial.",
+      "descripcion": "El semillero de investigación en pavimentos y materiales para carreteras - PAVUN es un espacio académico orientado a fortalecer la formación investigativa de los estudiantes interesados en el área de la infraestructura vial. A través del desarrollo de actividades de estudio, análisis y participación en proyectos de investigación relacionados con materiales, diseño y comportamiento de pavimentos, el semillero busca promover el pensamiento crítico, el trabajo colaborativo y la aplicación de conocimientos de ingeniería civil frente a problemáticas que requieren soluciones sostenibles y orientadas a la reducción del impacto ambiental en los procesos constructivos.",
+      "actividades": "El semillero de investigación en pavimentos busca desarrollar actividades académicas y formativas orientadas al estudio, análisis y evaluación de estructuras de pavimento, en articulación con las líneas de trabajo del grupo de investigación GENKI. Este espacio permitirá a los estudiantes acercarse a los procesos de investigación en ingeniería vial, fortalecer sus habilidades investigativas y complementar su formación profesional, al tiempo que fomentará el interés por la participación en proyectos y la continuidad en procesos de investigación dentro del grupo.",
+      "modalidad": "Mixta",
+      "horarios": "Depende de cada integrante",
+      "requisitos": "Se requiere haber visto y aprovado la materia materiales para la construcción.",
+      "nivel_academico": "Intermedio (Con bases en el área)",
+      "redes": "Whatsapp: 3046736493",
+      "comentarios": ""
+    },
+    {
+      "id": "unal-12-grupo-de-investigaci-n-y-desar",
+      "tipo": "Grupo de Investigación",
+      "carreras": [
+        "Ingeniería Mecánica",
+        "Ingeniería Mecatrónica"
+      ],
+      "carrera_str": "Ingeniería Mecánica, Ingeniería Mecatrónica",
+      "nombre": "Grupo de Investigación y Desarrollo Aeroespacial UN",
+      "docente": "Jorge Sofrony",
+      "lider": "Jesus Acosta Varela Paola Bello Buitrago Jesus Aragón",
+      "email": "",
+      "vinculacion": "Proceso de vinculación ACTIVO",
+      "enfoque": "Cohetería, Hábitats/Cultivos Análogos/Vehículos de operación remota, satélites, etc",
+      "descripcion": "Somos un Grupo Estudiantil adjudicado a la Facultad de Ingeniería de la Universidad Nacional de Colombia Sede Bogotá, enfocado en el desarrollo de investigaciones, actividades y eventos en el sector Aeroespacial. Con más de 10 años de trayectoria hemos enfocado nuestros estudios en los campos de: Cohetería, Satélites, Hábitats/Cultivos Análogos y Vehículos de Operación Remota. Construyamos juntos el futuro Aeroespacial de Colombia 🛰️ Non defessi erimus donec astra tetigerimus",
+      "actividades": "Talleres, semilleros, workshops, conferencias, etc",
+      "modalidad": "Presencial",
+      "horarios": "Todos los dias despues de 6 Viernes de 2 en adelante",
+      "requisitos": "Dependiendo si se entra por semillero o admisión especial el semillero es un pequeño curso de 1 semestre para cualquier estudiante donde tienes que demostrar el interés(ideal para personas de 4 semestre para abajo), o por admisión especial dependiendo del caso, por lo general es importante acercase al laboratorio y preguntar dependiendo de tu contexto",
+      "nivel_academico": "Intermedio (Con bases en el área)",
+      "redes": "Instagram",
+      "comentarios": "Los coordinadores del grupo (lideres) van cambiando cada años, hay quienes repiten el cargo, por lo general cambian, el semillero se realiza cada año, pero casi siempre se está necesitando gente nueva"
+    },
+    {
+      "id": "unal-13-lucia-semillero-de-iot-de-bajo",
+      "tipo": "Semillero",
+      "carreras": [
+        "Ingeniería Electrónica",
+        "Ingeniería Electrica"
+      ],
+      "carrera_str": "Ingeniería Electrónica, Ingeniería Electrica",
+      "nombre": "LUCIA - Semillero de IOT de bajo consumo.",
+      "docente": "Jesús María Quintero Quintero",
+      "lider": "Daniel José Palacio Muñoz - Santiago Valderrama",
+      "email": "",
+      "vinculacion": "Proceso de vinculación INACTIVO",
+      "enfoque": "Luminotecnia, Domótica orientada al bienestar, Protocolos de comunicación de IOT, Electrónica de baja potencia",
+      "descripcion": "Investigamos los distintos protocolos para IOT, Sistemas operativos para embebidos, microcontroladores y sensores para el bienestar humano; tenemos fuerte influencia hacia la luminotecnia.",
+      "actividades": "Realizamos proyectos orientados a nuestros objetivos, con estos nos vemos obligados a usar múltiples herramientas de las cuales aprendemos, documentamos y usamos.",
+      "modalidad": "Presencial",
+      "horarios": "Jueves 4:00PM a 6:00PM Semanal",
+      "requisitos": "N/A",
+      "nivel_academico": "Intermedio (Con bases en el área)",
+      "redes": "Instagram",
+      "comentarios": ""
+    }
+  ]
+}

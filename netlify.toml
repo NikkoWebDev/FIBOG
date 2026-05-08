@@ -1,0 +1,18 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# SPA redirect for client-side routing
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Environment variables (set in Netlify UI)
+[template.environment]
+  OPENROUTER_API_KEY = "OpenRouter API Key"
+  OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
+  OPENROUTER_MODEL = "liquid/lfm-2.5-1.2b-instruct:free"

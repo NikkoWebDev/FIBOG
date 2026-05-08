@@ -1,0 +1,113 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="Política de Privacidad | UNAL | FIBOG">
+  <Navbar activePage="privacidad" />
+  
+  <main class="pt-32 pb-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto min-h-[60vh]">
+    <div class="max-w-2xl mx-auto">
+      <!-- Header -->
+      <div class="text-center mb-12">
+        <div class="flex items-center justify-center gap-2 mb-4">
+          <span class="h-[1px] w-12 bg-secondary"></span>
+          <span class="font-label-mono text-label-mono text-secondary uppercase tracking-widest">Privacidad</span>
+          <span class="h-[1px] w-12 bg-secondary"></span>
+        </div>
+        <h1 class="font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface mb-4">
+          Tu <span class="text-primary">Privacidad</span> es Importante
+        </h1>
+        <p class="text-on-surface-variant text-body-base max-w-lg mx-auto">
+          En FIBOG valoramos tu privacidad. Somos transparentes sobre cómo manejamos la información.
+        </p>
+      </div>
+      
+      <!-- Privacy Content -->
+      <div class="glass-card rounded-3xl p-8 md:p-12 relative overflow-hidden">
+        <div class="noise-overlay"></div>
+        
+        <div class="relative z-10 space-y-8">
+          <!-- Main Statement -->
+          <div class="text-center py-8 border-b border-white/5">
+            <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
+              <span class="material-symbols-outlined text-3xl text-primary" data-icon="shield">shield</span>
+            </div>
+            <h2 class="text-headline-md font-display-lg text-on-surface mb-2">
+              No recolectamos tus datos
+            </h2>
+            <p class="text-on-surface-variant text-body-base">
+              Este sitio no almacena información personal de los visitantes.
+            </p>
+          </div>
+          
+          <!-- Details -->
+          <div class="space-y-6">
+            <div class="flex gap-4">
+              <div class="w-10 h-10 rounded-xl bg-surface-container-low flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-secondary" data-icon="visibility_off">visibility_off</span>
+              </div>
+              <div>
+                <h3 class="text-body-base font-bold text-on-surface mb-1">Sin Cookies de Rastreo</h3>
+                <p class="text-on-surface-variant text-body-sm">
+                  No utilizamos cookies para rastrear tu actividad ni para publicidad personalizada.
+                </p>
+              </div>
+            </div>
+            
+            <div class="flex gap-4">
+              <div class="w-10 h-10 rounded-xl bg-surface-container-low flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-tertiary" data-icon="storage">storage</span>
+              </div>
+              <div>
+                <h3 class="text-body-base font-bold text-on-surface mb-1">Sin Almacenamiento de Datos</h3>
+                <p class="text-on-surface-variant text-body-sm">
+                  Los datos de grupos y semilleros son públicos y no incluyen información personal.
+                </p>
+              </div>
+            </div>
+            
+            <div class="flex gap-4">
+              <div class="w-10 h-10 rounded-xl bg-surface-container-low flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-primary" data-icon="analytics">analytics</span>
+              </div>
+              <div>
+                <h3 class="text-body-base font-bold text-on-surface mb-1">Sin Analytics</h3>
+                <p class="text-on-surface-variant text-body-sm">
+                  No usamos Google Analytics ni herramientas similares de seguimiento.
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Contact -->
+          <div class="pt-6 border-t border-white/5 text-center">
+            <p class="text-on-surface-variant text-body-sm mb-4">
+              ¿Preguntas sobre privacidad?
+            </p>
+            <a 
+              href="https://wa.me/573136638097" 
+              target="_blank" 
+              class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+            >
+              <span class="material-symbols-outlined" data-icon="chat">chat</span>
+              Contactar al desarrollador
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Last Updated -->
+      <p class="text-center text-on-surface-variant/50 text-body-sm mt-8">
+        Última actualización: {new Date().toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' })}
+      </p>
+    </div>
+  </main>
+  
+  <Footer />
+</Layout>
+
+<style>
+  @import '../styles/global.css';
+</style>

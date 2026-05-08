@@ -1,0 +1,93 @@
+---
+import type { Grupo } from '../data/grupos.types';
+import BentoCard from './BentoCard.astro';
+
+interface Props {
+  grupos: Grupo[];
+}
+
+const { grupos } = Astro.props;
+
+// Calculate sizes for bento layout
+function getCardSize(index: number, total: number): 'small' | 'medium' | 'large' | 'wide' {
+  // Create varied layout pattern
+  const pattern = index % 6;
+  switch (pattern) {
+    case 0: return 'wide';      // Hero card
+    case 1: return 'medium';    // Standard
+    case 2: return 'large';     // Large
+    case 3: return 'medium';    // Standard
+    case 4: return 'small';     // Small
+    case 5: return 'medium';    // Standard
+    default: return 'medium';
+  }
+}
+---
+
+<div class="relative">
+  <!-- Background Tile Pattern -->
+  <div class="absolute inset-0 -z-10 opacity-30">
+    <div class="absolute inset-0" style="
+      background-image: 
+        linear-gradient(rgba(133, 217, 144, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(133, 217, 144, 0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+    "></div>
+  </div>
+  
+  <div class="grid grid-cols-12 gap-4 md:gap-6" id="bento-grid">
+    {grupos.map((grupo, index) => (
+      <BentoCard 
+        grupo={grupo} 
+        size={getCardSize(index, grupos.length)}
+        index={index}
+      />
+    ))}
+  </div>
+</div>
+
+<script>
+  // GSAP Staggered Animation
+  function initBentoAnimations() {
+    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') {
+      // Fallback: show all cards immediately
+      document.querySelectorAll('.bento-card').forEach(card => {
+        card.classList.add('visible');
+      });
+      return;
+    }
+    
+    const cards = gsap.utils.toArray<HTMLElement>('.bento-card');
+    
+    gsap.fromTo(cards, 
+      {
+        opacity: 0,
+        y: 30,
+        scale: 0.95
+      },
+      {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        duration: 0.6,
+        stagger: {
+          each: 0.08,
+          from: 'start'
+        },
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: '#bento-grid',
+          start: 'top 85%',
+          toggleActions: 'play none none none'
+        }
+      }
+    );
+  }
+  
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initBentoAnimations);
+  } else {
+    initBentoAnimations();
+  }
+</script>

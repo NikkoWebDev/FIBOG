@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>UNAL | FIBOG - AI Search</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&amp;family=Inter:wght@100..900&amp;family=JetBrains+Mono:wght@100..800&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "tertiary-fixed": "#acedff",
+                    "background": "#131313",
+                    "primary": "#85d990",
+                    "secondary-fixed": "#6ffbbe",
+                    "outline-variant": "#40493f",
+                    "surface-container-highest": "#353534",
+                    "on-tertiary-fixed": "#001f26",
+                    "inverse-surface": "#e5e2e1",
+                    "surface-dim": "#131313",
+                    "on-surface": "#e5e2e1",
+                    "on-tertiary-container": "#4fdaf9",
+                    "primary-fixed-dim": "#85d990",
+                    "primary-fixed": "#a1f6aa",
+                    "on-surface-variant": "#bfc9bc",
+                    "surface-container-lowest": "#0e0e0e",
+                    "on-primary-container": "#88db92",
+                    "inverse-on-surface": "#313030",
+                    "surface-bright": "#393939",
+                    "on-background": "#e5e2e1",
+                    "on-secondary-fixed": "#002113",
+                    "inverse-primary": "#156d30",
+                    "on-tertiary-fixed-variant": "#004e5c",
+                    "on-primary": "#003914",
+                    "primary-container": "#006227",
+                    "surface-variant": "#353534",
+                    "surface-container": "#201f1f",
+                    "surface-container-low": "#1c1b1b",
+                    "secondary": "#4edea3",
+                    "error": "#ffb4ab",
+                    "surface": "#131313",
+                    "on-primary-fixed-variant": "#005320",
+                    "on-secondary-fixed-variant": "#005236",
+                    "secondary-container": "#00a572",
+                    "tertiary-fixed-dim": "#4cd7f6",
+                    "on-error": "#690005",
+                    "outline": "#899487",
+                    "surface-container-high": "#2a2a2a",
+                    "on-primary-fixed": "#002108",
+                    "secondary-fixed-dim": "#4edea3",
+                    "on-error-container": "#ffdad6",
+                    "on-secondary": "#003824",
+                    "tertiary": "#4cd7f6",
+                    "tertiary-container": "#005d6d",
+                    "on-secondary-container": "#00311f",
+                    "error-container": "#93000a",
+                    "surface-tint": "#85d990",
+                    "on-tertiary": "#003640"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "unit": "4px",
+                    "gutter": "24px",
+                    "margin-mobile": "16px",
+                    "margin-desktop": "64px",
+                    "container-max": "1440px"
+            },
+            "fontFamily": {
+                    "label-mono": ["JetBrains Mono"],
+                    "body-sm": ["Inter"],
+                    "display-lg": ["Geist"],
+                    "body-base": ["Inter"],
+                    "display-lg-mobile": ["Geist"],
+                    "headline-md": ["Geist"]
+            },
+            "fontSize": {
+                    "label-mono": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                    "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.04em", "fontWeight": "700"}],
+                    "body-base": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "display-lg-mobile": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+        }
+        .glass-card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at 0% 0%, rgba(133, 217, 144, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        .shimmer {
+            background: linear-gradient(90deg, transparent, rgba(78, 222, 163, 0.15), transparent);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite linear;
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+        .noise-overlay {
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.02;
+            pointer-events: none;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-base antialiased selection:bg-primary/30 min-h-screen">
+<!-- TopNavBar -->
+<header class="fixed top-0 left-0 right-0 z-50 flex justify-between items-center px-8 py-3 rounded-full mt-4 mx-auto w-[90%] max-w-5xl bg-surface/60 backdrop-blur-md border border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.3)]">
+<div class="font-display-lg text-headline-md tracking-tighter text-primary">UNAL | FIBOG</div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="text-on-surface-variant font-medium hover:text-secondary transition-colors duration-300" href="#">Grupos</a>
+<a class="text-on-surface-variant font-medium hover:text-secondary transition-colors duration-300" href="#">Proyectos</a>
+<a class="text-on-surface-variant font-medium hover:text-secondary transition-colors duration-300" href="#">Mapa</a>
+<a class="text-on-surface-variant font-medium hover:text-secondary transition-colors duration-300" href="#">Semilleros</a>
+</nav>
+<div class="w-[100px] flex justify-end md:block hidden"></div>
+</header>
+<main class="pt-32 pb-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<!-- Search Interface Section -->
+<section class="max-w-4xl mx-auto mb-12">
+<div class="relative group">
+<div class="absolute -inset-1 bg-gradient-to-r from-primary to-secondary rounded-2xl blur opacity-25 group-focus-within:opacity-50 transition duration-1000"></div>
+<div class="relative glass-card rounded-2xl flex items-center px-6 py-4 border-white/10 hover:border-primary/30">
+<span class="material-symbols-outlined text-primary mr-4" data-icon="search">search</span>
+<input class="bg-transparent border-none focus:ring-0 text-headline-md font-display-lg w-full text-on-surface placeholder-on-surface-variant/50" placeholder="Pregunta sobre investigación..." type="text" value="Robotics groups at UNAL"/>
+<div class="flex gap-2">
+<button class="p-2 rounded-lg bg-surface-container hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-secondary" data-icon="auto_awesome" data-weight="fill">auto_awesome</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- AI Thinking State -->
+<section class="max-w-4xl mx-auto mb-16">
+<div class="glass-card rounded-3xl p-8 border-primary/20 bg-primary/5 hover:transform-none hover:shadow-none cursor-default">
+<div class="noise-overlay absolute inset-0"></div>
+<div class="flex items-start gap-6 relative z-10">
+<div class="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shrink-0 shadow-lg shadow-primary/20">
+<span class="material-symbols-outlined text-on-primary" data-icon="psychology_alt" data-weight="fill">psychology_alt</span>
+</div>
+<div class="flex-1 space-y-4">
+<div class="flex items-center gap-2">
+<h3 class="text-primary font-label-mono text-label-mono uppercase tracking-widest">Sistematizando Resultados</h3>
+<div class="flex gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style="animation-delay: 0s"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style="animation-delay: 0.2s"></span>
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style="animation-delay: 0.4s"></span>
+</div>
+</div>
+<div class="space-y-3">
+<div class="h-4 w-3/4 shimmer rounded-full bg-white/5"></div>
+<div class="h-4 w-full shimmer rounded-full bg-white/5"></div>
+<div class="h-4 w-5/6 shimmer rounded-full bg-white/5"></div>
+</div>
+<div class="flex gap-3 pt-4 overflow-x-auto no-scrollbar">
+<span class="px-4 py-1.5 rounded-full border border-primary/30 bg-primary/10 text-primary font-label-mono text-label-mono whitespace-nowrap">Analizando GIAR...</span>
+<span class="px-4 py-1.5 rounded-full border border-secondary/30 bg-secondary/10 text-secondary font-label-mono text-label-mono whitespace-nowrap">Mapeando Laboratorios...</span>
+<span class="px-4 py-1.5 rounded-full border border-tertiary/30 bg-tertiary/10 text-tertiary font-label-mono text-label-mono whitespace-nowrap">Consultando Hermes...</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Grouped Results (Bento Grid) -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+<!-- Result 1: Primary Group -->
+<div class="md:col-span-8 glass-card rounded-3xl p-8 group cursor-pointer">
+<div class="noise-overlay absolute inset-0"></div>
+<div class="flex justify-between items-start mb-6 relative z-10">
+<div>
+<div class="flex items-center gap-3 mb-2">
+<span class="px-3 py-1 rounded-full bg-secondary-container/20 text-secondary border border-secondary/30 font-label-mono text-label-mono">GRUPO A1</span>
+<span class="text-on-surface-variant font-label-mono text-label-mono">ID: UNAL-ROB-042</span>
+</div>
+<h2 class="text-display-lg-mobile md:text-headline-md font-display-lg text-primary group-hover:text-secondary transition-colors">GIAR - Grupo de Investigación en Automatización y Robótica</h2>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform" data-icon="arrow_forward">arrow_forward</span>
+</div>
+<p class="text-on-surface-variant mb-8 max-w-2xl">Líder en el desarrollo de plataformas robóticas autónomas para agricultura de precisión y exploración submarina. Actualmente gestiona 14 proyectos financiados por MinCiencias.</p>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+<div class="p-4 rounded-2xl bg-surface-container-low border border-white/5">
+<span class="block text-primary font-bold text-headline-md">24</span>
+<span class="text-on-surface-variant text-body-sm">Investigadores</span>
+</div>
+<div class="p-4 rounded-2xl bg-surface-container-low border border-white/5">
+<span class="block text-secondary font-bold text-headline-md">08</span>
+<span class="text-on-surface-variant text-body-sm">Semilleros</span>
+</div>
+<div class="p-4 rounded-2xl bg-surface-container-low border border-white/5">
+<span class="block text-tertiary font-bold text-headline-md">112</span>
+<span class="text-on-surface-variant text-body-sm">Papers</span>
+</div>
+<div class="p-4 rounded-2xl bg-surface-container-low border border-white/5">
+<span class="block text-primary-fixed font-bold text-headline-md">A1</span>
+<span class="text-on-surface-variant text-body-sm">MinCiencias</span>
+</div>
+</div>
+</div>
+<!-- Result 2: Featured Project -->
+<div class="md:col-span-4 glass-card rounded-3xl overflow-hidden group cursor-pointer">
+<div class="h-48 relative">
+<img alt="Robotic arm" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDNUplokFXCV2pFBW0vfYGjL4R0yE_Btvu4ihWRsTYqb7w59b7UbtIl8YWaC7_GU_exGLoji3PF2m7u7ErhWcZBrS7YwrzogSE3oKrQqKBwpCM7bPm0IUpXn0xCV2C53l76-trcjRNpvRFD48-nKvhFP-R4UmIJqQ1DXjbKaOIx6Yl-5hWPsgLS2PUND-Yt_BRwuQEXwNLI5-r4KWgvQS4YP2EV2V8dmad0GFtyMJdhAZ-wdkjX_cUxNf-7K3RHhD_5P82MKb0kaL4"/>
+<div class="absolute inset-0 bg-gradient-to-t from-background to-transparent"></div>
+<div class="absolute bottom-4 left-6">
+<span class="px-3 py-1 rounded-full bg-primary text-on-primary font-label-mono text-label-mono">PROYECTO DESTACADO</span>
+</div>
+</div>
+<div class="p-6">
+<h3 class="text-headline-md font-display-lg text-on-surface mb-2">ExoUNAL v4</h3>
+<p class="text-on-surface-variant text-body-sm mb-4">Exoesqueleto modular para rehabilitación motriz desarrollado por el Lab de Biomecatrónica.</p>
+<div class="h-1 w-full bg-white/10 rounded-full overflow-hidden">
+<div class="h-full bg-tertiary w-3/4"></div>
+</div>
+<div class="flex justify-between mt-2 font-label-mono text-[10px] text-tertiary uppercase tracking-tighter">
+<span>Fase de Pruebas</span>
+<span>75% Completado</span>
+</div>
+</div>
+</div>
+<!-- Result 3: Seedbed Small Card -->
+<div class="md:col-span-4 glass-card rounded-3xl p-6 group cursor-pointer">
+<div class="flex items-center gap-4 mb-4">
+<div class="w-10 h-10 rounded-xl bg-tertiary-container/30 flex items-center justify-center group-hover:bg-tertiary-container/50 transition-colors">
+<span class="material-symbols-outlined text-tertiary" data-icon="rocket_launch">rocket_launch</span>
+</div>
+<div>
+<h4 class="text-body-base font-bold text-on-surface">Semillero DAR</h4>
+<p class="text-on-surface-variant text-body-sm">Drones de Alto Rendimiento</p>
+</div>
+</div>
+<div class="flex -space-x-2">
+<div class="w-8 h-8 rounded-full border-2 border-background bg-surface-container-highest flex items-center justify-center text-[10px] font-bold">JD</div>
+<div class="w-8 h-8 rounded-full border-2 border-background bg-surface-container-highest flex items-center justify-center text-[10px] font-bold">MS</div>
+<div class="w-8 h-8 rounded-full border-2 border-background bg-surface-container-highest flex items-center justify-center text-[10px] font-bold">AL</div>
+<div class="w-8 h-8 rounded-full border-2 border-background bg-surface-container-highest flex items-center justify-center text-[10px] font-bold text-primary">+12</div>
+</div>
+</div>
+<!-- Result 4: Lab Map/Location Card -->
+<div class="md:col-span-4 glass-card rounded-3xl p-6 flex flex-col justify-between group cursor-pointer">
+<div>
+<div class="flex items-center gap-2 text-secondary mb-4">
+<span class="material-symbols-outlined" data-icon="location_on">location_on</span>
+<span class="font-label-mono text-label-mono uppercase tracking-widest">Edificio 411 - Lab 102</span>
+</div>
+<h4 class="text-headline-md font-display-lg text-on-surface">Laboratorio de Robótica Social</h4>
+</div>
+<div class="mt-6 aspect-video rounded-xl bg-surface-container-highest overflow-hidden relative">
+<div class="absolute inset-0 opacity-30 group-hover:opacity-50 transition-opacity bg-[url('https://api.placeholder.com/400x225')] bg-cover"></div>
+<div class="absolute inset-0 flex items-center justify-center">
+<div class="w-8 h-8 bg-secondary rounded-full animate-ping opacity-75"></div>
+<div class="w-3 h-3 bg-secondary rounded-full relative shadow-[0_0_15px_rgba(78,222,163,0.5)]"></div>
+</div>
+</div>
+</div>
+<!-- Result 5: Quick Link / Resource -->
+<div class="md:col-span-4 glass-card rounded-3xl p-8 bg-gradient-to-br from-primary/10 to-transparent border-primary/20 group cursor-pointer">
+<span class="material-symbols-outlined text-primary text-4xl mb-4" data-icon="description">description</span>
+<h4 class="text-headline-md font-display-lg text-on-surface mb-2">Guía de Vinculación 2024</h4>
+<p class="text-on-surface-variant text-body-sm mb-6">Descarga los requisitos para unirte a grupos de investigación como estudiante de pregrado.</p>
+<button class="w-full py-3 rounded-xl border border-primary text-primary group-hover:bg-primary group-hover:text-on-primary transition-all font-bold flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="download">download</span>
+                    PDF (2.4 MB)
+                </button>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile) -->
+<nav class="fixed bottom-0 w-full z-50 flex justify-around items-center p-4 md:hidden bg-surface/80 backdrop-blur-xl border-t border-white/10 shadow-2xl rounded-t-3xl">
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-xl p-2 scale-110" href="#">
+<span class="material-symbols-outlined" data-icon="explore" data-weight="fill">explore</span>
+<span class="font-label-mono text-[10px] mt-1">Explorar</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2" href="#">
+<span class="material-symbols-outlined" data-icon="bookmark">bookmark</span>
+<span class="font-label-mono text-[10px] mt-1">Favoritos</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2" href="#">
+<span class="material-symbols-outlined" data-icon="forum">forum</span>
+<span class="font-label-mono text-[10px] mt-1">Mensajes</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant p-2" href="#">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+<span class="font-label-mono text-[10px] mt-1">Perfil</span>
+</a>
+</nav>
+<!-- Footer -->
+<footer class="w-full flex flex-col items-center gap-6 px-margin-desktop py-12 bg-background border-t border-outline-variant/30">
+<div class="font-display-lg text-body-base text-secondary">UNAL | FIBOG</div>
+<div class="flex flex-wrap justify-center gap-x-8 gap-y-4">
+<a class="text-on-surface-variant hover:text-secondary transition-colors duration-200 font-body-sm text-body-sm" href="https://github.com/NikkoWebDev">GitHub</a>
+<a class="text-on-surface-variant hover:text-secondary transition-colors duration-200 font-body-sm text-body-sm" href="https://github.com/NikkoWebDev/FIBOG">Documentación</a>
+<a class="text-on-surface-variant hover:text-secondary transition-colors duration-200 font-body-sm text-body-sm" href="#">no recolectamos tus datos</a>
+<a class="text-on-surface-variant hover:text-secondary transition-colors duration-200 font-body-sm text-body-sm" href="https://wa.me/573136638097">contacto del desarrollador</a>
+</div>
+<div class="flex items-center gap-4">
+<a class="text-on-surface-variant hover:text-primary transition-colors duration-200" href="https://github.com/NikkoWebDev">
+<svg class="w-6 h-6 fill-current" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.43.372.823 1.102.823 2.222 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"></path></svg>
+</a>
+</div>
+<p class="text-on-surface-variant font-body-sm text-body-sm text-center">Hecho con ♥ por Nikko para UNAL<br/>© 2024 Facultad de Ingeniería - UNAL Bogotá</p>
+</footer>
+</body></html>
