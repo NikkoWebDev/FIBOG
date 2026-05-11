@@ -1,610 +1,492 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
 
 // This page requires SUPER_ADMIN role
-// Server-side check would go here in production
 ---
 
-<Layout title="Panel de Administración | FIBOG UNAL" description="Gestión de semilleros y grupos UNAL">
-  <main class="min-h-screen py-8 px-4 relative overflow-hidden">
-    <!-- Background -->
-    <div class="absolute inset-0 bg-[#131313]"></div>
-    <div class="absolute inset-0">
-      <div class="absolute top-0 right-0 w-[40%] h-[40%] bg-[rgba(133,217,144,0.1)] rounded-full blur-[150px]"></div>
-      <div class="absolute bottom-0 left-0 w-[30%] h-[30%] bg-[rgba(78,222,163,0.08)] rounded-full blur-[120px]"></div>
-    </div>
+<Layout title="Panel de Administración | FIBOG UNAL" description="Gestión de activos de investigación y monitoreo institucional.">
+  <Navbar activePage="admin" />
+  
+  <main class="min-h-screen pt-32 pb-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+    <!-- Header -->
+    <header class="mb-12">
+      <div class="flex items-center gap-2 mb-4">
+        <span class="h-[1px] w-12 bg-secondary"></span>
+        <span class="font-label-mono text-label-mono text-secondary uppercase tracking-widest">Control Central</span>
+      </div>
+      <h1 class="font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface mb-2">Panel de <span class="text-primary">Control</span></h1>
+      <p class="text-on-surface-variant font-body-base max-w-2xl">Gestión de activos de investigación y monitoreo institucional del sistema FIBOG.</p>
+    </header>
     
-    <div class="relative z-10 max-w-7xl mx-auto">
-      <!-- Header -->
-      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
-        <div>
-          <div class="flex items-center gap-2 mb-2">
-            <span class="h-[1px] w-8 bg-[#85d990]"></span>
-            <span class="font-label-mono text-label-mono text-[#85d990] uppercase tracking-widest">Administración</span>
+    <div class="grid grid-cols-4 md:grid-cols-12 gap-gutter mb-12">
+      <!-- Metrics Section -->
+      <section class="col-span-4 md:col-span-8 glass-card rounded-3xl p-8 relative overflow-hidden group">
+        <div class="noise-overlay"></div>
+        <div class="flex justify-between items-start mb-8">
+          <div>
+            <h2 class="font-headline-md text-primary mb-1">Métricas del Sistema</h2>
+            <span class="font-label-mono text-label-mono text-secondary uppercase tracking-widest">Semestre 2024-I</span>
           </div>
-          <h1 class="font-display-lg text-display-lg-mobile md:text-headline-md text-[#e5e2e1]">
-            Panel <span class="text-[#85d990]">Super Admin</span>
-          </h1>
+          <span class="material-symbols-outlined text-tertiary text-4xl">analytics</span>
         </div>
-        
-        <div class="flex items-center gap-3">
-          <div class="glass-card rounded-full px-4 py-2 flex items-center gap-2">
-            <div class="w-2 h-2 rounded-full bg-[#85d990] animate-pulse"></div>
-            <span class="text-[#bfc9bc] text-sm">En línea</span>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div class="flex flex-col">
+            <span class="text-on-surface-variant font-body-sm">Proyectos Activos</span>
+            <span id="total-grupos" class="text-display-lg-mobile font-display-lg text-white">-</span>
+            <div class="h-1 w-full bg-surface-container mt-2 rounded-full overflow-hidden">
+              <div class="h-full bg-secondary w-3/4"></div>
+            </div>
           </div>
-          <button 
-            id="logout-btn"
-            class="glass-card rounded-full p-2 text-[#bfc9bc] hover:text-[#ffb4ab] transition-colors"
-            title="Cerrar sesión"
-          >
-            <span class="material-symbols-outlined">logout</span>
+          <div class="flex flex-col">
+            <span class="text-on-surface-variant font-body-sm">Líderes</span>
+            <span id="total-lideres" class="text-display-lg-mobile font-display-lg text-white">-</span>
+            <div class="h-1 w-full bg-surface-container mt-2 rounded-full overflow-hidden">
+              <div class="h-full bg-tertiary w-1/2"></div>
+            </div>
+          </div>
+          <div class="flex flex-col">
+            <span class="text-on-surface-variant font-body-sm">Pendientes</span>
+            <span id="pending-grupos" class="text-display-lg-mobile font-display-lg text-white">-</span>
+            <div class="h-1 w-full bg-surface-container mt-2 rounded-full overflow-hidden">
+              <div class="h-full bg-primary w-5/6"></div>
+            </div>
+          </div>
+          <div class="flex flex-col">
+            <span class="text-on-surface-variant font-body-sm">Administradores</span>
+            <span id="total-admins" class="text-display-lg-mobile font-display-lg text-white">-</span>
+            <div class="h-1 w-full bg-surface-container mt-2 rounded-full overflow-hidden">
+              <div class="h-full bg-secondary-container w-1/3"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Quick Actions Section -->
+      <section class="col-span-4 md:col-span-4 glass-card rounded-3xl p-8 relative overflow-hidden">
+        <div class="noise-overlay"></div>
+        <h2 class="font-headline-md text-white mb-6">Acciones Rápidas</h2>
+        <div class="space-y-3">
+          <button onclick="openCreateModal()" class="w-full flex items-center justify-between p-4 rounded-xl bg-primary-container/20 border border-primary/20 hover:bg-primary-container/40 transition-all group">
+            <div class="flex items-center gap-4">
+              <span class="material-symbols-outlined text-primary">add_circle</span>
+              <span class="font-body-base text-on-primary-container">Nuevo Grupo</span>
+            </div>
+            <span class="material-symbols-outlined text-on-surface-variant group-hover:translate-x-1 transition-transform">chevron_right</span>
+          </button>
+          <button onclick="switchTab('pendientes')" class="w-full flex items-center justify-between p-4 rounded-xl bg-surface-container border border-outline-variant/30 hover:border-secondary/50 transition-all group">
+            <div class="flex items-center gap-4">
+              <span class="material-symbols-outlined text-secondary">pending_actions</span>
+              <span class="font-body-base text-white">Aprobaciones</span>
+            </div>
+            <span id="pending-count-badge" class="bg-error-container text-on-error-container text-xs px-2 py-0.5 rounded-full">-</span>
+          </button>
+          <button onclick="exportData()" class="w-full flex items-center justify-between p-4 rounded-xl bg-surface-container border border-outline-variant/30 hover:border-tertiary/50 transition-all group">
+            <div class="flex items-center gap-4">
+              <span class="material-symbols-outlined text-tertiary">cloud_download</span>
+              <span class="font-body-base text-white">Exportar Reportes</span>
+            </div>
+            <span class="material-symbols-outlined text-on-surface-variant">download</span>
           </button>
         </div>
+      </section>
+    </div>
+
+    <!-- Management Tabs Section -->
+    <section class="glass-card rounded-[32px] overflow-hidden">
+      <div class="noise-overlay"></div>
+      <div class="relative z-10">
+        <!-- Tabs Nav -->
+        <div class="flex border-b border-white/10 bg-surface-container/50">
+          <button 
+            onclick="switchTab('grupos')" 
+            id="tab-grupos"
+            class="px-8 py-5 text-sm font-medium transition-all hover:bg-white/5 active border-b-2 border-transparent [&.active]:border-primary [&.active]:text-primary"
+          >
+            Todos los Grupos
+          </button>
+          <button 
+            onclick="switchTab('pendientes')" 
+            id="tab-pendientes"
+            class="px-8 py-5 text-sm font-medium transition-all hover:bg-white/5 border-b-2 border-transparent [&.active]:border-primary [&.active]:text-primary"
+          >
+            Solicitudes Pendientes
+          </button>
+          <button 
+            onclick="switchTab('usuarios')" 
+            id="tab-usuarios"
+            class="px-8 py-5 text-sm font-medium transition-all hover:bg-white/5 border-b-2 border-transparent [&.active]:border-primary [&.active]:text-primary"
+          >
+            Gestión de Usuarios
+          </button>
+        </div>
+
+        <!-- Tab Contents -->
+        <div class="p-8">
+          <!-- Grupos Content -->
+          <div id="content-grupos" class="tab-content">
+            <div class="flex flex-col md:flex-row gap-4 mb-6">
+              <div class="relative flex-1">
+                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+                <input 
+                  type="text" 
+                  id="search-grupos" 
+                  placeholder="Buscar grupos por nombre, líder o facultad..." 
+                  class="w-full pl-12 pr-4 py-3 rounded-xl bg-surface-container text-on-surface border border-outline-variant/30 focus:border-primary focus:outline-none transition-all"
+                  onkeyup="filterGrupos()"
+                />
+              </div>
+              <select id="filter-tipo" onchange="filterGrupos()" class="px-6 py-3 rounded-xl bg-surface-container text-on-surface border border-outline-variant/30 focus:border-primary focus:outline-none transition-all">
+                <option value="">Todos los tipos</option>
+                <option value="Semillero">Semilleros</option>
+                <option value="Grupo de Investigación">Grupos de Investigación</option>
+                <option value="Grupo Estudiantil">Grupos Estudiantiles</option>
+              </select>
+            </div>
+
+            <div class="overflow-x-auto rounded-2xl border border-white/5">
+              <table class="w-full text-left">
+                <thead class="bg-surface-container/30 text-on-surface-variant font-label-mono text-[10px] uppercase tracking-widest">
+                  <tr>
+                    <th class="px-6 py-4">Nombre del Grupo</th>
+                    <th class="px-6 py-4">Tipo</th>
+                    <th class="px-6 py-4">Líder</th>
+                    <th class="px-6 py-4">Estado</th>
+                    <th class="px-6 py-4 text-center">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="grupos-table-body" class="divide-y divide-white/5">
+                  <!-- Data will be loaded here -->
+                </tbody>
+              </table>
+              <div id="loading-grupos" class="py-12 text-center">
+                <div class="w-8 h-8 mx-auto border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pendientes Content -->
+          <div id="content-pendientes" class="tab-content hidden">
+            <div id="pending-list" class="space-y-4">
+              <!-- Pending requests -->
+            </div>
+          </div>
+
+          <!-- Usuarios Content -->
+          <div id="content-usuarios" class="tab-content hidden">
+             <div class="overflow-x-auto rounded-2xl border border-white/5">
+              <table class="w-full text-left">
+                <thead class="bg-surface-container/30 text-on-surface-variant font-label-mono text-[10px] uppercase tracking-widest">
+                  <tr>
+                    <th class="px-6 py-4">Usuario</th>
+                    <th class="px-6 py-4">Email</th>
+                    <th class="px-6 py-4">Rol</th>
+                    <th class="px-6 py-4">Registro</th>
+                    <th class="px-6 py-4 text-center">Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="usuarios-table-body" class="divide-y divide-white/5">
+                  <!-- Users loaded here -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
-      
-      <!-- Stats Cards -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-        <div class="glass-card rounded-2xl p-5 relative overflow-hidden group">
-          <div class="absolute top-0 right-0 w-20 h-20 bg-[#85d990]/10 rounded-full blur-2xl group-hover:bg-[#85d990]/20 transition-all"></div>
-          <div class="relative z-10">
-            <div class="flex items-center gap-2 mb-2">
-              <span class="material-symbols-outlined text-[#85d990]">pending_actions</span>
-              <span class="text-[#bfc9bc] text-sm">Pendientes</span>
-            </div>
-            <p class="text-3xl font-bold text-[#e5e2e1]" id="stat-pendientes">-</p>
-          </div>
-        </div>
-        
-        <div class="glass-card rounded-2xl p-5 relative overflow-hidden group">
-          <div class="absolute top-0 right-0 w-20 h-20 bg-[#4edea3]/10 rounded-full blur-2xl group-hover:bg-[#4edea3]/20 transition-all"></div>
-          <div class="relative z-10">
-            <div class="flex items-center gap-2 mb-2">
-              <span class="material-symbols-outlined text-[#4edea3]">check_circle</span>
-              <span class="text-[#bfc9bc] text-sm">Aprobados</span>
-            </div>
-            <p class="text-3xl font-bold text-[#e5e2e1]" id="stat-aprobados">-</p>
-          </div>
-        </div>
-        
-        <div class="glass-card rounded-2xl p-5 relative overflow-hidden group">
-          <div class="absolute top-0 right-0 w-20 h-20 bg-[#4cd7f6]/10 rounded-full blur-2xl group-hover:bg-[#4cd7f6]/20 transition-all"></div>
-          <div class="relative z-10">
-            <div class="flex items-center gap-2 mb-2">
-              <span class="material-symbols-outlined text-[#4cd7f6]">groups</span>
-              <span class="text-[#bfc9bc] text-sm">Total Grupos</span>
-            </div>
-            <p class="text-3xl font-bold text-[#e5e2e1]" id="stat-total">-</p>
-          </div>
-        </div>
-        
-        <div class="glass-card rounded-2xl p-5 relative overflow-hidden group">
-          <div class="absolute top-0 right-0 w-20 h-20 bg-[#ffb4ab]/10 rounded-full blur-2xl group-hover:bg-[#ffb4ab]/20 transition-all"></div>
-          <div class="relative z-10">
-            <div class="flex items-center gap-2 mb-2">
-              <span class="material-symbols-outlined text-[#ffb4ab]">cancel</span>
-              <span class="text-[#bfc9bc] text-sm">Rechazados</span>
-            </div>
-            <p class="text-3xl font-bold text-[#e5e2e1]" id="stat-rechazados">-</p>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Tabs -->
-      <div class="flex gap-2 mb-6 overflow-x-auto pb-2">
-        <button 
-          class="tab-btn active px-5 py-2.5 rounded-xl font-medium text-sm whitespace-nowrap transition-all bg-[#85d990] text-[#003914]"
-          data-tab="solicitudes"
-        >
-          <span class="material-symbols-outlined text-sm mr-1">inbox</span>
-          Solicitudes Pendientes
-        </button>
-        <button 
-          class="tab-btn px-5 py-2.5 rounded-xl font-medium text-sm whitespace-nowrap transition-all text-[#bfc9bc] hover:bg-[#2a2a2a]/50"
-          data-tab="grupos"
-        >
-          <span class="material-symbols-outlined text-sm mr-1">groups</span>
-          Grupos Aprobados
-        </button>
-        <button 
-          class="tab-btn px-5 py-2.5 rounded-xl font-medium text-sm whitespace-nowrap transition-all text-[#bfc9bc] hover:bg-[#2a2a2a]/50"
-          data-tab="audit"
-        >
-          <span class="material-symbols-outlined text-sm mr-1">history</span>
-          Historial
-        </button>
-      </div>
-      
-      <!-- Solicitudes Tab -->
-      <div id="tab-solicitudes" class="tab-content">
-        <div class="glass-card rounded-2xl overflow-hidden">
-          <div class="p-6 border-b border-[#40493f]/50 flex items-center justify-between">
-            <h2 class="font-headline-md text-headline-md text-[#e5e2e1]">Solicitudes Pendientes de Revisión</h2>
-            <button id="refresh-solicitudes" class="text-[#bfc9bc] hover:text-[#85d990] transition-colors">
-              <span class="material-symbols-outlined">refresh</span>
+    </section>
+  </main>
+
+  <!-- Modal for Create/Edit Group -->
+  <div id="group-modal" class="fixed inset-0 z-[110] hidden">
+    <div class="absolute inset-0 bg-black/80 backdrop-blur-md" onclick="closeGroupModal()"></div>
+    <div class="relative min-h-screen flex items-center justify-center p-4">
+      <div class="relative glass-card rounded-[32px] max-w-2xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
+        <div class="noise-overlay"></div>
+        <div class="relative z-10 p-8 overflow-y-auto max-h-[90vh]">
+          <div class="flex items-center justify-between mb-8">
+            <h3 class="text-headline-md font-display-lg text-on-surface" id="modal-title">Nuevo Grupo</h3>
+            <button onclick="closeGroupModal()" class="w-10 h-10 rounded-full glass-card flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-all">
+              <span class="material-symbols-outlined">close</span>
             </button>
           </div>
           
-          <div id="solicitudes-list" class="divide-y divide-[#40493f]/30">
-            <!-- Solicitudes will be loaded here -->
-            <div class="p-8 text-center text-[#899487]">
-              <div class="w-12 h-12 mx-auto mb-4 rounded-full bg-[#2a2a2a] flex items-center justify-center">
-                <span class="material-symbols-outlined animate-spin">progress_activity</span>
+          <form id="group-form" onsubmit="saveGroup(event)" class="space-y-6">
+            <div class="grid md:grid-cols-2 gap-6">
+              <div class="flex flex-col gap-2">
+                <label class="font-label-mono text-on-surface-variant text-[10px] uppercase px-1">NOMBRE DEL GRUPO *</label>
+                <input type="text" name="nombre" required class="input-glass rounded-xl px-4 py-3 text-on-surface font-body-base" />
               </div>
-              <p>Cargando solicitudes...</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Grupos Tab -->
-      <div id="tab-grupos" class="tab-content hidden">
-        <div class="glass-card rounded-2xl overflow-hidden">
-          <div class="p-6 border-b border-[#40493f]/50 flex items-center justify-between">
-            <h2 class="font-headline-md text-headline-md text-[#e5e2e1]">Grupos Aprobados</h2>
-            <div class="flex items-center gap-2">
-              <input 
-                type="text" 
-                id="search-grupos"
-                placeholder="Buscar grupos..."
-                class="px-4 py-2 bg-[#1c1b1b]/80 border border-[#40493f] rounded-lg text-[#e5e2e1] text-sm focus:outline-none focus:border-[#85d990]/50"
-              />
-              <button id="refresh-grupos" class="text-[#bfc9bc] hover:text-[#85d990] transition-colors p-2">
-                <span class="material-symbols-outlined">refresh</span>
-              </button>
-            </div>
-          </div>
-          
-          <div id="grupos-list" class="divide-y divide-[#40493f]/30">
-            <!-- Grupos will be loaded here -->
-            <div class="p-8 text-center text-[#899487]">
-              <div class="w-12 h-12 mx-auto mb-4 rounded-full bg-[#2a2a2a] flex items-center justify-center">
-                <span class="material-symbols-outlined animate-spin">progress_activity</span>
+              <div class="flex flex-col gap-2">
+                <label class="font-label-mono text-on-surface-variant text-[10px] uppercase px-1">TIPO *</label>
+                <select name="tipo" required class="input-glass rounded-xl px-4 py-3 text-on-surface font-body-base">
+                  <option value="Semillero">Semillero</option>
+                  <option value="Grupo de Investigación">Grupo de Investigación</option>
+                  <option value="Grupo Estudiantil">Grupo Estudiantil</option>
+                </select>
               </div>
-              <p>Cargando grupos...</p>
             </div>
-          </div>
-        </div>
-      </div>
-      
-      <!-- Audit Tab -->
-      <div id="tab-audit" class="tab-content hidden">
-        <div class="glass-card rounded-2xl overflow-hidden">
-          <div class="p-6 border-b border-[#40493f]/50">
-            <h2 class="font-headline-md text-headline-md text-[#e5e2e1]">Historial de Actividades</h2>
-          </div>
-          
-          <div id="audit-list" class="divide-y divide-[#40493f]/30">
-            <div class="p-8 text-center text-[#899487]">
-              <p>Historial de auditoría no disponible en modo demo.</p>
+            <!-- More fields as needed -->
+            <div class="flex justify-end gap-4 mt-8">
+              <button type="button" onclick="closeGroupModal()" class="px-6 py-3 rounded-xl border border-white/10 font-medium hover:bg-white/5 transition-all">Cancelar</button>
+              <button type="submit" class="px-8 py-3 rounded-xl bg-primary text-on-primary font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all">Guardar Grupo</button>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </main>
-  
-  <!-- Approval Modal -->
-  <div id="approval-modal" class="fixed inset-0 z-50 hidden">
-    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" id="modal-backdrop"></div>
-    <div class="absolute inset-0 flex items-center justify-center p-4">
-      <div class="glass-card rounded-3xl p-8 max-w-lg w-full relative z-10">
-        <h3 class="font-headline-md text-headline-md text-[#e5e2e1] mb-4">Aprobar Solicitud</h3>
-        <p class="text-[#bfc9bc] mb-6">
-          Al aprobar esta solicitud, se creará automáticamente una cuenta de usuario para el solicitante 
-          y el grupo será publicado en el portal.
-        </p>
-        
-        <div class="bg-[#1c1b1b]/50 rounded-xl p-4 mb-6">
-          <p class="text-sm text-[#bfc9bc] mb-1">Solicitante:</p>
-          <p id="modal-solicitante" class="text-[#e5e2e1] font-medium">-</p>
-          <p id="modal-email" class="text-sm text-[#899487]">-</p>
-        </div>
-        
-        <div class="flex gap-3">
-          <button id="modal-cancel" class="flex-1 py-3 rounded-xl border border-[#40493f] text-[#bfc9bc] hover:bg-[#2a2a2a]/50 transition-all">
-            Cancelar
-          </button>
-          <button id="modal-approve" class="flex-1 py-3 rounded-xl bg-gradient-to-r from-[#85d990] to-[#4edea3] text-[#003914] font-bold hover:opacity-90 transition-all">
-            Aprobar y Crear Cuenta
-          </button>
+          </form>
         </div>
       </div>
     </div>
   </div>
-  
-  <!-- Reject Modal -->
-  <div id="reject-modal" class="fixed inset-0 z-50 hidden">
-    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" id="reject-modal-backdrop"></div>
-    <div class="absolute inset-0 flex items-center justify-center p-4">
-      <div class="glass-card rounded-3xl p-8 max-w-lg w-full relative z-10">
-        <h3 class="font-headline-md text-headline-md text-[#ffb4ab] mb-4">Rechazar Solicitud</h3>
-        
-        <div class="mb-4">
-          <label class="block text-[#bfc9bc] text-sm mb-2">Motivo del rechazo (opcional):</label>
-          <textarea 
-            id="reject-reason"
-            rows="3"
-            class="w-full px-4 py-3 bg-[#1c1b1b]/80 border border-[#40493f] rounded-xl text-[#e5e2e1] focus:outline-none focus:border-[#ffb4ab]/50 resize-none"
-            placeholder="Explica por qué se rechaza la solicitud..."
-          ></textarea>
-        </div>
-        
-        <div class="flex gap-3">
-          <button id="reject-cancel" class="flex-1 py-3 rounded-xl border border-[#40493f] text-[#bfc9bc] hover:bg-[#2a2a2a]/50 transition-all">
-            Cancelar
-          </button>
-          <button id="reject-confirm" class="flex-1 py-3 rounded-xl bg-[#93000a] text-[#ffb4ab] font-bold hover:bg-[#690005] transition-all">
-            Rechazar Solicitud
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
+
+  <Footer />
 </Layout>
+
+<style>
+  .input-glass {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.3s ease;
+  }
+  .input-glass:focus {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: #85d990;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(133, 217, 144, 0.2);
+  }
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
 
 <script>
   import { supabase } from '../lib/supabase';
-  
-  let currentSolicitudId: string | null = null;
-  
-  // Check auth
-  async function checkAuth() {
+
+  let allGrupos = [];
+  let currentEditingGroup = null;
+
+  async function init() {
+    // Check auth and role
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       window.location.href = '/login';
       return;
     }
-    
-    // Check role
-    const { data: profile } = await supabase
-      .from('perfiles')
-      .select('rol')
-      .eq('id', user.id)
-      .single();
-    
+
+    const { data: profile } = await supabase.from('perfiles').select('rol').eq('id', user.id).single();
     if (profile?.rol !== 'SUPER_ADMIN') {
       window.location.href = '/';
-    }
-  }
-  
-  // Load stats
-  async function loadStats() {
-    const { data: solicitudes } = await supabase
-      .from('solicitudes_pendientes')
-      .select('estado', { count: 'exact' });
-    
-    const pendientes = solicitudes?.filter(s => s.estado === 'pendiente').length || 0;
-    const rechazados = solicitudes?.filter(s => s.estado === 'rechazado').length || 0;
-    
-    const { data: grupos } = await supabase
-      .from('grupos')
-      .select('*', { count: 'exact' });
-    
-    const aprobados = grupos?.filter(g => g.estado_aprobacion === 'aprobado').length || 0;
-    
-    document.getElementById('stat-pendientes')!.textContent = pendientes.toString();
-    document.getElementById('stat-aprobados')!.textContent = aprobados.toString();
-    document.getElementById('stat-total')!.textContent = (grupos?.length || 0).toString();
-    document.getElementById('stat-rechazados')!.textContent = rechazados.toString();
-  }
-  
-  // Load solicitudes
-  async function loadSolicitudes() {
-    const { data, error } = await supabase
-      .from('solicitudes_pendientes')
-      .select('*')
-      .eq('estado', 'pendiente')
-      .order('fecha_solicitud', { ascending: false });
-    
-    const container = document.getElementById('solicitudes-list');
-    
-    if (error || !data || data.length === 0) {
-      container!.innerHTML = `
-        <div class="p-8 text-center">
-          <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-[#2a2a2a] flex items-center justify-center">
-            <span class="material-symbols-outlined text-[#899487] text-2xl">inbox</span>
-          </div>
-          <p class="text-[#bfc9bc]">No hay solicitudes pendientes</p>
-        </div>
-      `;
       return;
     }
-    
-    container!.innerHTML = data.map(s => `
-      <div class="p-6 hover:bg-[#2a2a2a]/30 transition-colors" data-id="${s.id}">
-        <div class="flex flex-col md:flex-row md:items-start justify-between gap-4">
-          <div class="flex-1">
-            <div class="flex items-center gap-2 mb-2">
-              <span class="px-2 py-1 rounded-full bg-[#85d990]/10 text-[#85d990] text-xs font-label-mono uppercase">
-                ${s.tipo}
-              </span>
-              <span class="text-[#899487] text-sm">${new Date(s.fecha_solicitud).toLocaleDateString()}</span>
-            </div>
-            <h3 class="text-[#e5e2e1] font-medium text-lg mb-1">${s.nombre}</h3>
-            <p class="text-[#bfc9bc] text-sm mb-2">${s.enfoque || 'Sin enfoque definido'}</p>
-            <div class="flex flex-wrap gap-2 text-sm text-[#899487]">
-              <span class="flex items-center gap-1">
-                <span class="material-symbols-outlined text-sm">person</span>
-                ${s.nombre_solicitante}
-              </span>
-              <span class="flex items-center gap-1">
-                <span class="material-symbols-outlined text-sm">email</span>
-                ${s.email_solicitante}
-              </span>
-            </div>
-          </div>
-          
-          <div class="flex gap-2">
-            <button 
-              class="approve-btn px-4 py-2 rounded-lg bg-[#85d990]/10 text-[#85d990] hover:bg-[#85d990]/20 transition-colors flex items-center gap-1"
-              data-id="${s.id}"
-              data-solicitante="${s.nombre_solicitante}"
-              data-email="${s.email_solicitante}"
-            >
-              <span class="material-symbols-outlined text-sm">check</span>
-              Aprobar
-            </button>
-            <button 
-              class="reject-btn px-4 py-2 rounded-lg bg-[#ffb4ab]/10 text-[#ffb4ab] hover:bg-[#ffb4ab]/20 transition-colors flex items-center gap-1"
-              data-id="${s.id}"
-            >
-              <span class="material-symbols-outlined text-sm">close</span>
-              Rechazar
-            </button>
-          </div>
-        </div>
-      </div>
-    `).join('');
-    
-    // Add event listeners
-    document.querySelectorAll('.approve-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const target = e.currentTarget as HTMLElement;
-        currentSolicitudId = target.dataset.id!;
-        document.getElementById('modal-solicitante')!.textContent = target.dataset.solicitante!;
-        document.getElementById('modal-email')!.textContent = target.dataset.email!;
-        document.getElementById('approval-modal')!.classList.remove('hidden');
-      });
-    });
-    
-    document.querySelectorAll('.reject-btn').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        currentSolicitudId = (e.currentTarget as HTMLElement).dataset.id!;
-        document.getElementById('reject-modal')!.classList.remove('hidden');
-      });
-    });
-  }
-  
-  // Load grupos
-  async function loadGrupos() {
-    const { data, error } = await supabase
-      .from('grupos')
-      .select('*')
-      .order('fecha_creacion', { ascending: false });
-    
-    const container = document.getElementById('grupos-list');
-    
-    if (error || !data || data.length === 0) {
-      container!.innerHTML = `
-        <div class="p-8 text-center">
-          <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-[#2a2a2a] flex items-center justify-center">
-            <span class="material-symbols-outlined text-[#899487] text-2xl">groups</span>
-          </div>
-          <p class="text-[#bfc9bc]">No hay grupos registrados</p>
-        </div>
-      `;
-      return;
-    }
-    
-    container!.innerHTML = data.map(g => `
-      <div class="p-6 hover:bg-[#2a2a2a]/30 transition-colors">
-        <div class="flex items-start justify-between gap-4">
-          <div>
-            <div class="flex items-center gap-2 mb-2">
-              <span class="px-2 py-1 rounded-full ${getTypeBadgeClass(g.tipo)} text-xs font-label-mono uppercase">
-                ${g.tipo}
-              </span>
-              <span class="px-2 py-1 rounded-full ${getStatusBadgeClass(g.estado_aprobacion)} text-xs">
-                ${g.estado_aprobacion}
-              </span>
-            </div>
-            <h3 class="text-[#e5e2e1] font-medium text-lg">${g.nombre}</h3>
-            <p class="text-[#bfc9bc] text-sm">${g.enfoque || 'Sin descripción'}</p>
-          </div>
-          <button class="text-[#bfc9bc] hover:text-[#85d990] transition-colors">
-            <span class="material-symbols-outlined">more_vert</span>
-          </button>
-        </div>
-      </div>
-    `).join('');
-  }
-  
-  function getTypeBadgeClass(tipo: string) {
-    switch (tipo) {
-      case 'Semillero': return 'bg-[#4cd7f6]/10 text-[#4cd7f6]';
-      case 'Grupo de Investigación': return 'bg-[#85d990]/10 text-[#85d990]';
-      case 'Grupo Estudiantil': return 'bg-[#4edea3]/10 text-[#4edea3]';
-      default: return 'bg-[#2a2a2a] text-[#bfc9bc]';
-    }
-  }
-  
-  function getStatusBadgeClass(status: string) {
-    switch (status) {
-      case 'aprobado': return 'bg-[#85d990]/10 text-[#85d990]';
-      case 'pendiente': return 'bg-[#ffb4ab]/10 text-[#ffb4ab]';
-      default: return 'bg-[#2a2a2a] text-[#bfc9bc]';
-    }
-  }
-  
-  // Tab switching
-  document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const tab = (btn as HTMLElement).dataset.tab!;
-      
-      // Update buttons
-      document.querySelectorAll('.tab-btn').forEach(b => {
-        b.classList.remove('bg-[#85d990]', 'text-[#003914]');
-        b.classList.add('text-[#bfc9bc]');
-      });
-      btn.classList.add('bg-[#85d990]', 'text-[#003914]');
-      btn.classList.remove('text-[#bfc9bc]');
-      
-      // Show content
-      document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
-      document.getElementById(`tab-${tab}`)!.classList.remove('hidden');
-    });
-  });
-  
-  // Modal handlers
-  document.getElementById('modal-cancel')?.addEventListener('click', () => {
-    document.getElementById('approval-modal')!.classList.add('hidden');
-    currentSolicitudId = null;
-  });
-  
-  document.getElementById('modal-backdrop')?.addEventListener('click', () => {
-    document.getElementById('approval-modal')!.classList.add('hidden');
-    currentSolicitudId = null;
-  });
-  
-  document.getElementById('reject-cancel')?.addEventListener('click', () => {
-    document.getElementById('reject-modal')!.classList.add('hidden');
-    currentSolicitudId = null;
-  });
-  
-  document.getElementById('reject-modal-backdrop')?.addEventListener('click', () => {
-    document.getElementById('reject-modal')!.classList.add('hidden');
-    currentSolicitudId = null;
-  });
-  
-  // Approve handler
-  document.getElementById('modal-approve')?.addEventListener('click', async () => {
-    if (!currentSolicitudId) return;
-    
-    try {
-      // Get solicitud data
-      const { data: solicitud } = await supabase
-        .from('solicitudes_pendientes')
-        .select('*')
-        .eq('id', currentSolicitudId)
-        .single();
-      
-      if (!solicitud) throw new Error('Solicitud no encontrada');
-      
-      // Create auth user
-      const { data: authData, error: authError } = await supabase.auth.signUp({
-        email: solicitud.email_solicitante,
-        password: crypto.randomUUID().slice(0, 12), // Temporary password
-      });
-      
-      if (authError && !authError.message.includes('User already registered')) {
-        throw authError;
-      }
-      
-      const userId = authData.user?.id;
-      
-      if (userId) {
-        // Create profile
-        await supabase.from('perfiles').insert({
-          id: userId,
-          email: solicitud.email_solicitante,
-          rol: 'ADMIN_GRUPO',
-          nombre_completo: solicitud.nombre_solicitante,
-        });
-        
-        // Create group
-        await supabase.from('grupos').insert({
-          tipo: solicitud.tipo,
-          carreras: solicitud.carreras,
-          nombre: solicitud.nombre,
-          docente_a_cargo: solicitud.docente_a_cargo,
-          lider_o_representante: solicitud.lider_o_representante,
-          email_contacto: solicitud.email_contacto,
-          vinculacion: solicitud.vinculacion,
-          enfoque: solicitud.enfoque,
-          descripcion: solicitud.descripcion,
-          actividades: solicitud.actividades,
-          modalidad: solicitud.modalidad,
-          horarios_habituales: solicitud.horarios_habituales,
-          requisitos_ingreso: solicitud.requisitos_ingreso,
-          nivel_academico_recomendado: solicitud.nivel_academico_recomendado,
-          redes_sociales: solicitud.redes_sociales,
-          comentarios_adicionales: solicitud.comentarios_adicionales,
-          id_lider: userId,
-          estado_aprobacion: 'aprobado',
-        });
-      }
-      
-      // Update solicitud
-      await supabase
-        .from('solicitudes_pendientes')
-        .update({ estado: 'aprobado', fecha_revision: new Date().toISOString() })
-        .eq('id', currentSolicitudId);
-      
-      document.getElementById('approval-modal')!.classList.add('hidden');
-      currentSolicitudId = null;
-      
-      // Reload
-      loadSolicitudes();
-      loadStats();
-      
-    } catch (error: any) {
-      console.error('Error:', error);
-      alert('Error al aprobar: ' + error.message);
-    }
-  });
-  
-  // Reject handler
-  document.getElementById('reject-confirm')?.addEventListener('click', async () => {
-    if (!currentSolicitudId) return;
-    
-    const reason = (document.getElementById('reject-reason') as HTMLTextAreaElement).value;
-    
-    try {
-      await supabase
-        .from('solicitudes_pendientes')
-        .update({ 
-          estado: 'rechazado', 
-          fecha_revision: new Date().toISOString(),
-          comentarios_revision: reason
-        })
-        .eq('id', currentSolicitudId);
-      
-      document.getElementById('reject-modal')!.classList.add('hidden');
-      currentSolicitudId = null;
-      (document.getElementById('reject-reason') as HTMLTextAreaElement).value = '';
-      
-      loadSolicitudes();
-      loadStats();
-      
-    } catch (error: any) {
-      console.error('Error:', error);
-      alert('Error al rechazar: ' + error.message);
-    }
-  });
-  
-  // Refresh buttons
-  document.getElementById('refresh-solicitudes')?.addEventListener('click', loadSolicitudes);
-  document.getElementById('refresh-grupos')?.addEventListener('click', loadGrupos);
-  
-  // Logout
-  document.getElementById('logout-btn')?.addEventListener('click', async () => {
-    await supabase.auth.signOut();
-    window.location.href = '/login';
-  });
-  
-  // Initialize
-  checkAuth();
-  loadStats();
-  loadSolicitudes();
-  loadGrupos();
-</script>
 
-<style>
-  .glass-card {
-    background: rgba(32, 31, 31, 0.6);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid transparent;
-    border-image: linear-gradient(to bottom right, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04)) 1;
+    await loadStats();
+    await loadGrupos();
+    await loadUsuarios();
   }
-</style>
+
+  async function loadStats() {
+    const [gruposRes, pendientesRes, lideresRes, adminsRes] = await Promise.all([
+      supabase.from('grupos').select('id', { count: 'exact' }),
+      supabase.from('solicitudes_pendientes').select('id', { count: 'exact' }),
+      supabase.from('perfiles').select('id', { count: 'exact' }).eq('rol', 'ADMIN_GRUPO'),
+      supabase.from('perfiles').select('id', { count: 'exact' }).eq('rol', 'SUPER_ADMIN')
+    ]);
+
+    document.getElementById('total-grupos').textContent = gruposRes.count || 0;
+    document.getElementById('pending-grupos').textContent = pendientesRes.count || 0;
+    document.getElementById('total-lideres').textContent = lideresRes.count || 0;
+    document.getElementById('total-admins').textContent = adminsRes.count || 0;
+    document.getElementById('pending-count-badge').textContent = pendientesRes.count || 0;
+  }
+
+  async function loadGrupos() {
+    const loader = document.getElementById('loading-grupos');
+    loader.classList.remove('hidden');
+    
+    const { data: grupos, error } = await supabase.from('grupos').select('*').order('nombre');
+    if (error) return;
+
+    allGrupos = grupos;
+    const tbody = document.getElementById('grupos-table-body');
+    tbody.innerHTML = grupos.map(grupo => `
+      <tr class="hover:bg-white/5 transition-colors">
+        <td class="px-6 py-4">
+          <div class="font-medium text-white">${grupo.nombre}</div>
+          <div class="text-[10px] text-on-surface-variant font-label-mono truncate max-w-xs">${grupo.descripcion || ''}</div>
+        </td>
+        <td class="px-6 py-4">
+          <span class="px-2 py-1 rounded-md text-[10px] font-label-mono ${grupo.tipo === 'Semillero' ? 'bg-tertiary/10 text-tertiary' : 'bg-primary/10 text-primary'}">${grupo.tipo}</span>
+        </td>
+        <td class="px-6 py-4 text-on-surface-variant text-sm">${grupo.lider_o_representante || '-'}</td>
+        <td class="px-6 py-4">
+          <span class="text-[10px] font-medium uppercase tracking-wider ${grupo.estado_aprobacion === 'aprobado' ? 'text-primary' : 'text-error'}">${grupo.estado_aprobacion}</span>
+        </td>
+        <td class="px-6 py-4">
+          <div class="flex items-center justify-center gap-2">
+            <button onclick="editGroup('${grupo.id}')" class="p-2 hover:bg-white/10 rounded-lg transition-all"><span class="material-symbols-outlined text-sm">edit</span></button>
+            <button onclick="deleteGroup('${grupo.id}')" class="p-2 hover:bg-error/10 text-error rounded-lg transition-all"><span class="material-symbols-outlined text-sm">delete</span></button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+    
+    loader.classList.add('hidden');
+  }
+
+  async function loadUsuarios() {
+    const { data: usuarios } = await supabase.from('perfiles').select('*').order('fecha_registro', { ascending: false });
+    if (!usuarios) return;
+
+    const tbody = document.getElementById('usuarios-table-body');
+    tbody.innerHTML = usuarios.map(usuario => `
+      <tr class="hover:bg-white/5 transition-colors">
+        <td class="px-6 py-4 font-medium text-white">${usuario.nombre_completo || 'Sin nombre'}</td>
+        <td class="px-6 py-4 text-on-surface-variant text-sm">${usuario.email}</td>
+        <td class="px-6 py-4">
+           <span class="px-2 py-1 rounded-md text-[10px] font-label-mono ${usuario.rol === 'SUPER_ADMIN' ? 'bg-error/10 text-error' : 'bg-surface-container-highest text-on-surface-variant'}">${usuario.rol}</span>
+        </td>
+        <td class="px-6 py-4 text-on-surface-variant text-sm">${new Date(usuario.fecha_registro).toLocaleDateString()}</td>
+        <td class="px-6 py-4 text-center">
+          <button onclick="changeRole('${usuario.id}')" class="p-2 hover:bg-white/10 rounded-lg transition-all"><span class="material-symbols-outlined text-sm">admin_panel_settings</span></button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  window.switchTab = function(tabName) {
+    document.querySelectorAll('.tab-button, [id^="tab-"]').forEach(btn => btn.classList.remove('active'));
+    document.getElementById(`tab-${tabName}`).classList.add('active');
+    
+    document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
+    document.getElementById(`content-${tabName}`).classList.remove('hidden');
+  }
+
+  window.openCreateModal = function() {
+    currentEditingGroup = null;
+    document.getElementById('modal-title').textContent = 'Nuevo Grupo';
+    if (document.getElementById('group-form')) document.getElementById('group-form').reset();
+    document.getElementById('group-modal').classList.remove('hidden');
+  }
+
+  window.closeGroupModal = function() {
+    document.getElementById('group-modal').classList.add('hidden');
+  }
+
+  window.filterGrupos = function() {
+    const term = document.getElementById('search-grupos').value.toLowerCase();
+    const tipo = document.getElementById('filter-tipo').value;
+    const rows = document.querySelectorAll('#grupos-table-body tr');
+    
+    rows.forEach(row => {
+      const text = row.textContent.toLowerCase();
+      const rowTipo = row.querySelector('span')?.textContent || '';
+      const matchTerm = text.includes(term);
+      const matchTipo = !tipo || rowTipo.includes(tipo);
+      row.style.display = matchTerm && matchTipo ? '' : 'none';
+    });
+  }
+
+  window.saveGroup = async function(event) {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const groupData = Object.fromEntries(formData.entries());
+    
+    try {
+      if (currentEditingGroup) {
+        const { error } = await supabase
+          .from('grupos')
+          .update({
+            ...groupData,
+            fecha_actualizacion: new Date().toISOString()
+          })
+          .eq('id', currentEditingGroup);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase
+          .from('grupos')
+          .insert({
+            ...groupData,
+            estado_aprobacion: 'aprobado',
+            fecha_creacion: new Date().toISOString(),
+            fecha_actualizacion: new Date().toISOString()
+          });
+        if (error) throw error;
+      }
+      
+      closeGroupModal();
+      await loadGrupos();
+      await loadStats();
+      showNotification(currentEditingGroup ? 'Grupo actualizado' : 'Grupo creado', 'success');
+    } catch (error) {
+      console.error('Error saving group:', error);
+      showNotification('Error al guardar el grupo', 'error');
+    }
+  }
+
+  window.editGroup = async function(groupId) {
+    try {
+      const { data: group, error } = await supabase
+        .from('grupos')
+        .select('*')
+        .eq('id', groupId)
+        .single();
+      if (error) throw error;
+      
+      currentEditingGroup = groupId;
+      document.getElementById('modal-title').textContent = 'Editar Grupo';
+      const form = document.getElementById('group-form');
+      Object.keys(group).forEach(key => {
+        const input = form.elements[key];
+        if (input) input.value = group[key] || '';
+      });
+      document.getElementById('group-modal').classList.remove('hidden');
+    } catch (error) {
+      console.error('Error loading group:', error);
+      showNotification('Error al cargar el grupo', 'error');
+    }
+  }
+
+  window.deleteGroup = async function(groupId) {
+    if (!confirm('¿Estás seguro de eliminar este grupo?')) return;
+    try {
+      const { error } = await supabase.from('grupos').delete().eq('id', groupId);
+      if (error) throw error;
+      await loadGrupos();
+      await loadStats();
+      showNotification('Grupo eliminado', 'success');
+    } catch (error) {
+      console.error('Error deleting group:', error);
+      showNotification('Error al eliminar el grupo', 'error');
+    }
+  }
+
+  window.changeRole = async function(userId) {
+    const newRole = confirm('¿Deseas cambiar el rol de este usuario a SUPER_ADMIN? (Aceptar) o ADMIN_GRUPO? (Cancelar)') ? 'SUPER_ADMIN' : 'ADMIN_GRUPO';
+    try {
+      const { error } = await supabase.from('perfiles').update({ rol: newRole }).eq('id', userId);
+      if (error) throw error;
+      await loadUsuarios();
+      showNotification('Rol actualizado', 'success');
+    } catch (error) {
+      console.error('Error changing role:', error);
+      showNotification('Error al cambiar el rol', 'error');
+    }
+  }
+
+  function showNotification(message, type = 'info') {
+    const notification = document.createElement('div');
+    notification.className = `fixed top-4 right-4 z-[200] px-6 py-4 rounded-xl glass-card flex items-center gap-3 shadow-2xl animate-fade-in ${
+      type === 'success' ? 'text-primary' : type === 'error' ? 'text-error' : 'text-tertiary'
+    }`;
+    notification.innerHTML = `
+      <span class="material-symbols-outlined">${type === 'success' ? 'check_circle' : type === 'error' ? 'error' : 'info'}</span>
+      <span>${message}</span>
+    `;
+    document.body.appendChild(notification);
+    setTimeout(() => notification.remove(), 3000);
+  }
+
+  init();
+</script>

@@ -25,7 +25,7 @@ const tipoColors = {
 const tipoBadge = tipoColors[grupo.tipo as keyof typeof tipoColors] || tipoColors['Semillero'];
 ---
 
-<div class={`bento-card ${sizeClasses[size]} col-span-12 glass-card rounded-3xl p-6 md:p-8 group cursor-pointer`} data-index={index}>
+<div class={`bento-card ${sizeClasses[size]} col-span-12 glass-card rounded-3xl p-6 md:p-8 group cursor-pointer`} data-index={index} onclick={`window.openModal('${grupo.id}')`}>
   <div class="noise-overlay"></div>
   
   <div class="relative z-10">

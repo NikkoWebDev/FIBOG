@@ -42,6 +42,9 @@ const {
 <body class="bg-background text-on-background font-body-base antialiased selection:bg-primary/30 min-h-screen with-pattern">
   <slot />
   
+  <!-- Global Modal Container -->
+  <div id="global-modal-container"></div>
+  
   <script>
     // Initialize GSAP ScrollTrigger
     if (typeof gsap !== 'undefined') {

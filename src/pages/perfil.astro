@@ -1,0 +1,207 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+
+// This page requires authentication.
+// We'll handle redirection in the client-side script.
+---
+
+<Layout title="Mi Perfil | FIBOG UNAL" description="Configuración de perfil de usuario.">
+  <Navbar activePage="perfil" />
+  
+  <main class="min-h-screen pt-32 pb-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
+      <!-- Left Panel: Profile Quick Actions -->
+      <div class="md:col-span-4 space-y-gutter">
+        <div class="glass-card rounded-3xl p-8 flex flex-col items-center text-center">
+          <div class="relative w-32 h-32 mb-6">
+            <div class="rounded-full w-full h-full bg-surface-container-high border-4 border-primary/20 p-1 flex items-center justify-center">
+              <span class="material-symbols-outlined text-6xl text-primary">account_circle</span>
+            </div>
+            <button class="absolute bottom-0 right-0 bg-secondary text-on-secondary p-2 rounded-full shadow-lg hover:scale-110 transition-transform">
+              <span class="material-symbols-outlined text-sm">photo_camera</span>
+            </button>
+          </div>
+          <h1 id="profile-name-display" class="font-display-lg text-headline-md text-on-surface">Cargando...</h1>
+          <p id="profile-role-display" class="text-primary font-label-mono uppercase tracking-wider mt-1">Usuario</p>
+          <div class="w-full h-px bg-outline-variant/30 my-6"></div>
+          <div class="w-full space-y-3">
+            <button id="logout-btn" class="w-full py-4 px-6 rounded-2xl border border-error/30 text-error font-medium flex items-center justify-center gap-2 hover:bg-error/10 transition-colors">
+              <span class="material-symbols-outlined">logout</span>
+              Cerrar Sesión
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Right Panel: Settings Form -->
+      <div class="md:col-span-8 space-y-gutter">
+        <div class="glass-card rounded-3xl p-8 md:p-10">
+          <header class="mb-10">
+            <h2 class="font-display-lg text-headline-md text-primary">Configuración de Perfil</h2>
+            <p class="text-on-surface-variant mt-2 font-body-base">Actualiza tu información institucional y enlaces de contacto profesional.</p>
+          </header>
+          <form id="profile-form" class="space-y-8">
+            <!-- Basic Info Section -->
+            <section class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="flex flex-col gap-2">
+                <label class="font-label-mono text-on-surface-variant px-1 uppercase">Nombre Completo</label>
+                <input id="input-nombre" name="nombre_completo" class="input-glass rounded-xl px-4 py-3 text-on-surface font-body-base" type="text" placeholder="Tu nombre" />
+              </div>
+              <div class="flex flex-col gap-2">
+                <label class="font-label-mono text-on-surface-variant px-1 uppercase">Email Institucional</label>
+                <input id="input-email" name="email" class="input-glass rounded-xl px-4 py-3 text-on-surface-variant font-body-base opacity-70" type="email" readonly />
+              </div>
+            </section>
+            
+            <!-- Security Section -->
+            <section class="space-y-6 pt-4">
+              <h4 class="font-headline-md text-body-base text-primary/80 border-b border-outline-variant/30 pb-2">Seguridad</h4>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="flex flex-col gap-2">
+                  <label class="font-label-mono text-on-surface-variant px-1 uppercase">Nueva Contraseña</label>
+                  <input id="input-password" name="password" class="input-glass rounded-xl px-4 py-3 text-on-surface font-body-base" placeholder="••••••••" type="password" />
+                </div>
+                <div class="flex flex-col gap-2">
+                  <label class="font-label-mono text-on-surface-variant px-1 uppercase">Confirmar Contraseña</label>
+                  <input id="input-password-confirm" class="input-glass rounded-xl px-4 py-3 text-on-surface font-body-base" placeholder="••••••••" type="password" />
+                </div>
+              </div>
+            </section>
+            
+            <!-- Social Networks Section -->
+            <section class="space-y-6 pt-4">
+              <h4 class="font-headline-md text-body-base text-primary/80 border-b border-outline-variant/30 pb-2">Redes Sociales & Enlaces</h4>
+              <div class="space-y-4">
+                <div class="flex items-center gap-4 input-glass rounded-xl px-4 py-2">
+                  <span class="material-symbols-outlined text-secondary">link</span>
+                  <input id="input-linkedin" name="enlace_linkedin" class="bg-transparent border-none w-full focus:ring-0 text-on-surface outline-none" placeholder="LinkedIn URL" type="text" />
+                </div>
+                <div class="flex items-center gap-4 input-glass rounded-xl px-4 py-2">
+                  <span class="material-symbols-outlined text-tertiary">terminal</span>
+                  <input id="input-researchgate" name="enlace_researchgate" class="bg-transparent border-none w-full focus:ring-0 text-on-surface outline-none" placeholder="ResearchGate / ORCID" type="text" />
+                </div>
+                <div class="flex items-center gap-4 input-glass rounded-xl px-4 py-2">
+                  <span class="material-symbols-outlined text-on-surface-variant">share</span>
+                  <input id="input-twitter" name="enlace_twitter" class="bg-transparent border-none w-full focus:ring-0 text-on-surface outline-none" placeholder="Twitter / X Professional" type="text" />
+                </div>
+              </div>
+            </section>
+            
+            <div class="pt-6 flex justify-end gap-4">
+              <button type="button" class="px-8 py-3 rounded-xl border border-outline/30 text-on-surface font-medium hover:bg-white/5 transition-colors" onclick="window.location.reload()">
+                Descartar
+              </button>
+              <button type="submit" class="px-8 py-3 rounded-xl bg-primary text-on-primary font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all">
+                Guardar Cambios
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style>
+  .input-glass {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    transition: all 0.3s ease;
+  }
+  .input-glass:focus-within {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: #85d990;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(133, 217, 144, 0.2);
+  }
+</style>
+
+<script>
+  import { supabase } from '../lib/supabase';
+
+  let currentUser = null;
+
+  async function loadProfile() {
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      window.location.href = '/login';
+      return;
+    }
+    
+    currentUser = user;
+    
+    // Load profile from database
+    const { data: profile, error } = await supabase
+      .from('perfiles')
+      .select('*')
+      .eq('id', user.id)
+      .single();
+      
+    if (error) {
+      console.error('Error loading profile:', error);
+      return;
+    }
+    
+    // Populate UI
+    document.getElementById('profile-name-display').textContent = profile.nombre_completo || 'Usuario';
+    document.getElementById('profile-role-display').textContent = profile.rol || 'VISITANTE';
+    
+    // Populate Form
+    document.getElementById('input-nombre').value = profile.nombre_completo || '';
+    document.getElementById('input-email').value = profile.email || user.email;
+  }
+
+  // Handle Form Submission
+  document.getElementById('profile-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!currentUser) return;
+    
+    const formData = new FormData(e.target);
+    const nombre_completo = formData.get('nombre_completo');
+    const password = formData.get('password');
+    const passwordConfirm = document.getElementById('input-password-confirm').value;
+    
+    if (password && password !== passwordConfirm) {
+      alert('Las contraseñas no coinciden.');
+      return;
+    }
+    
+    // Update profile in DB
+    const { error: profileError } = await supabase
+      .from('perfiles')
+      .update({ nombre_completo })
+      .eq('id', currentUser.id);
+      
+    if (profileError) {
+      alert('Error al actualizar el perfil.');
+      console.error(profileError);
+      return;
+    }
+    
+    // Update Auth password if provided
+    if (password) {
+      const { error: authError } = await supabase.auth.updateUser({ password });
+      if (authError) {
+        alert('Error al actualizar la contraseña.');
+        console.error(authError);
+        return;
+      }
+    }
+    
+    alert('Perfil actualizado exitosamente.');
+    window.location.reload();
+  });
+
+  // Handle Logout
+  document.getElementById('logout-btn')?.addEventListener('click', async () => {
+    await supabase.auth.signOut();
+    window.location.href = '/';
+  });
+
+  loadProfile();
+</script>
