@@ -1,0 +1,610 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+// This page requires SUPER_ADMIN role
+// Server-side check would go here in production
+---
+
+<Layout title="Panel de Administración | FIBOG UNAL" description="Gestión de semilleros y grupos UNAL">
+  <main class="min-h-screen py-8 px-4 relative overflow-hidden">
+    <!-- Background -->
+    <div class="absolute inset-0 bg-[#131313]"></div>
+    <div class="absolute inset-0">
+      <div class="absolute top-0 right-0 w-[40%] h-[40%] bg-[rgba(133,217,144,0.1)] rounded-full blur-[150px]"></div>
+      <div class="absolute bottom-0 left-0 w-[30%] h-[30%] bg-[rgba(78,222,163,0.08)] rounded-full blur-[120px]"></div>
+    </div>
+    
+    <div class="relative z-10 max-w-7xl mx-auto">
+      <!-- Header -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <div>
+          <div class="flex items-center gap-2 mb-2">
+            <span class="h-[1px] w-8 bg-[#85d990]"></span>
+            <span class="font-label-mono text-label-mono text-[#85d990] uppercase tracking-widest">Administración</span>
+          </div>
+          <h1 class="font-display-lg text-display-lg-mobile md:text-headline-md text-[#e5e2e1]">
+            Panel <span class="text-[#85d990]">Super Admin</span>
+          </h1>
+        </div>
+        
+        <div class="flex items-center gap-3">
+          <div class="glass-card rounded-full px-4 py-2 flex items-center gap-2">
+            <div class="w-2 h-2 rounded-full bg-[#85d990] animate-pulse"></div>
+            <span class="text-[#bfc9bc] text-sm">En línea</span>
+          </div>
+          <button 
+            id="logout-btn"
+            class="glass-card rounded-full p-2 text-[#bfc9bc] hover:text-[#ffb4ab] transition-colors"
+            title="Cerrar sesión"
+          >
+            <span class="material-symbols-outlined">logout</span>
+          </button>
+        </div>
+      </div>
+      
+      <!-- Stats Cards -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div class="glass-card rounded-2xl p-5 relative overflow-hidden group">
+          <div class="absolute top-0 right-0 w-20 h-20 bg-[#85d990]/10 rounded-full blur-2xl group-hover:bg-[#85d990]/20 transition-all"></div>
+          <div class="relative z-10">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="material-symbols-outlined text-[#85d990]">pending_actions</span>
+              <span class="text-[#bfc9bc] text-sm">Pendientes</span>
+            </div>
+            <p class="text-3xl font-bold text-[#e5e2e1]" id="stat-pendientes">-</p>
+          </div>
+        </div>
+        
+        <div class="glass-card rounded-2xl p-5 relative overflow-hidden group">
+          <div class="absolute top-0 right-0 w-20 h-20 bg-[#4edea3]/10 rounded-full blur-2xl group-hover:bg-[#4edea3]/20 transition-all"></div>
+          <div class="relative z-10">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="material-symbols-outlined text-[#4edea3]">check_circle</span>
+              <span class="text-[#bfc9bc] text-sm">Aprobados</span>
+            </div>
+            <p class="text-3xl font-bold text-[#e5e2e1]" id="stat-aprobados">-</p>
+          </div>
+        </div>
+        
+        <div class="glass-card rounded-2xl p-5 relative overflow-hidden group">
+          <div class="absolute top-0 right-0 w-20 h-20 bg-[#4cd7f6]/10 rounded-full blur-2xl group-hover:bg-[#4cd7f6]/20 transition-all"></div>
+          <div class="relative z-10">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="material-symbols-outlined text-[#4cd7f6]">groups</span>
+              <span class="text-[#bfc9bc] text-sm">Total Grupos</span>
+            </div>
+            <p class="text-3xl font-bold text-[#e5e2e1]" id="stat-total">-</p>
+          </div>
+        </div>
+        
+        <div class="glass-card rounded-2xl p-5 relative overflow-hidden group">
+          <div class="absolute top-0 right-0 w-20 h-20 bg-[#ffb4ab]/10 rounded-full blur-2xl group-hover:bg-[#ffb4ab]/20 transition-all"></div>
+          <div class="relative z-10">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="material-symbols-outlined text-[#ffb4ab]">cancel</span>
+              <span class="text-[#bfc9bc] text-sm">Rechazados</span>
+            </div>
+            <p class="text-3xl font-bold text-[#e5e2e1]" id="stat-rechazados">-</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Tabs -->
+      <div class="flex gap-2 mb-6 overflow-x-auto pb-2">
+        <button 
+          class="tab-btn active px-5 py-2.5 rounded-xl font-medium text-sm whitespace-nowrap transition-all bg-[#85d990] text-[#003914]"
+          data-tab="solicitudes"
+        >
+          <span class="material-symbols-outlined text-sm mr-1">inbox</span>
+          Solicitudes Pendientes
+        </button>
+        <button 
+          class="tab-btn px-5 py-2.5 rounded-xl font-medium text-sm whitespace-nowrap transition-all text-[#bfc9bc] hover:bg-[#2a2a2a]/50"
+          data-tab="grupos"
+        >
+          <span class="material-symbols-outlined text-sm mr-1">groups</span>
+          Grupos Aprobados
+        </button>
+        <button 
+          class="tab-btn px-5 py-2.5 rounded-xl font-medium text-sm whitespace-nowrap transition-all text-[#bfc9bc] hover:bg-[#2a2a2a]/50"
+          data-tab="audit"
+        >
+          <span class="material-symbols-outlined text-sm mr-1">history</span>
+          Historial
+        </button>
+      </div>
+      
+      <!-- Solicitudes Tab -->
+      <div id="tab-solicitudes" class="tab-content">
+        <div class="glass-card rounded-2xl overflow-hidden">
+          <div class="p-6 border-b border-[#40493f]/50 flex items-center justify-between">
+            <h2 class="font-headline-md text-headline-md text-[#e5e2e1]">Solicitudes Pendientes de Revisión</h2>
+            <button id="refresh-solicitudes" class="text-[#bfc9bc] hover:text-[#85d990] transition-colors">
+              <span class="material-symbols-outlined">refresh</span>
+            </button>
+          </div>
+          
+          <div id="solicitudes-list" class="divide-y divide-[#40493f]/30">
+            <!-- Solicitudes will be loaded here -->
+            <div class="p-8 text-center text-[#899487]">
+              <div class="w-12 h-12 mx-auto mb-4 rounded-full bg-[#2a2a2a] flex items-center justify-center">
+                <span class="material-symbols-outlined animate-spin">progress_activity</span>
+              </div>
+              <p>Cargando solicitudes...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Grupos Tab -->
+      <div id="tab-grupos" class="tab-content hidden">
+        <div class="glass-card rounded-2xl overflow-hidden">
+          <div class="p-6 border-b border-[#40493f]/50 flex items-center justify-between">
+            <h2 class="font-headline-md text-headline-md text-[#e5e2e1]">Grupos Aprobados</h2>
+            <div class="flex items-center gap-2">
+              <input 
+                type="text" 
+                id="search-grupos"
+                placeholder="Buscar grupos..."
+                class="px-4 py-2 bg-[#1c1b1b]/80 border border-[#40493f] rounded-lg text-[#e5e2e1] text-sm focus:outline-none focus:border-[#85d990]/50"
+              />
+              <button id="refresh-grupos" class="text-[#bfc9bc] hover:text-[#85d990] transition-colors p-2">
+                <span class="material-symbols-outlined">refresh</span>
+              </button>
+            </div>
+          </div>
+          
+          <div id="grupos-list" class="divide-y divide-[#40493f]/30">
+            <!-- Grupos will be loaded here -->
+            <div class="p-8 text-center text-[#899487]">
+              <div class="w-12 h-12 mx-auto mb-4 rounded-full bg-[#2a2a2a] flex items-center justify-center">
+                <span class="material-symbols-outlined animate-spin">progress_activity</span>
+              </div>
+              <p>Cargando grupos...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Audit Tab -->
+      <div id="tab-audit" class="tab-content hidden">
+        <div class="glass-card rounded-2xl overflow-hidden">
+          <div class="p-6 border-b border-[#40493f]/50">
+            <h2 class="font-headline-md text-headline-md text-[#e5e2e1]">Historial de Actividades</h2>
+          </div>
+          
+          <div id="audit-list" class="divide-y divide-[#40493f]/30">
+            <div class="p-8 text-center text-[#899487]">
+              <p>Historial de auditoría no disponible en modo demo.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <!-- Approval Modal -->
+  <div id="approval-modal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" id="modal-backdrop"></div>
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+      <div class="glass-card rounded-3xl p-8 max-w-lg w-full relative z-10">
+        <h3 class="font-headline-md text-headline-md text-[#e5e2e1] mb-4">Aprobar Solicitud</h3>
+        <p class="text-[#bfc9bc] mb-6">
+          Al aprobar esta solicitud, se creará automáticamente una cuenta de usuario para el solicitante 
+          y el grupo será publicado en el portal.
+        </p>
+        
+        <div class="bg-[#1c1b1b]/50 rounded-xl p-4 mb-6">
+          <p class="text-sm text-[#bfc9bc] mb-1">Solicitante:</p>
+          <p id="modal-solicitante" class="text-[#e5e2e1] font-medium">-</p>
+          <p id="modal-email" class="text-sm text-[#899487]">-</p>
+        </div>
+        
+        <div class="flex gap-3">
+          <button id="modal-cancel" class="flex-1 py-3 rounded-xl border border-[#40493f] text-[#bfc9bc] hover:bg-[#2a2a2a]/50 transition-all">
+            Cancelar
+          </button>
+          <button id="modal-approve" class="flex-1 py-3 rounded-xl bg-gradient-to-r from-[#85d990] to-[#4edea3] text-[#003914] font-bold hover:opacity-90 transition-all">
+            Aprobar y Crear Cuenta
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Reject Modal -->
+  <div id="reject-modal" class="fixed inset-0 z-50 hidden">
+    <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" id="reject-modal-backdrop"></div>
+    <div class="absolute inset-0 flex items-center justify-center p-4">
+      <div class="glass-card rounded-3xl p-8 max-w-lg w-full relative z-10">
+        <h3 class="font-headline-md text-headline-md text-[#ffb4ab] mb-4">Rechazar Solicitud</h3>
+        
+        <div class="mb-4">
+          <label class="block text-[#bfc9bc] text-sm mb-2">Motivo del rechazo (opcional):</label>
+          <textarea 
+            id="reject-reason"
+            rows="3"
+            class="w-full px-4 py-3 bg-[#1c1b1b]/80 border border-[#40493f] rounded-xl text-[#e5e2e1] focus:outline-none focus:border-[#ffb4ab]/50 resize-none"
+            placeholder="Explica por qué se rechaza la solicitud..."
+          ></textarea>
+        </div>
+        
+        <div class="flex gap-3">
+          <button id="reject-cancel" class="flex-1 py-3 rounded-xl border border-[#40493f] text-[#bfc9bc] hover:bg-[#2a2a2a]/50 transition-all">
+            Cancelar
+          </button>
+          <button id="reject-confirm" class="flex-1 py-3 rounded-xl bg-[#93000a] text-[#ffb4ab] font-bold hover:bg-[#690005] transition-all">
+            Rechazar Solicitud
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  import { supabase } from '../lib/supabase';
+  
+  let currentSolicitudId: string | null = null;
+  
+  // Check auth
+  async function checkAuth() {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      window.location.href = '/login';
+      return;
+    }
+    
+    // Check role
+    const { data: profile } = await supabase
+      .from('perfiles')
+      .select('rol')
+      .eq('id', user.id)
+      .single();
+    
+    if (profile?.rol !== 'SUPER_ADMIN') {
+      window.location.href = '/';
+    }
+  }
+  
+  // Load stats
+  async function loadStats() {
+    const { data: solicitudes } = await supabase
+      .from('solicitudes_pendientes')
+      .select('estado', { count: 'exact' });
+    
+    const pendientes = solicitudes?.filter(s => s.estado === 'pendiente').length || 0;
+    const rechazados = solicitudes?.filter(s => s.estado === 'rechazado').length || 0;
+    
+    const { data: grupos } = await supabase
+      .from('grupos')
+      .select('*', { count: 'exact' });
+    
+    const aprobados = grupos?.filter(g => g.estado_aprobacion === 'aprobado').length || 0;
+    
+    document.getElementById('stat-pendientes')!.textContent = pendientes.toString();
+    document.getElementById('stat-aprobados')!.textContent = aprobados.toString();
+    document.getElementById('stat-total')!.textContent = (grupos?.length || 0).toString();
+    document.getElementById('stat-rechazados')!.textContent = rechazados.toString();
+  }
+  
+  // Load solicitudes
+  async function loadSolicitudes() {
+    const { data, error } = await supabase
+      .from('solicitudes_pendientes')
+      .select('*')
+      .eq('estado', 'pendiente')
+      .order('fecha_solicitud', { ascending: false });
+    
+    const container = document.getElementById('solicitudes-list');
+    
+    if (error || !data || data.length === 0) {
+      container!.innerHTML = `
+        <div class="p-8 text-center">
+          <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-[#2a2a2a] flex items-center justify-center">
+            <span class="material-symbols-outlined text-[#899487] text-2xl">inbox</span>
+          </div>
+          <p class="text-[#bfc9bc]">No hay solicitudes pendientes</p>
+        </div>
+      `;
+      return;
+    }
+    
+    container!.innerHTML = data.map(s => `
+      <div class="p-6 hover:bg-[#2a2a2a]/30 transition-colors" data-id="${s.id}">
+        <div class="flex flex-col md:flex-row md:items-start justify-between gap-4">
+          <div class="flex-1">
+            <div class="flex items-center gap-2 mb-2">
+              <span class="px-2 py-1 rounded-full bg-[#85d990]/10 text-[#85d990] text-xs font-label-mono uppercase">
+                ${s.tipo}
+              </span>
+              <span class="text-[#899487] text-sm">${new Date(s.fecha_solicitud).toLocaleDateString()}</span>
+            </div>
+            <h3 class="text-[#e5e2e1] font-medium text-lg mb-1">${s.nombre}</h3>
+            <p class="text-[#bfc9bc] text-sm mb-2">${s.enfoque || 'Sin enfoque definido'}</p>
+            <div class="flex flex-wrap gap-2 text-sm text-[#899487]">
+              <span class="flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm">person</span>
+                ${s.nombre_solicitante}
+              </span>
+              <span class="flex items-center gap-1">
+                <span class="material-symbols-outlined text-sm">email</span>
+                ${s.email_solicitante}
+              </span>
+            </div>
+          </div>
+          
+          <div class="flex gap-2">
+            <button 
+              class="approve-btn px-4 py-2 rounded-lg bg-[#85d990]/10 text-[#85d990] hover:bg-[#85d990]/20 transition-colors flex items-center gap-1"
+              data-id="${s.id}"
+              data-solicitante="${s.nombre_solicitante}"
+              data-email="${s.email_solicitante}"
+            >
+              <span class="material-symbols-outlined text-sm">check</span>
+              Aprobar
+            </button>
+            <button 
+              class="reject-btn px-4 py-2 rounded-lg bg-[#ffb4ab]/10 text-[#ffb4ab] hover:bg-[#ffb4ab]/20 transition-colors flex items-center gap-1"
+              data-id="${s.id}"
+            >
+              <span class="material-symbols-outlined text-sm">close</span>
+              Rechazar
+            </button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+    
+    // Add event listeners
+    document.querySelectorAll('.approve-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const target = e.currentTarget as HTMLElement;
+        currentSolicitudId = target.dataset.id!;
+        document.getElementById('modal-solicitante')!.textContent = target.dataset.solicitante!;
+        document.getElementById('modal-email')!.textContent = target.dataset.email!;
+        document.getElementById('approval-modal')!.classList.remove('hidden');
+      });
+    });
+    
+    document.querySelectorAll('.reject-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        currentSolicitudId = (e.currentTarget as HTMLElement).dataset.id!;
+        document.getElementById('reject-modal')!.classList.remove('hidden');
+      });
+    });
+  }
+  
+  // Load grupos
+  async function loadGrupos() {
+    const { data, error } = await supabase
+      .from('grupos')
+      .select('*')
+      .order('fecha_creacion', { ascending: false });
+    
+    const container = document.getElementById('grupos-list');
+    
+    if (error || !data || data.length === 0) {
+      container!.innerHTML = `
+        <div class="p-8 text-center">
+          <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-[#2a2a2a] flex items-center justify-center">
+            <span class="material-symbols-outlined text-[#899487] text-2xl">groups</span>
+          </div>
+          <p class="text-[#bfc9bc]">No hay grupos registrados</p>
+        </div>
+      `;
+      return;
+    }
+    
+    container!.innerHTML = data.map(g => `
+      <div class="p-6 hover:bg-[#2a2a2a]/30 transition-colors">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="px-2 py-1 rounded-full ${getTypeBadgeClass(g.tipo)} text-xs font-label-mono uppercase">
+                ${g.tipo}
+              </span>
+              <span class="px-2 py-1 rounded-full ${getStatusBadgeClass(g.estado_aprobacion)} text-xs">
+                ${g.estado_aprobacion}
+              </span>
+            </div>
+            <h3 class="text-[#e5e2e1] font-medium text-lg">${g.nombre}</h3>
+            <p class="text-[#bfc9bc] text-sm">${g.enfoque || 'Sin descripción'}</p>
+          </div>
+          <button class="text-[#bfc9bc] hover:text-[#85d990] transition-colors">
+            <span class="material-symbols-outlined">more_vert</span>
+          </button>
+        </div>
+      </div>
+    `).join('');
+  }
+  
+  function getTypeBadgeClass(tipo: string) {
+    switch (tipo) {
+      case 'Semillero': return 'bg-[#4cd7f6]/10 text-[#4cd7f6]';
+      case 'Grupo de Investigación': return 'bg-[#85d990]/10 text-[#85d990]';
+      case 'Grupo Estudiantil': return 'bg-[#4edea3]/10 text-[#4edea3]';
+      default: return 'bg-[#2a2a2a] text-[#bfc9bc]';
+    }
+  }
+  
+  function getStatusBadgeClass(status: string) {
+    switch (status) {
+      case 'aprobado': return 'bg-[#85d990]/10 text-[#85d990]';
+      case 'pendiente': return 'bg-[#ffb4ab]/10 text-[#ffb4ab]';
+      default: return 'bg-[#2a2a2a] text-[#bfc9bc]';
+    }
+  }
+  
+  // Tab switching
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tab = (btn as HTMLElement).dataset.tab!;
+      
+      // Update buttons
+      document.querySelectorAll('.tab-btn').forEach(b => {
+        b.classList.remove('bg-[#85d990]', 'text-[#003914]');
+        b.classList.add('text-[#bfc9bc]');
+      });
+      btn.classList.add('bg-[#85d990]', 'text-[#003914]');
+      btn.classList.remove('text-[#bfc9bc]');
+      
+      // Show content
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+      document.getElementById(`tab-${tab}`)!.classList.remove('hidden');
+    });
+  });
+  
+  // Modal handlers
+  document.getElementById('modal-cancel')?.addEventListener('click', () => {
+    document.getElementById('approval-modal')!.classList.add('hidden');
+    currentSolicitudId = null;
+  });
+  
+  document.getElementById('modal-backdrop')?.addEventListener('click', () => {
+    document.getElementById('approval-modal')!.classList.add('hidden');
+    currentSolicitudId = null;
+  });
+  
+  document.getElementById('reject-cancel')?.addEventListener('click', () => {
+    document.getElementById('reject-modal')!.classList.add('hidden');
+    currentSolicitudId = null;
+  });
+  
+  document.getElementById('reject-modal-backdrop')?.addEventListener('click', () => {
+    document.getElementById('reject-modal')!.classList.add('hidden');
+    currentSolicitudId = null;
+  });
+  
+  // Approve handler
+  document.getElementById('modal-approve')?.addEventListener('click', async () => {
+    if (!currentSolicitudId) return;
+    
+    try {
+      // Get solicitud data
+      const { data: solicitud } = await supabase
+        .from('solicitudes_pendientes')
+        .select('*')
+        .eq('id', currentSolicitudId)
+        .single();
+      
+      if (!solicitud) throw new Error('Solicitud no encontrada');
+      
+      // Create auth user
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email: solicitud.email_solicitante,
+        password: crypto.randomUUID().slice(0, 12), // Temporary password
+      });
+      
+      if (authError && !authError.message.includes('User already registered')) {
+        throw authError;
+      }
+      
+      const userId = authData.user?.id;
+      
+      if (userId) {
+        // Create profile
+        await supabase.from('perfiles').insert({
+          id: userId,
+          email: solicitud.email_solicitante,
+          rol: 'ADMIN_GRUPO',
+          nombre_completo: solicitud.nombre_solicitante,
+        });
+        
+        // Create group
+        await supabase.from('grupos').insert({
+          tipo: solicitud.tipo,
+          carreras: solicitud.carreras,
+          nombre: solicitud.nombre,
+          docente_a_cargo: solicitud.docente_a_cargo,
+          lider_o_representante: solicitud.lider_o_representante,
+          email_contacto: solicitud.email_contacto,
+          vinculacion: solicitud.vinculacion,
+          enfoque: solicitud.enfoque,
+          descripcion: solicitud.descripcion,
+          actividades: solicitud.actividades,
+          modalidad: solicitud.modalidad,
+          horarios_habituales: solicitud.horarios_habituales,
+          requisitos_ingreso: solicitud.requisitos_ingreso,
+          nivel_academico_recomendado: solicitud.nivel_academico_recomendado,
+          redes_sociales: solicitud.redes_sociales,
+          comentarios_adicionales: solicitud.comentarios_adicionales,
+          id_lider: userId,
+          estado_aprobacion: 'aprobado',
+        });
+      }
+      
+      // Update solicitud
+      await supabase
+        .from('solicitudes_pendientes')
+        .update({ estado: 'aprobado', fecha_revision: new Date().toISOString() })
+        .eq('id', currentSolicitudId);
+      
+      document.getElementById('approval-modal')!.classList.add('hidden');
+      currentSolicitudId = null;
+      
+      // Reload
+      loadSolicitudes();
+      loadStats();
+      
+    } catch (error: any) {
+      console.error('Error:', error);
+      alert('Error al aprobar: ' + error.message);
+    }
+  });
+  
+  // Reject handler
+  document.getElementById('reject-confirm')?.addEventListener('click', async () => {
+    if (!currentSolicitudId) return;
+    
+    const reason = (document.getElementById('reject-reason') as HTMLTextAreaElement).value;
+    
+    try {
+      await supabase
+        .from('solicitudes_pendientes')
+        .update({ 
+          estado: 'rechazado', 
+          fecha_revision: new Date().toISOString(),
+          comentarios_revision: reason
+        })
+        .eq('id', currentSolicitudId);
+      
+      document.getElementById('reject-modal')!.classList.add('hidden');
+      currentSolicitudId = null;
+      (document.getElementById('reject-reason') as HTMLTextAreaElement).value = '';
+      
+      loadSolicitudes();
+      loadStats();
+      
+    } catch (error: any) {
+      console.error('Error:', error);
+      alert('Error al rechazar: ' + error.message);
+    }
+  });
+  
+  // Refresh buttons
+  document.getElementById('refresh-solicitudes')?.addEventListener('click', loadSolicitudes);
+  document.getElementById('refresh-grupos')?.addEventListener('click', loadGrupos);
+  
+  // Logout
+  document.getElementById('logout-btn')?.addEventListener('click', async () => {
+    await supabase.auth.signOut();
+    window.location.href = '/login';
+  });
+  
+  // Initialize
+  checkAuth();
+  loadStats();
+  loadSolicitudes();
+  loadGrupos();
+</script>
+
+<style>
+  .glass-card {
+    background: rgba(32, 31, 31, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid transparent;
+    border-image: linear-gradient(to bottom right, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.04)) 1;
+  }
+</style>

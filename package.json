@@ -9,7 +9,11 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "parse-csv": "node scripts/parse-csv.js"
+    "parse-csv": "node scripts/parse-csv.js",
+    "migrate": "node scripts/migrate-to-supabase.js",
+    "supabase:start": "npx supabase start",
+    "supabase:stop": "npx supabase stop",
+    "supabase:reset": "npx supabase db reset"
   },
   "keywords": [
     "semilleros",
@@ -23,6 +27,7 @@
     "@astrojs/netlify": "^7.0.8",
     "@astrojs/node": "^10.1.0",
     "@astrojs/tailwind": "^5.1.5",
+    "@supabase/supabase-js": "^2.105.4",
     "astro": "^4.16.19",
     "gsap": "^3.15.0",
     "lucide-react": "^1.14.0",

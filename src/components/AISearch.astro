@@ -63,16 +63,26 @@ const { placeholder = "Pregunta sobre investigación..." } = Astro.props;
   
   <!-- AI Results (Hidden by default) -->
   <div id="ai-results" class="hidden mb-8">
-    <div class="glass-card rounded-3xl p-8 border-secondary/20 bg-secondary/5">
-      <div class="noise-overlay"></div>
+    <div class="glass-card rounded-3xl p-8 border-primary/20 bg-gradient-to-br from-primary/5 to-secondary/5 relative overflow-hidden">
+      <div class="noise-overlay opacity-30"></div>
+      
+      <!-- Decorative gradient -->
+      <div class="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+      
       <div class="relative z-10">
-        <div class="flex items-center gap-3 mb-4">
-          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-secondary to-tertiary flex items-center justify-center">
-            <span class="material-symbols-outlined text-on-secondary filled text-sm" data-icon="lightbulb">lightbulb</span>
+        <!-- Header -->
+        <div class="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg shadow-primary/20">
+            <span class="material-symbols-outlined text-on-primary text-xl" data-icon="auto_awesome">auto_awesome</span>
           </div>
-          <h3 class="text-secondary font-headline-md">Resultados de IA</h3>
+          <div>
+            <h3 class="text-secondary font-headline-md">Respuesta de IA</h3>
+            <p class="text-on-surface-variant/60 text-xs font-label-mono">Powered by OpenRouter</p>
+          </div>
         </div>
-        <div id="ai-results-content" class="text-on-surface-variant text-body-base space-y-4">
+        
+        <!-- Content -->
+        <div id="ai-results-content" class="space-y-6">
           <!-- Results will be inserted here -->
         </div>
       </div>
@@ -81,7 +91,50 @@ const { placeholder = "Pregunta sobre investigación..." } = Astro.props;
 </section>
 
 <script>
-  const searchInput = document.getElementById('ai-search-input');
+  // Helper functions for formatting
+  function formatAnswer(text: string): string {
+    if (!text) return '';
+    
+    // Convert markdown-like syntax to HTML
+    return text
+      // Bold text (**text**)
+      .replace(/\*\*(.+?)\*\*/g, '<strong class="text-primary font-semibold">$1</strong>')
+      // Italic (*text*)
+      .replace(/\*(.+?)\*/g, '<em>$1</em>')
+      // Convert bullet points
+      .replace(/^- (.+)$/gm, '<li class="flex items-start gap-2"><span class="text-primary mt-1.5">•</span><span>$1</span></li>')
+      // Wrap lists
+      .replace(/(<li.*<\/li>\n?)+/g, '<ul class="space-y-2 my-3">$&</ul>')
+      // Paragraphs (double newline)
+      .replace(/\n\n/g, '</p><p class="my-3">')
+      // Single newlines within paragraphs
+      .replace(/\n/g, ' ')
+      // Wrap in paragraph if not already wrapped
+      .replace(/^(.+)$/gm, (match) => {
+        if (match.startsWith('<') || !match.trim()) return match;
+        return `<p class="my-2">${match}</p>`;
+      });
+  }
+  
+  function getTypeColor(tipo: string): string {
+    const colors: Record<string, string> = {
+      'Semillero': 'bg-tertiary',
+      'Grupo de Investigación': 'bg-primary',
+      'Grupo Estudiantil': 'bg-secondary',
+    };
+    return colors[tipo] || 'bg-surface-container-high';
+  }
+  
+  function getTypeIcon(tipo: string): string {
+    const icons: Record<string, string> = {
+      'Semillero': 'school',
+      'Grupo de Investigación': 'science',
+      'Grupo Estudiantil': 'groups',
+    };
+    return icons[tipo] || 'group';
+  }
+  
+  const searchInput = document.getElementById('ai-search-input') as HTMLInputElement;
   const searchBtn = document.getElementById('ai-search-btn');
   const thinkingState = document.getElementById('ai-thinking');
   const resultsState = document.getElementById('ai-results');
@@ -119,19 +172,56 @@ const { placeholder = "Pregunta sobre investigación..." } = Astro.props;
       resultsState?.classList.remove('hidden');
       
       if (resultsContent) {
+        // Format the answer text - convert markdown-like formatting to HTML
+        const formattedAnswer = formatAnswer(data.answer || data.response || 'No se encontraron resultados específicos.');
+        
         resultsContent.innerHTML = `
-          <p class="text-on-surface">${data.answer || data.response || 'No se encontraron resultados específicos.'}</p>
+          <div class="prose prose-invert max-w-none">
+            <div class="text-on-surface text-body-base leading-relaxed space-y-3">
+              ${formattedAnswer}
+            </div>
+          </div>
+          
           ${data.grupos && data.grupos.length > 0 ? `
-            <div class="mt-4">
-              <p class="text-sm text-on-surface-variant mb-2">Grupos recomendados:</p>
-              <div class="flex flex-wrap gap-2">
+            <div class="pt-4 border-t border-white/10">
+              <div class="flex items-center gap-2 mb-4">
+                <span class="material-symbols-outlined text-primary text-sm" data-icon="groups">groups</span>
+                <p class="text-sm font-bold text-on-surface">Grupos encontrados</p>
+                <span class="px-2 py-0.5 rounded-full bg-primary/20 text-primary text-xs font-label-mono">${data.grupos.length}</span>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 ${data.grupos.map((g: any) => `
-                  <span class="px-3 py-1 rounded-full bg-primary/10 text-primary text-sm">${g.nombre || g}</span>
+                  <div class="group flex items-start gap-3 p-3 rounded-xl bg-surface-container-low/50 hover:bg-surface-container-high transition-all cursor-pointer border border-transparent hover:border-primary/30">
+                    <div class="w-8 h-8 rounded-lg ${getTypeColor(g.tipo)} flex items-center justify-center shrink-0">
+                      <span class="material-symbols-outlined text-white text-sm">${getTypeIcon(g.tipo)}</span>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                      <p class="text-sm font-medium text-on-surface group-hover:text-primary transition-colors line-clamp-2">${g.nombre || g}</p>
+                      <p class="text-xs text-on-surface-variant/60 mt-0.5">${g.tipo || 'Grupo'}</p>
+                    </div>
+                    <span class="material-symbols-outlined text-on-surface-variant/40 group-hover:text-primary transition-colors text-sm">arrow_forward</span>
+                  </div>
                 `).join('')}
               </div>
             </div>
           ` : ''}
+          
+          <div class="flex items-center justify-between pt-4 border-t border-white/10">
+            <p class="text-xs text-on-surface-variant/50">
+              ${data.isFallback ? 'Resultados basados en coincidencias de texto' : 'Respuesta generada por IA'}
+            </p>
+            <button id="ai-clear-btn" class="text-xs text-secondary hover:text-primary transition-colors flex items-center gap-1">
+              <span class="material-symbols-outlined text-sm">close</span>
+              Cerrar
+            </button>
+          </div>
         `;
+        
+        // Add clear button listener
+        document.getElementById('ai-clear-btn')?.addEventListener('click', () => {
+          resultsState?.classList.add('hidden');
+          if (searchInput) searchInput.value = '';
+        });
       }
     } catch (error) {
       console.error('Search error:', error);

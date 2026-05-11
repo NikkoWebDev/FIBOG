@@ -23,3 +23,6 @@
   OPENROUTER_API_KEY = "OpenRouter API Key"
   OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
   OPENROUTER_MODEL = "liquid/lfm-2.5-1.2b-instruct:free"
+  PUBLIC_SUPABASE_URL = "Supabase project URL"
+  PUBLIC_SUPABASE_ANON_KEY = "Supabase anonymous key"
+  SUPABASE_SERVICE_ROLE_KEY = "Supabase service role key"
