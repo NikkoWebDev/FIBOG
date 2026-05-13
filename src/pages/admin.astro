@@ -475,6 +475,44 @@ import Footer from '../components/Footer.astro';
     }
   }
 
+  window.exportData = function() {
+    if (!allGrupos || allGrupos.length === 0) {
+      showNotification('No hay datos para exportar', 'error');
+      return;
+    }
+    
+    // Obtener todas las claves (columnas) del primer grupo
+    const headers = Object.keys(allGrupos[0]);
+    
+    // Construir el contenido CSV
+    const csvContent = [
+      headers.join(','),
+      ...allGrupos.map(grupo => 
+        headers.map(header => {
+          let cell = grupo[header] === null || grupo[header] === undefined ? '' : String(grupo[header]);
+          // Escapar comillas dobles y envolver en comillas si contiene comas, saltos de línea o comillas
+          if (cell.includes(',') || cell.includes('"') || cell.includes('\n')) {
+            cell = `"${cell.replace(/"/g, '""')}"`;
+          }
+          return cell;
+        }).join(',')
+      )
+    ].join('\n');
+    
+    // Crear el archivo y forzar la descarga
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `fibog_grupos_export_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    showNotification('Reporte exportado exitosamente', 'success');
+  }
+
   function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
     notification.className = `fixed top-4 right-4 z-[200] px-6 py-4 rounded-xl glass-card flex items-center gap-3 shadow-2xl animate-fade-in ${
