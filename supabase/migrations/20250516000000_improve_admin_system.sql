@@ -6,9 +6,9 @@
 -- UPDATE ENUMS
 -- ============================================
 
--- Drop and recreate user_role enum with new roles
+-- Drop and recreate user_role enum (keeping existing roles)
 DROP TYPE IF EXISTS user_role CASCADE;
-CREATE TYPE user_role AS ENUM ('SUPER_ADMIN', 'ADMIN_GRUPO', 'LIDER_GRUPO', 'VISITANTE');
+CREATE TYPE user_role AS ENUM ('SUPER_ADMIN', 'ADMIN_GRUPO', 'VISITANTE');
 
 -- ============================================
 -- NEW TABLES
@@ -48,8 +48,18 @@ CREATE POLICY "super_admin_admin_grupos_all"
 ON public.admin_grupos
 FOR ALL
 TO authenticated
-USING (auth.jwt() ->> 'role' = 'SUPER_ADMIN')
-WITH CHECK (auth.jwt() ->> 'role' = 'SUPER_ADMIN');
+USING (
+    EXISTS (
+        SELECT 1 FROM public.perfiles 
+        WHERE id = auth.uid() AND rol = 'SUPER_ADMIN'
+    )
+)
+WITH CHECK (
+    EXISTS (
+        SELECT 1 FROM public.perfiles 
+        WHERE id = auth.uid() AND rol = 'SUPER_ADMIN'
+    )
+);
 
 -- Users can view their own admin assignments
 CREATE POLICY "users_view_own_admin_assignments"
@@ -65,6 +75,10 @@ FOR SELECT
 TO authenticated
 USING (
     EXISTS (
+        SELECT 1 FROM public.perfiles 
+        WHERE id = auth.uid() AND rol = 'ADMIN_GRUPO'
+    )
+    AND EXISTS (
         SELECT 1 FROM public.admin_grupos 
         WHERE usuario_id = auth.uid() 
         AND grupo_id = admin_grupos.grupo_id 
@@ -90,8 +104,18 @@ CREATE POLICY "super_admin_grupos_all"
 ON public.grupos
 FOR ALL
 TO authenticated
-USING (auth.jwt() ->> 'role' = 'SUPER_ADMIN')
-WITH CHECK (auth.jwt() ->> 'role' = 'SUPER_ADMIN');
+USING (
+    EXISTS (
+        SELECT 1 FROM public.perfiles 
+        WHERE id = auth.uid() AND rol = 'SUPER_ADMIN'
+    )
+)
+WITH CHECK (
+    EXISTS (
+        SELECT 1 FROM public.perfiles 
+        WHERE id = auth.uid() AND rol = 'SUPER_ADMIN'
+    )
+);
 
 -- ADMIN_GRUPO: Can manage groups they are assigned to
 CREATE POLICY "admin_grupo_manage_assigned"
@@ -99,7 +123,10 @@ ON public.grupos
 FOR ALL
 TO authenticated
 USING (
-    auth.jwt() ->> 'role' = 'ADMIN_GRUPO'
+    EXISTS (
+        SELECT 1 FROM public.perfiles 
+        WHERE id = auth.uid() AND rol = 'ADMIN_GRUPO'
+    )
     AND EXISTS (
         SELECT 1 FROM public.admin_grupos 
         WHERE usuario_id = auth.uid() 
@@ -108,27 +135,16 @@ USING (
     )
 )
 WITH CHECK (
-    auth.jwt() ->> 'role' = 'ADMIN_GRUPO'
+    EXISTS (
+        SELECT 1 FROM public.perfiles 
+        WHERE id = auth.uid() AND rol = 'ADMIN_GRUPO'
+    )
     AND EXISTS (
         SELECT 1 FROM public.admin_grupos 
         WHERE usuario_id = auth.uid() 
         AND grupo_id = grupos.id 
         AND activo = TRUE
     )
-);
-
--- LIDER_GRUPO: Can manage groups where they are the leader
-CREATE POLICY "lider_grupo_manage_own"
-ON public.grupos
-FOR ALL
-TO authenticated
-USING (
-    auth.jwt() ->> 'role' = 'LIDER_GRUPO'
-    AND id_lider = auth.uid()
-)
-WITH CHECK (
-    auth.jwt() ->> 'role' = 'LIDER_GRUPO'
-    AND id_lider = auth.uid()
 );
 
 -- VISITANTE: Can only SELECT approved groups
@@ -138,15 +154,88 @@ FOR SELECT
 TO anon, authenticated
 USING (estado_aprobacion = 'aprobado');
 
--- ADMIN_GRUPO and LIDER_GRUPO can also view approved groups
+-- ADMIN_GRUPO can also view approved groups
 CREATE POLICY "admin_view_approved_groups"
 ON public.grupos
 FOR SELECT
 TO authenticated
 USING (
-    (auth.jwt() ->> 'role' = 'ADMIN_GRUPO' OR auth.jwt() ->> 'role' = 'LIDER_GRUPO')
+    EXISTS (
+        SELECT 1 FROM public.perfiles 
+        WHERE id = auth.uid() AND rol = 'ADMIN_GRUPO'
+    )
     AND estado_aprobacion = 'aprobado'
 );
+
+-- SUPER_ADMIN can also be assigned to specific groups (optional group management)
+CREATE POLICY "super_admin_group_assignments"
+ON public.admin_grupos
+FOR INSERT
+TO authenticated
+USING (
+    EXISTS (
+        SELECT 1 FROM public.perfiles 
+        WHERE id = auth.uid() AND rol = 'SUPER_ADMIN'
+    )
+)
+WITH CHECK (
+    EXISTS (
+        SELECT 1 FROM public.perfiles 
+        WHERE id = auth.uid() AND rol = 'SUPER_ADMIN'
+    )
+);
+
+-- ============================================
+-- UPDATE SOLICITUDES PENDIENTES POLICIES
+-- ============================================
+
+-- Drop old policies
+DROP POLICY IF EXISTS "super_admin_solicitudes_all" ON public.solicitudes_pendientes;
+DROP POLICY IF EXISTS "public_create_solicitud" ON public.solicitudes_pendientes;
+
+-- Create new policies
+
+-- SUPER_ADMIN: Full access
+CREATE POLICY "super_admin_solicitudes_all"
+ON public.solicitudes_pendientes
+FOR ALL
+TO authenticated
+USING (
+    EXISTS (
+        SELECT 1 FROM public.perfiles 
+        WHERE id = auth.uid() AND rol = 'SUPER_ADMIN'
+    )
+)
+WITH CHECK (
+    EXISTS (
+        SELECT 1 FROM public.perfiles 
+        WHERE id = auth.uid() AND rol = 'SUPER_ADMIN'
+    )
+);
+
+-- Public can create applications (with restrictions)
+CREATE POLICY "public_create_solicitud"
+ON public.solicitudes_pendientes
+FOR INSERT
+TO anon, authenticated
+WITH CHECK (
+    -- Must have required fields
+    nombre IS NOT NULL
+    AND tipo IS NOT NULL
+    AND email_contacto IS NOT NULL
+    AND lider_o_representante IS NOT NULL
+    AND nombre_solicitante IS NOT NULL
+    AND email_solicitante IS NOT NULL
+);
+
+-- Users can view their own applications
+CREATE POLICY "users_view_own_applications"
+ON public.solicitudes_pendientes
+FOR SELECT
+TO authenticated
+USING (email_solicitante IN (
+    SELECT email FROM public.perfiles WHERE id = auth.uid()
+));
 
 -- ============================================
 -- UPDATE PERFILES POLICIES
@@ -165,8 +254,18 @@ CREATE POLICY "super_admin_perfiles_all"
 ON public.perfiles
 FOR ALL
 TO authenticated
-USING (auth.jwt() ->> 'role' = 'SUPER_ADMIN')
-WITH CHECK (auth.jwt() ->> 'role' = 'SUPER_ADMIN');
+USING (
+    EXISTS (
+        SELECT 1 FROM public.perfiles 
+        WHERE id = auth.uid() AND rol = 'SUPER_ADMIN'
+    )
+)
+WITH CHECK (
+    EXISTS (
+        SELECT 1 FROM public.perfiles 
+        WHERE id = auth.uid() AND rol = 'SUPER_ADMIN'
+    )
+);
 
 -- Users can view their own profile
 CREATE POLICY "users_view_own_profile"
@@ -185,14 +284,50 @@ WITH CHECK (
     auth.uid() = id 
     AND rol = (SELECT rol FROM public.perfiles WHERE id = auth.uid())
     AND es_admin_multi_grupo = (SELECT es_admin_multi_grupo FROM public.perfiles WHERE id = auth.uid())
+    AND NOT (
+        -- Prevent role escalation
+        (OLD.rol IS DISTINCT FROM NEW.rol)
+        OR (OLD.es_admin_multi_grupo IS DISTINCT FROM NEW.es_admin_multi_grupo)
+    )
 );
 
--- Public can insert (for registration)
+-- Public can insert (for registration) - but only with VISITANTE role
 CREATE POLICY "public_insert_profile"
 ON public.perfiles
 FOR INSERT
 TO anon, authenticated
-WITH CHECK (true);
+WITH CHECK (
+    auth.uid() = id 
+    AND rol = 'VISITANTE'
+    AND es_admin_multi_grupo = FALSE
+);
+
+-- ============================================
+-- UPDATE AUDIT LOG POLICIES
+-- ============================================
+
+-- Drop old policies
+DROP POLICY IF EXISTS "super_admin_audit_all" ON public.audit_log;
+
+-- Create new policies
+
+-- Only SUPER_ADMIN can access audit log
+CREATE POLICY "super_admin_audit_all"
+ON public.audit_log
+FOR ALL
+TO authenticated
+USING (
+    EXISTS (
+        SELECT 1 FROM public.perfiles 
+        WHERE id = auth.uid() AND rol = 'SUPER_ADMIN'
+    )
+)
+WITH CHECK (
+    EXISTS (
+        SELECT 1 FROM public.perfiles 
+        WHERE id = auth.uid() AND rol = 'SUPER_ADMIN'
+    )
+);
 
 -- ============================================
 -- HELPER FUNCTIONS
@@ -214,22 +349,25 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 -- Function to get all groups a user can manage
 CREATE OR REPLACE FUNCTION public.get_manageable_groups()
 RETURNS TABLE (grupo_id UUID, grupo_nombre TEXT, tipo TEXT) AS $$
+DECLARE
+    user_role_val TEXT;
 BEGIN
-    IF (auth.jwt() ->> 'role') = 'SUPER_ADMIN' THEN
+    -- Get user role from perfiles table
+    SELECT rol::TEXT INTO user_role_val
+    FROM public.perfiles
+    WHERE id = auth.uid();
+    
+    IF user_role_val = 'SUPER_ADMIN' THEN
+        -- SUPER_ADMIN can manage all groups OR specific assigned groups
         RETURN QUERY
         SELECT g.id, g.nombre, g.tipo::TEXT
         FROM public.grupos g;
-    ELSEIF (auth.jwt() ->> 'role') = 'ADMIN_GRUPO' THEN
+    ELSIF user_role_val = 'ADMIN_GRUPO' THEN
         RETURN QUERY
         SELECT g.id, g.nombre, g.tipo::TEXT
         FROM public.grupos g
         INNER JOIN public.admin_grupos ag ON g.id = ag.grupo_id
         WHERE ag.usuario_id = auth.uid() AND ag.activo = TRUE;
-    ELSEIF (auth.jwt() ->> 'role') = 'LIDER_GRUPO' THEN
-        RETURN QUERY
-        SELECT id, nombre, tipo::TEXT
-        FROM public.grupos
-        WHERE id_lider = auth.uid();
     ELSE
         RETURN QUERY
         SELECT NULL::UUID, NULL::TEXT, NULL::TEXT
@@ -247,7 +385,14 @@ CREATE OR REPLACE FUNCTION public.assign_admin_to_group(
 RETURNS BOOLEAN AS $$
 DECLARE
     user_role_val TEXT;
+    target_user_exists BOOLEAN;
+    target_group_exists BOOLEAN;
 BEGIN
+    -- Check if caller is authenticated
+    IF auth.uid() IS NULL THEN
+        RAISE EXCEPTION 'User must be authenticated';
+    END IF;
+    
     -- Check if caller is SUPER_ADMIN
     SELECT rol::TEXT INTO user_role_val
     FROM public.perfiles
@@ -257,7 +402,25 @@ BEGIN
         RAISE EXCEPTION 'Only SUPER_ADMIN can assign admins to groups';
     END IF;
     
-    -- Update target user role to ADMIN_GRUPO if not already
+    -- Validate target user exists
+    SELECT EXISTS (
+        SELECT 1 FROM public.perfiles WHERE id = target_usuario_id
+    ) INTO target_user_exists;
+    
+    IF NOT target_user_exists THEN
+        RAISE EXCEPTION 'Target user does not exist';
+    END IF;
+    
+    -- Validate target group exists
+    SELECT EXISTS (
+        SELECT 1 FROM public.grupos WHERE id = target_grupo_id
+    ) INTO target_group_exists;
+    
+    IF NOT target_group_exists THEN
+        RAISE EXCEPTION 'Target group does not exist';
+    END IF;
+    
+    -- Update target user role to ADMIN_GRUPO if not already SUPER_ADMIN
     UPDATE public.perfiles
     SET rol = 'ADMIN_GRUPO'
     WHERE id = target_usuario_id AND rol != 'SUPER_ADMIN';
@@ -300,6 +463,11 @@ RETURNS BOOLEAN AS $$
 DECLARE
     user_role_val TEXT;
 BEGIN
+    -- Check if caller is authenticated
+    IF auth.uid() IS NULL THEN
+        RAISE EXCEPTION 'User must be authenticated';
+    END IF;
+    
     -- Check if caller is SUPER_ADMIN
     SELECT rol::TEXT INTO user_role_val
     FROM public.perfiles
@@ -307,6 +475,20 @@ BEGIN
     
     IF user_role_val != 'SUPER_ADMIN' THEN
         RAISE EXCEPTION 'Only SUPER_ADMIN can remove admins from groups';
+    END IF;
+    
+    -- Validate target user exists
+    IF NOT EXISTS (
+        SELECT 1 FROM public.perfiles WHERE id = target_usuario_id
+    ) THEN
+        RAISE EXCEPTION 'Target user does not exist';
+    END IF;
+    
+    -- Validate target group exists
+    IF NOT EXISTS (
+        SELECT 1 FROM public.grupos WHERE id = target_grupo_id
+    ) THEN
+        RAISE EXCEPTION 'Target group does not exist';
     END IF;
     
     -- Deactivate assignment

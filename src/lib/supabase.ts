@@ -62,12 +62,6 @@ export async function isAdminGrupo() {
   return role === 'ADMIN_GRUPO';
 }
 
-// Helper to check if user is LIDER_GRUPO
-export async function isLiderGrupo() {
-  const role = await getUserRole();
-  return role === 'LIDER_GRUPO';
-}
-
 // Helper to check if user can manage a specific group
 export async function canManageGroup(groupId: string) {
   const role = await getUserRole();
@@ -82,15 +76,6 @@ export async function canManageGroup(groupId: string) {
       .eq('activo', true)
       .single();
     return !error && data;
-  }
-  
-  if (role === 'LIDER_GRUPO') {
-    const { data, error } = await supabase
-      .from('grupos')
-      .select('id_lider')
-      .eq('id', groupId)
-      .single();
-    return !error && data?.id_lider === (await supabase.auth.getUser()).data.user?.id;
   }
   
   return false;

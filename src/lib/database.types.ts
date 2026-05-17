@@ -344,7 +344,7 @@ export type Database = {
     Enums: {
       approval_status: "pendiente" | "aprobado" | "rechazado"
       group_type: "Semillero" | "Grupo de Investigación" | "Grupo Estudiantil"
-      user_role: "SUPER_ADMIN" | "ADMIN_GRUPO" | "LIDER_GRUPO" | "VISITANTE"
+      user_role: "SUPER_ADMIN" | "ADMIN_GRUPO" | "VISITANTE"
     }
     CompositeTypes: {
       [_ in never]: never
