@@ -61,3 +61,118 @@ export async function isAdminGrupo() {
   const role = await getUserRole();
   return role === 'ADMIN_GRUPO';
 }
+
+// Helper to check if user is LIDER_GRUPO
+export async function isLiderGrupo() {
+  const role = await getUserRole();
+  return role === 'LIDER_GRUPO';
+}
+
+// Helper to check if user can manage a specific group
+export async function canManageGroup(groupId: string) {
+  const role = await getUserRole();
+  if (role === 'SUPER_ADMIN') return true;
+  
+  if (role === 'ADMIN_GRUPO') {
+    const { data, error } = await supabase
+      .from('admin_grupos')
+      .select('*')
+      .eq('usuario_id', (await supabase.auth.getUser()).data.user?.id)
+      .eq('grupo_id', groupId)
+      .eq('activo', true)
+      .single();
+    return !error && data;
+  }
+  
+  if (role === 'LIDER_GRUPO') {
+    const { data, error } = await supabase
+      .from('grupos')
+      .select('id_lider')
+      .eq('id', groupId)
+      .single();
+    return !error && data?.id_lider === (await supabase.auth.getUser()).data.user?.id;
+  }
+  
+  return false;
+}
+
+// Helper to get all groups a user can manage
+export async function getManageableGroups() {
+  const { data, error } = await supabase.rpc('get_manageable_groups');
+  if (error) {
+    console.error('Error getting manageable groups:', error);
+    return [];
+  }
+  return data;
+}
+
+// Helper to assign admin to group (SUPER_ADMIN only)
+export async function assignAdminToGroup(usuarioId: string, grupoId: string) {
+  const { data, error } = await supabase.rpc('assign_admin_to_group', {
+    target_usuario_id: usuarioId,
+    target_grupo_id: grupoId
+  });
+  if (error) {
+    console.error('Error assigning admin to group:', error);
+    return { success: false, error };
+  }
+  return { success: true, data };
+}
+
+// Helper to remove admin from group (SUPER_ADMIN only)
+export async function removeAdminFromGroup(usuarioId: string, grupoId: string) {
+  const { data, error } = await supabase.rpc('remove_admin_from_group', {
+    target_usuario_id: usuarioId,
+    target_grupo_id: grupoId
+  });
+  if (error) {
+    console.error('Error removing admin from group:', error);
+    return { success: false, error };
+  }
+  return { success: true, data };
+}
+
+// Helper to get group admins
+export async function getGroupAdmins(grupoId: string) {
+  const { data, error } = await supabase
+    .from('admin_grupos')
+    .select(`
+      *,
+      perfiles (
+        id,
+        nombre_completo,
+        email,
+        rol
+      )
+    `)
+    .eq('grupo_id', grupoId)
+    .eq('activo', true);
+  
+  if (error) {
+    console.error('Error getting group admins:', error);
+    return [];
+  }
+  return data;
+}
+
+// Helper to get user's admin assignments
+export async function getUserAdminAssignments(usuarioId: string) {
+  const { data, error } = await supabase
+    .from('admin_grupos')
+    .select(`
+      *,
+      grupos (
+        id,
+        nombre,
+        tipo
+      )
+    `)
+    .eq('usuario_id', usuarioId)
+    .eq('activo', true);
+  
+  if (error) {
+    console.error('Error getting user admin assignments:', error);
+    return [];
+  }
+  return data;
+}

@@ -13,6 +13,7 @@ export type Database = {
         Row: {
           carrera: string | null
           email: string
+          es_admin_multi_grupo: boolean
           fecha_registro: string
           id: string
           nombre_completo: string | null
@@ -23,6 +24,7 @@ export type Database = {
         Insert: {
           carrera?: string | null
           email: string
+          es_admin_multi_grupo?: boolean
           fecha_registro?: string
           id: string
           nombre_completo?: string | null
@@ -33,6 +35,7 @@ export type Database = {
         Update: {
           carrera?: string | null
           email?: string
+          es_admin_multi_grupo?: boolean
           fecha_registro?: string
           id?: string
           nombre_completo?: string | null
@@ -238,6 +241,55 @@ export type Database = {
           },
         ]
       }
+      admin_grupos: {
+        Row: {
+          activo: boolean
+          asignado_por: string | null
+          fecha_asignacion: string
+          grupo_id: string
+          id: string
+          usuario_id: string
+        }
+        Insert: {
+          activo?: boolean
+          asignado_por?: string | null
+          fecha_asignacion?: string
+          grupo_id: string
+          id?: string
+          usuario_id: string
+        }
+        Update: {
+          activo?: boolean
+          asignado_por?: string | null
+          fecha_asignacion?: string
+          grupo_id?: string
+          id?: string
+          usuario_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_grupos_grupo_id_fkey"
+            columns: ["grupo_id"]
+            isOneToOne: false
+            referencedRelation: "grupos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "admin_grupos_usuario_id_fkey"
+            columns: ["usuario_id"]
+            isOneToOne: false
+            referencedRelation: "perfiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "admin_grupos_asignado_por_fkey"
+            columns: ["asignado_por"]
+            isOneToOne: false
+            referencedRelation: "perfiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       audit_log: {
         Row: {
           accion: string
@@ -292,7 +344,7 @@ export type Database = {
     Enums: {
       approval_status: "pendiente" | "aprobado" | "rechazado"
       group_type: "Semillero" | "Grupo de Investigación" | "Grupo Estudiantil"
-      user_role: "SUPER_ADMIN" | "ADMIN_GRUPO" | "VISITANTE"
+      user_role: "SUPER_ADMIN" | "ADMIN_GRUPO" | "LIDER_GRUPO" | "VISITANTE"
     }
     CompositeTypes: {
       [_ in never]: never
