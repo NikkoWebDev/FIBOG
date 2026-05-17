@@ -7,104 +7,70 @@ interface Props {
   index?: number;
 }
 
-const { grupo, size = 'medium', index = 0 } = Astro.props;
-
-const sizeClasses = {
-  small: 'md:col-span-3',
-  medium: 'md:col-span-4',
-  large: 'md:col-span-6',
-  wide: 'md:col-span-8'
-};
+const { grupo, index = 0 } = Astro.props;
 
 const tipoColors = {
-  'Semillero': 'text-tertiary border-tertiary/30 bg-tertiary/10',
-  'Grupo de Investigación': 'text-primary border-primary/30 bg-primary/10',
-  'Grupo Estudiantil': 'text-secondary border-secondary/30 bg-secondary/10'
+  'Semillero': 'bg-tertiary/10 text-tertiary',
+  'Grupo de Investigación': 'bg-primary/10 text-primary',
+  'Grupo Estudiantil': 'bg-secondary/10 text-secondary'
 };
 
 const tipoBadge = tipoColors[grupo.tipo as keyof typeof tipoColors] || tipoColors['Semillero'];
 ---
 
-<div class={`bento-card ${sizeClasses[size]} col-span-12 glass-card rounded-3xl p-6 md:p-8 group cursor-pointer`} data-index={index} onclick={`window.openModal('${grupo.id}')`}>
+<div class="bento-card glass-card rounded-2xl p-6 border border-white/10 hover:border-primary/50 transition-all group" data-index={index}>
   <div class="noise-overlay"></div>
   
   <div class="relative z-10">
     <!-- Header -->
-    <div class="flex justify-between items-start mb-4">
-      <div class="flex flex-wrap gap-2">
-        <span class={`px-3 py-1 rounded-full border font-label-mono text-label-mono uppercase tracking-wider ${tipoBadge}`}>
-          {grupo.tipo}
-        </span>
-        
-        {grupo.carreras.slice(0, 2).map(carrera => (
-          <span class="px-3 py-1 rounded-full border border-outline-variant/30 bg-surface-container-low text-on-surface-variant font-label-mono text-label-mono">
-            {carrera.length > 20 ? carrera.slice(0, 20) + '...' : carrera}
+    <div class="flex items-start justify-between mb-4">
+      <div class="flex-1">
+        <div class="flex items-center gap-2 mb-2">
+          <span class={`px-2 py-1 rounded-md text-[10px] font-label-mono uppercase tracking-wider ${tipoBadge}`}>
+            {grupo.tipo}
           </span>
-        ))}
+        </div>
+        <h3 class="text-lg font-display-lg text-white mb-1 group-hover:text-primary transition-colors line-clamp-2">
+          {grupo.nombre}
+        </h3>
+        <p class="text-sm text-on-surface-variant line-clamp-2">{grupo.descripcion || 'Sin descripción'}</p>
       </div>
-      
-      <span class="material-symbols-outlined text-on-surface-variant group-hover:text-secondary group-hover:translate-x-1 transition-all" data-icon="arrow_forward">
-        arrow_forward
-      </span>
     </div>
     
-    <!-- Title -->
-    <h3 class="text-headline-md md:text-display-lg-mobile font-display-lg text-on-surface group-hover:text-primary transition-colors mb-3 line-clamp-2">
-      {grupo.nombre}
-    </h3>
-    
-    <!-- Description -->
-    {grupo.descripcion && (
-      <p class="text-on-surface-variant text-body-sm mb-4 line-clamp-3">
-        {grupo.descripcion}
-      </p>
-    )}
-    
-    <!-- Focus/Enfoque -->
-    {grupo.enfoque && (
-      <div class="mb-4">
-        <p class="text-on-surface-variant text-body-sm">
-          <span class="text-secondary font-medium">Enfoque:</span> {grupo.enfoque.slice(0, 100)}{grupo.enfoque.length > 100 ? '...' : ''}
-        </p>
-      </div>
-    )}
-    
-    <!-- Footer Info -->
-    <div class="flex flex-wrap gap-4 pt-4 border-t border-white/5">
+    <!-- Info -->
+    <div class="space-y-2 mb-4">
       {grupo.docente && (
-        <div class="flex items-center gap-2 text-body-sm text-on-surface-variant">
-          <span class="material-symbols-outlined text-primary text-sm" data-icon="person">person</span>
-          <span class="truncate max-w-[150px]">{grupo.docente}</span>
+        <div class="flex items-center gap-2 text-sm">
+          <span class="material-symbols-outlined text-on-surface-variant text-base">person</span>
+          <span class="text-on-surface-variant truncate">{grupo.docente}</span>
         </div>
       )}
-      
-      {grupo.modalidad && (
-        <div class="flex items-center gap-2 text-body-sm text-on-surface-variant">
-          <span class="material-symbols-outlined text-secondary text-sm" data-icon="schedule">schedule</span>
-          <span>{grupo.modalidad}</span>
-        </div>
-      )}
-      
-      {grupo.nivel_academico && (
-        <div class="flex items-center gap-2 text-body-sm text-on-surface-variant">
-          <span class="material-symbols-outlined text-tertiary text-sm" data-icon="school">school</span>
-          <span class="truncate max-w-[150px]">{grupo.nivel_academico}</span>
+      {grupo.carreras && grupo.carreras.length > 0 && (
+        <div class="flex items-center gap-2 text-sm">
+          <span class="material-symbols-outlined text-on-surface-variant text-base">school</span>
+          <span class="text-on-surface-variant truncate">{grupo.carreras.slice(0, 2).join(', ')}</span>
         </div>
       )}
     </div>
-    
-    <!-- Contact/Redes -->
-    {grupo.email && (
-      <div class="mt-4 flex items-center gap-2">
+
+    <!-- Actions -->
+    <div class="flex items-center gap-2 pt-4 border-t border-white/10">
+      <a 
+        href={`/grupo/${grupo.id}`}
+        class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-surface-container hover:bg-white/10 transition-all text-sm text-center"
+      >
+        <span class="material-symbols-outlined text-base">visibility</span>
+        <span>Ver detalles</span>
+      </a>
+      {grupo.email && (
         <a 
           href={`mailto:${grupo.email}`}
-          class="text-body-sm text-primary hover:text-secondary transition-colors flex items-center gap-2"
+          class="p-2 rounded-lg bg-surface-container hover:bg-primary/20 text-primary transition-all"
           onclick="event.stopPropagation();"
         >
-          <span class="material-symbols-outlined text-sm" data-icon="email">email</span>
-          Contactar
+          <span class="material-symbols-outlined text-base">email</span>
         </a>
-      </div>
-    )}
+      )}
+    </div>
   </div>
 </div>

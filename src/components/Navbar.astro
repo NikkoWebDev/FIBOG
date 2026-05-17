@@ -36,6 +36,15 @@ const navItems = [
     
     <!-- Auth & GitHub -->
     <div class="flex items-center gap-3">
+      <!-- Theme Toggle -->
+      <button 
+        id="theme-toggle"
+        class="p-2 rounded-full border border-white/10 text-on-surface-variant hover:bg-white/5 transition-all"
+        title="Cambiar tema"
+      >
+        <span class="material-symbols-outlined text-sm" id="theme-icon">light_mode</span>
+      </button>
+      
       <!-- Auth Button (Desktop) -->
       <div id="auth-section-desktop" class="flex items-center gap-2">
         <a 
@@ -89,6 +98,15 @@ const navItems = [
 <!-- Mobile Navbar (Bottom) -->
 <nav class="fixed bottom-0 left-0 right-0 z-50 md:hidden">
   <div class="flex justify-around items-center p-4 bg-surface/80 backdrop-blur-xl border-t border-white/10 shadow-2xl rounded-t-3xl">
+    <!-- Theme Toggle Mobile -->
+    <button 
+      id="theme-toggle-mobile"
+      class="flex flex-col items-center justify-center p-2 rounded-xl transition-all text-on-surface-variant"
+    >
+      <span class="material-symbols-outlined text-xl" id="theme-icon-mobile">light_mode</span>
+      <span class="font-label-mono text-[10px] mt-1">Tema</span>
+    </button>
+    
     {navItems.map(item => (
       <a 
         href={item.href}
@@ -113,6 +131,51 @@ const navItems = [
 
 <script>
   import { supabase } from '../lib/supabase';
+  
+  // Theme Toggle Logic
+  function initThemeToggle() {
+    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggleMobile = document.getElementById('theme-toggle-mobile');
+    const themeIcon = document.getElementById('theme-icon');
+    const themeIconMobile = document.getElementById('theme-icon-mobile');
+    
+    // Check for saved theme preference or default to dark
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
+    
+    // Apply initial theme
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+      updateThemeIcons(true);
+    } else {
+      document.documentElement.classList.remove('dark');
+      updateThemeIcons(false);
+    }
+    
+    function updateThemeIcons(dark) {
+      if (themeIcon) themeIcon.textContent = dark ? 'light_mode' : 'dark_mode';
+      if (themeIconMobile) themeIconMobile.textContent = dark ? 'light_mode' : 'dark_mode';
+    }
+    
+    function toggleTheme() {
+      const isDarkMode = document.documentElement.classList.contains('dark');
+      
+      if (isDarkMode) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+        updateThemeIcons(false);
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+        updateThemeIcons(true);
+      }
+    }
+    
+    // Add event listeners
+    themeToggle?.addEventListener('click', toggleTheme);
+    themeToggleMobile?.addEventListener('click', toggleTheme);
+  }
   
   // Auth state management
   async function updateAuthState() {
@@ -180,6 +243,7 @@ const navItems = [
   });
   
   // Initialize auth state
+  initThemeToggle();
   updateAuthState();
   
   // Listen for auth changes

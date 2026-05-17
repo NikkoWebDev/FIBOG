@@ -202,3 +202,63 @@ input:focus-visible {
     transform: none;
   }
 }
+
+/* Light Mode */
+:root:not(.dark) {
+  --bg-primary: #fafafa;
+  --bg-secondary: #f5f5f5;
+  --text-primary: #1a1a1a;
+  --text-secondary: #2d2d2d;
+  --glass-bg: rgba(255, 255, 255, 0.6);
+  --glass-border: rgba(0, 0, 0, 0.08);
+}
+
+:root:not(.dark) body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+:root:not(.dark) .glass-card {
+  background: var(--glass-bg);
+  border-color: var(--glass-border);
+}
+
+:root:not(.dark) .glass-card:hover {
+  background: rgba(255, 255, 255, 0.8);
+  border-color: rgba(133, 217, 144, 0.3);
+}
+
+:root:not(.dark) .glass-button {
+  background: linear-gradient(135deg, rgba(133, 217, 144, 0.15), rgba(78, 222, 163, 0.1));
+  border-color: rgba(133, 217, 144, 0.3);
+}
+
+:root:not(.dark) .glass-button:hover {
+  background: linear-gradient(135deg, rgba(133, 217, 144, 0.25), rgba(78, 222, 163, 0.15));
+  border-color: rgba(133, 217, 144, 0.5);
+}
+
+:root:not(.dark) nav {
+  background: rgba(255, 255, 255, 0.8);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+:root:not(.dark) .text-on-surface {
+  color: var(--text-primary);
+}
+
+:root:not(.dark) .text-on-surface-variant {
+  color: var(--text-secondary);
+}
+
+:root:not(.dark) ::-webkit-scrollbar-track {
+  background: #f0f0f0;
+}
+
+:root:not(.dark) ::-webkit-scrollbar-thumb {
+  background: #d0d0d0;
+}
+
+:root:not(.dark) ::-webkit-scrollbar-thumb:hover {
+  background: #b0b0b0;
+}

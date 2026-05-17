@@ -5,7 +5,6 @@ import AISearch from '../components/AISearch.astro';
 import FilterBar from '../components/FilterBar.astro';
 import BentoGrid from '../components/BentoGrid.astro';
 import Footer from '../components/Footer.astro';
-import GrupoModal from '../components/GrupoModal.astro';
 
 import gruposData from '../data/grupos.json';
 import { filtrarGrupos } from '../data/grupos.types';
@@ -134,12 +133,6 @@ const allEnfoques = [...new Set(allGrupos.flatMap(g =>
       </div>
     )}
     </div>
-    <!-- Modal Container -->
-    <div id="modals-container">
-      {allGrupos.map(grupo => (
-        <GrupoModal grupo={grupo} />
-      ))}
-    </div>
   </main>
   
   <Footer />
@@ -148,42 +141,3 @@ const allEnfoques = [...new Set(allGrupos.flatMap(g =>
 <style>
   @import '../styles/global.css';
 </style>
-
-<script>
-  window.openModal = function(id) {
-    const modal = document.getElementById(`modal-${id}`);
-    if (modal) {
-      modal.classList.remove('hidden');
-      // Trigger animations
-      setTimeout(() => {
-        modal.querySelector('.modal-backdrop')?.classList.remove('opacity-0');
-        const panel = modal.querySelector('.modal-panel');
-        if (panel) {
-          panel.classList.remove('opacity-0', 'translate-y-8');
-        }
-      }, 10);
-    }
-  };
-
-  // Setup close buttons
-  document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('.group-modal').forEach(modal => {
-      const closeBtn = modal.querySelector('.modal-close');
-      const backdrop = modal.querySelector('.modal-backdrop');
-      
-      const closeModal = () => {
-        const panel = modal.querySelector('.modal-panel');
-        if (panel) {
-          panel.classList.add('opacity-0', 'translate-y-8');
-        }
-        backdrop?.classList.add('opacity-0');
-        setTimeout(() => {
-          modal.classList.add('hidden');
-        }, 300); // Wait for transition
-      };
-
-      closeBtn?.addEventListener('click', closeModal);
-      backdrop?.addEventListener('click', closeModal);
-    });
-  });
-</script>
