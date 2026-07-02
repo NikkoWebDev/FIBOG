@@ -1,6 +1,5 @@
 ---
-// UnalHeader.astro - Cabezote institucional UNAL
-// Basado en el HTML real de unal.edu.co
+// UnalHeader.astro - Cabezote institucional UNAL (idéntico a unal.edu.co)
 
 interface Props {
   activePage?: string;
@@ -8,7 +7,7 @@ interface Props {
 
 const { activePage = 'inicio' } = Astro.props;
 
-// Perfiles de usuario ( URLs exactas de unal.edu.co)
+// Perfiles de usuario (URLs exactas de unal.edu.co)
 const perfiles = [
   { label: 'Aspirantes', url: 'https://aspirantes.unal.edu.co/' },
   { label: 'Estudiantes', url: 'https://estudiantes.unal.edu.co/' },
@@ -24,11 +23,11 @@ const menuItems = [
     url: '#',
     children: [
       { label: 'Rectoría', url: 'http://rectoria.unal.edu.co' },
-      { label: 'Constitución legal', url: 'https://unal.edu.co/la-universidad/constitucion-legal' },
-      { label: 'Misión y visión', url: 'https://unal.edu.co/la-universidad/mision-y-vision' },
-      { label: 'Mensajes institucionales', url: 'https://unal.edu.co/la-universidad/mensajes-institucionales' },
-      { label: 'Ubicación', url: 'https://unal.edu.co/la-universidad/ubicacion' },
-      { label: 'Estructura', url: 'https://unal.edu.co/la-universidad/estructura' },
+      { label: 'Constitución legal', url: '/la-universidad/constitucion-legal' },
+      { label: 'Misión y visión', url: '/la-universidad/mision-y-vision' },
+      { label: 'Mensajes institucionales', url: '/la-universidad/mensajes-institucionales' },
+      { label: 'Ubicación', url: '/la-universidad/ubicacion' },
+      { label: 'Estructura', url: '/la-universidad/estructura' },
     ]
   },
   { 
@@ -50,7 +49,7 @@ const menuItems = [
     label: 'Investigación', 
     url: '#',
     children: [
-      { label: 'La investigación en la Universidad', url: 'https://unal.edu.co/investigacion/la-investigacion-en-la-universidad' },
+      { label: 'La investigación en la Universidad', url: '/investigacion/la-investigacion-en-la-universidad' },
       { label: 'Sistema de Investigación', url: 'https://investigacion.unal.edu.co/' },
       { label: 'Sistema de información Hermes', url: 'http://www.hermes.unal.edu.co/' },
       { label: 'Dirección Nacional de Programas Posgrado', url: 'http://www.posgrados.unal.edu.co' },
@@ -61,7 +60,7 @@ const menuItems = [
     label: 'Internacionalización', 
     url: '#',
     children: [
-      { label: 'La Universidad en el mundo', url: 'https://unal.edu.co/internacionalizacion/la-universidad-en-el-mundo' },
+      { label: 'La Universidad en el mundo', url: '/internacionalizacion/la-universidad-en-el-mundo' },
       { label: 'Investigación internacional', url: 'https://investigacion.unal.edu.co/' },
       { label: 'Estudiantes extranjeros', url: 'http://www.dre.unal.edu.co/nc/esx/es/movilidad/entrante.html' },
       { label: 'Movilidad', url: 'http://www.dre.unal.edu.co/movilidad.html' },
@@ -72,8 +71,8 @@ const menuItems = [
     label: 'Formación', 
     url: '#',
     children: [
-      { label: 'Estudiar en la Universidad', url: 'https://unal.edu.co/formacion/estudiar-en-la-universidad' },
-      { label: 'Verificación títulos electrónicos', url: 'https://unal.edu.co/formacion/verificacion-titulos-electronicos' },
+      { label: 'Estudiar en la Universidad', url: '/formacion/estudiar-en-la-universidad' },
+      { label: 'Verificación títulos electrónicos', url: '/formacion/verificacion-titulos-electronicos' },
       { label: 'Admisiones pregrado y posgrado', url: 'https://admisiones.unal.edu.co/' },
       { label: 'Programas de pregrado', url: 'https://pregrado.unal.edu.co/info_programas' },
       { label: 'Programas de posgrado', url: 'https://posgrados.unal.edu.co/catalogo/' },
@@ -85,146 +84,223 @@ const menuItems = [
     label: 'Extensión', 
     url: '#',
     children: [
-      { label: 'La extensión en la Universidad', url: 'https://unal.edu.co/extension/la-extension-en-la-universidad' },
-      { label: 'Servicios al Estado', url: 'https://extension.unal.edu.co/vicerrector%C3%ADa-de-investigaci%C3%B3n' },
-      { label: 'Servicios a empresas', url: 'https://extension.unal.edu.co/vicerrector%C3%ADa-de-investigaci%C3%B3n' },
-      { label: 'Servicios a la comunidad', url: 'https://extension.unal.edu.co/vicerrector%C3%ADa-de-investigaci%C3%B3n' },
+      { label: 'La extensión en la Universidad', url: '/extension/la-extension-en-la-universidad' },
+      { label: 'Servicios al Estado', url: 'https://extension.unal.edu.co/' },
+      { label: 'Servicios a empresas', url: 'https://extension.unal.edu.co/' },
+      { label: 'Servicios a la comunidad', url: 'https://extension.unal.edu.co/' },
     ]
   },
-  { label: 'Calendario Académico', url: 'https://unal.edu.co/calendario-academico' },
+  { label: 'Calendario Académico', url: '/calendario-academico' },
 ];
 
-// Redes sociales ( URLs exactas de unal.edu.co)
+// Redes sociales (URLs exactas de unal.edu.co)
 const redesSociales = [
-  { icon: 'facebook', label: 'Facebook', url: 'https://www.facebook.com/UNALOficial' },
-  { icon: 'twitter', label: 'Twitter', url: 'https://twitter.com/UNALOficial' },
-  { icon: 'youtube', label: 'YouTube', url: 'https://www.youtube.com/channel/UCnE6Zj2llVxcvL5I38B0Ceg' },
-  { icon: 'instagram', label: 'Instagram', url: 'https://www.instagram.com/unaloficial/?hl=es-la' },
+  { icon: 'facebook', label: 'Página oficial en Facebook', url: 'https://www.facebook.com/UNALOficial' },
+  { icon: 'twitter', label: 'Cuenta oficial en Twitter', url: 'https://twitter.com/UNALOficial' },
+  { icon: 'youtube', label: 'Canal oficial de Youtube', url: 'https://www.youtube.com/channel/UCnE6Zj2llVxcvL5I38B0Ceg' },
+  { icon: 'instagram', label: 'Cuenta oficial en Instagram', url: 'https://www.instagram.com/unaloficial/?hl=es-la' },
 ];
 
 // Idiomas
 const idiomas = [
   { code: 'es', label: 'Español [ESP]' },
-  { code: 'en', label: 'English [ENG]' },
-  { code: 'fr', label: 'Français [FRA]' },
-  { code: 'pt', label: 'Português [POR]' },
+  { code: 'way', label: 'Wayuunaiki [GUC]' },
+  { code: 'nas', label: 'Nasa yuwe [PBB]' },
+  { code: 'en', label: 'English [ENG]', translateUrl: 'https://unal-edu-co.translate.goog/?_x_tr_sl=es&_x_tr_tl=en&_x_tr_hl=es' },
+  { code: 'fr', label: 'Français [FRA]', translateUrl: 'https://unal-edu-co.translate.goog/?_x_tr_sl=es&_x_tr_tl=fr&_x_tr_hl=es' },
+  { code: 'pt', label: 'Português [POR]', translateUrl: 'https://unal-edu-co.translate.goog/?_x_tr_sl=es&_x_tr_tl=pt&_x_tr_hl=es' },
 ];
 ---
 
-<!-- Barra superior: URL del sitio + Perfiles + Redes + Idioma -->
-<div class="bg-[#466B3F] text-white text-xs">
-  <div class="max-w-[1440px] mx-auto px-4 flex justify-between items-center h-10">
-    <!-- URL del sitio -->
-    <div class="flex items-center gap-4">
-      <a href="https://unal.edu.co/" target="_blank" rel="noopener noreferrer" class="font-bold hover:text-primary-80 transition-colors">
-        unal.edu.co
+<!-- Barra superior: Logo + Perfiles + Redes + Idioma -->
+<div class="bg-[#466B3F] text-white">
+  <div class="max-w-[1440px] mx-auto px-4">
+    <!-- Fila 1: Logo + Escudo Colombia + Perfiles + Redes + Idioma -->
+    <div class="flex items-center justify-between py-2">
+      <!-- Logo UNAL -->
+      <a href="https://unal.edu.co/" target="_blank" rel="noopener noreferrer" class="flex-shrink-0">
+        <img 
+          src="/images/escudo-unal-real.png" 
+          alt="Escudo de la Universidad Nacional de Colombia" 
+          class="h-[40px] w-auto"
+          width="80"
+          height="42"
+        />
       </a>
-    </div>
 
-    <!-- Perfiles de usuario -->
-    <div class="hidden md:flex items-center gap-1">
-      {perfiles.map((perfil) => (
-        <a 
-          href={perfil.url} 
-          target="_blank" 
-          rel="noopener noreferrer"
-          class="px-3 py-1 hover:bg-white/20 rounded transition-colors"
-        >
-          {perfil.label}
-        </a>
-      ))}
-    </div>
+      <!-- Escudo Colombia (visible en desktop) -->
+      <div class="hidden md:flex items-center ml-2">
+        <img 
+          src="/images/escudo-colombia.svg" 
+          alt="Escudo de la República de Colombia" 
+          class="h-[33px] w-auto"
+          width="33"
+          height="33"
+        />
+      </div>
 
-    <!-- Redes sociales + Idioma -->
-    <div class="flex items-center gap-3">
-      {redesSociales.map((red) => (
-        <a 
-          href={red.url} 
-          target="_blank" 
-          rel="noopener noreferrer"
-          class="w-7 h-7 flex items-center justify-center rounded-full hover:bg-white/20 transition-colors"
-          title={red.label}
+      <!-- Perfiles -->
+      <nav class="hidden md:flex items-center gap-1 ml-auto">
+        {perfiles.map((perfil) => (
+          <a 
+            href={perfil.url} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            class="px-3 py-1 text-sm hover:bg-white/20 rounded transition-colors"
+          >
+            {perfil.label}
+          </a>
+        ))}
+      </nav>
+
+      <!-- Redes sociales (visible en desktop) -->
+      <ul class="hidden md:flex items-center gap-2 ml-4">
+        {redesSociales.map((red) => (
+          <li>
+            <a 
+              href={red.url} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              class="w-7 h-7 flex items-center justify-center rounded-full hover:bg-white/20 transition-colors"
+              title={red.label}
+            >
+              <span class="material-symbols-outlined text-base">{red.icon}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      <!-- Idioma -->
+      <div class="relative ml-4">
+        <button 
+          type="button" 
+          class="px-3 py-1 text-sm font-bold bg-white/20 rounded hover:bg-white/30 transition-colors"
+          id="lang-dropdown-btn"
         >
-          <span class="material-symbols-outlined text-base">{red.icon}</span>
-        </a>
-      ))}
-      <span class="text-white/60 mx-1">|</span>
-      <span class="font-bold">ES</span>
+          ESP
+          <span class="material-symbols-outlined text-xs">expand_more</span>
+        </button>
+        <ul 
+          id="lang-dropdown" 
+          class="hidden absolute right-0 top-full mt-1 bg-white text-neutral-40 rounded shadow-lg min-w-[180px] z-50"
+        >
+          {idiomas.map((idioma) => (
+            <li>
+              <a 
+                href={idioma.translateUrl || '/'}
+                target={idioma.translateUrl ? '_blank' : undefined}
+                rel={idioma.translateUrl ? 'noopener noreferrer' : undefined}
+                class="block px-4 py-2 text-sm hover:bg-primary/10 hover:text-primary transition-colors"
+              >
+                {idioma.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Mobile menu button -->
+      <button 
+        id="mobile-menu-btn" 
+        class="md:hidden p-2 rounded-lg hover:bg-white/20 transition-colors ml-2"
+        aria-label="Menú"
+      >
+        <span class="material-symbols-outlined">menu</span>
+      </button>
     </div>
   </div>
 </div>
 
-<!-- Header principal: Logo + Menú + Buscador -->
-<header class="bg-[#466B3F] border-t border-white/10 sticky top-0 z-50">
-  <div class="max-w-[1440px] mx-auto px-4 flex items-center justify-between py-3">
-    <!-- Logo UNAL -->
-    <a href="https://unal.edu.co/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3">
-      <img 
-        src="/images/escudo-unal.png" 
-        alt="Escudo de la Universidad Nacional de Colombia" 
-        class="h-[60px] w-auto"
-      />
-    </a>
+<!-- Barra de navegación: URL + Buscador + Menú principal -->
+<div id="bs-navbar" class="bg-[#466B3F] border-t border-white/10 sticky top-0 z-50">
+  <div class="max-w-[1440px] mx-auto px-4">
+    <!-- Fila: URL del sitio + Buscador -->
+    <div class="flex items-center justify-between py-2">
+      <!-- URL del sitio -->
+      <div class="flex items-center gap-2 text-white text-sm">
+        <span class="material-symbols-outlined text-lg">location_on</span>
+        <a href="https://unal.edu.co" target="_blank" rel="noopener noreferrer" class="font-bold hover:underline">
+          unal.edu.co
+        </a>
+      </div>
 
-    <!-- Menú principal con dropdowns -->
-    <nav class="hidden lg:flex items-center gap-1">
-      {menuItems.map((item) => (
-        <div class="relative group">
-          <a 
-            href={item.url}
-            class:list={[
-              'px-4 py-2 text-sm font-bold tracking-wide transition-colors',
-              'text-white hover:bg-white/20'
-            ]}
-          >
-            {item.label}
-          </a>
-          {item.children && (
-            <div class="absolute top-full left-0 hidden group-hover:block bg-white shadow-lg rounded-b-lg min-w-[250px] z-50">
-              {item.children.map((child) => (
-                <a 
-                  href={child.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="block px-4 py-2 text-sm text-neutral-40 hover:bg-primary/10 hover:text-primary transition-colors"
-                >
-                  {child.label}
-                </a>
-              ))}
-            </div>
-          )}
-        </div>
-      ))}
-    </nav>
-
-    <!-- Buscador -->
-    <div class="flex items-center gap-2">
-      <form id="header-search-form" class="relative">
+      <!-- Buscador -->
+      <form id="header-search-form" class="flex items-center">
         <input 
           type="text" 
           id="header-search-input"
           placeholder="Buscar en la Universidad" 
-          class="w-56 lg:w-72 px-4 py-2 pr-10 text-sm border border-white/30 rounded bg-white/10 text-white placeholder-white/60 focus:outline-none focus:bg-white/20 focus:border-white/50"
+          class="w-48 lg:w-64 px-4 py-2 pr-10 text-sm border border-white/30 rounded-l bg-white text-neutral-40 placeholder-neutral-60 focus:outline-none focus:border-white/60"
         />
-        <button type="submit" class="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded bg-primary hover:bg-primary-60 transition-colors">
+        <button 
+          type="submit" 
+          class="px-3 py-2 bg-white/20 border border-white/30 border-l-0 rounded-r hover:bg-white/30 transition-colors"
+          title="buscar"
+        >
           <span class="material-symbols-outlined text-white text-lg">search</span>
         </button>
       </form>
     </div>
 
-    <!-- Mobile menu button -->
-    <button 
-      id="mobile-menu-btn" 
-      class="lg:hidden p-2 rounded-lg hover:bg-white/20 transition-colors text-white"
-      aria-label="Menú"
-    >
-      <span class="material-symbols-outlined">menu</span>
-    </button>
+    <!-- Menú principal con dropdowns -->
+    <nav class="hidden md:block border-t border-white/10">
+      <ul class="flex items-center gap-0">
+        {menuItems.map((item) => (
+          <li class="relative group">
+            {item.children ? (
+              <>
+                <button 
+                  class="px-4 py-3 text-sm font-bold text-white hover:bg-white/20 transition-colors flex items-center gap-1"
+                >
+                  {item.label}
+                  <span class="material-symbols-outlined text-xs">expand_more</span>
+                </button>
+                <ul class="hidden group-hover:block absolute top-full left-0 bg-white shadow-lg rounded-b-lg min-w-[280px] z-50">
+                  {item.children.map((child) => (
+                    <li>
+                      <a 
+                        href={child.url}
+                        target={child.url.startsWith('http') ? '_blank' : undefined}
+                        rel={child.url.startsWith('http') ? 'noopener noreferrer' : undefined}
+                        class="block px-4 py-2 text-sm text-neutral-40 hover:bg-primary/10 hover:text-primary transition-colors"
+                      >
+                        {child.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            ) : (
+              <a 
+                href={item.url}
+                class:list={[
+                  'px-4 py-3 text-sm font-bold transition-colors',
+                  'text-white hover:bg-white/20'
+                ]}
+              >
+                {item.label}
+              </a>
+            )}
+          </li>
+        ))}
+      </ul>
+    </nav>
   </div>
 
   <!-- Mobile menu -->
-  <div id="mobile-menu" class="hidden lg:hidden bg-[#3a5a34] border-t border-white/10">
+  <div id="mobile-menu" class="hidden md:hidden bg-[#3a5a34] border-t border-white/10">
     <nav class="max-w-[1440px] mx-auto px-4 py-4 flex flex-col gap-1">
+      {perfiles.map((perfil) => (
+        <a 
+          href={perfil.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="px-4 py-3 rounded text-sm font-bold text-white hover:bg-white/20 transition-colors"
+        >
+          {perfil.label}
+        </a>
+      ))}
+      <hr class="border-white/20 my-2" />
       {menuItems.map((item) => (
         <a 
           href={item.url}
@@ -235,7 +311,7 @@ const idiomas = [
       ))}
     </nav>
   </div>
-</header>
+</div>
 
 <script>
   // Mobile menu toggle
@@ -244,6 +320,19 @@ const idiomas = [
   
   menuBtn?.addEventListener('click', () => {
     mobileMenu?.classList.toggle('hidden');
+  });
+
+  // Language dropdown
+  const langBtn = document.getElementById('lang-dropdown-btn');
+  const langDropdown = document.getElementById('lang-dropdown');
+  
+  langBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    langDropdown?.classList.toggle('hidden');
+  });
+
+  document.addEventListener('click', () => {
+    langDropdown?.classList.add('hidden');
   });
 
   // Header search form
