@@ -1,90 +1,103 @@
 ---
 // AccessibilityPanel.astro - Panel de accesibilidad obligatorio UNAL
-// Opciones: Tamaño de letra (200%), Cambiar contrastes (3 modos), Invertir colores, Restablecer
+// Ubicación: lado derecho, botón flotante
 ---
 
 <!-- Botón flotante de accesibilidad -->
 <button 
   id="accessibility-toggle"
-  class="fixed bottom-4 right-4 z-[100] w-12 h-12 bg-primary text-white rounded-full shadow-lg flex items-center justify-center hover:bg-primary-60 transition-colors"
+  class="fixed right-0 top-1/3 z-[100] bg-[#466B3F] text-white px-2 py-6 rounded-l-lg shadow-lg hover:bg-[#3a5a34] transition-colors"
   aria-label="Panel de accesibilidad"
   title="Accesibilidad"
+  style="writing-mode: vertical-rl; text-orientation: mixed;"
 >
-  <span class="material-symbols-outlined">accessibility_new</span>
+  <span class="material-symbols-outlined text-lg mb-2">accessibility_new</span>
+  <span class="text-xs font-bold tracking-wider">Accesibilidad</span>
 </button>
 
 <!-- Panel de accesibilidad -->
 <div 
   id="accessibility-panel" 
-  class="fixed bottom-20 right-4 z-[100] bg-white rounded-lg shadow-xl border border-neutral-80 p-4 hidden w-72"
+  class="fixed right-0 top-0 h-full z-[100] bg-[#466B3F] shadow-xl transform translate-x-full transition-transform duration-300 w-80"
 >
-  <h3 class="font-bold text-sm mb-4 text-neutral-40">Accesibilidad</h3>
-  
-  <!-- Tamaño de letra -->
-  <div class="mb-4">
-    <label class="text-xs font-medium text-neutral-50 mb-2 block">Tamaño de letra</label>
-    <div class="flex items-center gap-2">
+  <div class="p-6">
+    <div class="flex items-center justify-between mb-6">
+      <h3 class="font-bold text-lg text-white">Accesibilidad</h3>
       <button 
-        id="font-decrease" 
-        class="w-8 h-8 rounded border border-neutral-80 flex items-center justify-center hover:bg-neutral-95 transition-colors text-sm"
-        aria-label="Reducir tamaño"
+        id="accessibility-close" 
+        class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20 transition-colors text-white"
+        aria-label="Cerrar"
       >
-        A-
-      </button>
-      <span id="font-size-display" class="text-sm font-medium min-w-[40px] text-center">100%</span>
-      <button 
-        id="font-increase" 
-        class="w-8 h-8 rounded border border-neutral-80 flex items-center justify-center hover:bg-neutral-95 transition-colors text-sm"
-        aria-label="Aumentar tamaño"
-      >
-        A+
+        <span class="material-symbols-outlined">close</span>
       </button>
     </div>
-  </div>
-
-  <!-- Cambiar contrastes -->
-  <div class="mb-4">
-    <label class="text-xs font-medium text-neutral-50 mb-2 block">Contraste</label>
-    <div class="flex gap-2">
-      <button 
-        id="contrast-default" 
-        class="w-8 h-8 rounded border-2 border-primary bg-white"
-        title="Contraste normal"
-        aria-label="Contraste normal"
-      ></button>
-      <button 
-        id="contrast-dark" 
-        class="w-8 h-8 rounded border border-neutral-80 bg-neutral-10"
-        title="Contraste alto"
-        aria-label="Contraste alto"
-      ></button>
-      <button 
-        id="contrast-light" 
-        class="w-8 h-8 rounded border border-neutral-80 bg-white"
-        title="Contraste bajo"
-        aria-label="Contraste bajo"
-      ></button>
+    
+    <!-- Tamaño de letra -->
+    <div class="mb-6">
+      <label class="text-sm font-medium text-white mb-3 block">Tamaño de letra</label>
+      <div class="flex items-center gap-3">
+        <button 
+          id="font-decrease" 
+          class="w-10 h-10 rounded border border-white/30 flex items-center justify-center hover:bg-white/20 transition-colors text-white text-sm font-bold"
+          aria-label="Reducir tamaño"
+        >
+          A-
+        </button>
+        <span id="font-size-display" class="text-white font-medium min-w-[50px] text-center">100%</span>
+        <button 
+          id="font-increase" 
+          class="w-10 h-10 rounded border border-white/30 flex items-center justify-center hover:bg-white/20 transition-colors text-white text-sm font-bold"
+          aria-label="Aumentar tamaño"
+        >
+          A+
+        </button>
+      </div>
     </div>
-  </div>
 
-  <!-- Invertir colores -->
-  <div class="mb-4">
-    <label class="text-xs font-medium text-neutral-50 mb-2 block">Invertir colores</label>
+    <!-- Cambiar contrastes -->
+    <div class="mb-6">
+      <label class="text-sm font-medium text-white mb-3 block">Cambiar contrastes</label>
+      <div class="flex gap-3">
+        <button 
+          id="contrast-default" 
+          class="w-10 h-10 rounded border-2 border-white bg-[#466B3F]"
+          title="Contraste normal"
+          aria-label="Contraste normal"
+        ></button>
+        <button 
+          id="contrast-dark" 
+          class="w-10 h-10 rounded border border-white/30 bg-black"
+          title="Contraste alto"
+          aria-label="Contraste alto"
+        ></button>
+        <button 
+          id="contrast-light" 
+          class="w-10 h-10 rounded border border-white/30 bg-white"
+          title="Contraste bajo"
+          aria-label="Contraste bajo"
+        ></button>
+      </div>
+    </div>
+
+    <!-- Invertir colores -->
+    <div class="mb-6">
+      <label class="text-sm font-medium text-white mb-3 block">Invertir colores</label>
+      <button 
+        id="invert-colors" 
+        class="w-full py-3 px-4 rounded border border-white/30 text-white text-sm font-medium hover:bg-white/20 transition-colors"
+      >
+        Invertir
+      </button>
+    </div>
+
+    <!-- Restablecer -->
     <button 
-      id="invert-colors" 
-      class="w-full py-2 px-3 rounded border border-neutral-80 text-sm hover:bg-neutral-95 transition-colors"
+      id="reset-accessibility" 
+      class="w-full py-3 px-4 rounded bg-white text-[#466B3F] text-sm font-bold hover:bg-white/90 transition-colors"
     >
-      Invertir
+      Restablecer ajustes
     </button>
   </div>
-
-  <!-- Restablecer -->
-  <button 
-    id="reset-accessibility" 
-    class="w-full py-2 px-3 rounded bg-primary text-white text-sm hover:bg-primary-60 transition-colors"
-  >
-    Restablecer ajustes
-  </button>
 </div>
 
 <script>
@@ -96,6 +109,7 @@
   // Elementos
   const toggle = document.getElementById('accessibility-toggle');
   const panel = document.getElementById('accessibility-panel');
+  const closeBtn = document.getElementById('accessibility-close');
   const fontDisplay = document.getElementById('font-size-display');
   const fontIncrease = document.getElementById('font-increase');
   const fontDecrease = document.getElementById('font-decrease');
@@ -107,7 +121,11 @@
 
   // Toggle panel
   toggle?.addEventListener('click', () => {
-    panel?.classList.toggle('hidden');
+    panel?.classList.toggle('translate-x-full');
+  });
+
+  closeBtn?.addEventListener('click', () => {
+    panel?.classList.add('translate-x-full');
   });
 
   // Tamaño de letra (hasta 200%)
@@ -169,6 +187,14 @@
     document.body.classList.remove('contrast-default', 'contrast-dark', 'contrast-light');
     
     if (fontDisplay) fontDisplay.textContent = '100%';
+  });
+
+  // Cerrar al hacer clic fuera
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    if (!panel?.contains(target) && !toggle?.contains(target)) {
+      panel?.classList.add('translate-x-full');
+    }
   });
 </script>
 
