@@ -1,6 +1,6 @@
 ---
 // UnalFooter.astro - Pie de página institucional UNAL
-// Basado en la plantilla real de identidad.unal.edu.co
+// Basado en el HTML real de ingenieria.bogota.unal.edu.co
 
 // Fecha de actualización automática
 const fechaActualizacion = new Date().toLocaleDateString('es-CO', {
@@ -9,40 +9,64 @@ const fechaActualizacion = new Date().toLocaleDateString('es-CO', {
   day: 'numeric'
 });
 
-// Enlaces Gobierno en Línea (NO MODIFICABLES - links fijos de plantilla)
+// Columna 1: Gobierno en Línea (URLs exactas)
 const gobiernoEnLinea = [
-  { label: 'Régimen Legal', url: 'https://www.funcionpublica.gov.co/eva/gestornormativo/' },
-  { label: 'Contratación', url: 'https://www.colombiacompra.gov.co/' },
-  { label: 'Rendición de cuentas', url: 'https://www.funcionpublica.gov.co/transparencia/' },
-  { label: 'Pago Virtual', url: 'https://www.dian.gov.co/' },
-  { label: 'Calidad', url: 'https://www.funcionpublica.gov.co/web/calidad/' },
+  { label: 'Régimen Legal', url: 'https://legal.unal.edu.co/rlunal/home/' },
+  { label: 'Contratación', url: 'https://portaladquisiciones.unal.edu.co/' },
+  { label: 'Rendición de cuentas', url: 'http://launalcuenta.unal.edu.co/' },
+  { label: 'Pago Virtual', url: 'https://pagovirtual.unal.edu.co/index.php' },
+  { label: 'Calidad', url: 'http://siga.unal.edu.co/' },
 ];
 
-// Información de carácter nacional obligatoria (columna 2)
+// Columna 2: Información nacional (URLs exactas)
 const infoNacional = [
-  { label: 'Talento humano', url: 'https://www.unal.edu.co/' },
-  { label: 'Ofertas de empleo', url: 'https://www.unal.edu.co/' },
-  { label: 'Concurso docente', url: 'https://www.unal.edu.co/' },
-  { label: 'Control interno', url: 'https://www.unal.edu.co/' },
-  { label: 'Buzón de notificaciones', url: 'https://www.unal.edu.co/' },
+  { label: 'Talento Humano', url: 'http://personal.unal.edu.co/' },
+  { label: 'Ofertas de Empleo', url: 'http://personal.unal.edu.co/' },
+  { label: 'Concurso Docente', url: 'http://docentes.unal.edu.co/concurso-profesoral/' },
+  { label: 'Control Interno', url: 'http://controlinterno.unal.edu.co/' },
+  { label: 'Buzón de notificaciones', url: 'http://unal.edu.co/buzon-de-notificaciones/' },
 ];
 
-// Servicios (columna 3)
+// Columna 3: Servicios (URLs exactas)
 const servicios = [
-  { label: 'Correo institucional', url: 'https://mail.unal.edu.co/' },
-  { label: 'Redes Sociales', url: 'https://www.unal.edu.co/' },
-  { label: 'Quejas y reclamos', url: 'https://www.unal.edu.co/' },
-  { label: 'Encuesta', url: 'https://www.unal.edu.co/' },
-  { label: 'Estadísticas', url: 'https://www.unal.edu.co/' },
+  { label: 'Correo institucional', url: 'https://smartkey.xertica.com/cloudkey/a/unal.edu.co/user/login' },
+  { label: 'Redes Sociales', url: 'http://redessociales.unal.edu.co/' },
+  { label: 'Quejas y reclamos', url: 'http://quejasyreclamos.unal.edu.co/' },
+  { label: 'Encuesta', url: 'https://unal.edu.co/egresados' },
+  { label: 'Estadísticas', url: 'http://estadisticas.unal.edu.co/' },
 ];
 
-// Mapa del sitio (columna 4)
+// Columna 4: Mapa del sitio (URLs exactas)
 const mapaSitio = [
-  { label: 'Mapa del sitio', url: 'https://www.unal.edu.co/' },
-  { label: 'FAQ', url: 'https://www.unal.edu.co/' },
-  { label: 'Atención en línea', url: 'https://www.unal.edu.co/' },
-  { label: 'Contáctenos', url: 'https://www.unal.edu.co/' },
-  { label: 'Glosario', url: 'https://www.unal.edu.co/' },
+  { label: 'Mapa del sitio', url: 'https://unal.edu.co/mapa-del-sitio' },
+  { label: 'FAQ', url: 'https://unal.edu.co/faq' },
+  { label: 'Atención en línea', url: 'http://unal.edu.co/atencion-en-linea/' },
+  { label: 'Contáctenos', url: 'https://unal.edu.co/contactenos' },
+  { label: 'Glosario', url: 'https://unal.edu.co/glosario' },
+];
+
+// Enlaces institucionales (logos de ingenieria.bogota.unal.edu.co)
+const enlacesInstitucionales = [
+  { 
+    label: 'Orgullo UNAL', 
+    url: 'https://orgullo.unal.edu.co/',
+    img: 'https://ingenieria.bogota.unal.edu.co/wp-content/uploads/2024/09/log_orgullo.png'
+  },
+  { 
+    label: 'Gov.co', 
+    url: 'https://www.gov.co/',
+    img: 'https://ingenieria.bogota.unal.edu.co/wp-content/uploads/2024/09/log_gobiern.png'
+  },
+  { 
+    label: 'Agencia UNAL', 
+    url: 'https://agenciadenoticias.unal.edu.co/',
+    img: 'https://ingenieria.bogota.unal.edu.co/wp-content/uploads/2024/09/log_agenc.png'
+  },
+  { 
+    label: 'Contaduría General de la Nación', 
+    url: 'https://www.contaduria.gov.co/',
+    img: 'https://ingenieria.bogota.unal.edu.co/wp-content/uploads/2024/09/log_contra.png'
+  },
 ];
 ---
 
@@ -126,72 +150,45 @@ const mapaSitio = [
         </ul>
       </div>
 
-      <!-- Columna 5: Datos de contacto + Propiedad intelectual -->
+      <!-- Columna 5: Contacto + Propiedad intelectual -->
       <div>
         <h4 class="font-bold text-sm mb-4 text-white">Contacto página web</h4>
         <div class="text-sm text-white/80 space-y-2">
-          <p><strong>Dirección:</strong> Carrera 30 # 45-03</p>
-          <p><strong>Edificio:</strong> Edif. 103 Polideportivo 2 piso</p>
-          <p><strong>Ciudad:</strong> Bogotá D.C., Colombia</p>
-          <p><strong>Teléfono:</strong> (+57 1) 316 5000 Ext.</p>
-          <p><strong>Email:</strong> <a href="mailto:semilleros.fibog@unal.edu.co" class="text-white hover:text-white/90 transition-colors">semilleros.fibog@unal.edu.co</a></p>
+          <p>Carrera 30 No 45A-03</p>
+          <p>Edif. CADE - Oficina 103</p>
+          <p>Bogotá D.C., Colombia</p>
+          <p>(+57) 601 3165000</p>
         </div>
         
         <div class="mt-6 pt-4 border-t border-white/20">
-          <p class="text-sm text-white/80">© Copyright 2014</p>
+          <p class="text-sm text-white/80">© Copyright 2026</p>
           <p class="text-sm text-white/80">Algunos derechos reservados.</p>
-          <p class="text-sm text-white/80 mt-2">Acerca de este sitio web</p>
+          <p class="text-sm text-white/80 mt-2">untic_fibog@unal.edu.co</p>
+          <p class="text-sm text-white/80"><a href="#" class="hover:text-white transition-colors">Acerca de este sitio web</a></p>
           <p class="text-sm text-white/80">Actualización: {fechaActualizacion}</p>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Enlaces institucionales (íconos) -->
+  <!-- Enlaces institucionales (logos) -->
   <div class="border-t border-white/20">
     <div class="max-w-[1440px] mx-auto px-4 py-6">
       <div class="flex flex-wrap justify-center items-center gap-8">
-        <a 
-          href="https://orgullounal.unal.edu.co/" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          class="flex items-center gap-2 text-sm text-white/80 hover:text-white transition-colors"
-        >
-          <img 
-            src="/images/escudo-unal.png" 
-            alt="UNAL" 
-            class="h-8 w-auto"
-          />
-          <span>Orgullo UNAL</span>
-        </a>
-        
-        <a 
-          href="https://agencia.unal.edu.co/" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          class="flex items-center gap-2 text-sm text-white/80 hover:text-white transition-colors"
-        >
-          <img 
-            src="/images/escudo-unal.png" 
-            alt="Agencia UNAL" 
-            class="h-8 w-auto"
-          />
-          <span>Agencia UNAL</span>
-        </a>
-        
-        <a 
-          href="https://www.gov.co/" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          class="flex items-center gap-2 text-sm text-white/80 hover:text-white transition-colors"
-        >
-          <img 
-            src="/images/escudo-colombia.svg" 
-            alt="Gobierno de Colombia" 
-            class="h-8 w-auto"
-          />
-          <span>Colombia</span>
-        </a>
+        {enlacesInstitucionales.map((enlace) => (
+          <a 
+            href={enlace.url} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            class="flex items-center gap-2 text-sm text-white/80 hover:text-white transition-colors"
+          >
+            <img 
+              src={enlace.img} 
+              alt={enlace.label} 
+              class="h-10 w-auto"
+            />
+          </a>
+        ))}
       </div>
     </div>
   </div>
@@ -199,7 +196,7 @@ const mapaSitio = [
   <!-- Escudo UNAL final -->
   <div class="bg-[#3a5a34] py-4">
     <div class="max-w-[1440px] mx-auto px-4 flex justify-center">
-      <a href="https://www.unal.edu.co/" target="_blank" rel="noopener noreferrer">
+      <a href="https://unal.edu.co/" target="_blank" rel="noopener noreferrer">
         <img 
           src="/images/escudo-unal.png" 
           alt="Escudo Universidad Nacional de Colombia" 
