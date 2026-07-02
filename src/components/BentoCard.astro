@@ -18,10 +18,9 @@ const tipoColors = {
 const tipoBadge = tipoColors[grupo.tipo as keyof typeof tipoColors] || tipoColors['Semillero'];
 ---
 
-<div class="bento-card glass-card rounded-2xl p-6 border border-white/10 hover:border-primary/50 transition-all group" data-index={index}>
-  <div class="noise-overlay"></div>
-  
-  <div class="relative z-10">
+<div class="bento-card card rounded-2xl p-6 border border-white/10 hover:border-primary/50 transition-all group" data-index={index}>
+
+<div class="relative z-10">
     <!-- Header -->
     <div class="flex items-start justify-between mb-4">
       <div class="flex-1">

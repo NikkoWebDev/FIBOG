@@ -1,0 +1,41 @@
+---
+// Modal for managing group admins
+---
+
+<div id="admins-modal" class="fixed inset-0 z-[110] hidden">
+  <div class="absolute inset-0 bg-black/80 backdrop-blur-md" onclick="closeAdminsModal()"></div>
+  <div class="relative min-h-screen flex items-center justify-center p-4">
+    <div class="relative card rounded-[32px] max-w-2xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
+      <div class="relative z-10 p-8 overflow-y-auto max-h-[90vh]">
+        <div class="flex items-center justify-between mb-8">
+          <div>
+            <h3 class="text-headline-md font-display-lg text-on-surface" id="admins-modal-title">Admins del Grupo</h3>
+            <p class="text-sm text-on-surface-variant mt-1" id="admins-modal-subtitle"></p>
+          </div>
+          <button onclick="closeAdminsModal()" class="w-10 h-10 rounded-full card flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-all">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        
+        <div class="mb-6">
+          <h4 class="font-label-mono text-on-surface-variant text-[10px] uppercase mb-3">AGREGAR NUEVO ADMIN</h4>
+          <div class="flex gap-2">
+            <select id="user-select" class="flex-1 input-glass rounded-xl px-4 py-3 text-on-surface font-body-base">
+              <option value="">Seleccionar usuario...</option>
+            </select>
+            <button onclick="addAdminToGroup()" class="px-6 py-3 rounded-xl bg-primary text-on-primary font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all">
+              <span class="material-symbols-outlined text-sm">add</span>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="font-label-mono text-on-surface-variant text-[10px] uppercase mb-3">ADMINS ACTUALES</h4>
+          <div id="current-admins-list" class="space-y-3">
+            <!-- Current admins will be loaded here -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

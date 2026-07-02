@@ -1,11 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Navbar from '../components/Navbar.astro';
-import Footer from '../components/Footer.astro';
+import Breadcrumb from '../components/unal/Breadcrumb.astro';
 ---
 
-<Layout title="Política de Privacidad | UNAL | FIBOG">
-  <Navbar activePage="privacidad" />
+<Layout title="Política de Privacidad | UNAL | FIBOG" activePage="privacidad">
+  <Breadcrumb items={[{ label: 'Política de Privacidad' }]} />
   
   <main class="pt-32 pb-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto min-h-[60vh]">
     <div class="max-w-2xl mx-auto">
@@ -25,12 +24,11 @@ import Footer from '../components/Footer.astro';
       </div>
       
       <!-- Privacy Content -->
-      <div class="glass-card rounded-3xl p-8 md:p-12 relative overflow-hidden">
-        <div class="noise-overlay"></div>
+      <div class="card rounded-3xl p-8 md:p-12 relative overflow-hidden">
         
         <div class="relative z-10 space-y-8">
           <!-- Main Statement -->
-          <div class="text-center py-8 border-b border-white/5">
+          <div class="text-center py-8 border-b border-neutral-80">
             <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
               <span class="material-symbols-outlined text-3xl text-primary" data-icon="shield">shield</span>
             </div>
@@ -82,7 +80,7 @@ import Footer from '../components/Footer.astro';
           </div>
           
           <!-- Contact -->
-          <div class="pt-6 border-t border-white/5 text-center">
+          <div class="pt-6 border-t border-neutral-80 text-center">
             <p class="text-on-surface-variant text-body-sm mb-4">
               ¿Preguntas sobre privacidad?
             </p>
@@ -104,8 +102,6 @@ import Footer from '../components/Footer.astro';
       </p>
     </div>
   </main>
-  
-  <Footer />
 </Layout>
 
 <style>

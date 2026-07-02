@@ -1,20 +1,19 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Navbar from '../components/Navbar.astro';
-import Footer from '../components/Footer.astro';
+import Breadcrumb from '../components/unal/Breadcrumb.astro';
 
 // This page requires authentication.
 // We'll handle redirection in the client-side script.
 ---
 
-<Layout title="Mi Perfil | FIBOG UNAL" description="Configuración de perfil de usuario.">
-  <Navbar activePage="perfil" />
+<Layout title="Mi Perfil | FIBOG UNAL" description="Configuración de perfil de usuario." activePage="perfil">
+  <Breadcrumb items={[{ label: 'Mi Perfil' }]} />
   
   <main class="min-h-screen pt-32 pb-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
     <div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
       <!-- Left Panel: Profile Quick Actions -->
       <div class="md:col-span-4 space-y-gutter">
-        <div class="glass-card rounded-3xl p-8 flex flex-col items-center text-center">
+        <div class="card rounded-3xl p-8 flex flex-col items-center text-center">
           <div class="relative w-32 h-32 mb-6">
             <div class="rounded-full w-full h-full bg-surface-container-high border-4 border-primary/20 p-1 flex items-center justify-center">
               <span class="material-symbols-outlined text-6xl text-primary">account_circle</span>
@@ -37,7 +36,7 @@ import Footer from '../components/Footer.astro';
       
       <!-- Right Panel: Settings Form -->
       <div class="md:col-span-8 space-y-gutter">
-        <div class="glass-card rounded-3xl p-8 md:p-10">
+        <div class="card rounded-3xl p-8 md:p-10">
           <header class="mb-10">
             <h2 class="font-display-lg text-headline-md text-primary">Configuración de Perfil</h2>
             <p class="text-on-surface-variant mt-2 font-body-base">Actualiza tu información institucional y enlaces de contacto profesional.</p>
@@ -90,7 +89,7 @@ import Footer from '../components/Footer.astro';
             </section>
             
             <div class="pt-6 flex justify-end gap-4">
-              <button type="button" class="px-8 py-3 rounded-xl border border-outline/30 text-on-surface font-medium hover:bg-white/5 transition-colors" onclick="window.location.reload()">
+              <button type="button" class="px-8 py-3 rounded-xl border border-outline/30 text-on-surface font-medium hover:bg-neutral-10 transition-colors" onclick="window.location.reload()">
                 Descartar
               </button>
               <button type="submit" class="px-8 py-3 rounded-xl bg-primary text-on-primary font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all">
@@ -102,8 +101,6 @@ import Footer from '../components/Footer.astro';
       </div>
     </div>
   </main>
-
-  <Footer />
 </Layout>
 
 <style>
@@ -114,9 +111,9 @@ import Footer from '../components/Footer.astro';
   }
   .input-glass:focus-within {
     background: rgba(255, 255, 255, 0.06);
-    border-color: #85d990;
+    border-color: #677d29;
     outline: none;
-    box-shadow: 0 0 0 2px rgba(133, 217, 144, 0.2);
+    box-shadow: 0 0 0 2px rgba(103, 125, 41, 0.2);
   }
 </style>
 

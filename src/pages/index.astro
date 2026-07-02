@@ -1,10 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Navbar from '../components/Navbar.astro';
+import Breadcrumb from '../components/unal/Breadcrumb.astro';
 import AISearch from '../components/AISearch.astro';
 import FilterBar from '../components/FilterBar.astro';
 import BentoGrid from '../components/BentoGrid.astro';
-import Footer from '../components/Footer.astro';
 
 import gruposData from '../data/grupos.json';
 import { filtrarGrupos } from '../data/grupos.types';
@@ -30,8 +29,8 @@ const allEnfoques = [...new Set(allGrupos.flatMap(g =>
 ))].slice(0, 8);
 ---
 
-<Layout>
-  <Navbar activePage="grupos" />
+<Layout title="Semilleros y Grupos de Investigación | FIBOG UNAL" description="Catálogo de semilleros, grupos de investigación y comunidades estudiantiles de la Facultad de Ingeniería UNAL" activePage="inicio">
+  <Breadcrumb items={[]} />
   
   <main class="pt-8 pb-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
     <!-- Hero Section -->
@@ -134,8 +133,6 @@ const allEnfoques = [...new Set(allGrupos.flatMap(g =>
     )}
     </div>
   </main>
-  
-  <Footer />
 </Layout>
 
 <style>

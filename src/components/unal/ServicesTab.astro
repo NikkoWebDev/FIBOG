@@ -1,0 +1,95 @@
+---
+// ServicesTab.astro - Pestaña desplegable de servicios obligatoria UNAL
+// Servicios obligatorios: Correo institucional (primero), DNINFOA, Bibliotecas, Convocatorias, Identidad UNAL
+
+const servicios = [
+  { 
+    label: 'Correo institucional', 
+    url: 'https://mail.unal.edu.co/',
+    icon: 'mail',
+    description: 'Correo electrónico institucional'
+  },
+  { 
+    label: 'DNINFOA - SIA', 
+    url: 'https://dninfoa.unal.edu.co/',
+    icon: 'school',
+    description: 'Sistema de Información Académica'
+  },
+  { 
+    label: 'Bibliotecas', 
+    url: 'https://sfrfrase.unal.edu.co/',
+    icon: 'library_books',
+    description: 'Sistema de Bibliotecas UNAL'
+  },
+  { 
+    label: 'Convocatorias', 
+    url: 'https://www.unal.edu.co/convocatorias/',
+    icon: 'event',
+    description: 'Convocatorias abiertas'
+  },
+  { 
+    label: 'Identidad UNAL', 
+    url: 'https://identidad.unal.edu.co/',
+    icon: 'palette',
+    description: 'Guía de identidad institucional'
+  },
+];
+---
+
+<!-- Botón flotante de servicios -->
+<button 
+  id="services-toggle"
+  class="fixed left-4 bottom-4 z-[100] w-12 h-12 bg-primary text-white rounded-full shadow-lg flex items-center justify-center hover:bg-primary-60 transition-colors"
+  aria-label="Servicios"
+  title="Servicios"
+>
+  <span class="material-symbols-outlined">apps</span>
+</button>
+
+<!-- Panel de servicios -->
+<div 
+  id="services-panel" 
+  class="fixed left-4 bottom-20 z-[100] bg-white rounded-lg shadow-xl border border-neutral-80 p-4 hidden w-72"
+>
+  <h3 class="font-bold text-sm mb-4 text-neutral-40">Servicios</h3>
+  
+  <nav class="space-y-2">
+    {servicios.map((servicio) => (
+      <a 
+        href={servicio.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="flex items-center gap-3 p-3 rounded-lg hover:bg-primary/10 transition-colors group"
+      >
+        <span class="material-symbols-outlined text-primary group-hover:text-primary-60 transition-colors">
+          {servicio.icon}
+        </span>
+        <div>
+          <div class="text-sm font-medium text-neutral-40 group-hover:text-primary transition-colors">
+            {servicio.label}
+          </div>
+          <div class="text-xs text-neutral-60">
+            {servicio.description}
+          </div>
+        </div>
+      </a>
+    ))}
+  </nav>
+</div>
+
+<script>
+  const servicesToggle = document.getElementById('services-toggle');
+  const servicesPanel = document.getElementById('services-panel');
+
+  servicesToggle?.addEventListener('click', () => {
+    servicesPanel?.classList.toggle('hidden');
+  });
+
+  // Cerrar al hacer clic fuera
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    if (!servicesPanel?.contains(target) && !servicesToggle?.contains(target)) {
+      servicesPanel?.classList.add('hidden');
+    }
+  });
+</script>

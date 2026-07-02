@@ -1,0 +1,158 @@
+{
+  "meta": {
+    "fecha": "2026-07-01",
+    "fuentes": [
+      "identidad.unal.edu.co - Guía de identidad visual oficial",
+      "gestionapp.unal.edu.co/cdn/doc/ - Kit de diseño para aplicaciones web",
+      "ingenieria.bogota.unal.edu.co - Facultad de Ingeniería Bogotá"
+    ],
+    "notas": "El design system de gestionapp requiere autenticación. Los tokens de diseño fueron extraídos directamente del CSS kit (kitUnal.min.css y main.min.css)."
+  },
+  "identidad_visual": {
+    "escudo_url": "https://identidad.unal.edu.co/fileadmin/templates/images/escudoUnal.png",
+    "escudo_alt": "Escudo de la Universidad Nacional de Colombia",
+    "logosimbolo_lateral": "https://identidad.unal.edu.co/fileadmin/user_upload/logosimbolo-01.jpg",
+    "logosimbolo_central": "https://identidad.unal.edu.co/fileadmin/user_upload/logosimbolo-02.jpg",
+    "marca_nominativa": "https://identidad.unal.edu.co/fileadmin/user_upload/UNAL-2020/marca-UNAL-versiones.jpg",
+    "tipografia_ancizar": "https://identidad.unal.edu.co/fileadmin/user_upload/ancizar-01.jpg",
+    "paleta_color": "https://identidad.unal.edu.co/fileadmin/user_upload/paleta_color-01.jpg",
+    "firma_institucional": "https://identidad.unal.edu.co/fileadmin/user_upload/firma-01.jpg"
+  },
+  "design_system_css": {
+    "fuente": "gestionapp.unal.edu.co/cdn/kitUnal/12112024/css/",
+    "archivos": [
+      "kitUnal.min.css (558,739 reglas CSS)",
+      "themes/main.min.css (644,566 reglas CSS - contiene todos los tokens de diseño)"
+    ],
+    "colores_principal": {
+      "primary": "#677d29",
+      "primary_text": "#ffffff",
+      "primary_scale": {
+        "10": "#2a3805",
+        "20": "#3e4c19",
+        "30": "#516320",
+        "40": "#677d29",
+        "50": "#87a436",
+        "60": "#94b43b",
+        "70": "#a9c362",
+        "80": "#c0d881",
+        "90": "#deefb0",
+        "95": "#f4fddd",
+        "99": "#fbfff3"
+      }
+    },
+    "colores_secundario": {
+      "secondary": "#284d21",
+      "secondary_scale": {
+        "10": "#0a250a",
+        "30": "#1e4317",
+        "50": "#32572b",
+        "70": "#648953",
+        "90": "#c8e7b9"
+      }
+    },
+    "colores_terciario_azul": {
+      "tertiary_blue": "#00566f",
+      "tertiary_blue_scale": {
+        "10": "#00222d",
+        "30": "#02475b",
+        "50": "#016d8d",
+        "60": "#0082a9",
+        "70": "#2ba6cb",
+        "80": "#4fc5e9",
+        "90": "#90e6ff"
+      }
+    },
+    "colores_neutro": {
+      "neutral": "#3d4041",
+      "neutral_scale": {
+        "0": "#000000",
+        "10": "#151717",
+        "20": "#242627",
+        "30": "#2f3233",
+        "40": "#3d4041",
+        "50": "#4e5254",
+        "60": "#787b7d",
+        "70": "#a2a3a4",
+        "80": "#cccccc",
+        "90": "#dcdcdc",
+        "95": "#f4f4f4",
+        "99": "#fafafa",
+        "100": "#ffffff"
+      }
+    },
+    "colores_semantico": {
+      "success": "#1a784b",
+      "danger": "#aa0c00",
+      "warning": "#8c6800"
+    },
+    "dark_mode": {
+      "background": "#151717",
+      "surface": "#242627",
+      "surface_high": "#3d4041",
+      "text_primary": "#ffffff",
+      "text_secondary": "#a2a3a4",
+      "primary": "#c0d881",
+      "tertiary_blue": "#4fc5e9"
+    },
+    "tipografia": {
+      "cuerpo": "Ancizar Sans",
+      "fallbacks": "system-ui, -apple-system, Segoe UI, Roboto, sans-serif",
+      "monospace": "SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace",
+      "import_url": "https://fonts.googleapis.com/css2?family=Muli:wght@200;300;400;600;700;900&display=swap"
+    },
+    "border_radius": {
+      "default": "0.375rem",
+      "mn": "0.25rem",
+      "sm": "0.25rem",
+      "lg": "0.5rem",
+      "xl": "0.625rem",
+      "xxl": "0.75rem",
+      "pill": "50rem",
+      "unal": "2.5rem"
+    },
+    "box_shadows": {
+      "1": "0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 1px 3px 0 rgba(0, 0, 0, 0.15)",
+      "2": "0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15)",
+      "3": "0 4px 8px 3px rgba(0, 0, 0, 0.15), 0 1px 3px 0 rgba(0, 0, 0, 0.3)",
+      "4": "0 6px 10px 4px rgba(0, 0, 0, 0.15), 0 2px 3px 0 rgba(0, 0, 0, 0.3)",
+      "5": "0 4px 8px 6px rgba(0, 0, 0, 0.15), 0 4px 4px 0 rgba(0, 0, 0, 0.3)"
+    }
+  },
+  "fibog_departamentos": [
+    "Departamento de Ingeniería Civil y Agrícola",
+    "Departamento de Ingeniería Eléctrica y Electrónica",
+    "Departamento de Ingeniería Mecánica y Mecatrónica",
+    "Departamento de Ingeniería Química y Ambiental",
+    "Departamento de Ingeniería de Sistemas e Industrial"
+  ],
+  "fibog_programas": [
+    "Ingeniería Agrícola (SNIES: 24)",
+    "Ingeniería Electrónica (SNIES: 16941)",
+    "Ingeniería Mecatrónica (SNIES: 16939)",
+    "Ingeniería Civil (SNIES: 25)",
+    "Ingeniería Industrial (SNIES: 16940)",
+    "Ingeniería Química (SNIES: 29)",
+    "Ingeniería de Sistemas y Computación (SNIES: 106661)",
+    "Ingeniería Eléctrica (SNIES: 27)",
+    "Ingeniería Mecánica (SNIES: 28)"
+  ],
+  "identificadores_secundarios": {
+    "notas": "Las marcas derivadas deben ser tipográficas, usar la tipografía Ancízar, y llevar el componente gráfico de la marca nominativa UNAL al final. El nombre va en mayúsculas y minúsculas (nunca solo mayúsculas).",
+    "restricciones": [
+      "No se pueden crear identificadores diferentes a los establecidos",
+      "Las sedes no pueden crear logos o identificadores distintos a los institucionales",
+      "No es posible combinar distintos tipos de identificadores",
+      "Deben ir acompañados del logosímbolo dentro de la franja institucional"
+    ],
+    "usos_permitidos": "Afiches, catálogos, banners digitales, impresos y promocionales",
+    "usos_no_permitidos": "Papelería institucional"
+  },
+  "links_utiles": {
+    "identidad_visual": "https://identidad.unal.edu.co/guia-identidad-visual/",
+    "guia_web": "https://identidad.unal.edu.co/guia-web/",
+    "kit_diseno_apps": "https://gestionapp.unal.edu.co/cdn/doc/",
+    "fibog": "https://ingenieria.bogota.unal.edu.co/",
+    "solicitudes_unimedios": "http://solicitudesunimedios.unal.edu.co/"
+  }
+}

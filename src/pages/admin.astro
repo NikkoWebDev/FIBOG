@@ -1,350 +1,40 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Navbar from '../components/Navbar.astro';
-import Footer from '../components/Footer.astro';
+import Breadcrumb from '../components/unal/Breadcrumb.astro';
+import AdminHeader from '../components/admin/AdminHeader.astro';
+import AdminMetricsPanel from '../components/admin/AdminMetricsPanel.astro';
+import AdminTabsNav from '../components/admin/AdminTabsNav.astro';
+import AdminGruposTab from '../components/admin/AdminGruposTab.astro';
+import AdminPendientesTab from '../components/admin/AdminPendientesTab.astro';
+import AdminUsuariosTab from '../components/admin/AdminUsuariosTab.astro';
+import GroupFormModal from '../components/admin/GroupFormModal.astro';
+import AdminsModal from '../components/admin/AdminsModal.astro';
 
 // This page requires SUPER_ADMIN role
 ---
 
-<Layout title="Panel de Administración | FIBOG UNAL" description="Gestión de activos de investigación y monitoreo institucional.">
-  <Navbar activePage="admin" />
+<Layout title="Panel de Administración | FIBOG UNAL" description="Gestión de activos de investigación y monitoreo institucional." activePage="admin">
+  <Breadcrumb items={[{ label: 'Administración' }]} />
   
   <main class="min-h-screen pt-32 pb-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
-    <!-- Header -->
-    <header class="mb-12">
-      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-        <div>
-          <div class="flex items-center gap-2 mb-4">
-            <span class="h-[1px] w-12 bg-secondary"></span>
-            <span class="font-label-mono text-label-mono text-secondary uppercase tracking-widest">Control Central</span>
-          </div>
-          <h1 class="font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface mb-2">Panel de <span class="text-primary">Control</span></h1>
-          <p class="text-on-surface-variant font-body-base max-w-2xl">Gestión de activos de investigación y monitoreo institucional del sistema FIBOG.</p>
-        </div>
-        <button onclick="openCreateModal()" class="px-8 py-4 rounded-xl bg-primary text-on-primary font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-3 self-start">
-          <span class="material-symbols-outlined">add_circle</span>
-          <span>Nuevo Grupo</span>
-        </button>
-      </div>
-    </header>
-    
-    <div class="grid grid-cols-4 md:grid-cols-12 gap-gutter mb-12">
-      <!-- Metrics Section -->
-      <section class="col-span-4 md:col-span-8 glass-card rounded-3xl p-8 relative overflow-hidden group">
-        <div class="noise-overlay"></div>
-        <div class="flex justify-between items-start mb-8">
-          <div>
-            <h2 class="font-headline-md text-primary mb-1">Métricas del Sistema</h2>
-            <span class="font-label-mono text-label-mono text-secondary uppercase tracking-widest">Semestre 2024-I</span>
-          </div>
-          <span class="material-symbols-outlined text-tertiary text-4xl">analytics</span>
-        </div>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-          <div class="flex flex-col">
-            <span class="text-on-surface-variant font-body-sm">Proyectos Activos</span>
-            <span id="total-grupos" class="text-display-lg-mobile font-display-lg text-white">-</span>
-            <div class="h-1 w-full bg-surface-container mt-2 rounded-full overflow-hidden">
-              <div class="h-full bg-secondary w-3/4"></div>
-            </div>
-          </div>
-          <div class="flex flex-col">
-            <span class="text-on-surface-variant font-body-sm">Líderes</span>
-            <span id="total-lideres" class="text-display-lg-mobile font-display-lg text-white">-</span>
-            <div class="h-1 w-full bg-surface-container mt-2 rounded-full overflow-hidden">
-              <div class="h-full bg-tertiary w-1/2"></div>
-            </div>
-          </div>
-          <div class="flex flex-col">
-            <span class="text-on-surface-variant font-body-sm">Pendientes</span>
-            <span id="pending-grupos" class="text-display-lg-mobile font-display-lg text-white">-</span>
-            <div class="h-1 w-full bg-surface-container mt-2 rounded-full overflow-hidden">
-              <div class="h-full bg-primary w-5/6"></div>
-            </div>
-          </div>
-          <div class="flex flex-col">
-            <span class="text-on-surface-variant font-body-sm">Administradores</span>
-            <span id="total-admins" class="text-display-lg-mobile font-display-lg text-white">-</span>
-            <div class="h-1 w-full bg-surface-container mt-2 rounded-full overflow-hidden">
-              <div class="h-full bg-secondary-container w-1/3"></div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Quick Actions Section -->
-      <section class="col-span-4 md:col-span-4 glass-card rounded-3xl p-8 relative overflow-hidden">
-        <div class="noise-overlay"></div>
-        <h2 class="font-headline-md text-white mb-6">Acciones Rápidas</h2>
-        <div class="space-y-3">
-          <button onclick="switchTab('pendientes')" class="w-full flex items-center justify-between p-4 rounded-xl bg-surface-container border border-outline-variant/30 hover:border-secondary/50 transition-all group">
-            <div class="flex items-center gap-4">
-              <span class="material-symbols-outlined text-secondary">pending_actions</span>
-              <span class="font-body-base text-white">Aprobaciones</span>
-            </div>
-            <span id="pending-count-badge" class="bg-error-container text-on-error-container text-xs px-2 py-0.5 rounded-full">-</span>
-          </button>
-          <button onclick="exportData()" class="w-full flex items-center justify-between p-4 rounded-xl bg-surface-container border border-outline-variant/30 hover:border-tertiary/50 transition-all group">
-            <div class="flex items-center gap-4">
-              <span class="material-symbols-outlined text-tertiary">cloud_download</span>
-              <span class="font-body-base text-white">Exportar Reportes</span>
-            </div>
-            <span class="material-symbols-outlined text-on-surface-variant">download</span>
-          </button>
-        </div>
-      </section>
-    </div>
+    <AdminHeader />
+    <AdminMetricsPanel />
 
     <!-- Management Tabs Section -->
-    <section class="glass-card rounded-[32px] overflow-hidden">
-      <div class="noise-overlay"></div>
+    <section class="card rounded-[32px] overflow-hidden">
       <div class="relative z-10">
-        <!-- Tabs Nav -->
-        <div class="flex border-b border-white/10 bg-surface-container/50">
-          <button 
-            onclick="switchTab('grupos')" 
-            id="tab-grupos"
-            class="px-8 py-5 text-sm font-medium transition-all hover:bg-white/5 active border-b-2 border-transparent [&.active]:border-primary [&.active]:text-primary"
-          >
-            Todos los Grupos
-          </button>
-          <button 
-            onclick="switchTab('pendientes')" 
-            id="tab-pendientes"
-            class="px-8 py-5 text-sm font-medium transition-all hover:bg-white/5 border-b-2 border-transparent [&.active]:border-primary [&.active]:text-primary"
-          >
-            Solicitudes Pendientes
-          </button>
-          <button 
-            onclick="switchTab('usuarios')" 
-            id="tab-usuarios"
-            class="px-8 py-5 text-sm font-medium transition-all hover:bg-white/5 border-b-2 border-transparent [&.active]:border-primary [&.active]:text-primary"
-          >
-            Gestión de Usuarios
-          </button>
-        </div>
-
-        <!-- Tab Contents -->
+        <AdminTabsNav />
         <div class="p-8">
-          <!-- Grupos Content -->
-          <div id="content-grupos" class="tab-content">
-            <div class="flex flex-col md:flex-row gap-4 mb-6">
-              <div class="relative flex-1">
-                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
-                <input 
-                  type="text" 
-                  id="search-grupos" 
-                  placeholder="Buscar grupos por nombre, líder o facultad..." 
-                  class="w-full pl-12 pr-4 py-3 rounded-xl bg-surface-container text-on-surface border border-outline-variant/30 focus:border-primary focus:outline-none transition-all"
-                  onkeyup="filterGrupos()"
-                />
-              </div>
-              <select id="filter-tipo" onchange="filterGrupos()" class="px-6 py-3 rounded-xl bg-surface-container text-on-surface border border-outline-variant/30 focus:border-primary focus:outline-none transition-all">
-                <option value="">Todos los tipos</option>
-                <option value="Semillero">Semilleros</option>
-                <option value="Grupo de Investigación">Grupos de Investigación</option>
-                <option value="Grupo Estudiantil">Grupos Estudiantiles</option>
-              </select>
-            </div>
-
-            <div id="loading-grupos" class="py-12 text-center">
-              <div class="w-8 h-8 mx-auto border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
-            </div>
-
-            <div id="grupos-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              <!-- Group tiles will be loaded here -->
-            </div>
-          </div>
-
-          <!-- Pendientes Content -->
-          <div id="content-pendientes" class="tab-content hidden">
-            <div id="pending-list" class="space-y-4">
-              <!-- Pending requests -->
-            </div>
-          </div>
-
-          <!-- Usuarios Content -->
-          <div id="content-usuarios" class="tab-content hidden">
-             <div class="overflow-x-auto rounded-2xl border border-white/5">
-              <table class="w-full text-left">
-                <thead class="bg-surface-container/30 text-on-surface-variant font-label-mono text-[10px] uppercase tracking-widest">
-                  <tr>
-                    <th class="px-6 py-4">Usuario</th>
-                    <th class="px-6 py-4">Email</th>
-                    <th class="px-6 py-4">Rol</th>
-                    <th class="px-6 py-4">Registro</th>
-                    <th class="px-6 py-4 text-center">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody id="usuarios-table-body" class="divide-y divide-white/5">
-                  <!-- Users loaded here -->
-                </tbody>
-              </table>
-            </div>
-          </div>
+          <AdminGruposTab />
+          <AdminPendientesTab />
+          <AdminUsuariosTab />
         </div>
       </div>
     </section>
   </main>
 
-  <!-- Modal for Create/Edit Group -->
-  <div id="group-modal" class="fixed inset-0 z-[110] hidden">
-    <div class="absolute inset-0 bg-black/80 backdrop-blur-md" onclick="closeGroupModal()"></div>
-    <div class="relative min-h-screen flex items-center justify-center p-4">
-      <div class="relative glass-card rounded-[32px] max-w-2xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
-        <div class="noise-overlay"></div>
-        <div class="relative z-10 p-8 overflow-y-auto max-h-[90vh]">
-          <div class="flex items-center justify-between mb-8">
-            <h3 class="text-headline-md font-display-lg text-on-surface" id="modal-title">Nuevo Grupo</h3>
-            <button onclick="closeGroupModal()" class="w-10 h-10 rounded-full glass-card flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-all">
-              <span class="material-symbols-outlined">close</span>
-            </button>
-          </div>
-          
-          <form id="group-form" onsubmit="saveGroup(event)" class="space-y-6">
-            <div class="grid md:grid-cols-2 gap-6">
-              <div class="flex flex-col gap-2">
-                <label class="font-label-mono text-on-surface-variant text-[10px] uppercase px-1">NOMBRE DEL GRUPO *</label>
-                <input type="text" name="nombre" required class="input-glass rounded-xl px-4 py-3 text-on-surface font-body-base" />
-              </div>
-              <div class="flex flex-col gap-2">
-                <label class="font-label-mono text-on-surface-variant text-[10px] uppercase px-1">TIPO *</label>
-                <select name="tipo" required class="input-glass rounded-xl px-4 py-3 text-on-surface font-body-base">
-                  <option value="Semillero">Semillero</option>
-                  <option value="Grupo de Investigación">Grupo de Investigación</option>
-                  <option value="Grupo Estudiantil">Grupo Estudiantil</option>
-                </select>
-              </div>
-            </div>
-            
-            <div class="grid md:grid-cols-2 gap-6">
-              <div class="flex flex-col gap-2">
-                <label class="font-label-mono text-on-surface-variant text-[10px] uppercase px-1">DOCENTE A CARGO</label>
-                <input type="text" name="docente_a_cargo" class="input-glass rounded-xl px-4 py-3 text-on-surface font-body-base" />
-              </div>
-              <div class="flex flex-col gap-2">
-                <label class="font-label-mono text-on-surface-variant text-[10px] uppercase px-1">LÍDER O REPRESENTANTE *</label>
-                <input type="text" name="lider_o_representante" required class="input-glass rounded-xl px-4 py-3 text-on-surface font-body-base" />
-              </div>
-            </div>
-
-            <div class="flex flex-col gap-2">
-              <label class="font-label-mono text-on-surface-variant text-[10px] uppercase px-1">EMAIL DE CONTACTO *</label>
-              <input type="email" name="email_contacto" required class="input-glass rounded-xl px-4 py-3 text-on-surface font-body-base" />
-            </div>
-
-            <div class="flex flex-col gap-2">
-              <label class="font-label-mono text-on-surface-variant text-[10px] uppercase px-1">CARRERAS (separadas por coma)</label>
-              <input type="text" name="carreras" placeholder="Ingeniería de Sistemas, Ingeniería Civil" class="input-glass rounded-xl px-4 py-3 text-on-surface font-body-base" />
-            </div>
-
-            <div class="flex flex-col gap-2">
-              <label class="font-label-mono text-on-surface-variant text-[10px] uppercase px-1">DESCRIPCIÓN</label>
-              <textarea name="descripcion" rows="3" class="input-glass rounded-xl px-4 py-3 text-on-surface font-body-base"></textarea>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-6">
-              <div class="flex flex-col gap-2">
-                <label class="font-label-mono text-on-surface-variant text-[10px] uppercase px-1">ENFOQUE</label>
-                <input type="text" name="enfoque" class="input-glass rounded-xl px-4 py-3 text-on-surface font-body-base" />
-              </div>
-              <div class="flex flex-col gap-2">
-                <label class="font-label-mono text-on-surface-variant text-[10px] uppercase px-1">VINCULACIÓN</label>
-                <input type="text" name="vinculacion" class="input-glass rounded-xl px-4 py-3 text-on-surface font-body-base" />
-              </div>
-            </div>
-
-            <div class="flex flex-col gap-2">
-              <label class="font-label-mono text-on-surface-variant text-[10px] uppercase px-1">ACTIVIDADES</label>
-              <textarea name="actividades" rows="2" class="input-glass rounded-xl px-4 py-3 text-on-surface font-body-base"></textarea>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-6">
-              <div class="flex flex-col gap-2">
-                <label class="font-label-mono text-on-surface-variant text-[10px] uppercase px-1">MODALIDAD</label>
-                <select name="modalidad" class="input-glass rounded-xl px-4 py-3 text-on-surface font-body-base">
-                  <option value="">Seleccionar modalidad</option>
-                  <option value="Presencial">Presencial</option>
-                  <option value="Virtual">Virtual</option>
-                  <option value="Híbrido">Híbrido</option>
-                </select>
-              </div>
-              <div class="flex flex-col gap-2">
-                <label class="font-label-mono text-on-surface-variant text-[10px] uppercase px-1">HORARIOS HABITUALES</label>
-                <input type="text" name="horarios_habituales" class="input-glass rounded-xl px-4 py-3 text-on-surface font-body-base" />
-              </div>
-            </div>
-
-            <div class="flex flex-col gap-2">
-              <label class="font-label-mono text-on-surface-variant text-[10px] uppercase px-1">REQUISITOS DE INGRESO</label>
-              <textarea name="requisitos_ingreso" rows="2" class="input-glass rounded-xl px-4 py-3 text-on-surface font-body-base"></textarea>
-            </div>
-
-            <div class="flex flex-col gap-2">
-              <label class="font-label-mono text-on-surface-variant text-[10px] uppercase px-1">NIVEL ACADÉMICO RECOMENDADO</label>
-              <input type="text" name="nivel_academico_recomendado" class="input-glass rounded-xl px-4 py-3 text-on-surface font-body-base" />
-            </div>
-
-            <div class="flex flex-col gap-2">
-              <label class="font-label-mono text-on-surface-variant text-[10px] uppercase px-1">REDES SOCIALES</label>
-              <input type="text" name="redes_sociales" placeholder="Instagram, Twitter, LinkedIn" class="input-glass rounded-xl px-4 py-3 text-on-surface font-body-base" />
-            </div>
-
-            <div class="flex flex-col gap-2">
-              <label class="font-label-mono text-on-surface-variant text-[10px] uppercase px-1">COMENTARIOS ADICIONALES</label>
-              <textarea name="comentarios_adicionales" rows="2" class="input-glass rounded-xl px-4 py-3 text-on-surface font-body-base"></textarea>
-            </div>
-
-            <div class="flex justify-end gap-4 mt-8">
-              <button type="button" onclick="closeGroupModal()" class="px-6 py-3 rounded-xl border border-white/10 font-medium hover:bg-white/5 transition-all">Cancelar</button>
-              <button type="submit" class="px-8 py-3 rounded-xl bg-primary text-on-primary font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all">Guardar Grupo</button>
-            </div>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Modal for Managing Group Admins -->
-  <div id="admins-modal" class="fixed inset-0 z-[110] hidden">
-    <div class="absolute inset-0 bg-black/80 backdrop-blur-md" onclick="closeAdminsModal()"></div>
-    <div class="relative min-h-screen flex items-center justify-center p-4">
-      <div class="relative glass-card rounded-[32px] max-w-2xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
-        <div class="noise-overlay"></div>
-        <div class="relative z-10 p-8 overflow-y-auto max-h-[90vh]">
-          <div class="flex items-center justify-between mb-8">
-            <div>
-              <h3 class="text-headline-md font-display-lg text-on-surface" id="admins-modal-title">Admins del Grupo</h3>
-              <p class="text-sm text-on-surface-variant mt-1" id="admins-modal-subtitle"></p>
-            </div>
-            <button onclick="closeAdminsModal()" class="w-10 h-10 rounded-full glass-card flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-all">
-              <span class="material-symbols-outlined">close</span>
-            </button>
-          </div>
-          
-          <div class="mb-6">
-            <h4 class="font-label-mono text-on-surface-variant text-[10px] uppercase mb-3">AGREGAR NUEVO ADMIN</h4>
-            <div class="flex gap-2">
-              <select id="user-select" class="flex-1 input-glass rounded-xl px-4 py-3 text-on-surface font-body-base">
-                <option value="">Seleccionar usuario...</option>
-              </select>
-              <button onclick="addAdminToGroup()" class="px-6 py-3 rounded-xl bg-primary text-on-primary font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all">
-                <span class="material-symbols-outlined text-sm">add</span>
-              </button>
-            </div>
-          </div>
-
-          <div>
-            <h4 class="font-label-mono text-on-surface-variant text-[10px] uppercase mb-3">ADMINS ACTUALES</h4>
-            <div id="current-admins-list" class="space-y-3">
-              <!-- Current admins will be loaded here -->
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <Footer />
+  <GroupFormModal />
+  <AdminsModal />
 </Layout>
 
 <style>
@@ -355,9 +45,9 @@ import Footer from '../components/Footer.astro';
   }
   .input-glass:focus {
     background: rgba(255, 255, 255, 0.06);
-    border-color: #85d990;
+    border-color: #677d29;
     outline: none;
-    box-shadow: 0 0 0 2px rgba(133, 217, 144, 0.2);
+    box-shadow: 0 0 0 2px rgba(103, 125, 41, 0.2);
   }
   .animate-fade-in {
     animation: fadeIn 0.3s ease-out;
@@ -433,7 +123,7 @@ import Footer from '../components/Footer.astro';
     allGrupos = grupos;
     const grid = document.getElementById('grupos-grid');
     grid.innerHTML = grupos.map(grupo => `
-      <div class="glass-card rounded-2xl p-6 border border-white/10 hover:border-primary/50 transition-all group" data-grupo-id="${grupo.id}">
+      <div class="card rounded-2xl p-6 border border-neutral-80 hover:border-primary/50 transition-all group" data-grupo-id="${grupo.id}">
         <div class="flex items-start justify-between mb-4">
           <div class="flex-1">
             <div class="flex items-center gap-2 mb-2">
@@ -456,8 +146,8 @@ import Footer from '../components/Footer.astro';
           </div>
         </div>
 
-        <div class="flex items-center gap-2 pt-4 border-t border-white/10">
-          <button onclick="editGroup('${grupo.id}')" class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-surface-container hover:bg-white/10 transition-all text-sm">
+        <div class="flex items-center gap-2 pt-4 border-t border-neutral-80">
+          <button onclick="editGroup('${grupo.id}')" class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-surface-container hover:bg-neutral-10 transition-all text-sm">
             <span class="material-symbols-outlined text-base">edit</span>
             <span>Editar</span>
           </button>
@@ -481,7 +171,7 @@ import Footer from '../components/Footer.astro';
 
     const tbody = document.getElementById('usuarios-table-body');
     tbody.innerHTML = usuarios.map(usuario => `
-      <tr class="hover:bg-white/5 transition-colors">
+      <tr class="hover:bg-neutral-10 transition-colors">
         <td class="px-6 py-4 font-medium text-white">${usuario.nombre_completo || 'Sin nombre'}</td>
         <td class="px-6 py-4 text-on-surface-variant text-sm">${usuario.email}</td>
         <td class="px-6 py-4">
@@ -489,7 +179,7 @@ import Footer from '../components/Footer.astro';
         </td>
         <td class="px-6 py-4 text-on-surface-variant text-sm">${new Date(usuario.fecha_registro).toLocaleDateString()}</td>
         <td class="px-6 py-4 text-center">
-          <button onclick="changeRole('${usuario.id}')" class="p-2 hover:bg-white/10 rounded-lg transition-all"><span class="material-symbols-outlined text-sm">admin_panel_settings</span></button>
+          <button onclick="changeRole('${usuario.id}')" class="p-2 hover:bg-neutral-10 rounded-lg transition-all"><span class="material-symbols-outlined text-sm">admin_panel_settings</span></button>
         </td>
       </tr>
     `).join('');
@@ -506,7 +196,7 @@ import Footer from '../components/Footer.astro';
     }
 
     pendingList.innerHTML = pendientes.map(solicitud => `
-      <div class="glass-card rounded-xl p-6 border border-white/10">
+      <div class="card rounded-xl p-6 border border-neutral-80">
         <div class="flex justify-between items-start mb-4">
           <div>
             <h4 class="text-lg font-medium text-white">${solicitud.nombre}</h4>
@@ -887,7 +577,7 @@ import Footer from '../components/Footer.astro';
 
   function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
-    notification.className = `fixed top-4 right-4 z-[200] px-6 py-4 rounded-xl glass-card flex items-center gap-3 shadow-2xl animate-fade-in ${
+    notification.className = `fixed top-4 right-4 z-[200] px-6 py-4 rounded-xl card flex items-center gap-3 shadow-2xl animate-fade-in ${
       type === 'success' ? 'text-primary' : type === 'error' ? 'text-error' : 'text-tertiary'
     }`;
     notification.innerHTML = `
@@ -949,7 +639,7 @@ import Footer from '../components/Footer.astro';
     }
 
     list.innerHTML = admins.map(admin => `
-      <div class="flex items-center justify-between p-4 rounded-xl bg-surface-container border border-white/5">
+      <div class="flex items-center justify-between p-4 rounded-xl bg-surface-container border border-neutral-80">
         <div>
           <div class="font-medium text-white">${admin.perfiles.nombre_completo || admin.perfiles.email}</div>
           <div class="text-xs text-on-surface-variant">${admin.perfiles.rol}</div>

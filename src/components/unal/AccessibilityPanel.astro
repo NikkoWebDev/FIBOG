@@ -1,0 +1,210 @@
+---
+// AccessibilityPanel.astro - Panel de accesibilidad obligatorio UNAL
+// Opciones: Tamaño de letra (200%), Cambiar contrastes (3 modos), Invertir colores, Restablecer
+---
+
+<!-- Botón flotante de accesibilidad -->
+<button 
+  id="accessibility-toggle"
+  class="fixed bottom-4 right-4 z-[100] w-12 h-12 bg-primary text-white rounded-full shadow-lg flex items-center justify-center hover:bg-primary-60 transition-colors"
+  aria-label="Panel de accesibilidad"
+  title="Accesibilidad"
+>
+  <span class="material-symbols-outlined">accessibility_new</span>
+</button>
+
+<!-- Panel de accesibilidad -->
+<div 
+  id="accessibility-panel" 
+  class="fixed bottom-20 right-4 z-[100] bg-white rounded-lg shadow-xl border border-neutral-80 p-4 hidden w-72"
+>
+  <h3 class="font-bold text-sm mb-4 text-neutral-40">Accesibilidad</h3>
+  
+  <!-- Tamaño de letra -->
+  <div class="mb-4">
+    <label class="text-xs font-medium text-neutral-50 mb-2 block">Tamaño de letra</label>
+    <div class="flex items-center gap-2">
+      <button 
+        id="font-decrease" 
+        class="w-8 h-8 rounded border border-neutral-80 flex items-center justify-center hover:bg-neutral-95 transition-colors text-sm"
+        aria-label="Reducir tamaño"
+      >
+        A-
+      </button>
+      <span id="font-size-display" class="text-sm font-medium min-w-[40px] text-center">100%</span>
+      <button 
+        id="font-increase" 
+        class="w-8 h-8 rounded border border-neutral-80 flex items-center justify-center hover:bg-neutral-95 transition-colors text-sm"
+        aria-label="Aumentar tamaño"
+      >
+        A+
+      </button>
+    </div>
+  </div>
+
+  <!-- Cambiar contrastes -->
+  <div class="mb-4">
+    <label class="text-xs font-medium text-neutral-50 mb-2 block">Contraste</label>
+    <div class="flex gap-2">
+      <button 
+        id="contrast-default" 
+        class="w-8 h-8 rounded border-2 border-primary bg-white"
+        title="Contraste normal"
+        aria-label="Contraste normal"
+      ></button>
+      <button 
+        id="contrast-dark" 
+        class="w-8 h-8 rounded border border-neutral-80 bg-neutral-10"
+        title="Contraste alto"
+        aria-label="Contraste alto"
+      ></button>
+      <button 
+        id="contrast-light" 
+        class="w-8 h-8 rounded border border-neutral-80 bg-white"
+        title="Contraste bajo"
+        aria-label="Contraste bajo"
+      ></button>
+    </div>
+  </div>
+
+  <!-- Invertir colores -->
+  <div class="mb-4">
+    <label class="text-xs font-medium text-neutral-50 mb-2 block">Invertir colores</label>
+    <button 
+      id="invert-colors" 
+      class="w-full py-2 px-3 rounded border border-neutral-80 text-sm hover:bg-neutral-95 transition-colors"
+    >
+      Invertir
+    </button>
+  </div>
+
+  <!-- Restablecer -->
+  <button 
+    id="reset-accessibility" 
+    class="w-full py-2 px-3 rounded bg-primary text-white text-sm hover:bg-primary-60 transition-colors"
+  >
+    Restablecer ajustes
+  </button>
+</div>
+
+<script>
+  // Estado de accesibilidad
+  let fontSize = 100;
+  let contrastMode = 'default';
+  let inverted = false;
+
+  // Elementos
+  const toggle = document.getElementById('accessibility-toggle');
+  const panel = document.getElementById('accessibility-panel');
+  const fontDisplay = document.getElementById('font-size-display');
+  const fontIncrease = document.getElementById('font-increase');
+  const fontDecrease = document.getElementById('font-decrease');
+  const contrastDefault = document.getElementById('contrast-default');
+  const contrastDark = document.getElementById('contrast-dark');
+  const contrastLight = document.getElementById('contrast-light');
+  const invertBtn = document.getElementById('invert-colors');
+  const resetBtn = document.getElementById('reset-accessibility');
+
+  // Toggle panel
+  toggle?.addEventListener('click', () => {
+    panel?.classList.toggle('hidden');
+  });
+
+  // Tamaño de letra (hasta 200%)
+  fontIncrease?.addEventListener('click', () => {
+    if (fontSize < 200) {
+      fontSize += 10;
+      updateFontSize();
+    }
+  });
+
+  fontDecrease?.addEventListener('click', () => {
+    if (fontSize > 50) {
+      fontSize -= 10;
+      updateFontSize();
+    }
+  });
+
+  function updateFontSize() {
+    document.documentElement.style.fontSize = `${fontSize}%`;
+    if (fontDisplay) fontDisplay.textContent = `${fontSize}%`;
+  }
+
+  // Contraste
+  contrastDefault?.addEventListener('click', () => {
+    contrastMode = 'default';
+    updateContrast();
+  });
+
+  contrastDark?.addEventListener('click', () => {
+    contrastMode = 'dark';
+    updateContrast();
+  });
+
+  contrastLight?.addEventListener('click', () => {
+    contrastMode = 'light';
+    updateContrast();
+  });
+
+  function updateContrast() {
+    const body = document.body;
+    body.classList.remove('contrast-default', 'contrast-dark', 'contrast-light');
+    body.classList.add(`contrast-${contrastMode}`);
+  }
+
+  // Invertir colores
+  invertBtn?.addEventListener('click', () => {
+    inverted = !inverted;
+    document.documentElement.classList.toggle('inverted', inverted);
+  });
+
+  // Restablecer
+  resetBtn?.addEventListener('click', () => {
+    fontSize = 100;
+    contrastMode = 'default';
+    inverted = false;
+    
+    document.documentElement.style.fontSize = '';
+    document.documentElement.classList.remove('inverted');
+    document.body.classList.remove('contrast-default', 'contrast-dark', 'contrast-light');
+    
+    if (fontDisplay) fontDisplay.textContent = '100%';
+  });
+</script>
+
+<style>
+  /* Modos de contraste */
+  body.contrast-default {
+    background-color: #fafafa;
+    color: #1c1b1f;
+  }
+  
+  body.contrast-dark {
+    background-color: #000000;
+    color: #ffffff;
+  }
+  
+  body.contrast-dark .bg-white {
+    background-color: #1a1a1a !important;
+  }
+  
+  body.contrast-dark .text-neutral-40,
+  body.contrast-dark .text-neutral-50,
+  body.contrast-dark .text-neutral-60 {
+    color: #ffffff !important;
+  }
+  
+  body.contrast-light {
+    background-color: #ffffff;
+    color: #000000;
+  }
+  
+  /* Invertir colores */
+  html.inverted {
+    filter: invert(1) hue-rotate(180deg);
+  }
+  
+  html.inverted img {
+    filter: invert(1) hue-rotate(180deg);
+  }
+</style>

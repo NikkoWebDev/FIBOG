@@ -1,0 +1,170 @@
+---
+// UnalFooter.astro - Pie de página institucional UNAL
+// Cumple con las especificaciones de la plantilla web UNAL
+
+// Fecha de actualización automática
+const fechaActualizacion = new Date().toLocaleDateString('es-CO', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric'
+});
+
+// Enlaces Gobierno en Línea (NO MODIFICABLES - links fijos de plantilla)
+const gobiernoEnLinea = [
+  { label: 'Régimen Legal', url: 'https://www.funcionpublica.gov.co/eva/gestornormativo/' },
+  { label: 'Contratación', url: 'https://www.colombiacompra.gov.co/' },
+  { label: 'Planeación', url: 'https://www.dnp.gov.co/' },
+  { label: 'Presupuesto', url: 'https://www.dian.gov.co/' },
+  { label: 'Trámites y Servicios', url: 'https://www.gov.co/' },
+];
+
+// Información de carácter nacional obligatoria
+const infoNacional = [
+  { label: 'Orgullo UNAL', url: 'https://orgullounal.unal.edu.co/' },
+  { label: 'Agencia UNAL', url: 'https://agencia.unal.edu.co/' },
+  { label: 'Sistema de Bibliotecas', url: 'https://sfrfrase.unal.edu.co/' },
+  { label: 'Bienestar Universitario', url: 'https://bienestar.unal.edu.co/' },
+];
+
+// Enlaces institucionales (íconos de exigencias institucionales y Gobierno en Línea)
+const enlacesInstitucionales = [
+  { 
+    label: 'Campaña institucional vigente', 
+    url: 'https://www.unal.edu.co/',
+    img: 'https://identidad.unal.edu.co/fileadmin/templates/images/escudoUnal.png'
+  },
+  { 
+    label: 'Medio de comunicación oficial', 
+    url: 'https://agencia.unal.edu.co/',
+    img: 'https://identidad.unal.edu.co/fileadmin/templates/images/agencia.png'
+  },
+  { 
+    label: 'Programa de gobierno en línea', 
+    url: 'https://www.gov.co/',
+    img: 'https://www.gov.co/images/gobiernoenlinea.png'
+  },
+  { 
+    label: 'Contaduría General de la Nación', 
+    url: 'https://www.contraloria.gov.co/',
+    img: 'https://www.contraloria.gov.co/sites/default/files/logo-contraloria.png'
+  },
+];
+---
+
+<footer class="bg-neutral-10 text-white">
+  <!-- Gobierno en Línea -->
+  <div class="bg-primary">
+    <div class="max-w-[1440px] mx-auto px-4 py-6">
+      <h3 class="text-sm font-bold mb-4">Gobierno en Línea</h3>
+      <div class="flex flex-wrap gap-4 text-xs">
+        {gobiernoEnLinea.map((link) => (
+          <a 
+            href={link.url} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            class="hover:text-primary-80 transition-colors"
+          >
+            {link.label}
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenido principal del footer -->
+  <div class="max-w-[1440px] mx-auto px-4 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <!-- Columna 1: Información de carácter nacional -->
+      <div>
+        <h4 class="font-bold text-sm mb-4 text-primary-80">Información Nacional</h4>
+        <ul class="space-y-2 text-sm text-neutral-70">
+          {infoNacional.map((link) => (
+            <li>
+              <a 
+                href={link.url} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                class="hover:text-primary-80 transition-colors"
+              >
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <!-- Columna 2: Datos de contacto -->
+      <div>
+        <h4 class="font-bold text-sm mb-4 text-primary-80">Contacto</h4>
+        <div class="text-sm text-neutral-70 space-y-2">
+          <p><strong>Dirección:</strong> Carrera 30 # 45-03</p>
+          <p><strong>Edificio:</strong> Edif. 103 Polideportivo 2 piso</p>
+          <p><strong>Ciudad:</strong> Bogotá D.C., Colombia</p>
+          <p><strong>Teléfono:</strong> 316 5000, ext. 18282</p>
+          <p><strong>Correo:</strong> <a href="mailto:semilleros.fibog@unal.edu.co" class="text-primary hover:text-primary-60 transition-colors">semilleros.fibog@unal.edu.co</a></p>
+        </div>
+      </div>
+
+      <!-- Columna 3: Acerca de este sitio -->
+      <div>
+        <h4 class="font-bold text-sm mb-4 text-primary-80">Acerca de este sitio web</h4>
+        <div class="text-sm text-neutral-70 space-y-2">
+          <p>Desarrollado por la Facultad de Ingeniería - Universidad Nacional de Colombia.</p>
+          <p>Actualización: {fechaActualizacion}</p>
+          <p class="text-xs text-neutral-60 mt-4">
+            <a href="/privacidad" class="hover:text-primary-80 transition-colors">Política de privacidad</a>
+          </p>
+        </div>
+      </div>
+
+      <!-- Columna 4: Propiedad intelectual -->
+      <div>
+        <h4 class="font-bold text-sm mb-4 text-primary-80">Propiedad Intelectual</h4>
+        <div class="text-sm text-neutral-70 space-y-2">
+          <p>© Copyright 2014</p>
+          <p>Algunos derechos reservados.</p>
+          <p class="text-xs text-neutral-60 mt-4">
+            Universidad Nacional de Colombia
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Enlaces institucionales (íconos) -->
+  <div class="border-t border-neutral-30">
+    <div class="max-w-[1440px] mx-auto px-4 py-6">
+      <div class="flex flex-wrap justify-center gap-6">
+        {enlacesInstitucionales.map((enlace) => (
+          <a 
+            href={enlace.url} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            class="flex flex-col items-center gap-2 text-xs text-neutral-70 hover:text-primary-80 transition-colors"
+            title={enlace.label}
+          >
+            <img 
+              src={enlace.img} 
+              alt={enlace.label} 
+              class="h-12 w-auto grayscale hover:grayscale-0 transition-all"
+            />
+            <span class="text-center max-w-[120px]">{enlace.label}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- Escudo UNAL final -->
+  <div class="bg-primary/10 py-4">
+    <div class="max-w-[1440px] mx-auto px-4 flex justify-center">
+      <a href="https://www.unal.edu.co/" target="_blank" rel="noopener noreferrer">
+        <img 
+          src="https://identidad.unal.edu.co/fileadmin/templates/images/escudoUnal.png" 
+          alt="Escudo Universidad Nacional de Colombia" 
+          class="h-16 w-auto"
+        />
+      </a>
+    </div>
+  </div>
+</footer>

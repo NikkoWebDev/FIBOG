@@ -1,0 +1,32 @@
+---
+// Admin groups tab - search, filter, and group grid
+---
+
+<div id="content-grupos" class="tab-content">
+  <div class="flex flex-col md:flex-row gap-4 mb-6">
+    <div class="relative flex-1">
+      <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+      <input 
+        type="text" 
+        id="search-grupos" 
+        placeholder="Buscar grupos por nombre, líder o facultad..." 
+        class="w-full pl-12 pr-4 py-3 rounded-xl bg-surface-container text-on-surface border border-outline-variant/30 focus:border-primary focus:outline-none transition-all"
+        onkeyup="filterGrupos()"
+      />
+    </div>
+    <select id="filter-tipo" onchange="filterGrupos()" class="px-6 py-3 rounded-xl bg-surface-container text-on-surface border border-outline-variant/30 focus:border-primary focus:outline-none transition-all">
+      <option value="">Todos los tipos</option>
+      <option value="Semillero">Semilleros</option>
+      <option value="Grupo de Investigación">Grupos de Investigación</option>
+      <option value="Grupo Estudiantil">Grupos Estudiantiles</option>
+    </select>
+  </div>
+
+  <div id="loading-grupos" class="py-12 text-center">
+    <div class="w-8 h-8 mx-auto border-2 border-primary/30 border-t-primary rounded-full animate-spin"></div>
+  </div>
+
+  <div id="grupos-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Group tiles will be loaded here -->
+  </div>
+</div>

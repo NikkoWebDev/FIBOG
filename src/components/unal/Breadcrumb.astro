@@ -1,0 +1,38 @@
+---
+// Breadcrumb.astro - Migas de pan obligatorias en páginas internas UNAL
+// El ítem "inicio" debe direccionar al home del sitio
+
+interface Props {
+  items: Array<{ label: string; url?: string }>;
+}
+
+const { items } = Astro.props;
+---
+
+<nav aria-label="Breadcrumb" class="py-3 text-sm">
+  <ol class="flex items-center gap-2 text-neutral-60">
+    <li>
+      <a 
+        href="/" 
+        class="hover:text-primary transition-colors"
+      >
+        Inicio
+      </a>
+    </li>
+    {items.map((item, index) => (
+      <li class="flex items-center gap-2">
+        <span class="text-neutral-80">/</span>
+        {item.url ? (
+          <a 
+            href={item.url} 
+            class="hover:text-primary transition-colors"
+          >
+            {item.label}
+          </a>
+        ) : (
+          <span class="text-neutral-40 font-medium">{item.label}</span>
+        )}
+      </li>
+    ))}
+  </ol>
+</nav>

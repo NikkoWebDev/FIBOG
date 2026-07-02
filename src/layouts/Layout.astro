@@ -1,29 +1,37 @@
 ---
+import UnalHeader from '../components/unal/UnalHeader.astro';
+import UnalFooter from '../components/unal/UnalFooter.astro';
+import AccessibilityPanel from '../components/unal/AccessibilityPanel.astro';
+import ServicesTab from '../components/unal/ServicesTab.astro';
+
 interface Props {
   title?: string;
   description?: string;
+  activePage?: string;
 }
 
 const { 
-  title = "UNAL | FIBOG - Facultad de Ingeniería", 
-  description = "Facultad de Ingeniería - Bogotá: Descubre grupos de investigación, semilleros y comunidades estudiantiles UNAL"
+  title = "Semilleros FIBOG | Universidad Nacional de Colombia", 
+  description = "Facultad de Ingeniería - Bogotá: Descubre grupos de investigación, semilleros y comunidades estudiantiles UNAL",
+  activePage = 'inicio'
 } = Astro.props;
 ---
 
 <!DOCTYPE html>
-<html lang="es" class="dark">
+<html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content={description} />
-  <meta name="theme-color" content="#131313" />
-  <title>{title}</title>
+  <meta name="theme-color" content="#677d29" />
+  <title>{title} | Universidad Nacional de Colombia</title>
+  
+  <!-- Favicon (Escudo UNAL) -->
+  <link rel="icon" type="image/png" href="https://identidad.unal.edu.co/fileadmin/templates/images/escudoUnal.png" />
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=JetBrains+Mono:wght@100..800&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
   
   <!-- GSAP -->
@@ -31,16 +39,22 @@ const {
   <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
   
   <slot name="head" />
-  <style>
-    body.with-pattern {
-      background-color: #131313;
-      background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.02) 1px, transparent 0);
-      background-size: 40px 40px;
-    }
-  </style>
 </head>
-<body class="bg-background text-on-background font-body-base antialiased selection:bg-primary/30 min-h-screen with-pattern">
-  <slot />
+<body class="bg-background text-on-background font-body-base antialiased min-h-screen">
+  <!-- Header UNAL -->
+  <UnalHeader activePage={activePage} />
+  
+  <!-- Contenido principal -->
+  <main class="min-h-screen">
+    <slot />
+  </main>
+  
+  <!-- Footer UNAL -->
+  <UnalFooter />
+  
+  <!-- Paneles de accesibilidad y servicios -->
+  <AccessibilityPanel />
+  <ServicesTab />
   
   <!-- Global Modal Container -->
   <div id="global-modal-container"></div>

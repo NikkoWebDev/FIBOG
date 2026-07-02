@@ -10,7 +10,7 @@ const { placeholder = "Pregunta sobre investigación..." } = Astro.props;
   <!-- Search Input -->
   <div class="relative group mb-6">
     <div class="absolute -inset-1 bg-gradient-to-r from-primary to-secondary rounded-2xl blur opacity-25 group-focus-within:opacity-50 transition duration-1000"></div>
-    <div class="relative glass-card rounded-2xl flex items-center px-6 py-4">
+    <div class="relative card rounded-2xl flex items-center px-6 py-4">
       <span class="material-symbols-outlined text-primary mr-4 text-2xl" data-icon="search">search</span>
       <input 
         type="text" 
@@ -32,8 +32,7 @@ const { placeholder = "Pregunta sobre investigación..." } = Astro.props;
   </div>
   
   <!-- AI Thinking State (Hidden by default) -->
-  <div id="ai-thinking" class="hidden glass-card rounded-3xl p-8 border-primary/20 bg-primary/5 mb-8">
-    <div class="noise-overlay"></div>
+  <div id="ai-thinking" class="hidden card rounded-3xl p-8 border-primary/20 bg-primary/5 mb-8">
     <div class="flex items-start gap-6 relative z-10">
       <div class="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shrink-0 shadow-lg shadow-primary/20">
         <span class="material-symbols-outlined text-on-primary filled" data-icon="psychology_alt">psychology_alt</span>
@@ -63,9 +62,7 @@ const { placeholder = "Pregunta sobre investigación..." } = Astro.props;
   
   <!-- AI Results (Hidden by default) -->
   <div id="ai-results" class="hidden mb-8">
-    <div class="glass-card rounded-3xl p-8 border-primary/20 bg-gradient-to-br from-primary/5 to-secondary/5 relative overflow-hidden">
-      <div class="noise-overlay opacity-30"></div>
-      
+    <div class="card rounded-3xl p-8 border-primary/20 bg-gradient-to-br from-primary/5 to-secondary/5 relative overflow-hidden">
       <!-- Decorative gradient -->
       <div class="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
       

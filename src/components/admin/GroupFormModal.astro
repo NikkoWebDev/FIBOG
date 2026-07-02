@@ -1,0 +1,119 @@
+---
+// Modal for creating/editing groups
+---
+
+<div id="group-modal" class="fixed inset-0 z-[110] hidden">
+  <div class="absolute inset-0 bg-black/80 backdrop-blur-md" onclick="closeGroupModal()"></div>
+  <div class="relative min-h-screen flex items-center justify-center p-4">
+    <div class="relative card rounded-[32px] max-w-2xl w-full max-h-[90vh] overflow-hidden shadow-2xl">
+      <div class="relative z-10 p-8 overflow-y-auto max-h-[90vh]">
+        <div class="flex items-center justify-between mb-8">
+          <h3 class="text-headline-md font-display-lg text-on-surface" id="modal-title">Nuevo Grupo</h3>
+          <button onclick="closeGroupModal()" class="w-10 h-10 rounded-full card flex items-center justify-center text-on-surface-variant hover:text-on-surface transition-all">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+        
+        <form id="group-form" onsubmit="saveGroup(event)" class="space-y-6">
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="flex flex-col gap-2">
+              <label class="font-label-mono text-on-surface-variant text-[10px] uppercase px-1">NOMBRE DEL GRUPO *</label>
+              <input type="text" name="nombre" required class="input-glass rounded-xl px-4 py-3 text-on-surface font-body-base" />
+            </div>
+            <div class="flex flex-col gap-2">
+              <label class="font-label-mono text-on-surface-variant text-[10px] uppercase px-1">TIPO *</label>
+              <select name="tipo" required class="input-glass rounded-xl px-4 py-3 text-on-surface font-body-base">
+                <option value="Semillero">Semillero</option>
+                <option value="Grupo de Investigación">Grupo de Investigación</option>
+                <option value="Grupo Estudiantil">Grupo Estudiantil</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="flex flex-col gap-2">
+              <label class="font-label-mono text-on-surface-variant text-[10px] uppercase px-1">DOCENTE A CARGO</label>
+              <input type="text" name="docente_a_cargo" class="input-glass rounded-xl px-4 py-3 text-on-surface font-body-base" />
+            </div>
+            <div class="flex flex-col gap-2">
+              <label class="font-label-mono text-on-surface-variant text-[10px] uppercase px-1">LÍDER O REPRESENTANTE *</label>
+              <input type="text" name="lider_o_representante" required class="input-glass rounded-xl px-4 py-3 text-on-surface font-body-base" />
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <label class="font-label-mono text-on-surface-variant text-[10px] uppercase px-1">EMAIL DE CONTACTO *</label>
+            <input type="email" name="email_contacto" required class="input-glass rounded-xl px-4 py-3 text-on-surface font-body-base" />
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <label class="font-label-mono text-on-surface-variant text-[10px] uppercase px-1">CARRERAS (separadas por coma)</label>
+            <input type="text" name="carreras" placeholder="Ingeniería de Sistemas, Ingeniería Civil" class="input-glass rounded-xl px-4 py-3 text-on-surface font-body-base" />
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <label class="font-label-mono text-on-surface-variant text-[10px] uppercase px-1">DESCRIPCIÓN</label>
+            <textarea name="descripcion" rows="3" class="input-glass rounded-xl px-4 py-3 text-on-surface font-body-base"></textarea>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="flex flex-col gap-2">
+              <label class="font-label-mono text-on-surface-variant text-[10px] uppercase px-1">ENFOQUE</label>
+              <input type="text" name="enfoque" class="input-glass rounded-xl px-4 py-3 text-on-surface font-body-base" />
+            </div>
+            <div class="flex flex-col gap-2">
+              <label class="font-label-mono text-on-surface-variant text-[10px] uppercase px-1">VINCULACIÓN</label>
+              <input type="text" name="vinculacion" class="input-glass rounded-xl px-4 py-3 text-on-surface font-body-base" />
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <label class="font-label-mono text-on-surface-variant text-[10px] uppercase px-1">ACTIVIDADES</label>
+            <textarea name="actividades" rows="2" class="input-glass rounded-xl px-4 py-3 text-on-surface font-body-base"></textarea>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="flex flex-col gap-2">
+              <label class="font-label-mono text-on-surface-variant text-[10px] uppercase px-1">MODALIDAD</label>
+              <select name="modalidad" class="input-glass rounded-xl px-4 py-3 text-on-surface font-body-base">
+                <option value="">Seleccionar modalidad</option>
+                <option value="Presencial">Presencial</option>
+                <option value="Virtual">Virtual</option>
+                <option value="Híbrido">Híbrido</option>
+              </select>
+            </div>
+            <div class="flex flex-col gap-2">
+              <label class="font-label-mono text-on-surface-variant text-[10px] uppercase px-1">HORARIOS HABITUALES</label>
+              <input type="text" name="horarios_habituales" class="input-glass rounded-xl px-4 py-3 text-on-surface font-body-base" />
+            </div>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <label class="font-label-mono text-on-surface-variant text-[10px] uppercase px-1">REQUISITOS DE INGRESO</label>
+            <textarea name="requisitos_ingreso" rows="2" class="input-glass rounded-xl px-4 py-3 text-on-surface font-body-base"></textarea>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <label class="font-label-mono text-on-surface-variant text-[10px] uppercase px-1">NIVEL ACADÉMICO RECOMENDADO</label>
+            <input type="text" name="nivel_academico_recomendado" class="input-glass rounded-xl px-4 py-3 text-on-surface font-body-base" />
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <label class="font-label-mono text-on-surface-variant text-[10px] uppercase px-1">REDES SOCIALES</label>
+            <input type="text" name="redes_sociales" placeholder="Instagram, Twitter, LinkedIn" class="input-glass rounded-xl px-4 py-3 text-on-surface font-body-base" />
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <label class="font-label-mono text-on-surface-variant text-[10px] uppercase px-1">COMENTARIOS ADICIONALES</label>
+            <textarea name="comentarios_adicionales" rows="2" class="input-glass rounded-xl px-4 py-3 text-on-surface font-body-base"></textarea>
+          </div>
+
+          <div class="flex justify-end gap-4 mt-8">
+            <button type="button" onclick="closeGroupModal()" class="px-6 py-3 rounded-xl border border-white/10 font-medium hover:bg-white/5 transition-all">Cancelar</button>
+            <button type="submit" class="px-8 py-3 rounded-xl bg-primary text-on-primary font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all">Guardar Grupo</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

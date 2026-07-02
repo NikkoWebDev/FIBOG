@@ -1,0 +1,182 @@
+---
+// UnalHeader.astro - Cabezote institucional UNAL
+// Cumple con las 5 áreas obligatorias de la plantilla web UNAL
+
+interface Props {
+  activePage?: string;
+}
+
+const { activePage = 'inicio' } = Astro.props;
+
+// Perfiles de usuario (obligatorio para sedes/nivel nacional)
+const perfiles = [
+  { label: 'Aspirantes', url: 'https://talento.unal.edu.co/' },
+  { label: 'Estudiantes', url: 'https://www.unal.edu.co/estudiantes/' },
+  { label: 'Egresados', url: 'https://www.unal.edu.co/egresados/' },
+  { label: 'Docentes', url: 'https://www.unal.edu.co/docentes/' },
+  { label: 'Administrativos', url: 'https://www.unal.edu.co/administrativos/' },
+];
+
+// Menú principal (máx 6 primer nivel)
+const menuItems = [
+  { label: 'Inicio', url: '/' },
+  { label: 'Grupos', url: '/#grupos' },
+  { label: 'Registro', url: '/registro' },
+  { label: 'Admin', url: '/admin', adminOnly: true },
+  { label: 'Líder', url: '/lider', adminOnly: true },
+];
+
+// Redes sociales (máx 4)
+const redesSociales = [
+  { icon: 'public', label: 'Web', url: 'https://www.unal.edu.co/' },
+  { icon: 'camera_alt', label: 'Instagram', url: 'https://www.instagram.com/universidadnacionalcol/' },
+  { icon: 'smart_display', label: 'YouTube', url: 'https://www.youtube.com/user/unabogota' },
+  { icon: 'chat', label: 'Twitter/X', url: 'https://twitter.com/UNAL' },
+];
+---
+
+<!-- Barra de perfiles de usuario -->
+<div class="bg-primary text-white text-xs">
+  <div class="max-w-[1440px] mx-auto px-4 flex justify-end items-center h-8 gap-1">
+    {perfiles.map((perfil) => (
+      <a 
+        href={perfil.url} 
+        target="_blank" 
+        rel="noopener noreferrer"
+        class="px-3 py-1 hover:bg-white/20 rounded transition-colors"
+      >
+        {perfil.label}
+      </a>
+    ))}
+  </div>
+</div>
+
+<!-- Header principal -->
+<header class="bg-white border-b border-neutral-80 sticky top-0 z-50">
+  <div class="max-w-[1440px] mx-auto px-4">
+    <!-- Fila superior: Logo + URL + Redes + Idioma -->
+    <div class="flex items-center justify-between py-3 border-b border-neutral-90">
+      <!-- Logo UNAL -->
+      <a href="https://www.unal.edu.co/" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3">
+        <img 
+          src="https://identidad.unal.edu.co/fileadmin/templates/images/escudoUnal.png" 
+          alt="Escudo UNAL" 
+          class="h-[70px] w-auto"
+        />
+        <div class="hidden sm:block">
+          <div class="text-primary font-bold text-sm leading-tight">UNIVERSIDAD NACIONAL</div>
+          <div class="text-primary font-bold text-sm leading-tight">DE COLOMBIA</div>
+        </div>
+      </a>
+
+      <!-- URL del sitio -->
+      <div class="hidden md:block text-xs text-neutral-60">
+        semilleros.fibog.unal.edu.co
+      </div>
+
+      <!-- Redes sociales + Idioma -->
+      <div class="flex items-center gap-4">
+        <!-- Redes sociales -->
+        <div class="flex items-center gap-2">
+          {redesSociales.map((red) => (
+            <a 
+              href={red.url} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              class="w-8 h-8 flex items-center justify-center rounded-full bg-primary/10 text-primary hover:bg-primary hover:text-white transition-colors"
+              title={red.label}
+            >
+              <span class="material-symbols-outlined text-lg">{red.icon}</span>
+            </a>
+          ))}
+        </div>
+
+        <!-- Escudo de Colombia -->
+        <img 
+          src="https://identidad.unal.edu.co/fileadmin/templates/images/escudoColombia.png" 
+          alt="Escudo de Colombia" 
+          class="h-8 w-auto hidden lg:block"
+        />
+
+        <!-- Menú de idioma -->
+        <div class="flex items-center gap-1 text-xs">
+          <span class="font-bold text-primary">ES</span>
+          <span class="text-neutral-70">|</span>
+          <a href="#" class="text-neutral-60 hover:text-primary transition-colors">EN</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fila inferior: Menú principal + Buscador -->
+    <div class="flex items-center justify-between py-2">
+      <!-- Menú principal -->
+      <nav class="hidden lg:flex items-center gap-1">
+        {menuItems.map((item) => (
+          <a 
+            href={item.url}
+            class:list={[
+              'px-4 py-2 rounded text-sm font-medium transition-colors',
+              activePage === item.label.toLowerCase() 
+                ? 'bg-primary text-white' 
+                : 'text-neutral-50 hover:bg-primary/10 hover:text-primary'
+            ]}
+          >
+            {item.label}
+          </a>
+        ))}
+      </nav>
+
+      <!-- Buscador nacional -->
+      <div class="flex items-center gap-2">
+        <div class="relative">
+          <input 
+            type="text" 
+            placeholder="Buscar en unal.edu.co" 
+            class="w-48 lg:w-64 px-4 py-2 pr-10 text-sm border border-neutral-80 rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30"
+          />
+          <span class="material-symbols-outlined absolute right-3 top-1/2 -translate-y-1/2 text-neutral-60">
+            search
+          </span>
+        </div>
+      </div>
+
+      <!-- Mobile menu button -->
+      <button 
+        id="mobile-menu-btn" 
+        class="lg:hidden p-2 rounded-lg hover:bg-neutral-95 transition-colors"
+        aria-label="Menú"
+      >
+        <span class="material-symbols-outlined">menu</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile menu -->
+  <div id="mobile-menu" class="hidden lg:hidden bg-white border-t border-neutral-80">
+    <nav class="max-w-[1440px] mx-auto px-4 py-4 flex flex-col gap-1">
+      {menuItems.map((item) => (
+        <a 
+          href={item.url}
+          class:list={[
+            'px-4 py-3 rounded text-sm font-medium transition-colors',
+            activePage === item.label.toLowerCase() 
+              ? 'bg-primary text-white' 
+              : 'text-neutral-50 hover:bg-primary/10 hover:text-primary'
+          ]}
+        >
+          {item.label}
+        </a>
+      ))}
+    </nav>
+  </div>
+</header>
+
+<script>
+  // Mobile menu toggle
+  const menuBtn = document.getElementById('mobile-menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+  
+  menuBtn?.addEventListener('click', () => {
+    mobileMenu?.classList.toggle('hidden');
+  });
+</script>

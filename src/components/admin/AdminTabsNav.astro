@@ -1,0 +1,27 @@
+---
+// Admin management tabs navigation
+---
+
+<div class="flex border-b border-white/10 bg-surface-container/50">
+  <button 
+    onclick="switchTab('grupos')" 
+    id="tab-grupos"
+    class="px-8 py-5 text-sm font-medium transition-all hover:bg-white/5 active border-b-2 border-transparent [&.active]:border-primary [&.active]:text-primary"
+  >
+    Todos los Grupos
+  </button>
+  <button 
+    onclick="switchTab('pendientes')" 
+    id="tab-pendientes"
+    class="px-8 py-5 text-sm font-medium transition-all hover:bg-white/5 border-b-2 border-transparent [&.active]:border-primary [&.active]:text-primary"
+  >
+    Solicitudes Pendientes
+  </button>
+  <button 
+    onclick="switchTab('usuarios')" 
+    id="tab-usuarios"
+    class="px-8 py-5 text-sm font-medium transition-all hover:bg-white/5 border-b-2 border-transparent [&.active]:border-primary [&.active]:text-primary"
+  >
+    Gestión de Usuarios
+  </button>
+</div>
