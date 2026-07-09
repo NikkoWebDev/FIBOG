@@ -1,5 +1,5 @@
 ---
-// UnalHeader.astro - Cabezote institucional UNAL (FIXED layout)
+// UnalHeader.astro - Cabezote institucional UNAL (EXACTO)
 
 interface Props {
   activePage?: string;
@@ -106,64 +106,109 @@ const idiomas = [
 ];
 ---
 
-<!-- Header Container -->
-<header class="unal-header">
-  <!-- Top Bar: Logo + Seal + Perfiles + Social + Language -->
-  <div class="unal-top-bar">
-    <div class="unal-container">
-      <!-- Logo UNAL -->
-      <a href="https://unal.edu.co" class="unal-logo">
+<!-- Estructura exacta del header UNAL -->
+<div class="relative">
+  <!-- Logo UNAL -->
+  <div class="logo">
+    <a href="https://unal.edu.co">
+      <div class="svg">
         <img 
-          src="/images/escudo-unal-real.png" 
+          class="d-print-none img-fluid" 
           alt="Escudo de la Universidad Nacional de Colombia" 
+          src="/images/escudo-unal-real.png" 
           width="80" 
           height="42"
         />
-      </a>
-
-      <!-- Escudo Colombia -->
-      <div class="unal-seal">
-        <img 
-          src="/images/escudo-colombia.svg" 
-          alt="Escudo de la República de Colombia" 
-          width="33" 
-          height="33"
-        />
       </div>
+    </a>
+    <!-- Print version (hidden) -->
+    <div style="position: absolute; top: 1px; width: 60px;" class="d-none d-print-block">
+      <img 
+        class="d-none d-print-block" 
+        alt="Escudo de la Universidad Nacional de Colombia" 
+        src="/images/escudo-unal-real.png" 
+        width="234" 
+        height="123"
+      />
+    </div>
+  </div>
 
-      <!-- Right side: Perfiles + Social + Language -->
-      <div class="unal-top-right">
-        <!-- Perfiles -->
-        <nav class="unal-profiles">
-          {perfiles.map((perfil) => (
-            <a href={perfil.url} class="unal-profile-link">
-              {perfil.label}
-            </a>
-          ))}
-        </nav>
+  <!-- Escudo Colombia -->
+  <div class="seal">
+    <img 
+      class="d-print-none" 
+      alt="Escudo de la República de Colombia" 
+      src="/images/escudo-colombia.svg" 
+      width="33" 
+      height="33"
+    />
+  </div>
+
+  <!-- Menú contextual (perfiles, redes, idioma) -->
+  <div class="firstMenu">
+    <div class="content-fluid">
+      <nav class="navbar nav navbar-toggler navbar-expand-md navbar-dark">
+        <!-- Mobile toggle -->
+        <button 
+          class="navbar-toggler" 
+          type="button" 
+          data-bs-toggle="collapse" 
+          data-bs-target="#navbarSupportedContent" 
+          aria-controls="navbarScroll" 
+          aria-expanded="false" 
+          aria-label="Toggle navigation"
+          id="mobile-toggle-btn"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse navbar-default">
+          <!-- Perfiles -->
+          <nav id="profiles">
+            <ul class="me-auto nav justify-content-end">
+              {perfiles.map((perfil) => (
+                <li class:list={['nav-item', `item_${perfil.label}`]}>
+                  <a href={perfil.url}>{perfil.label}</a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
 
         <!-- Redes sociales -->
-        <ul class="unal-social">
+        <ul class="socialLinks d-none d-md-block">
           {redesSociales.map((red) => (
             <li>
-              <a href={red.url} target="_blank" class={`unal-social-link ${red.icon}`} title={red.label}></a>
+              <a 
+                href={red.url} 
+                target="_blank" 
+                class={red.icon} 
+                title={red.label}
+              ></a>
             </li>
           ))}
         </ul>
 
         <!-- Idioma -->
-        <div class="unal-language">
-          <button type="button" class="unal-language-btn" id="lang-dropdown-btn">
+        <div class="btn-group d-print-none notranslate">
+          <button 
+            type="button" 
+            class="btn btn-secondary dropdown-toggle language-button" 
+            data-bs-toggle="dropdown" 
+            data-bs-display="static" 
+            aria-expanded="false"
+            id="lang-dropdown-btn"
+          >
             ESP
-            <span class="unal-caret"></span>
           </button>
-          <ul class="unal-language-dropdown" id="lang-dropdown">
+          <ul class="dropdown-menu dropdown-menu-start dropdown-menu-lg-start language-dropdown" id="lang-dropdown">
             {idiomas.map((idioma) => (
               <li>
                 <a 
                   href={idioma.url}
                   target={idioma.url.startsWith('http') ? '_blank' : undefined}
                   rel={idioma.url.startsWith('http') ? 'noopener noreferrer' : undefined}
+                  class="dropdown-item"
                 >
                   {idioma.label}
                 </a>
@@ -171,92 +216,143 @@ const idiomas = [
             ))}
           </ul>
         </div>
-      </div>
-
-      <!-- Mobile menu button -->
-      <button class="unal-mobile-toggle" id="mobile-toggle-btn" aria-label="Menú">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
+      </nav>
     </div>
   </div>
 
-  <!-- Navigation Bar: Site URL + Search + Main Menu -->
-  <div class="unal-nav-bar">
-    <div class="unal-container">
-      <!-- Site URL -->
-      <div class="unal-site-url">
-        <span class="unal-map-icon">📍</span>
-        <a href="https://unal.edu.co">unal.edu.co</a>
+  <!-- Menú inferior -->
+  <div id="bs-navbar" class="navigation">
+    <!-- Título del sitio + Buscador -->
+    <div class="container-fluid myb d-print-inline-block">
+      <!-- URL del sitio -->
+      <div class="site-url row d-print-none" id="subdominio">
+        <span class="oi oi-map-marker"></span>
+        <a href="//unal.edu.co">unal.edu.co</a>
       </div>
 
-      <!-- Search -->
-      <div class="unal-search">
-        <form id="header-search-form">
-          <input 
-            type="text" 
-            id="gsc-i-id1"
-            placeholder="Buscar en la Universidad"
-            title="buscar"
-            aria-label="buscar"
-          />
-          <button type="submit" class="unal-search-btn">
-            <svg width="13" height="13" viewBox="0 0 13 13">
-              <title>buscar</title>
-              <path d="m4.8495 7.8226c0.82666 0 1.5262-0.29146 2.0985-0.87438 0.57232-0.58292 0.86378-1.2877 0.87438-2.1144 0.010599-0.82666-0.28086-1.5262-0.87438-2.0985-0.59352-0.57232-1.293-0.86378-2.0985-0.87438-0.8055-0.010599-1.5103 0.28086-2.1144 0.87438-0.60414 0.59352-0.8956 1.293-0.87438 2.0985 0.021197 0.8055 0.31266 1.5103 0.87438 2.1144 0.56172 0.60414 1.2665 0.8956 2.1144 0.87438zm4.4695 0.2115 3.681 3.6819-1.259 1.284-3.6817-3.7 0.0019784-0.69479-0.090043-0.098846c-0.87973 0.76087-1.92 1.1413-3.1207 1.1413-1.3553 0-2.5025-0.46363-3.4417-1.3909s-1.4088-2.0686-1.4088-3.4239c0-1.3553 0.4696-2.4966 1.4088-3.4239 0.9392-0.92727 2.0864-1.3969 3.4417-1.4088 1.3553-0.011889 2.4906 0.45771 3.406 1.4088 0.9154 0.95107 1.379 2.0924 1.3909 3.4239 0 1.2126-0.38043 2.2588-1.1413 3.1385l0.098834 0.090049z"></path>
-            </svg>
-          </button>
+      <!-- Buscador -->
+      <div class="buscador row" id="buscador">
+        <form id="header-search-form" class="gsc-search-box gsc-search-box-tools" accept-charset="utf-8">
+          <table cellspacing="0" cellpadding="0" role="presentation" class="gsc-search-box">
+            <tbody>
+              <tr>
+                <td class="gsc-input">
+                  <div class="gsc-input-box" id="gsc-iw-id1">
+                    <table cellspacing="0" cellpadding="0" style="width: 100%; padding: 0px;" role="presentation" id="gs_id50" class="gstl_50 gsc-input">
+                      <tbody>
+                        <tr>
+                          <td id="gs_tti50" class="gsib_a">
+                            <input 
+                              autocomplete="off" 
+                              type="text" 
+                              size="10" 
+                              class="gsc-input" 
+                              name="search" 
+                              title="buscar" 
+                              aria-label="buscar" 
+                              style="width: 100%; padding: 0px; border: medium; margin: 0px; height: auto; outline: none;" 
+                              id="gsc-i-id1" 
+                              dir="ltr" 
+                              spellcheck="false" 
+                              placeholder="Buscar en la Universidad"
+                            />
+                          </td>
+                          <td class="gsib_b">
+                            <div class="gsst_b" id="gs_st50" dir="ltr">
+                              <a class="gsst_a" href="javascript:void(0)" style="display: none;" title="Borrar contenido del cuadro de búsqueda" role="button">
+                                <span class="gscb_a" id="gs_cb50" aria-hidden="true">×</span>
+                              </a>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </td>
+                <td class="gsc-search-button">
+                  <button class="gsc-search-button gsc-search-button-v2" type="submit">
+                    <svg width="13" height="13" viewBox="0 0 13 13">
+                      <title>buscar</title>
+                      <path d="m4.8495 7.8226c0.82666 0 1.5262-0.29146 2.0985-0.87438 0.57232-0.58292 0.86378-1.2877 0.87438-2.1144 0.010599-0.82666-0.28086-1.5262-0.87438-2.0985-0.59352-0.57232-1.293-0.86378-2.0985-0.87438-0.8055-0.010599-1.5103 0.28086-2.1144 0.87438-0.60414 0.59352-0.8956 1.293-0.87438 2.0985 0.021197 0.8055 0.31266 1.5103 0.87438 2.1144 0.56172 0.60414 1.2665 0.8956 2.1144 0.87438zm4.4695 0.2115 3.681 3.6819-1.259 1.284-3.6817-3.7 0.0019784-0.69479-0.090043-0.098846c-0.87973 0.76087-1.92 1.1413-3.1207 1.1413-1.3553 0-2.5025-0.46363-3.4417-1.3909s-1.4088-2.0686-1.4088-3.4239c0-1.3553 0.4696-2.4966 1.4088-3.4239 0.9392-0.92727 2.0864-1.3969 3.4417-1.4088 1.3553-0.011889 2.4906 0.45771 3.406 1.4088 0.9154 0.95107 1.379 2.0924 1.3909 3.4239 0 1.2126-0.38043 2.2588-1.1413 3.1385l0.098834 0.090049z"></path>
+                    </svg>
+                  </button>
+                </td>
+                <td class="gsc-clear-button">
+                  <div class="gsc-clear-button" title="borrar resultados">&nbsp;</div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </form>
       </div>
     </div>
 
-    <!-- Main Menu -->
-    <nav class="unal-main-menu">
-      <div class="unal-container">
-        <ul class="unal-menu-nav">
-          {menuItems.map((item) => (
-            <li class="unal-menu-item">
-              {item.children ? (
-                <>
-                  <button class="unal-menu-link unal-dropdown-toggle">
+    <!-- Menú principal -->
+    <nav class="navbar navbar-expand-md navbar-dark menuPrincipal">
+      <div class="container-fluid">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav">
+            {menuItems.map((item) => (
+              <li class="nav-item dropdown">
+                {item.children ? (
+                  <>
+                    <a 
+                      class="nav-link dropdown-toggle" 
+                      href="#" 
+                      role="button" 
+                      data-bs-toggle="dropdown" 
+                      aria-expanded="false"
+                    >
+                      {item.label}
+                    </a>
+                    <ul class="dropdown-menu">
+                      {item.children.map((child) => (
+                        <li>
+                          <a 
+                            href={child.url} 
+                            class="dropdown-item"
+                            target={child.url.startsWith('http') ? '_blank' : undefined}
+                            rel={child.url.startsWith('http') ? 'noopener noreferrer' : undefined}
+                          >
+                            {child.label}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                ) : (
+                  <a href={item.url} class="nav-link">
                     {item.label}
-                  </button>
-                  <ul class="unal-dropdown-menu">
-                    {item.children.map((child) => (
-                      <li>
-                        <a 
-                          href={child.url}
-                          class="unal-dropdown-item"
-                          target={child.url.startsWith('http') ? '_blank' : undefined}
-                          rel={child.url.startsWith('http') ? 'noopener noreferrer' : undefined}
-                        >
-                          {child.label}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-                </>
-              ) : (
-                <a href={item.url} class="unal-menu-link">
-                  {item.label}
-                </a>
-              )}
-            </li>
-          ))}
-        </ul>
+                  </a>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </nav>
   </div>
-</header>
+</div>
 
 <script>
   // Mobile menu toggle
   const mobileToggleBtn = document.getElementById('mobile-toggle-btn');
-  const mainMenu = document.querySelector('.unal-main-menu');
+  const navContent = document.querySelector('#navbarSupportedContent');
   
   mobileToggleBtn?.addEventListener('click', () => {
-    mainMenu?.classList.toggle('show');
+    navContent?.classList.toggle('show');
+  });
+
+  // Header search form
+  const headerSearchForm = document.getElementById('header-search-form');
+  const headerSearchInput = document.getElementById('gsc-i-id1') as HTMLInputElement;
+  
+  headerSearchForm?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const query = headerSearchInput?.value?.trim();
+    if (query) {
+      window.location.href = `/?q=${encodeURIComponent(query)}`;
+    }
   });
 
   // Language dropdown
@@ -272,20 +368,8 @@ const idiomas = [
     langDropdown?.classList.remove('show');
   });
 
-  // Header search form
-  const headerSearchForm = document.getElementById('header-search-form');
-  const headerSearchInput = document.getElementById('gsc-i-id1') as HTMLInputElement;
-  
-  headerSearchForm?.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const query = headerSearchInput?.value?.trim();
-    if (query) {
-      window.location.href = `/?q=${encodeURIComponent(query)}`;
-    }
-  });
-
   // Dropdown menus
-  document.querySelectorAll('.unal-dropdown-toggle').forEach(btn => {
+  document.querySelectorAll('[data-bs-toggle="dropdown"]').forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.preventDefault();
       const dropdown = (e.currentTarget as HTMLElement).nextElementSibling;
@@ -297,8 +381,8 @@ const idiomas = [
 
   // Close dropdowns when clicking outside
   document.addEventListener('click', (e) => {
-    if (!(e.target as HTMLElement).closest('.unal-dropdown-toggle')) {
-      document.querySelectorAll('.unal-dropdown-menu.show').forEach(menu => {
+    if (!(e.target as HTMLElement).closest('[data-bs-toggle="dropdown"]')) {
+      document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
         menu.classList.remove('show');
       });
     }
