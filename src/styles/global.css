@@ -207,13 +207,37 @@ input:focus-visible {
   width: 100%;
 }
 
+/* Make collapse visible on desktop */
+.firstMenu .collapse.navbar-collapse {
+  display: block !important;
+}
+
+.firstMenu .navbar-collapse {
+  display: flex;
+  align-items: center;
+}
+
+.firstMenu .navbar-default {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
 /* Profiles - EXACT from unal.edu.co */
+#profiles {
+  flex: 1;
+}
+
 #profiles ul {
   list-style: none;
   margin: 0;
   padding: 0;
   display: flex;
   justify-content: flex-end;
+}
+
+#profiles ul li {
+  display: list-item;
 }
 
 #profiles ul li a {
@@ -323,6 +347,15 @@ input:focus-visible {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* Make navbar-collapse visible on desktop */
+.navigation .navbar-collapse {
+  display: flex !important;
+}
+
+.navigation .collapse.navbar-collapse {
+  display: flex !important;
+}
+
 .navigation .site-url {
   color: white;
   font-size: 13px;
@@ -382,6 +415,15 @@ input:focus-visible {
 .menuPrincipal {
   background-color: #466B3F;
   padding: 0;
+}
+
+/* Make main menu visible on desktop */
+.menuPrincipal .navbar-collapse {
+  display: flex !important;
+}
+
+.menuPrincipal .collapse.navbar-collapse {
+  display: flex !important;
 }
 
 .menuPrincipal .navbar-nav {
