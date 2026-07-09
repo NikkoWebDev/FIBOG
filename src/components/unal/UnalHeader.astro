@@ -1,5 +1,5 @@
 ---
-// UnalHeader.astro - Cabezote institucional UNAL (idéntico a unal.edu.co)
+// UnalHeader.astro - Cabezote institucional UNAL (EXACTO a unal.edu.co)
 
 interface Props {
   activePage?: string;
@@ -7,7 +7,7 @@ interface Props {
 
 const { activePage = 'inicio' } = Astro.props;
 
-// Perfiles de usuario (URLs exactas de unal.edu.co)
+// Perfiles de usuario (URLs exactas)
 const perfiles = [
   { label: 'Aspirantes', url: 'https://aspirantes.unal.edu.co/' },
   { label: 'Estudiantes', url: 'https://estudiantes.unal.edu.co/' },
@@ -20,7 +20,6 @@ const perfiles = [
 const menuItems = [
   { 
     label: 'La Universidad', 
-    url: '#',
     children: [
       { label: 'Rectoría', url: 'http://rectoria.unal.edu.co' },
       { label: 'Constitución legal', url: '/la-universidad/constitucion-legal' },
@@ -32,7 +31,6 @@ const menuItems = [
   },
   { 
     label: 'Sedes', 
-    url: '#',
     children: [
       { label: 'Amazonia', url: 'https://amazonia.unal.edu.co/' },
       { label: 'Bogotá', url: 'https://bogota.unal.edu.co' },
@@ -47,7 +45,6 @@ const menuItems = [
   },
   { 
     label: 'Investigación', 
-    url: '#',
     children: [
       { label: 'La investigación en la Universidad', url: '/investigacion/la-investigacion-en-la-universidad' },
       { label: 'Sistema de Investigación', url: 'https://investigacion.unal.edu.co/' },
@@ -58,7 +55,6 @@ const menuItems = [
   },
   { 
     label: 'Internacionalización', 
-    url: '#',
     children: [
       { label: 'La Universidad en el mundo', url: '/internacionalizacion/la-universidad-en-el-mundo' },
       { label: 'Investigación internacional', url: 'https://investigacion.unal.edu.co/' },
@@ -69,7 +65,6 @@ const menuItems = [
   },
   { 
     label: 'Formación', 
-    url: '#',
     children: [
       { label: 'Estudiar en la Universidad', url: '/formacion/estudiar-en-la-universidad' },
       { label: 'Verificación títulos electrónicos', url: '/formacion/verificacion-titulos-electronicos' },
@@ -82,7 +77,6 @@ const menuItems = [
   },
   { 
     label: 'Extensión', 
-    url: '#',
     children: [
       { label: 'La extensión en la Universidad', url: '/extension/la-extension-en-la-universidad' },
       { label: 'Servicios al Estado', url: 'https://extension.unal.edu.co/' },
@@ -93,7 +87,7 @@ const menuItems = [
   { label: 'Calendario Académico', url: '/calendario-academico' },
 ];
 
-// Redes sociales (URLs exactas de unal.edu.co)
+// Redes sociales (URLs exactas)
 const redesSociales = [
   { icon: 'facebook', label: 'Página oficial en Facebook', url: 'https://www.facebook.com/UNALOficial' },
   { icon: 'twitter', label: 'Cuenta oficial en Twitter', url: 'https://twitter.com/UNALOficial' },
@@ -103,247 +97,281 @@ const redesSociales = [
 
 // Idiomas
 const idiomas = [
-  { code: 'es', label: 'Español [ESP]' },
-  { code: 'way', label: 'Wayuunaiki [GUC]' },
-  { code: 'nas', label: 'Nasa yuwe [PBB]' },
-  { code: 'en', label: 'English [ENG]', translateUrl: 'https://unal-edu-co.translate.goog/?_x_tr_sl=es&_x_tr_tl=en&_x_tr_hl=es' },
-  { code: 'fr', label: 'Français [FRA]', translateUrl: 'https://unal-edu-co.translate.goog/?_x_tr_sl=es&_x_tr_tl=fr&_x_tr_hl=es' },
-  { code: 'pt', label: 'Português [POR]', translateUrl: 'https://unal-edu-co.translate.goog/?_x_tr_sl=es&_x_tr_tl=pt&_x_tr_hl=es' },
+  { code: 'es', label: 'Español [ESP]', url: '/' },
+  { code: 'way', label: 'Wayuunaiki [GUC]', url: '/guc/' },
+  { code: 'nas', label: 'Nasa yuwe [PBB]', url: '/pbb/' },
+  { code: 'en', label: 'English [ENG]', url: 'https://unal-edu-co.translate.goog/?_x_tr_sl=es&_x_tr_tl=en&_x_tr_hl=es' },
+  { code: 'fr', label: 'Français [FRA]', url: 'https://unal-edu-co.translate.goog/?_x_tr_sl=es&_x_tr_tl=fr&_x_tr_hl=es' },
+  { code: 'pt', label: 'Português [POR]', url: 'https://unal-edu-co.translate.goog/?_x_tr_sl=es&_x_tr_tl=pt&_x_tr_hl=es' },
 ];
 ---
 
-<!-- Barra superior: Logo + Perfiles + Redes + Idioma -->
-<div class="bg-[#466B3F] text-white">
-  <div class="max-w-[1440px] mx-auto px-4">
-    <!-- Fila 1: Logo + Escudo Colombia + Perfiles + Redes + Idioma -->
-    <div class="flex items-center justify-between py-2">
-      <!-- Logo UNAL -->
-      <a href="https://unal.edu.co/" target="_blank" rel="noopener noreferrer" class="flex-shrink-0">
+<!-- Logo UNAL + Escudo Colombia (positioned absolutely like real site) -->
+<div class="relative">
+  <!-- Logo UNAL -->
+  <div class="logo">
+    <a href="https://unal.edu.co">
+      <div class="svg">
         <img 
-          src="/images/escudo-unal-real.png" 
+          class="d-print-none img-fluid" 
           alt="Escudo de la Universidad Nacional de Colombia" 
-          class="h-[40px] w-auto"
-          width="80"
+          src="/images/escudo-unal-real.png" 
+          width="80" 
           height="42"
         />
-      </a>
-
-      <!-- Escudo Colombia (visible en desktop) -->
-      <div class="hidden md:flex items-center ml-2">
-        <img 
-          src="/images/escudo-colombia.svg" 
-          alt="Escudo de la República de Colombia" 
-          class="h-[33px] w-auto"
-          width="33"
-          height="33"
-        />
       </div>
+    </a>
+    <!-- Print version (hidden) -->
+    <div style="position: absolute; top: 1px; width: 60px;" class="d-none d-print-block">
+      <img 
+        class="d-none d-print-block" 
+        alt="Escudo de la Universidad Nacional de Colombia" 
+        src="/images/escudo-unal-real.png" 
+        width="234" 
+        height="123"
+      />
+    </div>
+  </div>
 
-      <!-- Perfiles -->
-      <nav class="hidden md:flex items-center gap-1 ml-auto">
-        {perfiles.map((perfil) => (
-          <a 
-            href={perfil.url} 
-            target="_blank" 
-            rel="noopener noreferrer"
-            class="px-3 py-1 text-sm hover:bg-white/20 rounded transition-colors"
-          >
-            {perfil.label}
-          </a>
-        ))}
-      </nav>
+  <!-- Escudo Colombia -->
+  <div class="seal">
+    <img 
+      class="d-print-none" 
+      alt="Escudo de la República de Colombia" 
+      src="/images/escudo-colombia.svg" 
+      width="33" 
+      height="33"
+    />
+  </div>
 
-      <!-- Redes sociales (visible en desktop) -->
-      <ul class="hidden md:flex items-center gap-2 ml-4">
-        {redesSociales.map((red) => (
-          <li>
-            <a 
-              href={red.url} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              class="w-7 h-7 flex items-center justify-center rounded-full hover:bg-white/20 transition-colors"
-              title={red.label}
-            >
-              <span class="material-symbols-outlined text-base">{red.icon}</span>
-            </a>
-          </li>
-        ))}
-      </ul>
-
-      <!-- Idioma -->
-      <div class="relative ml-4">
+  <!-- Menú contextual (perfiles, redes, idioma) -->
+  <div class="firstMenu">
+    <div class="content-fluid">
+      <nav class="navbar nav navbar-toggler navbar-expand-md navbar-dark">
+        <!-- Mobile toggle -->
         <button 
+          class="navbar-toggler" 
           type="button" 
-          class="px-3 py-1 text-sm font-bold bg-white/20 rounded hover:bg-white/30 transition-colors"
-          id="lang-dropdown-btn"
+          data-bs-toggle="collapse" 
+          data-bs-target="#navbarSupportedContent" 
+          aria-controls="navbarScroll" 
+          aria-expanded="false" 
+          aria-label="Toggle navigation"
+          id="mobile-toggle-btn"
         >
-          ESP
-          <span class="material-symbols-outlined text-xs">expand_more</span>
+          <span class="navbar-toggler-icon"></span>
         </button>
-        <ul 
-          id="lang-dropdown" 
-          class="hidden absolute right-0 top-full mt-1 bg-white text-neutral-40 rounded shadow-lg min-w-[180px] z-50"
-        >
-          {idiomas.map((idioma) => (
+
+        <div class="collapse navbar-collapse navbar-default">
+          <!-- Perfiles -->
+          <nav id="profiles">
+            <ul class="me-auto nav justify-content-end">
+              {perfiles.map((perfil) => (
+                <li class:list={['nav-item', `item_${perfil.label}`]}>
+                  <a href={perfil.url}>{perfil.label}</a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
+
+        <!-- Redes sociales -->
+        <ul class="socialLinks d-none d-md-block">
+          {redesSociales.map((red) => (
             <li>
               <a 
-                href={idioma.translateUrl || '/'}
-                target={idioma.translateUrl ? '_blank' : undefined}
-                rel={idioma.translateUrl ? 'noopener noreferrer' : undefined}
-                class="block px-4 py-2 text-sm hover:bg-primary/10 hover:text-primary transition-colors"
-              >
-                {idioma.label}
-              </a>
+                href={red.url} 
+                target="_blank" 
+                class={red.icon} 
+                title={red.label}
+              ></a>
             </li>
           ))}
         </ul>
-      </div>
 
-      <!-- Mobile menu button -->
-      <button 
-        id="mobile-menu-btn" 
-        class="md:hidden p-2 rounded-lg hover:bg-white/20 transition-colors ml-2"
-        aria-label="Menú"
-      >
-        <span class="material-symbols-outlined">menu</span>
-      </button>
+        <!-- Idioma -->
+        <div class="btn-group d-print-none notranslate">
+          <button 
+            type="button" 
+            class="btn btn-secondary dropdown-toggle language-button" 
+            data-bs-toggle="dropdown" 
+            data-bs-display="static" 
+            aria-expanded="false"
+            id="lang-dropdown-btn"
+          >
+            ESP
+          </button>
+          <ul class="dropdown-menu dropdown-menu-start dropdown-menu-lg-start language-dropdown">
+            {idiomas.map((idioma) => (
+              <li>
+                <a 
+                  href={idioma.url}
+                  target={idioma.url.startsWith('http') ? '_blank' : undefined}
+                  rel={idioma.url.startsWith('http') ? 'noopener noreferrer' : undefined}
+                  class="dropdown-item"
+                >
+                  {idioma.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </nav>
     </div>
   </div>
-</div>
 
-<!-- Barra de navegación: URL + Buscador + Menú principal -->
-<div id="bs-navbar" class="bg-[#466B3F] border-t border-white/10 sticky top-0 z-50">
-  <div class="max-w-[1440px] mx-auto px-4">
-    <!-- Fila: URL del sitio + Buscador -->
-    <div class="flex items-center justify-between py-2">
+  <!-- Menú inferior -->
+  <div id="bs-navbar" class="navigation">
+    <!-- Título del sitio + Buscador -->
+    <div class="container-fluid myb d-print-inline-block">
       <!-- URL del sitio -->
-      <div class="flex items-center gap-2 text-white text-sm">
-        <span class="material-symbols-outlined text-lg">location_on</span>
-        <a href="https://unal.edu.co" target="_blank" rel="noopener noreferrer" class="font-bold hover:underline">
-          unal.edu.co
-        </a>
+      <div class="site-url row d-print-none" id="subdominio">
+        <span class="oi oi-map-marker"></span>
+        <a href="//unal.edu.co">unal.edu.co</a>
       </div>
 
       <!-- Buscador -->
-      <form id="header-search-form" class="flex items-center">
-        <input 
-          type="text" 
-          id="header-search-input"
-          placeholder="Buscar en la Universidad" 
-          class="w-48 lg:w-64 px-4 py-2 pr-10 text-sm border border-white/30 rounded-l bg-white text-neutral-40 placeholder-neutral-60 focus:outline-none focus:border-white/60"
-        />
-        <button 
-          type="submit" 
-          class="px-3 py-2 bg-white/20 border border-white/30 border-l-0 rounded-r hover:bg-white/30 transition-colors"
-          title="buscar"
-        >
-          <span class="material-symbols-outlined text-white text-lg">search</span>
-        </button>
-      </form>
+      <div class="buscador row" id="buscador">
+        <form id="header-search-form" class="gsc-search-box gsc-search-box-tools" accept-charset="utf-8">
+          <table cellspacing="0" cellpadding="0" role="presentation" class="gsc-search-box">
+            <tbody>
+              <tr>
+                <td class="gsc-input">
+                  <div class="gsc-input-box" id="gsc-iw-id1">
+                    <table cellspacing="0" cellpadding="0" style="width: 100%; padding: 0px;" role="presentation" id="gs_id50" class="gstl_50 gsc-input">
+                      <tbody>
+                        <tr>
+                          <td id="gs_tti50" class="gsib_a">
+                            <input 
+                              autocomplete="off" 
+                              type="text" 
+                              size="10" 
+                              class="gsc-input" 
+                              name="search" 
+                              title="buscar" 
+                              aria-label="buscar" 
+                              style="width: 100%; padding: 0px; border: medium; margin: 0px; height: auto; outline: none;" 
+                              id="gsc-i-id1" 
+                              dir="ltr" 
+                              spellcheck="false" 
+                              placeholder="Buscar en la Universidad"
+                            />
+                          </td>
+                          <td class="gsib_b">
+                            <div class="gsst_b" id="gs_st50" dir="ltr">
+                              <a class="gsst_a" href="javascript:void(0)" style="display: none;" title="Borrar contenido del cuadro de búsqueda" role="button">
+                                <span class="gscb_a" id="gs_cb50" aria-hidden="true">×</span>
+                              </a>
+                            </div>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </td>
+                <td class="gsc-search-button">
+                  <button class="gsc-search-button gsc-search-button-v2" type="submit">
+                    <svg width="13" height="13" viewBox="0 0 13 13">
+                      <title>buscar</title>
+                      <path d="m4.8495 7.8226c0.82666 0 1.5262-0.29146 2.0985-0.87438 0.57232-0.58292 0.86378-1.2877 0.87438-2.1144 0.010599-0.82666-0.28086-1.5262-0.87438-2.0985-0.59352-0.57232-1.293-0.86378-2.0985-0.87438-0.8055-0.010599-1.5103 0.28086-2.1144 0.87438-0.60414 0.59352-0.8956 1.293-0.87438 2.0985 0.021197 0.8055 0.31266 1.5103 0.87438 2.1144 0.56172 0.60414 1.2665 0.8956 2.1144 0.87438zm4.4695 0.2115 3.681 3.6819-1.259 1.284-3.6817-3.7 0.0019784-0.69479-0.090043-0.098846c-0.87973 0.76087-1.92 1.1413-3.1207 1.1413-1.3553 0-2.5025-0.46363-3.4417-1.3909s-1.4088-2.0686-1.4088-3.4239c0-1.3553 0.4696-2.4966 1.4088-3.4239 0.9392-0.92727 2.0864-1.3969 3.4417-1.4088 1.3553-0.011889 2.4906 0.45771 3.406 1.4088 0.9154 0.95107 1.379 2.0924 1.3909 3.4239 0 1.2126-0.38043 2.2588-1.1413 3.1385l0.098834 0.090049z"></path>
+                    </svg>
+                  </button>
+                </td>
+                <td class="gsc-clear-button">
+                  <div class="gsc-clear-button" title="borrar resultados">&nbsp;</div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </form>
+      </div>
     </div>
 
-    <!-- Menú principal con dropdowns -->
-    <nav class="hidden md:block border-t border-white/10">
-      <ul class="flex items-center gap-0">
-        {menuItems.map((item) => (
-          <li class="relative group">
-            {item.children ? (
-              <>
-                <button 
-                  class="px-4 py-3 text-sm font-bold text-white hover:bg-white/20 transition-colors flex items-center gap-1"
-                >
-                  {item.label}
-                  <span class="material-symbols-outlined text-xs">expand_more</span>
-                </button>
-                <ul class="hidden group-hover:block absolute top-full left-0 bg-white shadow-lg rounded-b-lg min-w-[280px] z-50">
-                  {item.children.map((child) => (
-                    <li>
-                      <a 
-                        href={child.url}
-                        target={child.url.startsWith('http') ? '_blank' : undefined}
-                        rel={child.url.startsWith('http') ? 'noopener noreferrer' : undefined}
-                        class="block px-4 py-2 text-sm text-neutral-40 hover:bg-primary/10 hover:text-primary transition-colors"
-                      >
-                        {child.label}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              </>
-            ) : (
-              <a 
-                href={item.url}
-                class:list={[
-                  'px-4 py-3 text-sm font-bold transition-colors',
-                  'text-white hover:bg-white/20'
-                ]}
-              >
-                {item.label}
-              </a>
-            )}
-          </li>
-        ))}
-      </ul>
-    </nav>
-  </div>
-
-  <!-- Mobile menu -->
-  <div id="mobile-menu" class="hidden md:hidden bg-[#3a5a34] border-t border-white/10">
-    <nav class="max-w-[1440px] mx-auto px-4 py-4 flex flex-col gap-1">
-      {perfiles.map((perfil) => (
-        <a 
-          href={perfil.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="px-4 py-3 rounded text-sm font-bold text-white hover:bg-white/20 transition-colors"
-        >
-          {perfil.label}
-        </a>
-      ))}
-      <hr class="border-white/20 my-2" />
-      {menuItems.map((item) => (
-        <a 
-          href={item.url}
-          class="px-4 py-3 rounded text-sm font-bold text-white hover:bg-white/20 transition-colors"
-        >
-          {item.label}
-        </a>
-      ))}
+    <!-- Menú principal -->
+    <nav class="navbar navbar-expand-md navbar-dark menuPrincipal">
+      <div class="container-fluid">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav">
+            {menuItems.map((item) => (
+              <li class="nav-item dropdown">
+                {item.children ? (
+                  <>
+                    <a 
+                      class="nav-link dropdown-toggle" 
+                      href="#" 
+                      role="button" 
+                      data-bs-toggle="dropdown" 
+                      aria-expanded="false"
+                    >
+                      {item.label}
+                    </a>
+                    <ul class="dropdown-menu">
+                      {item.children.map((child) => (
+                        <li>
+                          <a 
+                            href={child.url} 
+                            class="dropdown-item"
+                            target={child.url.startsWith('http') ? '_blank' : undefined}
+                            rel={child.url.startsWith('http') ? 'noopener noreferrer' : undefined}
+                          >
+                            {child.label}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </>
+                ) : (
+                  <a href={item.url} class="nav-link">
+                    {item.label}
+                  </a>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
     </nav>
   </div>
 </div>
 
 <script>
   // Mobile menu toggle
-  const menuBtn = document.getElementById('mobile-menu-btn');
-  const mobileMenu = document.getElementById('mobile-menu');
+  const mobileToggleBtn = document.getElementById('mobile-toggle-btn');
+  const navContent = document.querySelector('#navbarSupportedContent');
   
-  menuBtn?.addEventListener('click', () => {
-    mobileMenu?.classList.toggle('hidden');
-  });
-
-  // Language dropdown
-  const langBtn = document.getElementById('lang-dropdown-btn');
-  const langDropdown = document.getElementById('lang-dropdown');
-  
-  langBtn?.addEventListener('click', (e) => {
-    e.stopPropagation();
-    langDropdown?.classList.toggle('hidden');
-  });
-
-  document.addEventListener('click', () => {
-    langDropdown?.classList.add('hidden');
+  mobileToggleBtn?.addEventListener('click', () => {
+    navContent?.classList.toggle('show');
   });
 
   // Header search form
   const headerSearchForm = document.getElementById('header-search-form');
-  const headerSearchInput = document.getElementById('header-search-input') as HTMLInputElement;
+  const headerSearchInput = document.getElementById('gsc-i-id1') as HTMLInputElement;
   
   headerSearchForm?.addEventListener('submit', (e) => {
     e.preventDefault();
     const query = headerSearchInput?.value?.trim();
     if (query) {
       window.location.href = `/?q=${encodeURIComponent(query)}`;
+    }
+  });
+
+  // Bootstrap dropdown simulation
+  document.querySelectorAll('[data-bs-toggle="dropdown"]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const dropdown = (e.currentTarget as HTMLElement).nextElementSibling;
+      if (dropdown) {
+        dropdown.classList.toggle('show');
+      }
+    });
+  });
+
+  // Close dropdowns when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!(e.target as HTMLElement).closest('[data-bs-toggle="dropdown"]')) {
+      document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+        menu.classList.remove('show');
+      });
     }
   });
 </script>
