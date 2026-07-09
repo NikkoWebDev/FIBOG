@@ -207,19 +207,19 @@ input:focus-visible {
   width: 100%;
 }
 
-/* Make collapse visible on desktop */
-.firstMenu .collapse.navbar-collapse {
-  display: block !important;
+/* Force collapse visible on desktop */
+.collapse.navbar-collapse {
+  display: flex !important;
+  flex-grow: 1;
 }
 
-.firstMenu .navbar-collapse {
-  display: flex;
-  align-items: center;
+.navbar-collapse {
+  display: flex !important;
+  flex-grow: 1;
 }
 
-.firstMenu .navbar-default {
-  display: flex;
-  align-items: center;
+.navbar-default {
+  display: flex !important;
   flex: 1;
 }
 
@@ -232,7 +232,7 @@ input:focus-visible {
   list-style: none;
   margin: 0;
   padding: 0;
-  display: flex;
+  display: flex !important;
   justify-content: flex-end;
 }
 
@@ -423,6 +423,10 @@ input:focus-visible {
 }
 
 .menuPrincipal .collapse.navbar-collapse {
+  display: flex !important;
+}
+
+.menuPrincipal .navbar-nav {
   display: flex !important;
 }
 
