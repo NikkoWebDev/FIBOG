@@ -208,19 +208,21 @@ input:focus-visible {
 }
 
 /* Force collapse visible on desktop */
-.collapse.navbar-collapse {
+.firstMenu .collapse,
+.firstMenu .navbar-collapse,
+.firstMenu .navbar-default {
   display: flex !important;
   flex-grow: 1;
 }
 
-.navbar-collapse {
+.navigation .collapse,
+.navigation .navbar-collapse {
   display: flex !important;
-  flex-grow: 1;
 }
 
-.navbar-default {
+.menuPrincipal .collapse,
+.menuPrincipal .navbar-collapse {
   display: flex !important;
-  flex: 1;
 }
 
 /* Profiles - EXACT from unal.edu.co */
