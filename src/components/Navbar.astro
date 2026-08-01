@@ -12,7 +12,7 @@ const navItems = [
 
 <!-- Desktop Navbar -->
 <header class="fixed top-0 left-0 right-0 z-50 hidden md:block">
-  <nav class="flex justify-between items-center px-6 py-3 rounded-full mt-4 mx-auto w-[90%] max-w-5xl bg-surface/60 backdrop-blur-xl border border-white/10 shadow-[0_20px_40px_rgba(0,0,0,0.3)]">
+  <nav class="flex justify-between items-center px-6 py-3 rounded-lg mt-4 mx-auto w-[90%] max-w-5xl bg-white border border-neutral-80 shadow-md">
     <!-- Logo -->
     <a href="/" class="flex items-center gap-3 hover:opacity-80 transition-opacity">
       <img src="https://identidad.unal.edu.co/fileadmin/templates/images/escudoUnal.png" alt="Escudo UNAL" class="w-8 h-8 object-contain" />
@@ -40,7 +40,7 @@ const navItems = [
       <!-- Theme Toggle -->
       <button 
         id="theme-toggle"
-        class="p-2 rounded-full border border-white/10 text-on-surface-variant hover:bg-white/5 transition-all"
+        class="p-2 rounded-lg border border-neutral-80 text-on-surface-variant hover:bg-neutral-95 transition-colors"
         title="Cambiar tema"
       >
         <span class="material-symbols-outlined text-sm" id="theme-icon">light_mode</span>
@@ -51,7 +51,7 @@ const navItems = [
         <a 
           href="/login"
           id="login-btn-desktop"
-          class="px-4 py-2 rounded-full border border-white/10 text-on-surface-variant text-sm hover:bg-white/5 transition-all flex items-center gap-1.5"
+          class="px-4 py-2 rounded-lg border border-neutral-80 text-on-surface-variant text-sm hover:bg-neutral-95 transition-colors flex items-center gap-1.5"
         >
           <span class="material-symbols-outlined text-sm">login</span>
           Acceder
@@ -59,26 +59,26 @@ const navItems = [
         <div id="user-menu-desktop" class="hidden relative">
           <button 
             id="user-menu-btn"
-            class="flex items-center gap-2 px-3 py-2 rounded-full bg-surface-container-high hover:bg-surface-container-highest transition-all"
+            class="flex items-center gap-2 px-3 py-2 rounded-lg bg-neutral-95 hover:bg-neutral-90 transition-colors"
           >
             <span class="material-symbols-outlined text-primary">account_circle</span>
             <span id="user-role-desktop" class="text-sm text-on-surface-variant"></span>
           </button>
           <!-- Dropdown -->
-          <div id="user-dropdown" class="hidden absolute right-0 top-full mt-2 w-48 py-2 rounded-xl bg-surface-container-high border border-white/10 shadow-xl">
-            <a href="/lider" id="panel-link" class="hidden px-4 py-2 text-sm text-on-surface hover:bg-white/5 flex items-center gap-2">
+          <div id="user-dropdown" class="hidden absolute right-0 top-full mt-2 w-48 py-2 rounded-lg bg-white border border-neutral-80 shadow-lg">
+            <a href="/lider" id="panel-link" class="hidden px-4 py-2 text-sm text-on-surface hover:bg-neutral-95 flex items-center gap-2">
               <span class="material-symbols-outlined text-sm">dashboard</span>
               Mi Grupo
             </a>
-            <a href="/admin" id="admin-link" class="hidden px-4 py-2 text-sm text-on-surface hover:bg-white/5 flex items-center gap-2">
+            <a href="/admin" id="admin-link" class="hidden px-4 py-2 text-sm text-on-surface hover:bg-neutral-95 flex items-center gap-2">
               <span class="material-symbols-outlined text-sm">admin_panel_settings</span>
               Administración
             </a>
-            <a href="/perfil" class="px-4 py-2 text-sm text-on-surface hover:bg-white/5 flex items-center gap-2">
+            <a href="/perfil" class="px-4 py-2 text-sm text-on-surface hover:bg-neutral-95 flex items-center gap-2">
               <span class="material-symbols-outlined text-sm">person</span>
               Mi Perfil
             </a>
-            <button id="logout-btn-desktop" class="w-full text-left px-4 py-2 text-sm text-error hover:bg-error/10 flex items-center gap-2">
+            <button id="logout-btn-desktop" class="w-full text-left px-4 py-2 text-sm text-error hover:bg-[#fdecea] flex items-center gap-2">
               <span class="material-symbols-outlined text-sm">logout</span>
               Cerrar sesión
             </button>
@@ -87,7 +87,7 @@ const navItems = [
       </div>
       
       <!-- GitHub Link -->
-      <a href="https://github.com/NikkoWebDev" target="_blank" rel="noopener" class="text-on-surface-variant hover:text-primary transition-colors p-2 rounded-full hover:bg-white/5">
+      <a href="https://github.com/NikkoWebDev" target="_blank" rel="noopener" class="text-on-surface-variant hover:text-primary transition-colors p-2 rounded-lg hover:bg-neutral-95">
         <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
           <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.041-1.412-4.041-1.412-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
         </svg>
@@ -98,7 +98,7 @@ const navItems = [
 
 <!-- Mobile Navbar (Bottom) -->
 <nav class="fixed bottom-0 left-0 right-0 z-50 md:hidden">
-  <div class="flex justify-around items-center p-4 bg-surface/80 backdrop-blur-xl border-t border-white/10 shadow-2xl rounded-t-3xl">
+  <div class="flex justify-around items-center p-4 bg-white border-t border-neutral-80 shadow-lg rounded-t-lg">
     <!-- Theme Toggle Mobile -->
     <button 
       id="theme-toggle-mobile"

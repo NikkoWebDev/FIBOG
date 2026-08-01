@@ -9,17 +9,7 @@ interface Props {
 const { grupos } = Astro.props;
 ---
 
-<div class="relative">
-  <!-- Background Tile Pattern -->
-  <div class="absolute inset-0 -z-10 opacity-30">
-    <div class="absolute inset-0" style="
-      background-image: 
-        linear-gradient(rgba(103, 125, 41, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(103, 125, 41, 0.03) 1px, transparent 1px);
-      background-size: 60px 60px;
-    "></div>
-  </div>
-  
+<div>
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="grupos-grid">
     {grupos.map((grupo, index) => (
       <BentoCard 
@@ -30,28 +20,4 @@ const { grupos } = Astro.props;
   </div>
 </div>
 
-<script>
-  // Simple fade-in animation
-  function initCardAnimations() {
-    const cards = document.querySelectorAll('#grupos-grid > div');
-    cards.forEach((card, index) => {
-      setTimeout(() => {
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(20px)';
-        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-        
-        setTimeout(() => {
-          card.style.opacity = '1';
-          card.style.transform = 'translateY(0)';
-        }, 50);
-      }, index * 100);
-    });
-  }
-  
-  // Initialize when DOM is ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initCardAnimations);
-  } else {
-    initCardAnimations();
-  }
-</script>
+<!-- No animations - keep it simple and institutional -->

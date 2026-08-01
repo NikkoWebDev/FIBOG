@@ -10,15 +10,15 @@ interface Props {
 const { grupo, index = 0 } = Astro.props;
 
 const tipoColors = {
-  'Semillero': 'bg-tertiary/10 text-tertiary',
-  'Grupo de Investigación': 'bg-primary/10 text-primary',
-  'Grupo Estudiantil': 'bg-secondary/10 text-secondary'
+  'Semillero': 'bg-[#c1e4ea] text-[#00566f]',
+  'Grupo de Investigación': 'bg-[#c0d881] text-[#284d21]',
+  'Grupo Estudiantil': 'bg-[#94b43b] text-[#284d21]'
 };
 
 const tipoBadge = tipoColors[grupo.tipo as keyof typeof tipoColors] || tipoColors['Semillero'];
 ---
 
-<div class="bento-card card rounded-2xl p-6 border border-neutral-80 hover:border-primary/50 transition-all group" data-index={index}>
+<div class="bento-card card rounded-lg p-6 border border-neutral-80 hover:border-primary transition-colors group" data-index={index}>
 
 <div class="relative z-10">
     <!-- Header -->
@@ -64,7 +64,7 @@ const tipoBadge = tipoColors[grupo.tipo as keyof typeof tipoColors] || tipoColor
       {grupo.email && (
         <a 
           href={`mailto:${grupo.email}`}
-          class="p-2 rounded-lg bg-surface-container hover:bg-primary/20 text-primary transition-all"
+          class="p-2 rounded-lg bg-surface-container hover:bg-[#c0d881] text-primary transition-colors"
           onclick="event.stopPropagation();"
         >
           <span class="material-symbols-outlined text-base">email</span>

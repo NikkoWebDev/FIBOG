@@ -8,9 +8,8 @@ const { placeholder = "Pregunta sobre investigación..." } = Astro.props;
 
 <section class="max-w-4xl mx-auto mb-12" id="ai-search-section">
   <!-- Search Input -->
-  <div class="relative group mb-6">
-    <div class="absolute -inset-1 bg-gradient-to-r from-primary to-secondary rounded-2xl blur opacity-25 group-focus-within:opacity-50 transition duration-1000"></div>
-    <div class="relative card rounded-2xl flex items-center px-6 py-4">
+  <div class="mb-6">
+    <div class="card rounded-lg flex items-center px-6 py-4 border-2 border-neutral-80 focus-within:border-primary transition-colors">
       <span class="material-symbols-outlined text-primary mr-4 text-2xl" data-icon="search">search</span>
       <input 
         type="text" 
@@ -22,39 +21,39 @@ const { placeholder = "Pregunta sobre investigación..." } = Astro.props;
       <div class="flex gap-2">
         <button 
           id="ai-search-btn"
-          class="p-2 rounded-lg bg-surface-container hover:bg-surface-container-high transition-colors"
+          class="p-2 rounded-lg bg-[#677d29] hover:bg-[#516320] text-white transition-colors"
           title="Buscar con IA"
         >
-          <span class="material-symbols-outlined text-secondary filled" data-icon="auto_awesome">auto_awesome</span>
+          <span class="material-symbols-outlined filled" data-icon="auto_awesome">auto_awesome</span>
         </button>
       </div>
     </div>
   </div>
   
   <!-- AI Thinking State (Hidden by default) -->
-  <div id="ai-thinking" class="hidden card rounded-3xl p-8 border-primary/20 bg-primary/5 mb-8">
-    <div class="flex items-start gap-6 relative z-10">
-      <div class="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center shrink-0 shadow-lg shadow-primary/20">
-        <span class="material-symbols-outlined text-on-primary filled" data-icon="psychology_alt">psychology_alt</span>
+  <div id="ai-thinking" class="hidden card rounded-lg p-8 border border-[#677d29] bg-[#e8eedc] mb-8">
+    <div class="flex items-start gap-6">
+      <div class="w-12 h-12 rounded-lg bg-[#677d29] flex items-center justify-center shrink-0">
+        <span class="material-symbols-outlined text-white filled" data-icon="psychology_alt">psychology_alt</span>
       </div>
       <div class="flex-1 space-y-4">
         <div class="flex items-center gap-2">
-          <h3 class="text-primary font-label-mono text-label-mono uppercase tracking-widest">Sistematizando Resultados</h3>
+          <h3 class="text-[#284d21] font-label-mono text-label-mono uppercase tracking-widest">Sistematizando Resultados</h3>
           <div class="flex gap-1">
-            <span class="w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style="animation-delay: 0s"></span>
-            <span class="w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style="animation-delay: 0.2s"></span>
-            <span class="w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style="animation-delay: 0.4s"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-[#677d29] animate-bounce" style="animation-delay: 0s"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-[#677d29] animate-bounce" style="animation-delay: 0.2s"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-[#677d29] animate-bounce" style="animation-delay: 0.4s"></span>
           </div>
         </div>
         <div class="space-y-3">
-          <div class="h-4 w-3/4 shimmer rounded-full bg-white/5"></div>
-          <div class="h-4 w-full shimmer rounded-full bg-white/5"></div>
-          <div class="h-4 w-5/6 shimmer rounded-full bg-white/5"></div>
+          <div class="h-4 w-3/4 rounded bg-white border border-neutral-80"></div>
+          <div class="h-4 w-full rounded bg-white border border-neutral-80"></div>
+          <div class="h-4 w-5/6 rounded bg-white border border-neutral-80"></div>
         </div>
         <div class="flex gap-3 pt-4 overflow-x-auto no-scrollbar">
-          <span class="px-4 py-1.5 rounded-full border border-primary/30 bg-primary/10 text-primary font-label-mono text-label-mono whitespace-nowrap">Analizando grupos...</span>
-          <span class="px-4 py-1.5 rounded-full border border-secondary/30 bg-secondary/10 text-secondary font-label-mono text-label-mono whitespace-nowrap">Mapeando carreras...</span>
-          <span class="px-4 py-1.5 rounded-full border border-tertiary/30 bg-tertiary/10 text-tertiary font-label-mono text-label-mono whitespace-nowrap">Consultando semilleros...</span>
+          <span class="px-4 py-1.5 rounded-lg border border-[#677d29] bg-[#c0d881] text-[#284d21] font-label-mono text-label-mono whitespace-nowrap">Analizando grupos...</span>
+          <span class="px-4 py-1.5 rounded-lg border border-[#466B3F] bg-[#94b43b] text-[#284d21] font-label-mono text-label-mono whitespace-nowrap">Mapeando carreras...</span>
+          <span class="px-4 py-1.5 rounded-lg border border-[#00566f] bg-[#c1e4ea] text-[#00566f] font-label-mono text-label-mono whitespace-nowrap">Consultando semilleros...</span>
         </div>
       </div>
     </div>
@@ -62,19 +61,16 @@ const { placeholder = "Pregunta sobre investigación..." } = Astro.props;
   
   <!-- AI Results (Hidden by default) -->
   <div id="ai-results" class="hidden mb-8">
-    <div class="card rounded-3xl p-8 border-primary/20 bg-gradient-to-br from-primary/5 to-secondary/5 relative overflow-hidden">
-      <!-- Decorative gradient -->
-      <div class="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-      
-      <div class="relative z-10">
+    <div class="card rounded-lg p-8 border border-[#677d29] bg-white">
+      <div>
         <!-- Header -->
-        <div class="flex items-center gap-3 mb-6 pb-4 border-b border-white/10">
-          <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center shadow-lg shadow-primary/20">
-            <span class="material-symbols-outlined text-on-primary text-xl" data-icon="auto_awesome">auto_awesome</span>
+        <div class="flex items-center gap-3 mb-6 pb-4 border-b border-neutral-80">
+          <div class="w-12 h-12 rounded-lg bg-[#677d29] flex items-center justify-center">
+            <span class="material-symbols-outlined text-white text-xl" data-icon="auto_awesome">auto_awesome</span>
           </div>
           <div>
-            <h3 class="text-secondary font-headline-md">Respuesta de IA</h3>
-            <p class="text-on-surface-variant/60 text-xs font-label-mono">Powered by OpenRouter</p>
+            <h3 class="text-[#284d21] font-headline-md">Respuesta de IA</h3>
+            <p class="text-neutral-60 text-xs font-label-mono">Powered by OpenRouter</p>
           </div>
         </div>
         
@@ -184,7 +180,7 @@ const { placeholder = "Pregunta sobre investigación..." } = Astro.props;
               <div class="flex items-center gap-2 mb-4">
                 <span class="material-symbols-outlined text-primary text-sm" data-icon="groups">groups</span>
                 <p class="text-sm font-bold text-on-surface">Grupos encontrados</p>
-                <span class="px-2 py-0.5 rounded-full bg-primary/20 text-primary text-xs font-label-mono">${data.grupos.length}</span>
+                <span class="px-2 py-0.5 rounded-lg bg-[#c0d881] text-[#284d21] text-xs font-label-mono">${data.grupos.length}</span>
               </div>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 ${data.grupos.map((g: any) => `

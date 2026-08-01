@@ -22,22 +22,7 @@ body {
   box-shadow: 0 4px 12px rgba(103, 125, 41, 0.1);
 }
 
-/* Shimmer animation */
-.shimmer {
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(103, 125, 41, 0.1),
-    transparent
-  );
-  background-size: 200% 100%;
-  animation: shimmer 2s infinite linear;
-}
-
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
+/* Removed shimmer animation - too flashy for institutional design */
 
 /* Button Base */
 .button-primary {
@@ -60,16 +45,10 @@ body {
 }
 
 .button-secondary:hover {
-  background: rgba(103, 125, 41, 0.1);
+  background: #e8eedc;
 }
 
-/* Gradient text */
-.gradient-text {
-  background: linear-gradient(135deg, #677d29, #284d21);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
+/* Removed gradient text - use solid colors only */
 
 /* Scrollbar styling */
 ::-webkit-scrollbar {
@@ -117,22 +96,13 @@ body {
     'opsz' 24;
 }
 
-/* Bento Grid animations */
-.bento-card {
-  opacity: 0;
-  transform: translateY(24px);
-}
+/* Removed complex fade-in animations - keep it simple and institutional */
 
-.bento-card.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* Filter chip active state */
+/* Filter chip active state - solid colors only */
 .filter-chip.active {
-  background: rgba(103, 125, 41, 0.15);
+  background: #c0d881;
   border-color: #677d29;
-  color: #516320;
+  color: #284d21;
 }
 
 /* Focus states for accessibility */
@@ -152,11 +122,7 @@ input:focus-visible {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  
-  .bento-card {
-    opacity: 1;
-    transform: none;
-  }
+
 }
 
 /* Print styles */

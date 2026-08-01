@@ -16,9 +16,9 @@ export async function getStaticPaths() {
 const { grupo } = Astro.props;
 
 const tipoColors = {
-  'Semillero': 'bg-tertiary/10 text-tertiary',
-  'Grupo de Investigación': 'bg-primary/10 text-primary',
-  'Grupo Estudiantil': 'bg-secondary/10 text-secondary'
+  'Semillero': 'bg-[#c1e4ea] text-[#00566f]',
+  'Grupo de Investigación': 'bg-[#c0d881] text-[#284d21]',
+  'Grupo Estudiantil': 'bg-[#94b43b] text-[#284d21]'
 };
 
 const tipoBadge = tipoColors[grupo.tipo as keyof typeof tipoColors] || tipoColors['Semillero'];
@@ -73,7 +73,7 @@ const tipoBadge = tipoColors[grupo.tipo as keyof typeof tipoColors] || tipoColor
           {grupo.email && (
             <a 
               href={`mailto:${grupo.email}`}
-              class="px-6 py-3 rounded-xl bg-primary text-on-primary font-bold shadow-lg shadow-primary/20 hover:opacity-90 transition-all flex items-center gap-2"
+              class="px-6 py-3 rounded-lg bg-[#677d29] text-white font-bold hover:bg-[#516320] transition-colors flex items-center gap-2"
             >
               <span class="material-symbols-outlined">email</span>
               Contactar
@@ -84,7 +84,7 @@ const tipoBadge = tipoColors[grupo.tipo as keyof typeof tipoColors] || tipoColor
               href={grupo.redes.includes('http') ? grupo.redes : `https://${grupo.redes}`}
               target="_blank"
               rel="noopener noreferrer"
-              class="px-6 py-3 rounded-xl border border-neutral-80 text-on-surface hover:bg-neutral-10 transition-all flex items-center gap-2"
+              class="px-6 py-3 rounded-lg border border-neutral-80 text-on-surface hover:bg-neutral-95 transition-colors flex items-center gap-2"
             >
               <span class="material-symbols-outlined">public</span>
               Sitio Web
@@ -98,7 +98,7 @@ const tipoBadge = tipoColors[grupo.tipo as keyof typeof tipoColors] || tipoColor
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
       <!-- Enfoque -->
       {grupo.enfoque && (
-        <div class="card rounded-2xl p-6 border border-neutral-80">
+        <div class="card rounded-lg p-6 border border-neutral-80">
           <div class="flex items-center gap-2 mb-4">
             <span class="material-symbols-outlined text-primary">center_focus_strong</span>
             <h3 class="text-headline-sm font-display-lg text-primary">Enfoque</h3>
@@ -133,7 +133,7 @@ const tipoBadge = tipoColors[grupo.tipo as keyof typeof tipoColors] || tipoColor
 
       <!-- Actividades -->
       {grupo.actividades && (
-        <div class="card rounded-2xl p-6 border border-neutral-80">
+        <div class="card rounded-lg p-6 border border-neutral-80">
           <div class="flex items-center gap-2 mb-4">
             <span class="material-symbols-outlined text-tertiary">science</span>
             <h3 class="text-headline-sm font-display-lg text-tertiary">Actividades</h3>
@@ -146,7 +146,7 @@ const tipoBadge = tipoColors[grupo.tipo as keyof typeof tipoColors] || tipoColor
 
       <!-- Requisitos -->
       {grupo.requisitos_ingreso && (
-        <div class="card rounded-2xl p-6 border border-neutral-80">
+        <div class="card rounded-lg p-6 border border-neutral-80">
           <div class="flex items-center gap-2 mb-4">
             <span class="material-symbols-outlined text-error">rule</span>
             <h3 class="text-headline-sm font-display-lg text-error">Requisitos</h3>
@@ -159,7 +159,7 @@ const tipoBadge = tipoColors[grupo.tipo as keyof typeof tipoColors] || tipoColor
 
       <!-- Nivel Académico -->
       {grupo.nivel_academico_recomendado && (
-        <div class="card rounded-2xl p-6 border border-neutral-80">
+        <div class="card rounded-lg p-6 border border-neutral-80">
           <div class="flex items-center gap-2 mb-4">
             <span class="material-symbols-outlined text-secondary">school</span>
             <h3 class="text-headline-sm font-display-lg text-secondary">Nivel Recomendado</h3>
@@ -172,7 +172,7 @@ const tipoBadge = tipoColors[grupo.tipo as keyof typeof tipoColors] || tipoColor
 
       <!-- Ubicación -->
       {grupo.edificio && (
-        <div class="card rounded-2xl p-6 border border-neutral-80">
+        <div class="card rounded-lg p-6 border border-neutral-80">
           <div class="flex items-center gap-2 mb-4">
             <span class="material-symbols-outlined text-primary">location_on</span>
             <h3 class="text-headline-sm font-display-lg text-primary">Ubicación</h3>
@@ -185,9 +185,9 @@ const tipoBadge = tipoColors[grupo.tipo as keyof typeof tipoColors] || tipoColor
     </div>
 
     <!-- Líder -->
-    <div class="card rounded-2xl p-6 bg-surface-container-highest/30 border border-outline-variant/20">
+    <div class="card rounded-lg p-6 bg-neutral-95 border border-neutral-80">
       <div class="flex flex-col md:flex-row items-center gap-6">
-        <div class="w-16 h-16 rounded-full bg-surface-container border-2 border-primary/20 flex items-center justify-center shrink-0">
+        <div class="w-16 h-16 rounded-lg bg-white border-2 border-[#677d29] flex items-center justify-center shrink-0">
           <span class="material-symbols-outlined text-primary text-3xl">person</span>
         </div>
         <div class="flex-1 text-center md:text-left">

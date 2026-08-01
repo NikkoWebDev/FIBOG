@@ -51,7 +51,7 @@ const allEnfoques = [...new Set(allGrupos.flatMap(g =>
         <div class="flex flex-col sm:flex-row gap-4 mb-12">
           <a 
             href="#grupos"
-            class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-primary to-secondary text-on-primary font-bold px-8 py-4 rounded-xl shadow-lg shadow-primary/20 hover:opacity-90 transition-all text-center"
+            class="inline-flex items-center justify-center gap-2 bg-[#677d29] text-white font-bold px-8 py-3 rounded-lg shadow-sm hover:bg-[#516320] transition-colors text-center"
           >
             <span class="material-symbols-outlined">explore</span>
             Explorar Grupos
@@ -101,7 +101,7 @@ const allEnfoques = [...new Set(allGrupos.flatMap(g =>
         {(tipoFilter || carreraFilter || searchQuery) && (
           <a 
             href="/"
-            class="ml-4 px-3 py-1 rounded-full bg-error/10 text-error text-body-sm hover:bg-error/20 transition-colors flex items-center gap-1"
+            class="ml-4 px-3 py-1 rounded-lg bg-[#fdecea] text-error text-body-sm hover:bg-[#fbd7d4] transition-colors flex items-center gap-1"
           >
             <span class="material-symbols-outlined text-sm" data-icon="close">close</span>
             Limpiar filtros
@@ -115,7 +115,7 @@ const allEnfoques = [...new Set(allGrupos.flatMap(g =>
       <BentoGrid grupos={filteredGrupos} />
     ) : (
       <div class="text-center py-16">
-        <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-surface-container-low flex items-center justify-center">
+        <div class="w-20 h-20 mx-auto mb-6 rounded-lg bg-neutral-95 flex items-center justify-center">
           <span class="material-symbols-outlined text-4xl text-on-surface-variant" data-icon="search_off">search_off</span>
         </div>
         <h3 class="text-headline-md text-on-surface mb-2">No se encontraron grupos</h3>
@@ -124,7 +124,7 @@ const allEnfoques = [...new Set(allGrupos.flatMap(g =>
         </p>
         <a 
           href="/"
-          class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-on-primary font-bold hover:bg-primary-fixed-dim transition-colors"
+          class="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-[#677d29] text-white font-bold hover:bg-[#516320] transition-colors"
         >
           <span class="material-symbols-outlined" data-icon="refresh">refresh</span>
           Ver todos los grupos
