@@ -13,7 +13,8 @@ Catálogo web de semilleros, grupos de investigación y comunidades estudiantile
 | IA Search | OpenRouter API | liquid/lfm-2.5-1.2b-instruct:free |
 | Animaciones | GSAP + ScrollTrigger | CDN v3.12.2 |
 | Iconos | Material Symbols Outlined | Google Fonts |
-| Hosting | Netlify (static + functions) | Node 20 |
+| Email | Resend (free tier, 3,000 emails/mes) | ^6.20.0 |
+| Hosting | Vercel (Hobby, gratis) — serverless functions | Node 22 |
 
 ## Comandos
 
@@ -29,55 +30,75 @@ npx astro check      # Type checking
 ```
 src/
 ├── components/          # Componentes Astro reutilizables
-│   ├── Navbar.astro     # Navegación desktop (floating) + mobile (bottom)
+│   ├── admin/           # Componentes del panel admin (8 archivos)
+│   ├── unal/            # Componentes institucionales FIBOG
+│   │   ├── UnalHeader.astro     # Cabezote FIBOG + auth/dashboard access
+│   │   ├── UnalFooter.astro     # Footer FIBOG (social bar + columns + gobierno)
+│   │   ├── AccessibilityPanel.astro # Panel de accesibilidad
+│   │   ├── ServicesTab.astro    # Pestaña de servicios
+│   │   └── Breadcrumb.astro     # Migas de pan
 │   ├── AISearch.astro   # Barra de búsqueda IA con OpenRouter
-│   ├── BentoCard.astro  # Tarjeta individual de grupo
+│   ├── BentoCard.astro  # Tarjeta individual de grupo (badges FIBOG)
 │   ├── BentoGrid.astro  # Grid responsivo con animación fade-in
-│   ├── FilterBar.astro  # Filtros por tipo y carrera
-│   ├── Footer.astro     # Footer con enlaces
+│   ├── FilterBar.astro  # Filtros por tipo y carrera (chips FIBOG)
 │   └── GrupoModal.astro # Modal detalle (no usado actualmente)
 ├── data/
 │   ├── grupos.json      # Datos estáticos: 13 grupos
 │   └── grupos.types.ts  # Tipos TS + helpers de filtrado
 ├── layouts/
-│   └── Layout.astro     # Layout base HTML
+│   └── Layout.astro     # Layout base (UnalHeader + UnalFooter + paneles)
 ├── lib/
 │   ├── supabase.ts      # Cliente Supabase + helpers de roles
 │   └── database.types.ts # Tipos generados de la DB
 ├── pages/
-│   ├── index.astro      # Página principal: hero, IA search, filtros, grid
-│   ├── login.astro      # Login con redirect por rol
+│   ├── index.astro      # Página principal: hero, filtros, catálogo
+│   ├── login.astro      # Login con redirect por rol (FIBOG card)
 │   ├── registro.astro   # Formulario de registro de grupos (3 pasos)
-│   ├── admin.astro      # Panel SUPER_ADMIN (1023 líneas)
+│   ├── admin.astro      # Panel SUPER_ADMIN
 │   ├── lider.astro      # Panel ADMIN_GRUPO
 │   ├── perfil.astro     # Perfil de usuario
 │   ├── privacidad.astro # Política de privacidad
 │   ├── grupo/[id].astro # Detalle SSG de grupo
-│   └── api/search.ts    # API route para búsqueda IA
+│   └── api/
+│       ├── search.ts    # API route para búsqueda IA
+│       └── notify.ts    # Notificación por email (Resend) al recibir solicitud
+├── middleware.ts         # Protección de rutas + dominio @unal.edu.co
 ├── styles/
-│   └── global.css       # Estilos globales, glassmorphism, light/dark mode
+│   └── global.css       # Estilos globales (tokens FIBOG)
 └── env.d.ts             # Definición de tipos de env vars
 ```
 
-## Identidad Visual UNAL
+## Identidad Visual FIBOG
 
-El sitio usa el **kit de diseño oficial UNAL** (Extraído de `gestionapp.unal.edu.co/cdn/doc/`):
+El sitio replica la identidad visual de **ingenieria.bogota.unal.edu.co** (Facultad de Ingeniería Bogotá). Documentación completa: `docs/REDESIGN.md`
 
-### Paleta de Colores (Light Mode)
+### Paleta de Colores FIBOG
 
 | Rol | Hex | Uso |
 |-----|-----|-----|
-| **Primary** | `#677d29` | Verde oliva UNAL, botones principales |
-| Primary Light | `#94b43b` | Hover states |
-| Primary Lighter | `#a9c362`, `#c0d881` | Superficies sutiles |
-| **Secondary** | `#284d21` | Verde oscuro, acentos fuertes |
-| **Tertiary Blue** | `#00566f` | Azul institucional, links |
-| Tertiary Blue Light | `#0082a9`, `#2ba6cb` | Info states |
-| **Neutral** | `#3d4041` | Texto principal |
-| Neutral Light | `#787b7d`, `#a2a3a4` | Texto secundario |
-| Neutral Lighter | `#cccccc`, `#dcdcdc` | Bordes, dividers |
-| **Success** | `#1a784b` | Estados de éxito |
-| **Danger** | `#aa0c00` | Errores |
+| **Cabezote superior** | `#666666` | Barra de perfiles + social + auth |
+| **Cabezote principal** | `#5B5B5B` | URL del sitio + nav principal |
+| **Tile escudo** | `#3F403F` | Fondo del escudo UNAL (más oscuro) |
+| **Footer principal** | `#222222` | Sección oscura del footer |
+| **Footer inferior** | `#666666` | Gobierno en línea + copyright |
+| **Navy** | `#192950` | Botones principales, badges, accents |
+| **Navy oscuro** | `#0D2B53` | Variación del navy |
+| **Azul** | `#2A5073` | Hover states, tricolor, social |
+| **Teal** | `#088577` | CTA, links, badges, accessibility |
+| **Teal claro** | `#0CA694` | Hover del teal, social |
+| **Lime** | `#94B43B` | Iconos del nav, acentos |
+| **Lime claro** | `#AFC931` | Social bar, tricolor |
+| **Texto** | `#222222` | Texto principal |
+| **Texto secundario** | `#5B5B5B` | Texto secundario |
+| **Bordes** | `#DCDCDC` | Dividers, borders |
+| **Fondo claro** | `#F1F1F1` | Hero, filter bg |
+
+### Assets
+
+| Archivo | Origen |
+|---------|--------|
+| `public/images/escudoUnal-white.svg` | Escudo UNAL blanco (SVG real) |
+| `public/images/sealColombia.png` | Escudo de Colombia (PNG real) |
 | **Warning** | `#8c6800` | Advertencias |
 
 ### Paleta Dark Mode (Invertida)
@@ -154,13 +175,20 @@ SUPABASE_SERVICE_ROLE_KEY=
 # Admin
 ADMIN_EMAIL_1=
 ADMIN_EMAIL_2=
+
+# Email (Resend)
+RESEND_API_KEY=
+RESEND_FROM_EMAIL=
+
+# URL pública del sitio (usada en emails)
+SITE_URL=
 ```
 
 ## Deploy
 
-- **Plataforma:** Netlify (estático + serverless functions)
-- **Build:** `npm run build` → `dist/`
-- **Redirects:** `/api/search` → `/.netlify/functions/search`
+- **Plataforma:** Vercel (Hobby, gratis) — serverless functions
+- **Build:** `npm run build` → `.vercel/output` (adapter serverless)
+- **API routes serverless Vercel:** `/api/search`, `/api/notify`
 - **Dominio objetivo:** `.unal.edu.co`
 
 ## Plantilla Web Institucional UNAL

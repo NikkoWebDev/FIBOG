@@ -15,25 +15,25 @@ export async function getStaticPaths() {
 
 const { grupo } = Astro.props;
 
-const tipoColors = {
-  'Semillero': 'bg-[#c1e4ea] text-[#00566f]',
-  'Grupo de Investigación': 'bg-[#c0d881] text-[#284d21]',
-  'Grupo Estudiantil': 'bg-[#94b43b] text-[#284d21]'
+const tipoColors: Record<string, string> = {
+  'Semillero': 'bg-accent/10 text-accent-light border-accent/20',
+  'Grupo de Investigacion': 'bg-primary/10 text-primary-light border-primary/20',
+  'Grupo Estudiantil': 'bg-neon/10 text-neon border-neon/20'
 };
 
-const tipoBadge = tipoColors[grupo.tipo as keyof typeof tipoColors] || tipoColors['Semillero'];
+const tipoBadge = tipoColors[grupo.tipo] || tipoColors['Semillero'];
 ---
 
-<Layout title={`${grupo.nombre} | FIBOG UNAL`} description={grupo.descripcion || ''} activePage="grupos">
+<Layout title={`${grupo.nombre} | FIBOG Semilleros`} description={grupo.descripcion || ''} activePage="grupos">
   <Breadcrumb items={[
     { label: 'Grupos', url: '/#grupos' },
     { label: grupo?.nombre || 'Grupo' }
   ]} />
   
-  <main class="min-h-screen pt-32 pb-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+  <main class="min-h-screen py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
     <!-- Back Button -->
     <div class="mb-8">
-      <a href="/" class="inline-flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors">
+      <a href="/" class="inline-flex items-center gap-2 text-text-secondary hover:text-primary-light transition-colors">
         <span class="material-symbols-outlined">arrow_back</span>
         <span>Volver a grupos</span>
       </a>
@@ -42,29 +42,29 @@ const tipoBadge = tipoColors[grupo.tipo as keyof typeof tipoColors] || tipoColor
     <!-- Header -->
     <header class="mb-12">
       <div class="flex items-center gap-2 mb-4">
-        <span class="h-[1px] w-12 bg-secondary"></span>
-        <span class="font-label-mono text-label-mono text-secondary uppercase tracking-widest">Detalle del Grupo</span>
+        <span class="h-1 w-12 bg-gradient-to-r from-primary to-accent rounded-full"></span>
+        <span class="text-text-muted text-xs font-semibold uppercase tracking-widest">Detalle del Grupo</span>
       </div>
       
       <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
         <div class="flex-1">
-          <div class="flex items-center gap-2 mb-4">
-            <span class={`px-3 py-1 rounded-md text-[10px] font-label-mono uppercase tracking-wider ${tipoBadge}`}>
+          <div class="flex items-center gap-2 mb-4 flex-wrap">
+            <span class={`px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border ${tipoBadge}`}>
               {grupo.tipo}
             </span>
             {grupo.carreras?.slice(0, 2).map(carrera => (
-              <span class="px-3 py-1 rounded-md bg-surface-container text-on-surface-variant font-label-mono text-[10px]">
+              <span class="px-3 py-1 rounded-lg bg-bg-hover text-text-secondary text-[10px] font-medium border border-border-subtle">
                 {carrera.length > 20 ? carrera.slice(0, 20) + '...' : carrera}
               </span>
             ))}
           </div>
           
-          <h1 class="font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface mb-4">
+          <h1 class="text-3xl sm:text-4xl md:text-display-lg font-extrabold text-text-primary mb-4">
             {grupo.nombre}
           </h1>
           
-          <p class="text-on-surface-variant text-lg max-w-3xl font-body-base">
-            {grupo.descripcion || 'Sin descripción disponible.'}
+          <p class="text-text-secondary text-lg max-w-3xl leading-relaxed">
+            {grupo.descripcion || 'Sin descripcion disponible.'}
           </p>
         </div>
         
@@ -73,7 +73,7 @@ const tipoBadge = tipoColors[grupo.tipo as keyof typeof tipoColors] || tipoColor
           {grupo.email && (
             <a 
               href={`mailto:${grupo.email}`}
-              class="px-6 py-3 rounded-lg bg-[#677d29] text-white font-bold hover:bg-[#516320] transition-colors flex items-center gap-2"
+              class="px-6 py-3 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white font-semibold hover:shadow-glow transition-all flex items-center gap-2"
             >
               <span class="material-symbols-outlined">email</span>
               Contactar
@@ -84,7 +84,7 @@ const tipoBadge = tipoColors[grupo.tipo as keyof typeof tipoColors] || tipoColor
               href={grupo.redes.includes('http') ? grupo.redes : `https://${grupo.redes}`}
               target="_blank"
               rel="noopener noreferrer"
-              class="px-6 py-3 rounded-lg border border-neutral-80 text-on-surface hover:bg-neutral-95 transition-colors flex items-center gap-2"
+              class="px-6 py-3 rounded-xl border border-border-default text-text-secondary hover:bg-bg-hover transition-all flex items-center gap-2"
             >
               <span class="material-symbols-outlined">public</span>
               Sitio Web
@@ -98,34 +98,34 @@ const tipoBadge = tipoColors[grupo.tipo as keyof typeof tipoColors] || tipoColor
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
       <!-- Enfoque -->
       {grupo.enfoque && (
-        <div class="card rounded-lg p-6 border border-neutral-80">
+        <div class="card rounded-2xl p-6">
           <div class="flex items-center gap-2 mb-4">
-            <span class="material-symbols-outlined text-primary">center_focus_strong</span>
-            <h3 class="text-headline-sm font-display-lg text-primary">Enfoque</h3>
+            <span class="material-symbols-outlined text-primary-light">center_focus_strong</span>
+            <h3 class="text-lg font-bold text-primary-light">Enfoque</h3>
           </div>
-          <p class="text-on-surface-variant text-body-base leading-relaxed">
+          <p class="text-text-secondary leading-relaxed">
             {grupo.enfoque}
           </p>
         </div>
       )}
 
       <!-- Modalidad y Horarios -->
-      <div class="card rounded-2xl p-6 border border-neutral-80">
+      <div class="card rounded-2xl p-6">
         <div class="flex items-center gap-2 mb-4">
-          <span class="material-symbols-outlined text-secondary">schedule</span>
-          <h3 class="text-headline-sm font-display-lg text-secondary">Modalidad y Horarios</h3>
+          <span class="material-symbols-outlined text-accent-light">schedule</span>
+          <h3 class="text-lg font-bold text-accent-light">Modalidad y Horarios</h3>
         </div>
         <div class="space-y-3">
           {grupo.modalidad && (
             <div class="flex items-center gap-2">
-              <span class="material-symbols-outlined text-on-surface-variant text-base">laptop_mac</span>
-              <span class="text-on-surface-variant">{grupo.modalidad}</span>
+              <span class="material-symbols-outlined text-text-muted text-base">laptop_mac</span>
+              <span class="text-text-secondary">{grupo.modalidad}</span>
             </div>
           )}
           {grupo.horarios_habituales && (
             <div class="flex items-center gap-2">
-              <span class="material-symbols-outlined text-on-surface-variant text-base">event</span>
-              <span class="text-on-surface-variant">{grupo.horarios_habituales}</span>
+              <span class="material-symbols-outlined text-text-muted text-base">event</span>
+              <span class="text-text-secondary">{grupo.horarios_habituales}</span>
             </div>
           )}
         </div>
@@ -133,12 +133,12 @@ const tipoBadge = tipoColors[grupo.tipo as keyof typeof tipoColors] || tipoColor
 
       <!-- Actividades -->
       {grupo.actividades && (
-        <div class="card rounded-lg p-6 border border-neutral-80">
+        <div class="card rounded-2xl p-6">
           <div class="flex items-center gap-2 mb-4">
-            <span class="material-symbols-outlined text-tertiary">science</span>
-            <h3 class="text-headline-sm font-display-lg text-tertiary">Actividades</h3>
+            <span class="material-symbols-outlined text-neon">science</span>
+            <h3 class="text-lg font-bold text-neon">Actividades</h3>
           </div>
-          <p class="text-on-surface-variant text-body-base leading-relaxed">
+          <p class="text-text-secondary leading-relaxed">
             {grupo.actividades}
           </p>
         </div>
@@ -146,62 +146,62 @@ const tipoBadge = tipoColors[grupo.tipo as keyof typeof tipoColors] || tipoColor
 
       <!-- Requisitos -->
       {grupo.requisitos_ingreso && (
-        <div class="card rounded-lg p-6 border border-neutral-80">
+        <div class="card rounded-2xl p-6">
           <div class="flex items-center gap-2 mb-4">
             <span class="material-symbols-outlined text-error">rule</span>
-            <h3 class="text-headline-sm font-display-lg text-error">Requisitos</h3>
+            <h3 class="text-lg font-bold text-error">Requisitos</h3>
           </div>
-          <p class="text-on-surface-variant text-body-base leading-relaxed">
+          <p class="text-text-secondary leading-relaxed">
             {grupo.requisitos_ingreso}
           </p>
         </div>
       )}
 
-      <!-- Nivel Académico -->
+      <!-- Nivel Academico -->
       {grupo.nivel_academico_recomendado && (
-        <div class="card rounded-lg p-6 border border-neutral-80">
+        <div class="card rounded-2xl p-6">
           <div class="flex items-center gap-2 mb-4">
-            <span class="material-symbols-outlined text-secondary">school</span>
-            <h3 class="text-headline-sm font-display-lg text-secondary">Nivel Recomendado</h3>
+            <span class="material-symbols-outlined text-accent-light">school</span>
+            <h3 class="text-lg font-bold text-accent-light">Nivel Recomendado</h3>
           </div>
-          <p class="text-on-surface-variant text-body-base">
+          <p class="text-text-secondary">
             {grupo.nivel_academico_recomendado}
           </p>
         </div>
       )}
 
-      <!-- Ubicación -->
+      <!-- Ubicacion -->
       {grupo.edificio && (
-        <div class="card rounded-lg p-6 border border-neutral-80">
+        <div class="card rounded-2xl p-6">
           <div class="flex items-center gap-2 mb-4">
-            <span class="material-symbols-outlined text-primary">location_on</span>
-            <h3 class="text-headline-sm font-display-lg text-primary">Ubicación</h3>
+            <span class="material-symbols-outlined text-primary-light">location_on</span>
+            <h3 class="text-lg font-bold text-primary-light">Ubicacion</h3>
           </div>
-          <p class="text-on-surface-variant text-body-base">
+          <p class="text-text-secondary">
             {grupo.edificio}
           </p>
         </div>
       )}
     </div>
 
-    <!-- Líder -->
-    <div class="card rounded-lg p-6 bg-neutral-95 border border-neutral-80">
+    <!-- Lider -->
+    <div class="card rounded-2xl p-6 bg-bg-raised">
       <div class="flex flex-col md:flex-row items-center gap-6">
-        <div class="w-16 h-16 rounded-lg bg-white border-2 border-[#677d29] flex items-center justify-center shrink-0">
-          <span class="material-symbols-outlined text-primary text-3xl">person</span>
+        <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shrink-0 shadow-glow-sm">
+          <span class="material-symbols-outlined text-white text-3xl">person</span>
         </div>
         <div class="flex-1 text-center md:text-left">
-          <h3 class="text-on-surface font-medium text-xl mb-1">
+          <h3 class="text-text-primary font-semibold text-xl mb-1">
             {grupo.docente || grupo.lider_o_representante || 'Docente Investigador'}
           </h3>
-          <span class="text-primary font-label-mono text-xs uppercase tracking-wider">Líder del Grupo</span>
+          <span class="text-primary-light text-xs font-semibold uppercase tracking-wider">Lider del Grupo</span>
         </div>
         {grupo.email && (
           <a 
             href={`mailto:${grupo.email}`}
-            class="px-6 py-3 rounded-xl bg-primary text-on-primary font-bold hover:bg-primary-fixed-dim transition-colors shadow-lg shadow-primary/20"
+            class="px-6 py-3 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white font-semibold hover:shadow-glow transition-all"
           >
-            Contactar Líder
+            Contactar Lider
           </a>
         )}
       </div>

@@ -1,209 +1,85 @@
 ---
-// UnalFooter.astro - Pie de página institucional UNAL (idéntico a ingenieria.bogota.unal.edu.co)
+// UnalFooter.astro - Modern footer for FIBOG Semilleros
 
-// Fecha de actualización
-const fechaActualizacion = new Date().toLocaleDateString('es-CO', {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric'
-});
-
-// Gobierno en Línea (URLs exactas del footer real)
-const gobiernoEnLinea = [
-  { label: 'Régimen Legal', url: 'https://legal.unal.edu.co/rlunal/home/' },
-  { label: 'Contratación', url: 'https://portaladquisiciones.unal.edu.co/' },
-  { label: 'Rendición de cuentas', url: 'http://launalcuenta.unal.edu.co/' },
-  { label: 'Pago Virtual', url: 'https://pagovirtual.unal.edu.co/index.php' },
-  { label: 'Calidad', url: 'http://siga.unal.edu.co/' },
+const navLinks = [
+  { label: 'Inicio', url: '/' },
+  { label: 'Catalogo', url: '/#grupos' },
+  { label: 'Registro', url: '/registro' },
+  { label: 'Privacidad', url: '/privacidad' },
 ];
 
-// Información Nacional (URLs exactas)
-const infoNacional = [
-  { label: 'Talento Humano', url: 'http://personal.unal.edu.co/' },
-  { label: 'Ofertas de Empleo', url: 'http://personal.unal.edu.co/' },
-  { label: 'Concurso Docente', url: 'http://docentes.unal.edu.co/concurso-profesoral/' },
-  { label: 'Control Interno', url: 'http://controlinterno.unal.edu.co/' },
-  { label: 'Buzón de notificaciones', url: 'http://unal.edu.co/buzon-de-notificaciones/' },
-];
-
-// Servicios (URLs exactas)
-const servicios = [
-  { label: 'Correo institucional', url: 'https://smartkey.xertica.com/cloudkey/a/unal.edu.co/user/login' },
-  { label: 'Redes Sociales', url: 'http://redessociales.unal.edu.co/' },
-  { label: 'Quejas y reclamos', url: 'http://quejasyreclamos.unal.edu.co/' },
-  { label: 'Encuesta', url: 'https://unal.edu.co/egresados' },
-  { label: 'Estadísticas', url: 'http://estadisticas.unal.edu.co/' },
-];
-
-// Mapa del sitio (URLs exactas)
-const mapaSitio = [
-  { label: 'Mapa del sitio', url: 'https://unal.edu.co/mapa-del-sitio' },
-  { label: 'FAQ', url: 'https://unal.edu.co/faq' },
-  { label: 'Atención en línea', url: 'http://unal.edu.co/atencion-en-linea/' },
-  { label: 'Contáctenos', url: 'https://unal.edu.co/contactenos' },
-  { label: 'Glosario', url: 'https://unal.edu.co/glosario' },
-];
-
-// Enlaces institucionales (logos del footer real)
-const enlacesInstitucionales = [
-  { 
-    label: 'Orgullo UNAL', 
-    url: 'https://orgullo.unal.edu.co/',
-    img: 'https://ingenieria.bogota.unal.edu.co/wp-content/uploads/2024/09/log_orgullo.png'
-  },
-  { 
-    label: 'Gov.co', 
-    url: 'https://www.gov.co/',
-    img: 'https://ingenieria.bogota.unal.edu.co/wp-content/uploads/2024/09/log_gobiern.png'
-  },
-  { 
-    label: 'Agencia UNAL', 
-    url: 'https://agenciadenoticias.unal.edu.co/',
-    img: 'https://ingenieria.bogota.unal.edu.co/wp-content/uploads/2024/09/log_agenc.png'
-  },
-  { 
-    label: 'Contaduría General de la Nación', 
-    url: 'https://www.contaduria.gov.co/',
-    img: 'https://ingenieria.bogota.unal.edu.co/wp-content/uploads/2024/09/log_contra.png'
-  },
+const socialLinks = [
+  { label: 'Instagram', url: 'https://www.instagram.com/fibogunal/', icon: 'instagram' },
+  { label: 'YouTube', url: 'https://www.youtube.com/@fibogunal', icon: 'youtube' },
+  { label: 'X', url: 'https://twitter.com/fibogunal', icon: 'x' },
+  { label: 'LinkedIn', url: 'https://www.linkedin.com/school/fibogunal/', icon: 'linkedin' },
 ];
 ---
 
-<!-- Gobierno en Línea - Barra verde superior -->
-<div class="bg-[#466B3F] text-white">
-  <div class="max-w-[1440px] mx-auto px-4 py-6">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8">
-      <!-- Gobierno en Línea -->
-      <div>
-        <h4 class="font-bold text-sm mb-4 text-white">Gobierno en Línea</h4>
-        <ul class="space-y-2 text-sm text-white/80">
-          {gobiernoEnLinea.map((link) => (
-            <li>
-              <a 
-                href={link.url} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                class="hover:text-white transition-colors"
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
+<footer class="relative mt-auto">
+  <!-- Gradient line -->
+  <div class="h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent"></div>
 
-      <!-- Información Nacional -->
-      <div>
-        <h4 class="font-bold text-sm mb-4 text-white">Información Nacional</h4>
-        <ul class="space-y-2 text-sm text-white/80">
-          {infoNacional.map((link) => (
-            <li>
-              <a 
-                href={link.url} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                class="hover:text-white transition-colors"
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <!-- Servicios -->
-      <div>
-        <h4 class="font-bold text-sm mb-4 text-white">Servicios</h4>
-        <ul class="space-y-2 text-sm text-white/80">
-          {servicios.map((link) => (
-            <li>
-              <a 
-                href={link.url} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                class="hover:text-white transition-colors"
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <!-- Mapa del sitio -->
-      <div>
-        <h4 class="font-bold text-sm mb-4 text-white">Mapa del sitio</h4>
-        <ul class="space-y-2 text-sm text-white/80">
-          {mapaSitio.map((link) => (
-            <li>
-              <a 
-                href={link.url} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                class="hover:text-white transition-colors"
-              >
-                {link.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      <!-- Contacto + Propiedad intelectual -->
-      <div>
-        <h4 class="font-bold text-sm mb-4 text-white">Contacto página web</h4>
-        <div class="text-sm text-white/80 space-y-1">
-          <p>Carrera 30 No 45A-03</p>
-          <p>Edif. CADE - Oficina 103</p>
-          <p>Bogotá D.C., Colombia</p>
-          <p>(+57) 601 3165000</p>
-        </div>
-        
-        <div class="mt-6 pt-4 border-t border-white/20">
-          <p class="text-sm text-white/80">© Copyright 2026</p>
-          <p class="text-sm text-white/80">Algunos derechos reservados.</p>
-          <p class="text-sm text-white/80 mt-2">untic_fibog@unal.edu.co</p>
-          <p class="text-sm text-white/80">
-            <a href="#" class="hover:text-white transition-colors">Acerca de este sitio web</a>
+  <div class="bg-bg-raised">
+    <div class="max-w-7xl mx-auto px-6 py-12 lg:py-16">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-10 lg:gap-16">
+        <!-- Brand -->
+        <div>
+          <a href="/" class="flex items-center gap-3 mb-4" rel="home">
+            <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-glow-sm">
+              <span class="material-symbols-outlined text-white text-lg">science</span>
+            </div>
+            <span class="text-text-primary font-bold text-lg tracking-tight">
+              FIBOG<span class="text-primary">.</span>
+            </span>
+          </a>
+          <p class="text-text-secondary text-sm leading-relaxed max-w-xs">
+            Catalogo de semilleros, grupos de investigacion y comunidades estudiantiles de la Facultad de Ingenieria.
           </p>
-          <p class="text-sm text-white/80">Actualización: {fechaActualizacion}</p>
+        </div>
+
+        <!-- Navigation -->
+        <nav aria-label="Enlaces" class="md:text-center">
+          <h6 class="text-text-muted text-xs font-semibold uppercase tracking-widest mb-4">Navegacion</h6>
+          <ul class="list-none p-0 m-0 space-y-3">
+            {navLinks.map((l) => (
+              <li>
+                <a href={l.url} class="text-text-secondary text-sm no-underline hover:text-primary-light transition-colors">
+                  {l.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <!-- Social -->
+        <div class="md:text-right">
+          <h6 class="text-text-muted text-xs font-semibold uppercase tracking-widest mb-4">Síguenos</h6>
+          <div class="flex gap-3 md:justify-end">
+            {socialLinks.map((r) => (
+              <a href={r.url} target="_blank" rel="noopener noreferrer" aria-label={r.label}
+                 class="w-10 h-10 rounded-lg bg-bg-card border border-border-default flex items-center justify-center text-text-secondary hover:text-primary-light hover:border-primary/40 transition-all">
+                {r.icon === 'instagram' && <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>}
+                {r.icon === 'youtube' && <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.19a3.02 3.02 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.509A3.02 3.02 0 0 0 .5 6.19C0 8.07 0 12 0 12s0 3.93.5 5.81a3.02 3.02 0 0 0 2.123 2.136c1.872.509 9.377.509 9.377.509s7.505 0 9.378-.509A3.02 3.02 0 0 0 23.5 17.81C24 15.93 24 12 24 12s0-3.93-.5-5.81zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>}
+                {r.icon === 'x' && <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>}
+                {r.icon === 'linkedin' && <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 1 1 0-4.124 2.062 2.062 0 0 1 0 4.124zM7.119 20.452H3.555V9h3.564v11.452z"/></svg>}
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom bar -->
+      <div class="mt-10 pt-8 border-t border-border-subtle flex flex-col sm:flex-row items-center justify-between gap-4">
+        <p class="text-text-muted text-xs">
+          &copy; {new Date().getFullYear()} FIBOG &mdash; Facultad de Ingenieria, UNAL Bogota
+        </p>
+        <div class="flex items-center gap-4 text-text-muted text-xs">
+          <a href="/privacidad" class="hover:text-text-secondary transition-colors">Privacidad</a>
+          <span class="text-border-default">|</span>
+          <span>Hecho con pasion</span>
         </div>
       </div>
     </div>
   </div>
-</div>
-
-<!-- Enlaces institucionales (logos) -->
-<div class="bg-[#466B3F] border-t border-white/20">
-  <div class="max-w-[1440px] mx-auto px-4 py-6">
-    <div class="flex flex-wrap justify-center items-center gap-8">
-      {enlacesInstitucionales.map((enlace) => (
-        <a 
-          href={enlace.url} 
-          target="_blank" 
-          rel="noopener noreferrer"
-          class="flex items-center gap-2 text-sm text-white/80 hover:text-white transition-colors"
-        >
-          <img 
-            src={enlace.img} 
-            alt={enlace.label} 
-            class="h-10 w-auto"
-          />
-        </a>
-      ))}
-    </div>
-  </div>
-</div>
-
-<!-- Escudo UNAL final -->
-<div class="bg-[#3a5a34] py-4">
-  <div class="max-w-[1440px] mx-auto px-4 flex justify-center">
-    <a href="https://unal.edu.co/" target="_blank" rel="noopener noreferrer">
-      <img 
-        src="/images/escudo-unal-real.png" 
-        alt="Escudo Universidad Nacional de Colombia" 
-        class="h-16 w-auto"
-      />
-    </a>
-  </div>
-</div>
+</footer>

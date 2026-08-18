@@ -10,6 +10,8 @@ import AdminUsuariosTab from '../components/admin/AdminUsuariosTab.astro';
 import GroupFormModal from '../components/admin/GroupFormModal.astro';
 import AdminsModal from '../components/admin/AdminsModal.astro';
 
+export const prerender = false;
+
 // This page requires SUPER_ADMIN role
 ---
 
@@ -17,20 +19,39 @@ import AdminsModal from '../components/admin/AdminsModal.astro';
   <Breadcrumb items={[{ label: 'Administración' }]} />
   
   <main class="min-h-screen pt-32 pb-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
-    <AdminHeader />
-    <AdminMetricsPanel />
-
-    <!-- Management Tabs Section -->
-    <section class="card rounded-[32px] overflow-hidden">
-      <div class="relative z-10">
-        <AdminTabsNav />
-        <div class="p-8">
-          <AdminGruposTab />
-          <AdminPendientesTab />
-          <AdminUsuariosTab />
-        </div>
+    <!-- Loading / Auth check -->
+    <div id="admin-loading" class="flex flex-col items-center justify-center min-h-[60vh]">
+      <div class="w-16 h-16 rounded-full bg-neutral-95 flex items-center justify-center mb-4">
+        <span class="material-symbols-outlined text-primary text-2xl animate-spin">progress_activity</span>
       </div>
-    </section>
+      <p class="text-neutral-60 text-center">Verificando acceso...</p>
+    </div>
+
+    <div id="admin-access-denied" class="hidden flex flex-col items-center justify-center min-h-[60vh] text-center">
+      <span class="material-symbols-outlined text-error text-5xl mb-4">gpp_bad</span>
+      <h2 class="text-2xl font-semibold text-neutral-40 mb-2">Acceso restringido</h2>
+      <p class="text-neutral-60 max-w-md mb-6">No tienes permisos para ver este panel. Si crees que es un error, contacta al administrador.</p>
+      <a href="/" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-white font-bold hover:opacity-90 transition-opacity focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2">
+        Volver al inicio
+      </a>
+    </div>
+
+    <div id="admin-content" class="hidden">
+      <AdminHeader />
+      <AdminMetricsPanel />
+
+      <!-- Management Tabs Section -->
+      <section class="card rounded-[32px] overflow-hidden">
+        <div class="relative z-10">
+          <AdminTabsNav />
+          <div class="p-4 md:p-8">
+            <AdminGruposTab />
+            <AdminPendientesTab />
+            <AdminUsuariosTab />
+          </div>
+        </div>
+      </section>
+    </div>
   </main>
 
   <GroupFormModal />
@@ -38,17 +59,6 @@ import AdminsModal from '../components/admin/AdminsModal.astro';
 </Layout>
 
 <style>
-  .input-glass {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    transition: all 0.3s ease;
-  }
-  .input-glass:focus {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: #677d29;
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(103, 125, 41, 0.2);
-  }
   .animate-fade-in {
     animation: fadeIn 0.3s ease-out;
   }
@@ -72,6 +82,10 @@ import AdminsModal from '../components/admin/AdminsModal.astro';
   let currentManagingGroup = null;
 
   async function init() {
+    const loadingEl = document.getElementById('admin-loading');
+    const contentEl = document.getElementById('admin-content');
+    const deniedEl = document.getElementById('admin-access-denied');
+
     try {
       // Check auth and role
       const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -84,9 +98,13 @@ import AdminsModal from '../components/admin/AdminsModal.astro';
       const { data: profile, error: profileError } = await supabase.from('perfiles').select('rol').eq('id', user.id).single();
       if (profileError || !profile || profile.rol !== 'SUPER_ADMIN') {
         console.error('Authorization error:', profileError);
-        window.location.href = '/';
+        loadingEl?.classList.add('hidden');
+        deniedEl?.classList.remove('hidden');
         return;
       }
+
+      loadingEl?.classList.add('hidden');
+      contentEl?.classList.remove('hidden');
 
       await loadStats();
       await loadGrupos();
@@ -94,7 +112,8 @@ import AdminsModal from '../components/admin/AdminsModal.astro';
       await loadPendientes();
     } catch (error) {
       console.error('Init error:', error);
-      window.location.href = '/login';
+      loadingEl?.classList.add('hidden');
+      deniedEl?.classList.remove('hidden');
     }
   }
 
@@ -130,7 +149,7 @@ import AdminsModal from '../components/admin/AdminsModal.astro';
               <span class="px-2 py-1 rounded-md text-[10px] font-label-mono ${grupo.tipo === 'Semillero' ? 'bg-tertiary/10 text-tertiary' : grupo.tipo === 'Grupo de Investigación' ? 'bg-primary/10 text-primary' : 'bg-secondary/10 text-secondary'}">${grupo.tipo}</span>
               <span class="text-[10px] font-medium uppercase tracking-wider ${grupo.estado_aprobacion === 'aprobado' ? 'text-primary' : 'text-error'}">${grupo.estado_aprobacion}</span>
             </div>
-            <h3 class="text-lg font-display-lg text-white mb-1 group-hover:text-primary transition-colors">${grupo.nombre}</h3>
+            <h3 class="text-lg font-display-lg text-[#222222] mb-1 group-hover:text-primary transition-colors">${grupo.nombre}</h3>
             <p class="text-sm text-on-surface-variant line-clamp-2">${grupo.descripcion || 'Sin descripción'}</p>
           </div>
         </div>
@@ -172,7 +191,7 @@ import AdminsModal from '../components/admin/AdminsModal.astro';
     const tbody = document.getElementById('usuarios-table-body');
     tbody.innerHTML = usuarios.map(usuario => `
       <tr class="hover:bg-neutral-10 transition-colors">
-        <td class="px-6 py-4 font-medium text-white">${usuario.nombre_completo || 'Sin nombre'}</td>
+        <td class="px-6 py-4 font-medium text-[#222222]">${usuario.nombre_completo || 'Sin nombre'}</td>
         <td class="px-6 py-4 text-on-surface-variant text-sm">${usuario.email}</td>
         <td class="px-6 py-4">
            <span class="px-2 py-1 rounded-md text-[10px] font-label-mono ${usuario.rol === 'SUPER_ADMIN' ? 'bg-error/10 text-error' : 'bg-surface-container-highest text-on-surface-variant'}">${usuario.rol}</span>
@@ -199,7 +218,7 @@ import AdminsModal from '../components/admin/AdminsModal.astro';
       <div class="card rounded-xl p-6 border border-neutral-80">
         <div class="flex justify-between items-start mb-4">
           <div>
-            <h4 class="text-lg font-medium text-white">${solicitud.nombre}</h4>
+            <h4 class="text-lg font-medium text-[#222222]">${solicitud.nombre}</h4>
             <span class="text-sm text-on-surface-variant">${solicitud.tipo}</span>
           </div>
           <span class="px-3 py-1 rounded-full text-xs font-medium bg-warning/10 text-warning">${solicitud.estado}</span>
@@ -207,19 +226,19 @@ import AdminsModal from '../components/admin/AdminsModal.astro';
         <div class="grid md:grid-cols-2 gap-4 mb-4 text-sm">
           <div>
             <span class="text-on-surface-variant">Solicitante:</span>
-            <span class="text-white ml-2">${solicitud.nombre_solicitante}</span>
+            <span class="text-[#222222] ml-2">${solicitud.nombre_solicitante}</span>
           </div>
           <div>
             <span class="text-on-surface-variant">Email:</span>
-            <span class="text-white ml-2">${solicitud.email_solicitante}</span>
+            <span class="text-[#222222] ml-2">${solicitud.email_solicitante}</span>
           </div>
           <div>
             <span class="text-on-surface-variant">Líder:</span>
-            <span class="text-white ml-2">${solicitud.lider_o_representante}</span>
+            <span class="text-[#222222] ml-2">${solicitud.lider_o_representante}</span>
           </div>
           <div>
             <span class="text-on-surface-variant">Fecha:</span>
-            <span class="text-white ml-2">${new Date(solicitud.fecha_solicitud).toLocaleDateString()}</span>
+            <span class="text-[#222222] ml-2">${new Date(solicitud.fecha_solicitud).toLocaleDateString()}</span>
           </div>
         </div>
         <div class="flex gap-2">
@@ -641,7 +660,7 @@ import AdminsModal from '../components/admin/AdminsModal.astro';
     list.innerHTML = admins.map(admin => `
       <div class="flex items-center justify-between p-4 rounded-xl bg-surface-container border border-neutral-80">
         <div>
-          <div class="font-medium text-white">${admin.perfiles.nombre_completo || admin.perfiles.email}</div>
+          <div class="font-medium text-[#222222]">${admin.perfiles.nombre_completo || admin.perfiles.email}</div>
           <div class="text-xs text-on-surface-variant">${admin.perfiles.rol}</div>
         </div>
         <button onclick="removeAdminFromGroup('${admin.usuario_id}')" class="p-2 hover:bg-error/10 text-error rounded-lg transition-all">

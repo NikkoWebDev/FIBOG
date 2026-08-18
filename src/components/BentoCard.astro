@@ -9,62 +9,62 @@ interface Props {
 
 const { grupo, index = 0 } = Astro.props;
 
-const tipoColors = {
-  'Semillero': 'bg-[#c1e4ea] text-[#00566f]',
-  'Grupo de Investigación': 'bg-[#c0d881] text-[#284d21]',
-  'Grupo Estudiantil': 'bg-[#94b43b] text-[#284d21]'
+const tipoColors: Record<string, string> = {
+  'Semillero': 'bg-accent/10 text-accent-light border-accent/20',
+  'Grupo de Investigacion': 'bg-primary/10 text-primary-light border-primary/20',
+  'Grupo Estudiantil': 'bg-neon/10 text-neon border-neon/20'
 };
 
-const tipoBadge = tipoColors[grupo.tipo as keyof typeof tipoColors] || tipoColors['Semillero'];
+const tipoBadge = tipoColors[grupo.tipo] || tipoColors['Semillero'];
 ---
 
-<div class="bento-card card rounded-lg p-6 border border-neutral-80 hover:border-primary transition-colors group" data-index={index}>
+<div class="bento-card bg-bg-card border border-border-default rounded-2xl p-6 hover:border-primary/30 hover:shadow-card-hover transition-all duration-300 group" data-index={index}>
 
-<div class="relative z-10">
+  <div class="relative z-10">
     <!-- Header -->
     <div class="flex items-start justify-between mb-4">
       <div class="flex-1">
-        <div class="flex items-center gap-2 mb-2">
-          <span class={`px-2 py-1 rounded-md text-[10px] font-label-mono uppercase tracking-wider ${tipoBadge}`}>
+        <div class="flex items-center gap-2 mb-3">
+          <span class={`px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider rounded-md border ${tipoBadge}`}>
             {grupo.tipo}
           </span>
         </div>
-        <h3 class="text-lg font-display-lg text-neutral-40 mb-1 group-hover:text-primary transition-colors line-clamp-2">
+        <h3 class="text-lg font-semibold text-text-primary mb-1.5 group-hover:text-primary-light transition-colors line-clamp-2">
           {grupo.nombre}
         </h3>
-        <p class="text-sm text-neutral-60 line-clamp-2">{grupo.descripcion || 'Sin descripción'}</p>
+        <p class="text-sm text-text-secondary line-clamp-2 leading-relaxed">{grupo.descripcion || 'Sin descripcion'}</p>
       </div>
     </div>
-    
+
     <!-- Info -->
-    <div class="space-y-2 mb-4">
+    <div class="space-y-2.5 mb-5">
       {grupo.docente && (
-        <div class="flex items-center gap-2 text-sm">
-          <span class="material-symbols-outlined text-neutral-60 text-base">person</span>
-          <span class="text-neutral-60 truncate">{grupo.docente}</span>
+        <div class="flex items-center gap-2.5 text-sm">
+          <span class="material-symbols-outlined text-text-muted text-base">person</span>
+          <span class="text-text-secondary truncate">{grupo.docente}</span>
         </div>
       )}
       {grupo.carreras && grupo.carreras.length > 0 && (
-        <div class="flex items-center gap-2 text-sm">
-          <span class="material-symbols-outlined text-neutral-60 text-base">school</span>
-          <span class="text-neutral-60 truncate">{grupo.carreras.slice(0, 2).join(', ')}</span>
+        <div class="flex items-center gap-2.5 text-sm">
+          <span class="material-symbols-outlined text-text-muted text-base">school</span>
+          <span class="text-text-secondary truncate">{grupo.carreras.slice(0, 2).join(', ')}</span>
         </div>
       )}
     </div>
 
     <!-- Actions -->
-    <div class="flex items-center gap-2 pt-4 border-t border-neutral-80">
-      <a 
+    <div class="flex items-center gap-2 pt-4 border-t border-border-subtle">
+      <a
         href={`/grupo/${grupo.id}`}
-        class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-surface-container hover:bg-neutral-95 transition-all text-sm text-center text-neutral-40"
+        class="flex-1 flex items-center justify-center gap-2 px-3 h-10 rounded-lg bg-bg-hover hover:bg-primary/10 transition-all text-sm text-center text-text-primary hover:text-primary-light"
       >
         <span class="material-symbols-outlined text-base">visibility</span>
         <span>Ver detalles</span>
       </a>
       {grupo.email && (
-        <a 
+        <a
           href={`mailto:${grupo.email}`}
-          class="p-2 rounded-lg bg-surface-container hover:bg-[#c0d881] text-primary transition-colors"
+          class="h-10 w-10 rounded-lg flex items-center justify-center bg-bg-hover hover:bg-accent/10 text-text-muted hover:text-accent-light transition-all"
           onclick="event.stopPropagation();"
         >
           <span class="material-symbols-outlined text-base">email</span>

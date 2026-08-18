@@ -10,131 +10,143 @@ import { filtrarGrupos } from '../data/grupos.types';
 
 const { metadata, data: allGrupos } = gruposData;
 
-// Get URL params for filtering
 const url = Astro.url;
 const tipoFilter = url.searchParams.get('tipo');
 const carreraFilter = url.searchParams.get('carrera');
 const searchQuery = url.searchParams.get('q');
 
-// Filter grupos
 const filteredGrupos = filtrarGrupos(allGrupos, {
   tipo: tipoFilter || undefined,
   carrera: carreraFilter || undefined,
   busqueda: searchQuery || undefined
 });
-
-// Get unique enfoques for tags
-const allEnfoques = [...new Set(allGrupos.flatMap(g => 
-  g.enfoque.split(',').map(e => e.trim()).filter(e => e.length > 0)
-))].slice(0, 8);
 ---
 
-<Layout title="Semilleros y Grupos de Investigación | FIBOG UNAL" description="Catálogo de semilleros, grupos de investigación y comunidades estudiantiles de la Facultad de Ingeniería UNAL" activePage="inicio">
+<Layout title="FIBOG Semilleros" description="Catalogo de semilleros, grupos de investigacion y comunidades estudiantiles de la Facultad de Ingenieria" activePage="inicio">
   <Breadcrumb items={[]} />
-  
-  <main class="pt-8 pb-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+
+  <main class="pb-24">
     <!-- Hero Section -->
-    <section class="mb-16">
-      <div class="max-w-3xl">
-        <div class="flex items-center gap-2 mb-4">
-          <span class="h-[1px] w-12 bg-secondary"></span>
-          <span class="font-label-mono text-label-mono text-secondary uppercase tracking-widest">Investigación de Vanguardia</span>
-        </div>
-        <h1 class="font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface mb-6 leading-tight">
-          Semilleros y Grupos de <span class="text-primary">Investigación</span>
-        </h1>
-        <p class="text-on-surface-variant text-lg max-w-2xl font-body-base mb-8">
-          Descubre el ecosistema de innovación de la Facultad de Ingeniería UNAL. Impulsamos el conocimiento a través de la experimentación dinámica y el rigor académico.
-        </p>
-        
-        <!-- CTA Buttons -->
-        <div class="flex flex-col sm:flex-row gap-4 mb-12">
-          <a 
-            href="#grupos"
-            class="inline-flex items-center justify-center gap-2 bg-[#677d29] text-white font-bold px-8 py-3 rounded-lg shadow-sm hover:bg-[#516320] transition-colors text-center"
-          >
-            <span class="material-symbols-outlined">explore</span>
-            Explorar Grupos
-          </a>
-        </div>
-        
-        <!-- Quick Stats -->
-        <div class="flex flex-wrap gap-6 md:gap-8">
-          <div class="text-center">
-            <span class="block text-primary text-headline-md font-bold">{metadata.por_tipo['Semillero'] || 0}</span>
-            <span class="text-on-surface-variant text-body-sm">Semilleros</span>
+    <section class="relative overflow-hidden">
+      <!-- Background mesh gradient -->
+      <div class="absolute inset-0 bg-gradient-mesh opacity-60"></div>
+      <div class="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[120px]"></div>
+      <div class="absolute bottom-0 right-1/4 w-80 h-80 bg-accent/10 rounded-full blur-[100px]"></div>
+
+      <div class="relative z-10 max-w-7xl mx-auto px-6 py-16 sm:py-20 md:py-28">
+        <div class="max-w-3xl">
+          <!-- Tag -->
+          <div class="inline-flex items-center gap-2 mb-6 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20">
+            <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+            <span class="text-primary-light text-xs font-semibold uppercase tracking-widest">Investigacion de Vanguardia</span>
           </div>
-          <div class="text-center">
-            <span class="block text-secondary text-headline-md font-bold">{metadata.por_tipo['Grupo de Investigación'] || 0}</span>
-            <span class="text-on-surface-variant text-body-sm">Grupos de Investigación</span>
+
+          <!-- Title -->
+          <h1 class="text-4xl sm:text-5xl md:text-display-xl font-extrabold mb-6 leading-[1.1]">
+            Semilleros y Grupos de
+            <span class="text-gradient">Investigacion</span>
+          </h1>
+
+          <!-- Subtitle -->
+          <p class="text-text-secondary text-lg sm:text-xl max-w-2xl mb-10 leading-relaxed">
+            Descubre el ecosistema de innovacion de la Facultad de Ingenieria. Impulsamos el conocimiento a traves de la experimentacion dinamica y el rigor academico.
+          </p>
+
+          <!-- CTAs -->
+          <div class="flex flex-col sm:flex-row gap-4 mb-14">
+            <a
+              href="#grupos"
+              class="inline-flex items-center justify-center gap-2.5 bg-gradient-to-r from-primary to-primary-dark text-white font-semibold px-8 py-3.5 rounded-xl hover:shadow-glow transition-all text-center text-sm sm:text-base"
+            >
+              <span class="material-symbols-outlined text-lg">explore</span>
+              Explorar Grupos
+            </a>
+            <a
+              href="/registro"
+              class="inline-flex items-center justify-center gap-2.5 bg-transparent text-primary-light font-semibold px-8 py-3.5 rounded-xl border border-primary/30 hover:bg-primary/10 hover:border-primary/50 transition-all text-center text-sm sm:text-base"
+            >
+              <span class="material-symbols-outlined text-lg">group_add</span>
+              Registrar mi grupo
+            </a>
           </div>
-          <div class="text-center">
-            <span class="block text-tertiary text-headline-md font-bold">{metadata.por_tipo['Grupo Estudiantil'] || 0}</span>
-            <span class="text-on-surface-variant text-body-sm">Grupos Estudiantiles</span>
-          </div>
-          <div class="text-center">
-            <span class="block text-primary-fixed text-headline-md font-bold">{metadata.carreras.length}</span>
-            <span class="text-on-surface-variant text-body-sm">Carreras</span>
+
+          <!-- Stats -->
+          <div class="flex flex-wrap gap-6 sm:gap-10">
+            <div class="text-center min-w-[5rem]">
+              <span class="block text-primary-light text-3xl sm:text-4xl font-bold">{metadata.por_tipo['Semillero'] || 0}</span>
+              <span class="text-text-muted text-xs sm:text-sm font-medium">Semilleros</span>
+            </div>
+            <div class="text-center min-w-[5rem]">
+              <span class="block text-accent-light text-3xl sm:text-4xl font-bold">{metadata.por_tipo['Grupo de Investigacion'] || 0}</span>
+              <span class="text-text-muted text-xs sm:text-sm font-medium">Grupos de Investigacion</span>
+            </div>
+            <div class="text-center min-w-[5rem]">
+              <span class="block text-neon text-3xl sm:text-4xl font-bold">{metadata.por_tipo['Grupo Estudiantil'] || 0}</span>
+              <span class="text-text-muted text-xs sm:text-sm font-medium">Grupos Estudiantiles</span>
+            </div>
+            <div class="text-center min-w-[5rem]">
+              <span class="block text-primary-light text-3xl sm:text-4xl font-bold">{metadata.carreras.length}</span>
+              <span class="text-text-muted text-xs sm:text-sm font-medium">Carreras</span>
+            </div>
           </div>
         </div>
       </div>
     </section>
-    
-    <div id="grupos">
-    
-    <!-- AI Search -->
-    <AISearch placeholder="¿Qué área de investigación te interesa? Ej: robótica, IA, energía..." />
-    
-    <!-- Filters -->
-    <FilterBar 
-      metadata={{...metadata, total: filteredGrupos.length}} 
-      activeTipo={tipoFilter}
-      activeCarrera={carreraFilter}
-    />
-    
-    <!-- Results Info -->
-    {(tipoFilter || carreraFilter || searchQuery) && (
-      <div class="flex items-center gap-2 mb-6">
-        <span class="text-on-surface-variant text-body-sm">
-          Mostrando {filteredGrupos.length} de {metadata.total} grupos
-        </span>
-        {(tipoFilter || carreraFilter || searchQuery) && (
-          <a 
+
+    <div id="grupos" class="max-w-7xl mx-auto px-6 pt-16">
+      <!-- Section title -->
+      <div class="mb-8">
+        <h2 class="text-2xl sm:text-3xl font-bold text-text-primary mb-3">Catalogo de grupos</h2>
+        <div class="h-1 w-20 bg-gradient-to-r from-primary to-accent rounded-full"></div>
+      </div>
+
+      <!-- AI Search -->
+      <AISearch placeholder="Area de investigacion: robotica, IA, energia..." />
+
+      <!-- Filters -->
+      <FilterBar
+        metadata={{...metadata, total: filteredGrupos.length}}
+        activeTipo={tipoFilter}
+        activeCarrera={carreraFilter}
+      />
+
+      <!-- Results Info -->
+      {(tipoFilter || carreraFilter || searchQuery) && (
+        <div class="flex items-center gap-2 mb-6">
+          <span class="text-text-secondary text-sm">
+            Mostrando {filteredGrupos.length} de {metadata.total} grupos
+          </span>
+          <a
             href="/"
-            class="ml-4 px-3 py-1 rounded-lg bg-[#fdecea] text-error text-body-sm hover:bg-[#fbd7d4] transition-colors flex items-center gap-1"
+            class="ml-4 px-3 py-1.5 bg-error/10 text-error text-sm rounded-lg hover:bg-error/20 transition-colors flex items-center gap-1"
           >
             <span class="material-symbols-outlined text-sm" data-icon="close">close</span>
             Limpiar filtros
           </a>
-        )}
-      </div>
-    )}
-    
-    <!-- Bento Grid -->
-    {filteredGrupos.length > 0 ? (
-      <BentoGrid grupos={filteredGrupos} />
-    ) : (
-      <div class="text-center py-16">
-        <div class="w-20 h-20 mx-auto mb-6 rounded-lg bg-neutral-95 flex items-center justify-center">
-          <span class="material-symbols-outlined text-4xl text-on-surface-variant" data-icon="search_off">search_off</span>
         </div>
-        <h3 class="text-headline-md text-on-surface mb-2">No se encontraron grupos</h3>
-        <p class="text-on-surface-variant text-body-base max-w-md mx-auto mb-6">
-          No hay grupos que coincidan con los filtros seleccionados. Intenta con otros criterios o limpia los filtros.
-        </p>
-        <a 
-          href="/"
-          class="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-[#677d29] text-white font-bold hover:bg-[#516320] transition-colors"
-        >
-          <span class="material-symbols-outlined" data-icon="refresh">refresh</span>
-          Ver todos los grupos
-        </a>
-      </div>
-    )}
+      )}
+
+      <!-- Bento Grid -->
+      {filteredGrupos.length > 0 ? (
+        <BentoGrid grupos={filteredGrupos} />
+      ) : (
+        <div class="text-center py-20">
+          <div class="w-20 h-20 mx-auto mb-6 bg-bg-card rounded-2xl flex items-center justify-center border border-border-default">
+            <span class="material-symbols-outlined text-4xl text-text-muted" data-icon="search_off">search_off</span>
+          </div>
+          <h3 class="text-xl text-text-primary font-semibold mb-2">No se encontraron grupos</h3>
+          <p class="text-text-secondary max-w-md mx-auto mb-8">
+            No hay grupos que coincidan con los filtros seleccionados. Intenta con otros criterios o limpia los filtros.
+          </p>
+          <a
+            href="/"
+            class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary to-primary-dark text-white font-semibold rounded-xl hover:shadow-glow transition-all"
+          >
+            <span class="material-symbols-outlined" data-icon="refresh">refresh</span>
+            Ver todos los grupos
+          </a>
+        </div>
+      )}
     </div>
   </main>
 </Layout>
-
-<style>
-  @import '../styles/global.css';
-</style>

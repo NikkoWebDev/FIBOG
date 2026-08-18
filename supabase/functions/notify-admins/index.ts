@@ -96,7 +96,7 @@ Fecha de solicitud: ${new Date(record.fecha_solicitud).toLocaleString('es-CO')}
 
 Acciones:
 --------
-Revisar solicitud: ${Deno.env.get('SITE_URL') || 'https://fibog.netlify.app'}/admin
+Revisar solicitud: ${Deno.env.get('SITE_URL') || 'https://fibog.vercel.app'}/admin
 
 ---
 Este es un mensaje automático del sistema FIBOG UNAL.

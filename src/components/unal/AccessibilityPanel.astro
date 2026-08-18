@@ -1,99 +1,96 @@
 ---
-// AccessibilityPanel.astro - Panel de accesibilidad obligatorio UNAL
-// Ubicación: lado derecho, botón flotante
+// AccessibilityPanel.astro - Accessibility panel (new palette)
 ---
 
-<!-- Botón flotante de accesibilidad (Panel de Accesibilidad) -->
 <button 
   id="accessibility-toggle"
-  class="fixed right-0 top-1/4 z-[100] bg-[#00566f] text-white px-2 py-6 rounded-l-lg shadow-lg hover:bg-[#004259] transition-colors"
+  class="fixed right-0 top-1/4 z-[100] bg-primary text-white px-2 py-6 rounded-l-lg shadow-glow-sm hover:bg-primary-dark transition-colors"
   aria-label="Panel de Accesibilidad"
   title="Panel de Accesibilidad"
   style="writing-mode: vertical-rl; text-orientation: mixed;"
 >
   <span class="material-symbols-outlined text-lg mb-2">accessibility_new</span>
-  <span class="text-xs font-bold tracking-wider">Panel de Accesibilidad</span>
+  <span class="text-xs font-bold tracking-wider">Accesibilidad</span>
 </button>
 
-<!-- Panel de accesibilidad -->
 <div 
   id="accessibility-panel" 
-  class="fixed right-0 top-0 h-full z-[100] bg-[#00566f] shadow-xl transform translate-x-full transition-transform duration-300 w-80"
+  class="fixed right-0 top-0 h-full z-[100] bg-bg-card border-l border-border-default shadow-xl transform translate-x-full transition-transform duration-300 w-80"
 >
   <div class="p-6">
     <div class="flex items-center justify-between mb-6">
-      <h3 class="font-bold text-lg text-white">Accesibilidad</h3>
+      <h3 class="font-bold text-lg text-text-primary">Accesibilidad</h3>
       <button 
         id="accessibility-close" 
-        class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-white/20 transition-colors text-white"
+        class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-bg-hover transition-colors text-text-secondary"
         aria-label="Cerrar"
       >
         <span class="material-symbols-outlined">close</span>
       </button>
     </div>
     
-    <!-- Tamaño de letra -->
+    <!-- Font size -->
     <div class="mb-6">
-      <label class="text-sm font-medium text-white mb-3 block">Tamaño de letra</label>
+      <label class="text-sm font-medium text-text-secondary mb-3 block">Tamanio de letra</label>
       <div class="flex items-center gap-3">
         <button 
           id="font-decrease" 
-          class="w-10 h-10 rounded border border-white/30 flex items-center justify-center hover:bg-white/20 transition-colors text-white text-sm font-bold"
-          aria-label="Reducir tamaño"
+          class="w-10 h-10 rounded-lg border border-border-default flex items-center justify-center hover:bg-bg-hover transition-colors text-text-secondary text-sm font-bold"
+          aria-label="Reducir tamano"
         >
           A-
         </button>
-        <span id="font-size-display" class="text-white font-medium min-w-[50px] text-center">100%</span>
+        <span id="font-size-display" class="text-text-primary font-medium min-w-[50px] text-center">100%</span>
         <button 
           id="font-increase" 
-          class="w-10 h-10 rounded border border-white/30 flex items-center justify-center hover:bg-white/20 transition-colors text-white text-sm font-bold"
-          aria-label="Aumentar tamaño"
+          class="w-10 h-10 rounded-lg border border-border-default flex items-center justify-center hover:bg-bg-hover transition-colors text-text-secondary text-sm font-bold"
+          aria-label="Aumentar tamano"
         >
           A+
         </button>
       </div>
     </div>
 
-    <!-- Cambiar contrastes -->
+    <!-- Contrast -->
     <div class="mb-6">
-      <label class="text-sm font-medium text-white mb-3 block">Cambiar contrastes</label>
+      <label class="text-sm font-medium text-text-secondary mb-3 block">Cambiar contrastes</label>
       <div class="flex gap-3">
         <button 
           id="contrast-default" 
-          class="w-10 h-10 rounded border-2 border-white bg-[#466B3F]"
+          class="w-10 h-10 rounded-lg border-2 border-primary bg-bg-card"
           title="Contraste normal"
           aria-label="Contraste normal"
         ></button>
         <button 
           id="contrast-dark" 
-          class="w-10 h-10 rounded border border-white/30 bg-black"
+          class="w-10 h-10 rounded-lg border-2 border-border-default bg-black"
           title="Contraste alto"
           aria-label="Contraste alto"
         ></button>
         <button 
           id="contrast-light" 
-          class="w-10 h-10 rounded border border-white/30 bg-white"
+          class="w-10 h-10 rounded-lg border-2 border-border-default bg-white"
           title="Contraste bajo"
           aria-label="Contraste bajo"
         ></button>
       </div>
     </div>
 
-    <!-- Invertir colores -->
+    <!-- Invert colors -->
     <div class="mb-6">
-      <label class="text-sm font-medium text-white mb-3 block">Invertir colores</label>
+      <label class="text-sm font-medium text-text-secondary mb-3 block">Invertir colores</label>
       <button 
         id="invert-colors" 
-        class="w-full py-3 px-4 rounded border border-white/30 text-white text-sm font-medium hover:bg-white/20 transition-colors"
+        class="w-full py-3 px-4 rounded-lg border border-border-default text-text-secondary text-sm font-medium hover:bg-bg-hover transition-colors"
       >
         Invertir
       </button>
     </div>
 
-    <!-- Restablecer -->
+    <!-- Reset -->
     <button 
       id="reset-accessibility" 
-      class="w-full py-3 px-4 rounded bg-white text-[#466B3F] text-sm font-bold hover:bg-white/90 transition-colors"
+      class="w-full py-3 px-4 rounded-lg bg-gradient-to-r from-primary to-primary-dark text-white text-sm font-bold hover:shadow-glow transition-all"
     >
       Restablecer ajustes
     </button>
@@ -101,12 +98,10 @@
 </div>
 
 <script>
-  // Estado de accesibilidad
   let fontSize = 100;
   let contrastMode = 'default';
   let inverted = false;
 
-  // Elementos
   const toggle = document.getElementById('accessibility-toggle');
   const panel = document.getElementById('accessibility-panel');
   const closeBtn = document.getElementById('accessibility-close');
@@ -119,7 +114,6 @@
   const invertBtn = document.getElementById('invert-colors');
   const resetBtn = document.getElementById('reset-accessibility');
 
-  // Toggle panel
   toggle?.addEventListener('click', () => {
     panel?.classList.toggle('translate-x-full');
   });
@@ -128,7 +122,6 @@
     panel?.classList.add('translate-x-full');
   });
 
-  // Tamaño de letra (hasta 200%)
   fontIncrease?.addEventListener('click', () => {
     if (fontSize < 200) {
       fontSize += 10;
@@ -148,7 +141,6 @@
     if (fontDisplay) fontDisplay.textContent = `${fontSize}%`;
   }
 
-  // Contraste
   contrastDefault?.addEventListener('click', () => {
     contrastMode = 'default';
     updateContrast();
@@ -170,13 +162,11 @@
     body.classList.add(`contrast-${contrastMode}`);
   }
 
-  // Invertir colores
   invertBtn?.addEventListener('click', () => {
     inverted = !inverted;
     document.documentElement.classList.toggle('inverted', inverted);
   });
 
-  // Restablecer
   resetBtn?.addEventListener('click', () => {
     fontSize = 100;
     contrastMode = 'default';
@@ -189,7 +179,6 @@
     if (fontDisplay) fontDisplay.textContent = '100%';
   });
 
-  // Cerrar al hacer clic fuera
   document.addEventListener('click', (e) => {
     const target = e.target as HTMLElement;
     if (!panel?.contains(target) && !toggle?.contains(target)) {
@@ -199,10 +188,9 @@
 </script>
 
 <style>
-  /* Modos de contraste */
   body.contrast-default {
-    background-color: #fafafa;
-    color: #1c1b1f;
+    background-color: #0a0a0f;
+    color: #f0f0f5;
   }
   
   body.contrast-dark {
@@ -210,13 +198,12 @@
     color: #ffffff;
   }
   
-  body.contrast-dark .bg-white {
-    background-color: #1a1a1a !important;
+  body.contrast-dark .bg-bg-card {
+    background-color: #0a0a0f !important;
   }
   
-  body.contrast-dark .text-neutral-40,
-  body.contrast-dark .text-neutral-50,
-  body.contrast-dark .text-neutral-60 {
+  body.contrast-dark .text-text-secondary,
+  body.contrast-dark .text-text-muted {
     color: #ffffff !important;
   }
   
@@ -225,7 +212,6 @@
     color: #000000;
   }
   
-  /* Invertir colores */
   html.inverted {
     filter: invert(1) hue-rotate(180deg);
   }

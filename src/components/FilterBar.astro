@@ -9,53 +9,54 @@ interface Props {
 
 const { metadata, activeTipo, activeCarrera } = Astro.props;
 
-const tipos = ['Todos', 'Semillero', 'Grupo de Investigación', 'Grupo Estudiantil'];
+const tipos = ['Todos', 'Semillero', 'Grupo de Investigacion', 'Grupo Estudiantil'];
 ---
 
-<div class="card rounded-lg p-4 mb-8">
+<div class="bg-bg-card border border-border-default rounded-xl p-4 mb-8">
   <div class="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
     <!-- Tipo Filter -->
     <div class="flex flex-wrap gap-2">
-      <span class="text-on-surface-variant text-body-sm mr-2 self-center">Tipo:</span>
+      <span class="text-text-muted text-sm mr-2 self-center font-medium">Tipo:</span>
       {tipos.map(tipo => {
-        const isActive = (tipo === 'Todos' && !activeTipo) || 
+        const isActive = (tipo === 'Todos' && !activeTipo) ||
                          (tipo !== 'Todos' && activeTipo?.toLowerCase() === tipo.toLowerCase());
-        const href = tipo === 'Todos' 
+        const href = tipo === 'Todos'
           ? (activeCarrera ? `?carrera=${activeCarrera}` : '/')
           : `?tipo=${encodeURIComponent(tipo)}${activeCarrera ? `&carrera=${activeCarrera}` : ''}`;
-        
+
         return (
           <a
             href={href}
-            class={`filter-chip px-4 py-2 rounded-lg border border-neutral-80 text-body-sm transition-colors ${
-              isActive 
-                ? 'active' 
-                : 'bg-white text-on-surface-variant hover:bg-neutral-95'
-            }`}
+            class:list={[
+              'px-4 py-2 border text-sm font-medium rounded-lg transition-all',
+              isActive
+                ? 'bg-gradient-to-r from-primary to-primary-dark text-white border-primary'
+                : 'bg-bg-hover text-text-secondary border-border-default hover:border-primary/40 hover:text-primary-light'
+            ]}
           >
             {tipo}
           </a>
         );
       })}
     </div>
-    
+
     <!-- Carrera Filter -->
     <div class="flex items-center gap-2">
-      <span class="text-on-surface-variant text-body-sm">Carrera:</span>
-      <select 
+      <span class="text-text-muted text-sm font-medium">Carrera:</span>
+      <select
         id="carrera-filter"
-        class="bg-white border border-neutral-80 rounded-lg px-4 py-2 text-body-sm text-on-surface focus:outline-none focus:border-primary transition-colors cursor-pointer"
+        class="bg-bg-input border border-border-default px-4 py-2 text-sm text-text-primary rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all cursor-pointer appearance-none"
         onchange="window.location.href=this.value"
       >
         <option value={activeTipo ? `?tipo=${activeTipo}` : '/'}>
           Todas las carreras
         </option>
         {metadata.carreras.map(carrera => {
-          const value = activeTipo 
+          const value = activeTipo
             ? `?tipo=${encodeURIComponent(activeTipo)}&carrera=${encodeURIComponent(carrera)}`
             : `?carrera=${encodeURIComponent(carrera)}`;
           const isSelected = activeCarrera === carrera;
-          
+
           return (
             <option value={value} selected={isSelected}>
               {carrera}
@@ -64,10 +65,10 @@ const tipos = ['Todos', 'Semillero', 'Grupo de Investigación', 'Grupo Estudiant
         })}
       </select>
     </div>
-    
+
     <!-- Results Count -->
-    <div class="text-on-surface-variant text-body-sm font-label-mono">
-      {metadata.total} grupos encontrados
+    <div class="text-text-muted text-sm font-medium">
+      {metadata.total} grupos
     </div>
   </div>
 </div>

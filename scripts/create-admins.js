@@ -138,8 +138,8 @@ async function main() {
     console.log('   Cambia la contraseña temporal después del primer login:');
     console.log(`   Password temporal: ${TEMP_PASSWORD}`);
     console.log('\n📝 URLs de acceso:');
-    console.log('   Login: https://fibog.netlify.app/login');
-    console.log('   Panel Admin: https://fibog.netlify.app/admin');
+    console.log('   Login: https://fibog.vercel.app/login');
+    console.log('   Panel Admin: https://fibog.vercel.app/admin');
   }
 }
 

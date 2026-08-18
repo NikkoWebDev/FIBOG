@@ -8,7 +8,7 @@
 
 [![Astro](https://img.shields.io/badge/Astro-4.x-BC52EE?style=for-the-badge&logo=astro&logoColor=white)](https://astro.build)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.x-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
-[![Netlify](https://img.shields.io/badge/Netlify-Deploy-00C7B7?style=for-the-badge&logo=netlify&logoColor=white)](https://www.netlify.com)
+[![Vercel](https://img.shields.io/badge/Vercel-Deploy-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com)
 [![License: ISC](https://img.shields.io/badge/License-ISC-green?style=for-the-badge)](https://opensource.org/licenses/ISC)
 
 </div>
@@ -62,7 +62,7 @@ El objetivo es facilitar a los estudiantes la busqueda y exploracion de estos gr
 - **Animaciones:** [GSAP](https://greensock.com/gsap/) + ScrollTrigger (via CDN)
 - **Tipografia:** Google Fonts (Inter, JetBrains Mono, Geist, Material Symbols)
 - **IA:** [OpenRouter API](https://openrouter.ai/) (modelo `liquid/lfm-2.5-1.2b-instruct:free`)
-- **Deploy:** [Netlify](https://www.netlify.com) (Static)
+- **Deploy:** [Vercel](https://vercel.com) (Hobby, gratis) — serverless functions
 - **Lenguaje:** TypeScript (estricto)
 
 ---
@@ -88,15 +88,17 @@ FIBOG/
 │   │   └── Layout.astro       # Layout principal (HTML base, fonts, GSAP)
 │   ├── pages/
 │   │   ├── api/
-│   │   │   └── search.ts      # Endpoint API para busqueda con IA
+│   │   │   ├── search.ts      # Endpoint API para busqueda con IA
+│   │   │   └── notify.ts      # Notificacion por email (Resend) al recibir solicitud
 │   │   ├── index.astro        # Pagina principal (catalogo de grupos)
 │   │   ├── mapa.astro         # Mapa de investigacion
 │   │   └── privacidad.astro   # Politica de privacidad
+│   ├── middleware.ts           # Proteccion de rutas + dominio @unal.edu.co
 │   ├── styles/
 │   │   └── global.css         # Estilos globales (glass, shimmer, etc.)
 │   └── env.d.ts               # Tipos para variables de entorno
 ├── astro.config.mjs           # Configuracion de Astro
-├── netlify.toml               # Configuracion de Netlify
+├── vercel.json                # Configuracion de Vercel
 ├── tailwind.config.mjs        # Configuracion de Tailwind CSS
 ├── tsconfig.json              # Configuracion de TypeScript (estricto)
 └── package.json               # Dependencias y scripts
@@ -203,15 +205,29 @@ interface Grupo {
 
 ## Despliegue
 
-El proyecto esta configurado para desplegarse en **Netlify** como sitio estatico.
+El proyecto esta configurado para desplegarse en **Vercel** (plan Hobby, gratis) usando el adapter `@astrojs/vercel/serverless` con output hybrid.
 
-### Configuracion de Netlify
+### Configuracion de Vercel
 
 - **Build command:** `npm run build`
-- **Publish directory:** `dist`
-- **Node version:** 20
+- **Output:** `.vercel/output` (adapter serverless)
+- **Node version:** 22
 
-Las variables de entorno de OpenRouter deben configurarse en el panel de Netlify si se desea habilitar la busqueda con IA en produccion.
+Las variables de entorno deben configurarse en el panel de Vercel (Project > Settings > Environment Variables):
+
+```env
+PUBLIC_SUPABASE_URL=
+PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
+OPENROUTER_API_KEY=
+RESEND_API_KEY=
+RESEND_FROM_EMAIL=
+ADMIN_EMAIL_1=
+ADMIN_EMAIL_2=
+SITE_URL=
+```
+
+> **Nota:** Resend free tier incluye 3,000 emails/mes; requiere un dominio verificado.
 
 ---
 

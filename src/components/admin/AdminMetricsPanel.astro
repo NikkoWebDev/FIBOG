@@ -15,28 +15,28 @@
     <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
       <div class="flex flex-col">
         <span class="text-on-surface-variant font-body-sm">Proyectos Activos</span>
-        <span id="total-grupos" class="text-display-lg-mobile font-display-lg text-white">-</span>
+        <span id="total-grupos" class="text-display-lg-mobile font-display-lg text-[#222222]">-</span>
         <div class="h-1 w-full bg-surface-container mt-2 rounded-full overflow-hidden">
           <div class="h-full bg-secondary w-3/4"></div>
         </div>
       </div>
       <div class="flex flex-col">
         <span class="text-on-surface-variant font-body-sm">Líderes</span>
-        <span id="total-lideres" class="text-display-lg-mobile font-display-lg text-white">-</span>
+        <span id="total-lideres" class="text-display-lg-mobile font-display-lg text-[#222222]">-</span>
         <div class="h-1 w-full bg-surface-container mt-2 rounded-full overflow-hidden">
           <div class="h-full bg-tertiary w-1/2"></div>
         </div>
       </div>
       <div class="flex flex-col">
         <span class="text-on-surface-variant font-body-sm">Pendientes</span>
-        <span id="pending-grupos" class="text-display-lg-mobile font-display-lg text-white">-</span>
+        <span id="pending-grupos" class="text-display-lg-mobile font-display-lg text-[#222222]">-</span>
         <div class="h-1 w-full bg-surface-container mt-2 rounded-full overflow-hidden">
           <div class="h-full bg-primary w-5/6"></div>
         </div>
       </div>
       <div class="flex flex-col">
         <span class="text-on-surface-variant font-body-sm">Administradores</span>
-        <span id="total-admins" class="text-display-lg-mobile font-display-lg text-white">-</span>
+        <span id="total-admins" class="text-display-lg-mobile font-display-lg text-[#222222]">-</span>
         <div class="h-1 w-full bg-surface-container mt-2 rounded-full overflow-hidden">
           <div class="h-full bg-secondary-container w-1/3"></div>
         </div>
@@ -46,19 +46,19 @@
 
   <!-- Quick Actions Section -->
   <section class="col-span-4 md:col-span-4 card rounded-3xl p-8 relative overflow-hidden">
-    <h2 class="font-headline-md text-white mb-6">Acciones Rápidas</h2>
+    <h2 class="font-headline-md text-[#222222] mb-6">Acciones Rápidas</h2>
     <div class="space-y-3">
       <button onclick="switchTab('pendientes')" class="w-full flex items-center justify-between p-4 rounded-xl bg-surface-container border border-outline-variant/30 hover:border-secondary/50 transition-all group">
         <div class="flex items-center gap-4">
           <span class="material-symbols-outlined text-secondary">pending_actions</span>
-          <span class="font-body-base text-white">Aprobaciones</span>
+          <span class="font-body-base text-[#222222]">Aprobaciones</span>
         </div>
         <span id="pending-count-badge" class="bg-error-container text-on-error-container text-xs px-2 py-0.5 rounded-full">-</span>
       </button>
       <button onclick="exportData()" class="w-full flex items-center justify-between p-4 rounded-xl bg-surface-container border border-outline-variant/30 hover:border-tertiary/50 transition-all group">
         <div class="flex items-center gap-4">
           <span class="material-symbols-outlined text-tertiary">cloud_download</span>
-          <span class="font-body-base text-white">Exportar Reportes</span>
+          <span class="font-body-base text-[#222222]">Exportar Reportes</span>
         </div>
         <span class="material-symbols-outlined text-on-surface-variant">download</span>
       </button>

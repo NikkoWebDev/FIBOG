@@ -2,6 +2,8 @@
 import Layout from '../layouts/Layout.astro';
 import Breadcrumb from '../components/unal/Breadcrumb.astro';
 
+export const prerender = false;
+
 // This page requires authentication.
 // We'll handle redirection in the client-side script.
 ---
@@ -10,6 +12,25 @@ import Breadcrumb from '../components/unal/Breadcrumb.astro';
   <Breadcrumb items={[{ label: 'Mi Perfil' }]} />
   
   <main class="min-h-screen pt-32 pb-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+    <!-- Auth loading -->
+    <div id="perfil-auth-loading" class="flex flex-col items-center justify-center min-h-[60vh]">
+      <div class="w-16 h-16 rounded-full bg-neutral-95 flex items-center justify-center mb-4">
+        <span class="material-symbols-outlined text-primary text-2xl animate-spin">progress_activity</span>
+      </div>
+      <p class="text-neutral-60 text-center">Verificando acceso...</p>
+    </div>
+
+    <!-- Access denied -->
+    <div id="perfil-access-denied" class="hidden flex flex-col items-center justify-center min-h-[60vh] text-center">
+      <span class="material-symbols-outlined text-error text-5xl mb-4">gpp_bad</span>
+      <h2 class="text-2xl font-semibold text-neutral-40 mb-2">Acceso restringido</h2>
+      <p class="text-neutral-60 max-w-md mb-6">Debes iniciar sesión para ver tu perfil.</p>
+      <a href="/login" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-white font-bold hover:opacity-90 transition-opacity focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2">
+        Iniciar sesión
+      </a>
+    </div>
+
+    <div id="perfil-content" class="hidden">
     <div class="grid grid-cols-1 md:grid-cols-12 gap-gutter">
       <!-- Left Panel: Profile Quick Actions -->
       <div class="md:col-span-4 space-y-gutter">
@@ -100,22 +121,11 @@ import Breadcrumb from '../components/unal/Breadcrumb.astro';
         </div>
       </div>
     </div>
+    </div>
   </main>
 </Layout>
 
-<style>
-  .input-glass {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    transition: all 0.3s ease;
-  }
-  .input-glass:focus-within {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: #677d29;
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(103, 125, 41, 0.2);
-  }
-</style>
+
 
 <script>
   import { supabase } from '../lib/supabase';
@@ -123,13 +133,18 @@ import Breadcrumb from '../components/unal/Breadcrumb.astro';
   let currentUser = null;
 
   async function loadProfile() {
+    const loadingEl = document.getElementById('perfil-auth-loading');
+    const contentEl = document.getElementById('perfil-content');
+    const deniedEl = document.getElementById('perfil-access-denied');
+
     const { data: { user } } = await supabase.auth.getUser();
-    
+
     if (!user) {
-      window.location.href = '/login';
+      loadingEl?.classList.add('hidden');
+      deniedEl?.classList.remove('hidden');
       return;
     }
-    
+
     currentUser = user;
     
     // Load profile from database
@@ -147,10 +162,13 @@ import Breadcrumb from '../components/unal/Breadcrumb.astro';
     // Populate UI
     document.getElementById('profile-name-display').textContent = profile.nombre_completo || 'Usuario';
     document.getElementById('profile-role-display').textContent = profile.rol || 'VISITANTE';
-    
+
     // Populate Form
     document.getElementById('input-nombre').value = profile.nombre_completo || '';
     document.getElementById('input-email').value = profile.email || user.email;
+
+    loadingEl?.classList.add('hidden');
+    contentEl?.classList.remove('hidden');
   }
 
   // Handle Form Submission
@@ -195,8 +213,14 @@ import Breadcrumb from '../components/unal/Breadcrumb.astro';
   });
 
   // Handle Logout
+  const clearCookie = (name: string) => {
+    document.cookie = `${name}=; path=/; max-age=0; SameSite=Lax`;
+  };
+
   document.getElementById('logout-btn')?.addEventListener('click', async () => {
     await supabase.auth.signOut();
+    clearCookie('sb-access-token');
+    clearCookie('sb-refresh-token');
     window.location.href = '/';
   });
 

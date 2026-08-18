@@ -1,6 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import Breadcrumb from '../components/unal/Breadcrumb.astro';
+
+export const prerender = false;
 ---
 
 <Layout title="Panel de Líder | FIBOG UNAL" description="Gestiona tu grupo o semillero" activePage="lider">
@@ -13,8 +15,28 @@ import Breadcrumb from '../components/unal/Breadcrumb.astro';
       <div class="absolute top-0 right-0 w-[40%] h-[40%] bg-[rgba(148,180,59,0.1)] rounded-full blur-[150px]"></div>
       <div class="absolute bottom-0 left-0 w-[30%] h-[30%] bg-tertiary/10 rounded-full blur-[120px]"></div>
     </div>
-    
+
     <div class="relative z-10 max-w-4xl mx-auto">
+      <!-- Auth loading -->
+      <div id="lider-auth-loading" class="flex flex-col items-center justify-center min-h-[60vh]">
+        <div class="w-16 h-16 rounded-full bg-neutral-95 flex items-center justify-center mb-4">
+          <span class="material-symbols-outlined text-[#94b43b] text-2xl animate-spin">progress_activity</span>
+        </div>
+        <p class="text-neutral-60 text-center">Verificando acceso...</p>
+      </div>
+
+      <!-- Access denied -->
+      <div id="lider-access-denied" class="hidden flex flex-col items-center justify-center min-h-[60vh] text-center">
+        <span class="material-symbols-outlined text-error text-5xl mb-4">gpp_bad</span>
+        <h2 class="text-2xl font-semibold text-neutral-40 mb-2">Acceso restringido</h2>
+        <p class="text-neutral-60 max-w-md mb-6">No tienes permisos para ver este panel. Si crees que es un error, contacta al administrador.</p>
+        <a href="/" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#94b43b] text-white font-bold hover:opacity-90 transition-opacity focus-visible:outline-2 focus-visible:outline-[#94b43b] focus-visible:outline-offset-2">
+          Volver al inicio
+        </a>
+      </div>
+
+      <!-- Private content -->
+      <div id="lider-content" class="hidden">
       <!-- Header -->
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
@@ -284,6 +306,7 @@ import Breadcrumb from '../components/unal/Breadcrumb.astro';
         <div id="success-message" class="hidden p-4 rounded-xl bg-[#3e4c19]/30 border border-[#c0d881]/30 text-primary text-sm text-center">
         </div>
       </div>
+      </div>
     </div>
   </main>
 </Layout>
@@ -295,28 +318,36 @@ import Breadcrumb from '../components/unal/Breadcrumb.astro';
   
   // Check auth
   async function checkAuth() {
+    const loadingEl = document.getElementById('lider-auth-loading');
+    const contentEl = document.getElementById('lider-content');
+    const deniedEl = document.getElementById('lider-access-denied');
+
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
       window.location.href = '/login';
       return null;
     }
-    
+
     // Check role
     const { data: profile } = await supabase
       .from('perfiles')
       .select('rol')
       .eq('id', user.id)
       .single();
-    
+
     if (profile?.rol !== 'ADMIN_GRUPO') {
+      loadingEl?.classList.add('hidden');
       if (profile?.rol === 'SUPER_ADMIN') {
         window.location.href = '/admin';
-      } else {
-        window.location.href = '/';
+        return null;
       }
+      deniedEl?.classList.remove('hidden');
       return null;
     }
-    
+
+    loadingEl?.classList.add('hidden');
+    contentEl?.classList.remove('hidden');
+
     return user.id;
   }
   
@@ -431,8 +462,14 @@ import Breadcrumb from '../components/unal/Breadcrumb.astro';
   // Event listeners
   document.getElementById('save-btn')?.addEventListener('click', saveChanges);
   
+  const clearCookie = (name: string) => {
+    document.cookie = `${name}=; path=/; max-age=0; SameSite=Lax`;
+  };
+
   document.getElementById('logout-btn')?.addEventListener('click', async () => {
     await supabase.auth.signOut();
+    clearCookie('sb-access-token');
+    clearCookie('sb-refresh-token');
     window.location.href = '/login';
   });
   

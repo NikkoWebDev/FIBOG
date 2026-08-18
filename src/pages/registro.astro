@@ -3,122 +3,120 @@ import Layout from '../layouts/Layout.astro';
 import Breadcrumb from '../components/unal/Breadcrumb.astro';
 ---
 
-<Layout title="Registrar Grupo | FIBOG UNAL" description="Postula tu semillero o grupo de investigación" activePage="registro">
+<Layout title="Registrar Grupo | FIBOG Semilleros" description="Postula tu semillero o grupo de investigacion" activePage="registro">
   <Breadcrumb items={[{ label: 'Registro' }]} />
   
   <main class="min-h-screen py-12 px-4 relative overflow-hidden">
     <!-- Background -->
-    <div class="absolute inset-0 bg-[#f5f5f5]"></div>
-    <div class="absolute inset-0">
-      <div class="absolute top-0 right-0 w-[60%] h-[60%] bg-primary/10 rounded-full blur-[150px]"></div>
-      <div class="absolute bottom-0 left-0 w-[40%] h-[40%] bg-tertiary/10 rounded-full blur-[120px]"></div>
-    </div>
+    <div class="absolute inset-0 bg-gradient-mesh opacity-40"></div>
+    <div class="absolute top-0 right-0 w-[60%] h-[60%] bg-primary/5 rounded-full blur-[150px]"></div>
+    <div class="absolute bottom-0 left-0 w-[40%] h-[40%] bg-accent/5 rounded-full blur-[120px]"></div>
     
     <div class="relative z-10 max-w-4xl mx-auto">
       <!-- Header -->
       <div class="text-center mb-10">
-        <div class="inline-flex items-center gap-2 mb-4 px-4 py-2 rounded-full bg-[#c0d881]/10 border border-[#c0d881]/30">
-          <span class="material-symbols-outlined text-primary text-sm">workspace_premium</span>
-          <span class="font-label-mono text-label-mono text-primary uppercase tracking-widest">Proceso de Postulación</span>
+        <div class="inline-flex items-center gap-2 mb-4 px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
+          <span class="material-symbols-outlined text-primary-light text-sm">workspace_premium</span>
+          <span class="text-primary-light text-xs font-semibold uppercase tracking-widest">Proceso de Postulacion</span>
         </div>
-        <h1 class="font-display-lg text-display-lg-mobile md:text-headline-md text-neutral-40 mb-3">
-          Registrar <span class="text-primary">Nuevo Grupo</span>
+        <h1 class="text-3xl sm:text-4xl md:text-display-lg font-extrabold text-text-primary mb-3">
+          Registrar <span class="text-gradient">Nuevo Grupo</span>
         </h1>
-        <p class="text-neutral-60 text-body-base max-w-2xl mx-auto">
-          Completa el formulario para postular tu semillero, grupo de investigación o grupo estudiantil. 
-          La solicitud será revisada por el administrador antes de su aprobación.
+        <p class="text-text-secondary text-base sm:text-lg max-w-2xl mx-auto">
+          Completa el formulario para postular tu semillero, grupo de investigacion o grupo estudiantil. 
+          La solicitud sera revisada por el administrador antes de su aprobacion.
         </p>
       </div>
       
       <!-- Progress Steps -->
       <div class="flex justify-center mb-10">
-        <div class="flex items-center gap-4">
+        <div class="flex flex-wrap justify-center items-center gap-y-2 gap-x-3 sm:gap-x-6 max-w-full">
           <div class="flex items-center gap-2">
-            <div class="w-8 h-8 rounded-full bg-[#c0d881] text-white flex items-center justify-center font-bold text-sm">1</div>
-            <span class="text-primary font-medium text-sm">Información</span>
+            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-primary-dark text-white flex items-center justify-center font-bold text-sm">1</div>
+            <span class="text-primary-light font-medium text-xs sm:text-sm">Informacion</span>
           </div>
-          <div class="w-12 h-[2px] bg-[#40493f]"></div>
+          <div class="w-8 sm:w-14 h-[2px] bg-border-default"></div>
           <div class="flex items-center gap-2">
-            <div class="w-8 h-8 rounded-full bg-neutral-95 border border-neutral-80 text-neutral-70 flex items-center justify-center font-bold text-sm">2</div>
-            <span class="text-neutral-70 text-sm">Revisión</span>
+            <div class="w-8 h-8 rounded-full bg-bg-card border border-border-default text-text-muted flex items-center justify-center font-bold text-sm">2</div>
+            <span class="text-text-muted text-xs sm:text-sm">Revision</span>
           </div>
-          <div class="w-12 h-[2px] bg-[#40493f]"></div>
+          <div class="w-8 sm:w-14 h-[2px] bg-border-default"></div>
           <div class="flex items-center gap-2">
-            <div class="w-8 h-8 rounded-full bg-neutral-95 border border-neutral-80 text-neutral-70 flex items-center justify-center font-bold text-sm">3</div>
-            <span class="text-neutral-70 text-sm">Aprobación</span>
+            <div class="w-8 h-8 rounded-full bg-bg-card border border-border-default text-text-muted flex items-center justify-center font-bold text-sm">3</div>
+            <span class="text-text-muted text-xs sm:text-sm">Aprobacion</span>
           </div>
         </div>
       </div>
-      
+
       <!-- Form Card -->
-      <div class="card rounded-3xl p-6 md:p-10 relative overflow-hidden">
+      <div class="card rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-10 relative overflow-hidden">
         
         <form id="registro-form" class="relative z-10 space-y-8">
           <!-- Section: Group Info -->
           <div class="space-y-6">
-            <div class="flex items-center gap-3 pb-4 border-b border-neutral-80">
-              <div class="w-10 h-10 rounded-xl bg-[#c0d881]/10 flex items-center justify-center">
-                <span class="material-symbols-outlined text-primary">groups</span>
+            <div class="flex items-center gap-3 pb-4 border-b border-border-subtle">
+              <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                <span class="material-symbols-outlined text-primary-light">groups</span>
               </div>
-              <h2 class="font-headline-md text-headline-md text-neutral-40">Información del Grupo</h2>
+              <h2 class="text-lg font-bold text-text-primary">Informacion del Grupo</h2>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
-                <label class="block text-neutral-60 text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+                <label class="block text-text-secondary text-sm font-medium mb-2">
                   Tipo de Grupo *
                 </label>
                 <select 
                   name="tipo" 
                   required
-                  class="w-full px-4 py-3.5 bg-white border border-neutral-80 rounded-xl text-neutral-40 focus:outline-none focus:border-[#c0d881]/50 focus:ring-1 focus:ring-[#c0d881]/30 transition-all appearance-none cursor-pointer"
+                  class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all appearance-none cursor-pointer"
                 >
                   <option value="">Selecciona el tipo</option>
                   <option value="Semillero">Semillero</option>
-                  <option value="Grupo de Investigación">Grupo de Investigación</option>
+                  <option value="Grupo de Investigacion">Grupo de Investigacion</option>
                   <option value="Grupo Estudiantil">Grupo Estudiantil</option>
                 </select>
               </div>
               
               <div>
-                <label class="block text-neutral-60 text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+                <label class="block text-text-secondary text-sm font-medium mb-2">
                   Nombre del Grupo *
                 </label>
                 <input 
                   type="text" 
                   name="nombre"
-                  placeholder="Ej: Semillero de Robótica"
+                  placeholder="Ej: Semillero de Robotica"
                   required
-                  class="w-full px-4 py-3.5 bg-white border border-neutral-80 rounded-xl text-neutral-40 placeholder-[#899487]/50 focus:outline-none focus:border-[#c0d881]/50 focus:ring-1 focus:ring-[#c0d881]/30 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all"
                 />
               </div>
               
               <div class="md:col-span-2">
-                <label class="block text-neutral-60 text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+                <label class="block text-text-secondary text-sm font-medium mb-2">
                   Carrera(s) Relacionada(s)
                 </label>
                 <input 
                   type="text" 
                   name="carreras"
-                  placeholder="Ej: Ingeniería de Sistemas, Ingeniería Electrónica"
-                  class="w-full px-4 py-3.5 bg-white border border-neutral-80 rounded-xl text-neutral-40 placeholder-[#899487]/50 focus:outline-none focus:border-[#c0d881]/50 focus:ring-1 focus:ring-[#c0d881]/30 transition-all"
+                  placeholder="Ej: Ingenieria de Sistemas, Ingenieria Electronica"
+                  class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all"
                 />
               </div>
               
               <div>
-                <label class="block text-neutral-60 text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+                <label class="block text-text-secondary text-sm font-medium mb-2">
                   Docente a Cargo
                 </label>
                 <input 
                   type="text" 
                   name="docente_a_cargo"
                   placeholder="Nombre del docente"
-                  class="w-full px-4 py-3.5 bg-white border border-neutral-80 rounded-xl text-neutral-40 placeholder-[#899487]/50 focus:outline-none focus:border-[#c0d881]/50 focus:ring-1 focus:ring-[#c0d881]/30 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all"
                 />
               </div>
               
               <div>
-                <label class="block text-neutral-60 text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+                <label class="block text-text-secondary text-sm font-medium mb-2">
                   Email de Contacto del Grupo *
                 </label>
                 <input 
@@ -126,61 +124,61 @@ import Breadcrumb from '../components/unal/Breadcrumb.astro';
                   name="email_contacto"
                   placeholder="grupo@unal.edu.co"
                   required
-                  class="w-full px-4 py-3.5 bg-white border border-neutral-80 rounded-xl text-neutral-40 placeholder-[#899487]/50 focus:outline-none focus:border-[#c0d881]/50 focus:ring-1 focus:ring-[#c0d881]/30 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all"
                 />
               </div>
             </div>
             
             <div>
-              <label class="block text-neutral-60 text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
-                Enfoque / Línea de Investigación
+              <label class="block text-text-secondary text-sm font-medium mb-2">
+                Enfoque / Linea de Investigacion
               </label>
               <input 
                 type="text" 
                 name="enfoque"
-                placeholder="Ej: Inteligencia Artificial, Robótica, Energías Renovables"
-                class="w-full px-4 py-3.5 bg-white border border-neutral-80 rounded-xl text-neutral-40 placeholder-[#899487]/50 focus:outline-none focus:border-[#c0d881]/50 focus:ring-1 focus:ring-[#c0d881]/30 transition-all"
+                placeholder="Ej: Inteligencia Artificial, Robotica, Energias Renovables"
+                class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all"
               />
             </div>
             
             <div>
-              <label class="block text-neutral-60 text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
-                Descripción del Grupo
+              <label class="block text-text-secondary text-sm font-medium mb-2">
+                Descripcion del Grupo
               </label>
               <textarea 
                 name="descripcion"
                 rows="4"
-                placeholder="Describe los objetivos, actividades y propósito del grupo..."
-                class="w-full px-4 py-3.5 bg-white border border-neutral-80 rounded-xl text-neutral-40 placeholder-[#899487]/50 focus:outline-none focus:border-[#c0d881]/50 focus:ring-1 focus:ring-[#c0d881]/30 transition-all resize-none"
+                placeholder="Describe los objetivos, actividades y proposito del grupo..."
+                class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all resize-none"
               ></textarea>
             </div>
           </div>
           
           <!-- Section: Contact Person -->
           <div class="space-y-6">
-            <div class="flex items-center gap-3 pb-4 border-b border-neutral-80">
-              <div class="w-10 h-10 rounded-xl bg-[#94b43b]/10 flex items-center justify-center">
-                <span class="material-symbols-outlined text-[#94b43b]">person</span>
+            <div class="flex items-center gap-3 pb-4 border-b border-border-subtle">
+              <div class="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center">
+                <span class="material-symbols-outlined text-accent-light">person</span>
               </div>
-              <h2 class="font-headline-md text-headline-md text-neutral-40">Información del Solicitante</h2>
+              <h2 class="text-lg font-bold text-text-primary">Informacion del Solicitante</h2>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div class="md:col-span-2">
-                <label class="block text-neutral-60 text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
-                  Nombre Completo del Líder/Representante *
+                <label class="block text-text-secondary text-sm font-medium mb-2">
+                  Nombre Completo del Lider/Representante *
                 </label>
                 <input 
                   type="text" 
                   name="lider_o_representante"
                   placeholder="Nombre completo"
                   required
-                  class="w-full px-4 py-3.5 bg-white border border-neutral-80 rounded-xl text-neutral-40 placeholder-[#899487]/50 focus:outline-none focus:border-[#c0d881]/50 focus:ring-1 focus:ring-[#c0d881]/30 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all"
                 />
               </div>
               
               <div>
-                <label class="block text-neutral-60 text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+                <label class="block text-text-secondary text-sm font-medium mb-2">
                   Nombre del Solicitante *
                 </label>
                 <input 
@@ -188,12 +186,12 @@ import Breadcrumb from '../components/unal/Breadcrumb.astro';
                   name="nombre_solicitante"
                   placeholder="Tu nombre completo"
                   required
-                  class="w-full px-4 py-3.5 bg-white border border-neutral-80 rounded-xl text-neutral-40 placeholder-[#899487]/50 focus:outline-none focus:border-[#c0d881]/50 focus:ring-1 focus:ring-[#c0d881]/30 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all"
                 />
               </div>
               
               <div>
-                <label class="block text-neutral-60 text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+                <label class="block text-text-secondary text-sm font-medium mb-2">
                   Email del Solicitante *
                 </label>
                 <input 
@@ -201,41 +199,41 @@ import Breadcrumb from '../components/unal/Breadcrumb.astro';
                   name="email_solicitante"
                   placeholder="tuemail@unal.edu.co"
                   required
-                  class="w-full px-4 py-3.5 bg-white border border-neutral-80 rounded-xl text-neutral-40 placeholder-[#899487]/50 focus:outline-none focus:border-[#c0d881]/50 focus:ring-1 focus:ring-[#c0d881]/30 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all"
                 />
               </div>
               
               <div>
-                <label class="block text-neutral-60 text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
-                  Teléfono
+                <label class="block text-text-secondary text-sm font-medium mb-2">
+                  Telefono
                 </label>
                 <input 
                   type="tel" 
                   name="telefono_solicitante"
                   placeholder="300 123 4567"
-                  class="w-full px-4 py-3.5 bg-white border border-neutral-80 rounded-xl text-neutral-40 placeholder-[#899487]/50 focus:outline-none focus:border-[#c0d881]/50 focus:ring-1 focus:ring-[#c0d881]/30 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all"
                 />
               </div>
               
               <div>
-                <label class="block text-neutral-60 text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+                <label class="block text-text-secondary text-sm font-medium mb-2">
                   Carrera
                 </label>
                 <input 
                   type="text" 
                   name="carrera_solicitante"
-                  placeholder="Ej: Ingeniería de Sistemas"
-                  class="w-full px-4 py-3.5 bg-white border border-neutral-80 rounded-xl text-neutral-40 placeholder-[#899487]/50 focus:outline-none focus:border-[#c0d881]/50 focus:ring-1 focus:ring-[#c0d881]/30 transition-all"
+                  placeholder="Ej: Ingenieria de Sistemas"
+                  class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all"
                 />
               </div>
               
               <div>
-                <label class="block text-neutral-60 text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+                <label class="block text-text-secondary text-sm font-medium mb-2">
                   Semestre
                 </label>
                 <select 
                   name="semestre_solicitante"
-                  class="w-full px-4 py-3.5 bg-white border border-neutral-80 rounded-xl text-neutral-40 focus:outline-none focus:border-[#c0d881]/50 focus:ring-1 focus:ring-[#c0d881]/30 transition-all appearance-none cursor-pointer"
+                  class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all appearance-none cursor-pointer"
                 >
                   <option value="">Selecciona</option>
                   <option value="1">1° Semestre</option>
@@ -247,7 +245,7 @@ import Breadcrumb from '../components/unal/Breadcrumb.astro';
                   <option value="7">7° Semestre</option>
                   <option value="8">8° Semestre</option>
                   <option value="9">9° Semestre</option>
-                  <option value="10">10° Semestre o más</option>
+                  <option value="10">10° Semestre o mas</option>
                 </select>
               </div>
             </div>
@@ -255,21 +253,21 @@ import Breadcrumb from '../components/unal/Breadcrumb.astro';
           
           <!-- Section: Additional Info -->
           <div class="space-y-6">
-            <div class="flex items-center gap-3 pb-4 border-b border-neutral-80">
-              <div class="w-10 h-10 rounded-xl bg-[#4fc5e9]/10 flex items-center justify-center">
-                <span class="material-symbols-outlined text-[#4fc5e9]">info</span>
+            <div class="flex items-center gap-3 pb-4 border-b border-border-subtle">
+              <div class="w-10 h-10 rounded-xl bg-neon/10 flex items-center justify-center">
+                <span class="material-symbols-outlined text-neon">info</span>
               </div>
-              <h2 class="font-headline-md text-headline-md text-neutral-40">Información Adicional</h2>
+              <h2 class="text-lg font-bold text-text-primary">Informacion Adicional</h2>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
-                <label class="block text-neutral-60 text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+                <label class="block text-text-secondary text-sm font-medium mb-2">
                   Modalidad
                 </label>
                 <select 
                   name="modalidad"
-                  class="w-full px-4 py-3.5 bg-white border border-neutral-80 rounded-xl text-neutral-40 focus:outline-none focus:border-[#c0d881]/50 focus:ring-1 focus:ring-[#c0d881]/30 transition-all appearance-none cursor-pointer"
+                  class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all appearance-none cursor-pointer"
                 >
                   <option value="">Selecciona</option>
                   <option value="Presencial">Presencial</option>
@@ -279,63 +277,63 @@ import Breadcrumb from '../components/unal/Breadcrumb.astro';
               </div>
               
               <div>
-                <label class="block text-neutral-60 text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+                <label class="block text-text-secondary text-sm font-medium mb-2">
                   Horarios Habituales
                 </label>
                 <input 
                   type="text" 
                   name="horarios_habituales"
                   placeholder="Ej: Viernes 2:00pm - 6:00pm"
-                  class="w-full px-4 py-3.5 bg-white border border-neutral-80 rounded-xl text-neutral-40 placeholder-[#899487]/50 focus:outline-none focus:border-[#c0d881]/50 focus:ring-1 focus:ring-[#c0d881]/30 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all"
                 />
               </div>
             </div>
             
             <div>
-              <label class="block text-neutral-60 text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+              <label class="block text-text-secondary text-sm font-medium mb-2">
                 Actividades Principales
               </label>
               <textarea 
                 name="actividades"
                 rows="3"
                 placeholder="Describe las actividades que realiza el grupo..."
-                class="w-full px-4 py-3.5 bg-white border border-neutral-80 rounded-xl text-neutral-40 placeholder-[#899487]/50 focus:outline-none focus:border-[#c0d881]/50 focus:ring-1 focus:ring-[#c0d881]/30 transition-all resize-none"
+                class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all resize-none"
               ></textarea>
             </div>
             
             <div>
-              <label class="block text-neutral-60 text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+              <label class="block text-text-secondary text-sm font-medium mb-2">
                 Requisitos para Ingresar
               </label>
               <textarea 
                 name="requisitos_ingreso"
                 rows="2"
-                placeholder="¿Qué requisitos deben cumplir los nuevos miembros?"
-                class="w-full px-4 py-3.5 bg-white border border-neutral-80 rounded-xl text-neutral-40 placeholder-[#899487]/50 focus:outline-none focus:border-[#c0d881]/50 focus:ring-1 focus:ring-[#c0d881]/30 transition-all resize-none"
+                placeholder="Que requisitos deben cumplir los nuevos miembros?"
+                class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all resize-none"
               ></textarea>
             </div>
             
             <div>
-              <label class="block text-neutral-60 text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+              <label class="block text-text-secondary text-sm font-medium mb-2">
                 Redes Sociales / Sitio Web
               </label>
               <input 
                 type="text" 
                 name="redes_sociales"
-                placeholder="Instagram, Twitter, página web..."
-                class="w-full px-4 py-3.5 bg-white border border-neutral-80 rounded-xl text-neutral-40 placeholder-[#899487]/50 focus:outline-none focus:border-[#c0d881]/50 focus:ring-1 focus:ring-[#c0d881]/30 transition-all"
+                placeholder="Instagram, Twitter, pagina web..."
+                class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all"
               />
             </div>
             
             <div>
-              <label class="block text-neutral-60 text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+              <label class="block text-text-secondary text-sm font-medium mb-2">
                 Comentarios Adicionales
               </label>
               <textarea 
                 name="comentarios_adicionales"
                 rows="2"
-                placeholder="Cualquier información adicional que consideres relevante..."
-                class="w-full px-4 py-3.5 bg-white border border-neutral-80 rounded-xl text-neutral-40 placeholder-[#899487]/50 focus:outline-none focus:border-[#c0d881]/50 focus:ring-1 focus:ring-[#c0d881]/30 transition-all resize-none"
+                placeholder="Cualquier informacion adicional que consideres relevante..."
+                class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all resize-none"
               ></textarea>
             </div>
           </div>
@@ -345,14 +343,14 @@ import Breadcrumb from '../components/unal/Breadcrumb.astro';
           </div>
           
           <!-- Success message -->
-          <div id="success-message" class="hidden p-4 rounded-xl bg-[#3e4c19]/30 border border-[#c0d881]/30 text-primary text-sm text-center">
+          <div id="success-message" class="hidden p-4 rounded-xl bg-success/10 border border-success/30 text-success text-sm text-center">
           </div>
           
           <!-- Actions -->
-          <div class="flex flex-col sm:flex-row gap-4 pt-6 border-t border-neutral-80">
+          <div class="flex flex-col sm:flex-row gap-4 pt-6 border-t border-border-subtle">
             <a 
               href="/"
-              class="px-6 py-3.5 rounded-xl border border-neutral-80 text-neutral-60 hover:bg-neutral-95 transition-all flex items-center justify-center gap-2"
+              class="px-6 py-3.5 rounded-xl border border-border-default text-text-secondary hover:bg-bg-hover transition-all flex items-center justify-center gap-2"
             >
               <span class="material-symbols-outlined">arrow_back</span>
               Cancelar
@@ -361,11 +359,11 @@ import Breadcrumb from '../components/unal/Breadcrumb.astro';
             <button 
               type="submit"
               id="submit-btn"
-              class="flex-1 py-3.5 px-6 rounded-xl bg-gradient-to-r from-primary to-primary-60 text-white font-bold hover:opacity-90 transition-all shadow-lg shadow-[#c0d881]/20 flex items-center justify-center gap-2"
+              class="flex-1 py-3.5 px-6 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white font-bold hover:shadow-glow transition-all flex items-center justify-center gap-2"
             >
               <span class="material-symbols-outlined">send</span>
               <span id="submit-text">Enviar Solicitud</span>
-              <div id="submit-spinner" class="hidden w-5 h-5 border-2 border-[#2a3805]/30 border-t-[#2a3805] rounded-full animate-spin"></div>
+              <div id="submit-spinner" class="hidden w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
             </button>
           </div>
         </form>
@@ -373,7 +371,7 @@ import Breadcrumb from '../components/unal/Breadcrumb.astro';
       
       <!-- Back link -->
       <div class="mt-8 text-center">
-        <a href="/" class="text-neutral-70 text-sm hover:text-primary transition-colors inline-flex items-center gap-1">
+        <a href="/" class="text-text-muted text-sm hover:text-primary-light transition-colors inline-flex items-center gap-1">
           <span class="material-symbols-outlined text-sm">arrow_back</span>
           Volver al explorador
         </a>
@@ -383,57 +381,69 @@ import Breadcrumb from '../components/unal/Breadcrumb.astro';
 </Layout>
 
 <script>
-  import { supabase } from '../lib/supabase';
-  
   const form = document.getElementById('registro-form');
   const errorMessage = document.getElementById('error-message');
   const successMessage = document.getElementById('success-message');
   const submitBtn = document.getElementById('submit-btn');
   const submitText = document.getElementById('submit-text');
   const submitSpinner = document.getElementById('submit-spinner');
-  
+
+  const isUnalEmail = (email: string): boolean =>
+    email.trim().toLowerCase().endsWith('@unal.edu.co');
+
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
-    
+
     const formData = new FormData(form as HTMLFormElement);
     const data: Record<string, any> = {};
-    
+
     formData.forEach((value, key) => {
       if (key === 'carreras') {
-        // Convert comma-separated to array
         data[key] = (value as string).split(',').map(c => c.trim()).filter(c => c);
       } else {
         data[key] = value || null;
       }
     });
-    
-    // Show loading
+
+    const emailSolicitante = String(data.email_solicitante || '');
+    const emailContacto = String(data.email_contacto || '');
+
+    if (!isUnalEmail(emailSolicitante) || !isUnalEmail(emailContacto)) {
+      errorMessage!.textContent = 'El email del solicitante y el email de contacto deben ser cuentas institucionales @unal.edu.co';
+      errorMessage?.classList.remove('hidden');
+      successMessage?.classList.add('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return;
+    }
+
     submitBtn?.setAttribute('disabled', 'true');
     submitText?.classList.add('hidden');
     submitSpinner?.classList.remove('hidden');
     errorMessage?.classList.add('hidden');
     successMessage?.classList.add('hidden');
-    
+
     try {
-      const { error } = await supabase
-        .from('solicitudes_pendientes')
-        .insert(data);
-      
-      if (error) throw error;
-      
-      // Show success
-      successMessage.textContent = '¡Solicitud enviada exitosamente! Serás notificado cuando sea revisada.';
+      const response = await fetch('/api/notify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+
+      const result = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(result.error || result.message || 'Error al enviar la solicitud. Intenta de nuevo.');
+      }
+
+      successMessage!.textContent = 'Solicitud enviada exitosamente! Sera notificado cuando sea revisada.';
       successMessage?.classList.remove('hidden');
-      
-      // Reset form
+
       (form as HTMLFormElement).reset();
-      
-      // Scroll to top
       window.scrollTo({ top: 0, behavior: 'smooth' });
-      
+
     } catch (error: any) {
       console.error('Error:', error);
-      errorMessage.textContent = error.message || 'Error al enviar la solicitud. Intenta de nuevo.';
+      errorMessage!.textContent = error.message || 'Error al enviar la solicitud. Intenta de nuevo.';
       errorMessage?.classList.remove('hidden');
     } finally {
       submitBtn?.removeAttribute('disabled');
@@ -445,7 +455,7 @@ import Breadcrumb from '../components/unal/Breadcrumb.astro';
 
 <style>
   select {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='%23899487'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='%235a5a72'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 12px center;
     padding-right: 40px;

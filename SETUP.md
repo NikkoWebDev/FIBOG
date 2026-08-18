@@ -7,13 +7,13 @@ Sistema completo de gestión de semilleros, grupos de investigación y grupos es
 - **Frontend**: Astro 4.x + Tailwind CSS + TypeScript
 - **Backend**: Supabase (PostgreSQL + Auth + Edge Functions)
 - **AI Search**: OpenRouter API (free tier)
-- **Despliegue**: Netlify
+- **Despliegue**: Vercel
 
 ## 📋 Requisitos Previos
 
 - Node.js 20+
 - Cuenta en [Supabase](https://supabase.com)
-- Cuenta en [Netlify](https://netlify.com) (opcional)
+- Cuenta en [Vercel](https://vercel.com) (opcional)
 - API Key de [OpenRouter](https://openrouter.ai) (opcional, para búsqueda IA)
 
 ## 🚀 Configuración Inicial
@@ -106,29 +106,35 @@ npm run dev
 
 La aplicación estará disponible en `http://localhost:4321`
 
-### 5. Despliegue en Netlify
+### 5. Despliegue en Vercel
 
 #### 5.1 Configurar Build
 
-En Netlify, configura:
+En Vercel, configura:
 - **Build command**: `npm run build`
-- **Publish directory**: `dist`
+- **Output**: `.vercel/output` (adapter serverless)
 
-#### 5.2 Variables de Entorno en Netlify
+#### 5.2 Variables de Entorno en Vercel
 
-En Site settings > Environment variables, agrega:
+En Project > Settings > Environment Variables, agrega:
 
 ```
 PUBLIC_SUPABASE_URL
 PUBLIC_SUPABASE_ANON_KEY
+SUPABASE_SERVICE_ROLE_KEY
 OPENROUTER_API_KEY
 OPENROUTER_BASE_URL
 OPENROUTER_MODEL
+RESEND_API_KEY
+RESEND_FROM_EMAIL
+ADMIN_EMAIL_1
+ADMIN_EMAIL_2
+SITE_URL
 ```
 
-#### 5.3 Configurar Netlify Function (para IA)
+#### 5.3 API Routes Serverless (para IA y notificaciones)
 
-El archivo `netlify/functions/search.js` ya está configurado.
+Las API routes `src/pages/api/search.ts` (búsqueda IA) y `src/pages/api/notify.ts` (notificación por email con Resend) ya están configuradas como funciones serverless de Vercel.
 
 ## 🔐 Sistema de Roles
 
@@ -151,7 +157,7 @@ El archivo `netlify/functions/search.js` ya está configurado.
 ## 📧 Flujo de Aprobación
 
 1. **Postulación**: Visitante llena formulario en `/registro`
-2. **Notificación**: Se envía email a SUPER_ADMINs (a implementar con Edge Function)
+2. **Notificación**: Se envía email a SUPER_ADMINs vía API route `/api/notify` (Resend)
 3. **Revisión**: Super admin revisa en `/admin`
 4. **Aprobación**:
    - Se crea cuenta de usuario
@@ -202,8 +208,7 @@ src/
 ├── styles/             # Estilos globales
 supabase/
 └── migrations/         # Migraciones SQL
-netlify/
-└── functions/          # Netlify Functions
+vercel.json             # Configuración de Vercel
 scripts/
 └── migrate-to-supabase.js  # Script de migración
 ```
@@ -241,7 +246,7 @@ Asegúrate de usar el Service Role Key para operaciones administrativas.
 ## 📝 Notas Importantes
 
 1. **Seguridad**: Nunca expongas el `SUPABASE_SERVICE_ROLE_KEY` en el frontend.
-2. **Emails**: Configura un proveedor de email en Supabase para enviar notificaciones.
+2. **Emails**: Las notificaciones se envían con Resend (free tier, 3,000 emails/mes; requiere dominio verificado).
 3. **Dominios**: Configura los dominios permitidos en Supabase Auth settings.
 4. **Backup**: Realiza backups periódicos de tu base de datos.
 

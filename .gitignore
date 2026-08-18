@@ -10,7 +10,8 @@ dist/
 # Dependencies
 package-lock.json
 
-# Netlify
+# Vercel
+.vercel/
 .netlify/
 
 # OS
@@ -35,4 +36,3 @@ pnpm-debug.log*
 lerna-debug.log*
 
 STITCH DESIGNS/
-.vercel

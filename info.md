@@ -15,17 +15,17 @@
 | **Tipo de proyecto** | Sitio web estático con panel de administración dinámico |
 | **Autor** | Nikko (NikkoWebDev) |
 | **Repositorio** | `https://github.com/WebStoreCorporation/FIBOG` |
-| **Dominio producción** | `https://fibog.netlify.app` |
+| **Dominio producción** | `https://fibog.vercel.app` |
 
 ---
 
 ## 2. ARQUITECTURA GENERAL
 
 ```
-[Astro SSG] ──Build──> [Static HTML/CSS/JS] ──Deploy──> [Netlify]
+[Astro SSG] ──Build──> [Static HTML/CSS/JS] ──Deploy──> [Vercel]
      │                                                        │
-     ├── src/data/grupos.json (datos estáticos)                ├── netlify/functions/search.js (AI Search)
-     ├── src/pages/api/search.ts (API en Astro)               └── Netlify Redirects: /* -> index.html
+     ├── src/data/grupos.json (datos estáticos)                ├── src/pages/api/search.ts (AI Search)
+     ├── src/pages/api/search.ts (API en Astro)               └── src/pages/api/notify.ts (Email Resend)
      │
      └── [Supabase] (Backend dinámico)
           ├── PostgreSQL (grupos, perfiles, solicitudes, admin_grupos, audit_log)
@@ -38,7 +38,8 @@
 - **Backend DB:** Supabase (PostgreSQL 17 con RLS + Auth + Edge Functions)
 - **Búsqueda IA:** OpenRouter API (`liquid/lfm-2.5-1.2b-instruct:free`)
 - **Animaciones:** GSAP 3.12 + ScrollTrigger (vía CDN)
-- **Despliegue:** Netlify (estático) con Netlify Functions para búsqueda IA
+- **Despliegue:** Vercel (Hobby, gratis) con serverless functions (API routes) para búsqueda IA y emails
+- **Emails:** Resend (free tier, 3,000 emails/mes)
 - **Fuentes:** Google Fonts (Inter, JetBrains Mono, Geist, Material Symbols)
 
 ---
@@ -59,14 +60,10 @@
 ├── astro.config.mjs                # Configuración de Astro
 ├── correo.md                       # Borrador de correo para la facultad
 ├── info.md                         # ESTE ARCHIVO — documentación completa
-├── netlify.toml                    # Configuración de despliegue Netlify
+├── vercel.json                    # Configuración de despliegue Vercel
 ├── package.json                    # Dependencias y scripts
 ├── tailwind.config.mjs             # Configuración de Tailwind (tema personalizado)
 ├── tsconfig.json                   # TypeScript estricto
-│
-├── netlify/
-│   └── functions/
-│       └── search.js               # Netlify Function: búsqueda con IA
 │
 ├── scripts/
 │   ├── parse-csv.js                # Parser CSV -> JSON + tipos TS
@@ -148,13 +145,14 @@
 ### 4.2 Dependencias
 
 **Producción:**
-- `@astrojs/netlify` ^5.5.0 — Adaptador Netlify
+- `@astrojs/vercel` ^7.8.2 — Adaptador Vercel (serverless)
 - `@astrojs/node` ^8.3.0 — Adaptador Node
 - `@astrojs/tailwind` ^5.1.5 — Integración Tailwind
 - `@supabase/supabase-js` ^2.105.4 — Cliente Supabase
 - `astro` ^4.16.19 — Framework
 - `gsap` ^3.15.0 — Animaciones (aunque se usa vía CDN)
 - `lucide-react` ^1.14.0 — Iconos (no se usa realmente, se usan Material Symbols)
+- `resend` ^6.20.0 — Envío de emails (notificaciones)
 - `tailwindcss` ^3.4.19 — CSS utility-first
 
 **Desarrollo:**
@@ -172,23 +170,25 @@
 | `SUPABASE_SERVICE_ROLE_KEY` | Service role key (solo server-side) | Sí (para scripts) |
 | `SUPER_ADMIN_EMAIL_1` | Email admin 1 (notificaciones) | Opcional |
 | `SUPER_ADMIN_EMAIL_2` | Email admin 2 (notificaciones) | Opcional |
+| `RESEND_API_KEY` | API Key de Resend (emails) | Sí (para notificaciones) |
+| `RESEND_FROM_EMAIL` | Remitente verificado en Resend | Sí (para notificaciones) |
+| `SITE_URL` | URL pública del sitio (usada en emails) | Sí (para notificaciones) |
 
 ### 4.4 astro.config.mjs
 
 ```js
-output: 'static'           // Generación de sitio estático
+output: 'hybrid'           // Output híbrido (SSG + serverless)
+adapter: vercel()          // Adaptador Vercel (serverless)
 integrations: [tailwind()]  // Tailwind CSS
 server: { port: 4321, host: true }
 ```
 
-### 4.5 netlify.toml
+### 4.5 vercel.json
 
 - Build command: `npm run build`
-- Publish directory: `dist`
-- Functions directory: `netlify/functions`
-- Node version: 20
-- Redirect: `/api/search` → `/.netlify/functions/search` (status 200)
-- Catch-all redirect: `/*` → `/index.html` (SPA routing)
+- Output: `.vercel/output` (adapter serverless)
+- Node version: 22
+- API routes serverless: `/api/search` (búsqueda IA) y `/api/notify` (notificación por email con Resend)
 
 ### 4.6 tsconfig.json
 
@@ -583,15 +583,25 @@ export type NivelAcademico = 'No requerido (Abierto a todos los niveles)' | 'Int
 
 ---
 
-## 9. NETLIFY FUNCTION (netlify/functions/search.js)
+## 9. API ROUTES SERVERLESS (Vercel)
 
-**Ruta:** `/.netlify/functions/search` (redirigido desde `/api/search`)
-**Propósito:** Misma funcionalidad que la API route pero para entorno Netlify (CommonJS)
+### 9.1 api/search.ts — Búsqueda IA
 
-- Maneja CORS manualmente
+**Ruta:** `/api/search` (POST)
+**Propósito:** Función serverless de Vercel para la búsqueda con IA (ESM)
+
 - OpenRouter API call con context de grupos (top 20)
 - Fallback keyword matching
 - Modelo: `liquid/lfm-2.5-1.2b-instruct:free`
+
+### 9.2 api/notify.ts — Notificación por Email
+
+**Ruta:** `/api/notify` (POST)
+**Propósito:** Función serverless de Vercel que envía email a los SUPER_ADMINs (Resend) cuando se recibe una nueva solicitud de registro
+
+- Usa `RESEND_API_KEY` y `RESEND_FROM_EMAIL`
+- Envía a `ADMIN_EMAIL_1` y `ADMIN_EMAIL_2`
+- Incluye enlace a `/admin` con los detalles de la solicitud
 
 ---
 
@@ -794,7 +804,7 @@ CREATE TRIGGER trigger_update_grupos_timestamp
 **Función:**
 1. Obtiene emails de SUPER_ADMIN desde BD + env vars
 2. Prepara contenido del email (detalles de solicitud + enlace a /admin)
-3. Loggea la notificación (placeholder para integración con Resend/SendGrid/AWS SES)
+3. Loggea la notificación (el envío real se hace vía API route `/api/notify` con Resend)
 
 ---
 
@@ -850,7 +860,8 @@ CREATE TRIGGER trigger_update_grupos_timestamp
 | PostgreSQL | 17 | Base de datos |
 | Deno | 2 | Edge Functions runtime |
 | OpenRouter | - | API de IA |
-| Netlify | - | Hosting + Functions |
+| Vercel | - | Hosting + serverless functions |
+| Resend | ^6.20.0 | Emails (notificaciones) |
 
 ---
 
@@ -892,8 +903,9 @@ CREATE TRIGGER trigger_update_grupos_timestamp
 ## 18. ANOTACIONES FINALES
 
 - El proyecto mezcla **datos estáticos** (grupos.json para el frontend público) con **datos dinámicos** (Supabase para admin). La página de detalle `/grupo/[id]` genera SSG desde el JSON, mientras que el admin trabaja con Supabase en tiempo real.
-- La **Netlify Function** (CommonJS) se usa en producción para el AI Search, mientras que la **API route de Astro** (ESM) se usa en desarrollo.
-- La **Edge Function** de Supabase `notify-admins` es funcional pero el envío de emails real está pendiente de implementar (placeholder con console.log).
+- La **API route de Astro** `src/pages/api/search.ts` (ESM) se usa como función serverless de Vercel en producción para el AI Search.
+- La **API route de Astro** `src/pages/api/notify.ts` envía las notificaciones por email con **Resend** al recibir una nueva solicitud.
+- La **Edge Function** de Supabase `notify-admins` es funcional pero el envío de emails real se realiza desde la API route `/api/notify` con Resend.
 - Las **políticas RLS** han tenido varias iteraciones. La versión final usa subqueries con `EXISTS` y la tabla `admin_grupos` para control de acceso.
 - El **diseño** está basado en "Ingeniería Dinámica" de Stitch Designs, con glassmorphism 2.0 y paleta Material Design personalizada.
 

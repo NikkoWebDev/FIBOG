@@ -3,80 +3,79 @@ interface Props {
   placeholder?: string;
 }
 
-const { placeholder = "Pregunta sobre investigación..." } = Astro.props;
+const { placeholder = "Pregunta sobre investigacion..." } = Astro.props;
 ---
 
 <section class="max-w-4xl mx-auto mb-12" id="ai-search-section">
   <!-- Search Input -->
   <div class="mb-6">
-    <div class="card rounded-lg flex items-center px-6 py-4 border-2 border-neutral-80 focus-within:border-primary transition-colors">
-      <span class="material-symbols-outlined text-primary mr-4 text-2xl" data-icon="search">search</span>
-      <input 
-        type="text" 
+    <div class="bg-bg-card border border-border-default rounded-xl flex items-center px-3 sm:px-5 md:px-6 py-2.5 sm:py-3.5 md:py-4 focus-within:border-primary transition-colors shadow-card gap-2 sm:gap-3">
+      <span class="material-symbols-outlined text-primary-light text-xl sm:text-2xl" data-icon="search">search</span>
+      <input
+        type="text"
         id="ai-search-input"
-        class="bg-transparent border-none focus:ring-0 text-headline-md font-display-lg w-full text-on-surface placeholder-on-surface-variant/50 outline-none"
+        class="bg-transparent border-none focus:ring-0 text-base sm:text-lg md:text-xl w-full min-w-0 text-text-primary placeholder-text-muted outline-none"
         placeholder={placeholder}
         autocomplete="off"
       />
-      <div class="flex gap-2">
-        <button 
+      <div class="flex gap-2 shrink-0">
+        <button
           id="ai-search-btn"
-          class="p-2 rounded-lg bg-[#677d29] hover:bg-[#516320] text-white transition-colors"
+          class="p-1.5 sm:p-2 rounded-lg bg-gradient-to-br from-primary to-primary-dark hover:shadow-glow-sm text-white transition-all"
           title="Buscar con IA"
         >
-          <span class="material-symbols-outlined filled" data-icon="auto_awesome">auto_awesome</span>
+          <span class="material-symbols-outlined filled text-lg sm:text-xl" data-icon="auto_awesome">auto_awesome</span>
         </button>
       </div>
     </div>
   </div>
   
-  <!-- AI Thinking State (Hidden by default) -->
-  <div id="ai-thinking" class="hidden card rounded-lg p-8 border border-[#677d29] bg-[#e8eedc] mb-8">
-    <div class="flex items-start gap-6">
-      <div class="w-12 h-12 rounded-lg bg-[#677d29] flex items-center justify-center shrink-0">
-        <span class="material-symbols-outlined text-white filled" data-icon="psychology_alt">psychology_alt</span>
+  <!-- AI Thinking State -->
+  <div id="ai-thinking" class="hidden bg-primary/10 p-4 sm:p-6 md:p-8 border border-primary/20 mb-8 rounded-xl">
+    <div class="flex items-start gap-3 sm:gap-6">
+      <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shrink-0 shadow-glow-sm">
+        <span class="material-symbols-outlined text-white filled text-lg sm:text-2xl" data-icon="psychology_alt">psychology_alt</span>
       </div>
       <div class="flex-1 space-y-4">
         <div class="flex items-center gap-2">
-          <h3 class="text-[#284d21] font-label-mono text-label-mono uppercase tracking-widest">Sistematizando Resultados</h3>
+          <h3 class="text-primary-light text-sm font-bold uppercase tracking-widest">Sistematizando Resultados</h3>
           <div class="flex gap-1">
-            <span class="w-1.5 h-1.5 rounded-full bg-[#677d29] animate-bounce" style="animation-delay: 0s"></span>
-            <span class="w-1.5 h-1.5 rounded-full bg-[#677d29] animate-bounce" style="animation-delay: 0.2s"></span>
-            <span class="w-1.5 h-1.5 rounded-full bg-[#677d29] animate-bounce" style="animation-delay: 0.4s"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style="animation-delay: 0s"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style="animation-delay: 0.2s"></span>
+            <span class="w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style="animation-delay: 0.4s"></span>
           </div>
         </div>
         <div class="space-y-3">
-          <div class="h-4 w-3/4 rounded bg-white border border-neutral-80"></div>
-          <div class="h-4 w-full rounded bg-white border border-neutral-80"></div>
-          <div class="h-4 w-5/6 rounded bg-white border border-neutral-80"></div>
+          <div class="h-4 w-3/4 rounded-lg bg-bg-card border border-border-subtle"></div>
+          <div class="h-4 w-full rounded-lg bg-bg-card border border-border-subtle"></div>
+          <div class="h-4 w-5/6 rounded-lg bg-bg-card border border-border-subtle"></div>
         </div>
         <div class="flex gap-3 pt-4 overflow-x-auto no-scrollbar">
-          <span class="px-4 py-1.5 rounded-lg border border-[#677d29] bg-[#c0d881] text-[#284d21] font-label-mono text-label-mono whitespace-nowrap">Analizando grupos...</span>
-          <span class="px-4 py-1.5 rounded-lg border border-[#466B3F] bg-[#94b43b] text-[#284d21] font-label-mono text-label-mono whitespace-nowrap">Mapeando carreras...</span>
-          <span class="px-4 py-1.5 rounded-lg border border-[#00566f] bg-[#c1e4ea] text-[#00566f] font-label-mono text-label-mono whitespace-nowrap">Consultando semilleros...</span>
+          <span class="px-4 py-1.5 border border-primary/30 bg-primary/10 text-primary-light text-sm whitespace-nowrap rounded-lg">Analizando grupos...</span>
+          <span class="px-4 py-1.5 border border-accent/30 bg-accent/10 text-accent-light text-sm whitespace-nowrap rounded-lg">Mapeando carreras...</span>
+          <span class="px-4 py-1.5 border border-neon/30 bg-neon/10 text-neon text-sm whitespace-nowrap rounded-lg">Consultando semilleros...</span>
         </div>
       </div>
     </div>
   </div>
   
-  <!-- AI Results (Hidden by default) -->
+  <!-- AI Results -->
   <div id="ai-results" class="hidden mb-8">
-    <div class="card rounded-lg p-8 border border-[#677d29] bg-white">
+    <div class="bg-bg-card p-4 sm:p-6 md:p-8 border border-border-default shadow-card rounded-xl">
       <div>
         <!-- Header -->
-        <div class="flex items-center gap-3 mb-6 pb-4 border-b border-neutral-80">
-          <div class="w-12 h-12 rounded-lg bg-[#677d29] flex items-center justify-center">
-            <span class="material-symbols-outlined text-white text-xl" data-icon="auto_awesome">auto_awesome</span>
+        <div class="flex items-center gap-3 mb-4 sm:mb-6 pb-4 border-b border-border-subtle">
+          <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-primary to-accent flex items-center justify-center shrink-0 rounded-xl shadow-glow-sm">
+            <span class="material-symbols-outlined text-white text-lg sm:text-xl" data-icon="auto_awesome">auto_awesome</span>
           </div>
           <div>
-            <h3 class="text-[#284d21] font-headline-md">Respuesta de IA</h3>
-            <p class="text-neutral-60 text-xs font-label-mono">Powered by OpenRouter</p>
+            <h3 class="text-text-primary font-semibold">Respuesta de IA</h3>
+            <p class="text-text-muted text-xs">Powered by OpenRouter</p>
           </div>
         </div>
         
         <!-- Content -->
         <div id="ai-results-content" class="space-y-6">
-          <!-- Results will be inserted here -->
         </div>
       </div>
     </div>
@@ -84,25 +83,16 @@ const { placeholder = "Pregunta sobre investigación..." } = Astro.props;
 </section>
 
 <script>
-  // Helper functions for formatting
   function formatAnswer(text: string): string {
     if (!text) return '';
     
-    // Convert markdown-like syntax to HTML
     return text
-      // Bold text (**text**)
-      .replace(/\*\*(.+?)\*\*/g, '<strong class="text-primary font-semibold">$1</strong>')
-      // Italic (*text*)
+      .replace(/\*\*(.+?)\*\*/g, '<strong class="text-primary-light font-semibold">$1</strong>')
       .replace(/\*(.+?)\*/g, '<em>$1</em>')
-      // Convert bullet points
-      .replace(/^- (.+)$/gm, '<li class="flex items-start gap-2"><span class="text-primary mt-1.5">•</span><span>$1</span></li>')
-      // Wrap lists
+      .replace(/^- (.+)$/gm, '<li class="flex items-start gap-2"><span class="text-primary-light mt-1.5">•</span><span>$1</span></li>')
       .replace(/(<li.*<\/li>\n?)+/g, '<ul class="space-y-2 my-3">$&</ul>')
-      // Paragraphs (double newline)
       .replace(/\n\n/g, '</p><p class="my-3">')
-      // Single newlines within paragraphs
       .replace(/\n/g, ' ')
-      // Wrap in paragraph if not already wrapped
       .replace(/^(.+)$/gm, (match) => {
         if (match.startsWith('<') || !match.trim()) return match;
         return `<p class="my-2">${match}</p>`;
@@ -111,17 +101,17 @@ const { placeholder = "Pregunta sobre investigación..." } = Astro.props;
   
   function getTypeColor(tipo: string): string {
     const colors: Record<string, string> = {
-      'Semillero': 'bg-tertiary',
-      'Grupo de Investigación': 'bg-primary',
-      'Grupo Estudiantil': 'bg-secondary',
+      'Semillero': 'bg-accent',
+      'Grupo de Investigacion': 'bg-primary',
+      'Grupo Estudiantil': 'bg-neon',
     };
-    return colors[tipo] || 'bg-surface-container-high';
+    return colors[tipo] || 'bg-bg-hover';
   }
   
   function getTypeIcon(tipo: string): string {
     const icons: Record<string, string> = {
       'Semillero': 'school',
-      'Grupo de Investigación': 'science',
+      'Grupo de Investigacion': 'science',
       'Grupo Estudiantil': 'groups',
     };
     return icons[tipo] || 'group';
@@ -141,76 +131,68 @@ const { placeholder = "Pregunta sobre investigación..." } = Astro.props;
     
     isSearching = true;
     
-    // Show thinking state
     thinkingState?.classList.remove('hidden');
     resultsState?.classList.add('hidden');
     
     try {
       const response = await fetch('/api/search', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query }),
       });
       
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status}`);
-      }
+      if (!response.ok) throw new Error(`Error: ${response.status}`);
       
       const data = await response.json();
       
-      // Hide thinking, show results
       thinkingState?.classList.add('hidden');
       resultsState?.classList.remove('hidden');
       
       if (resultsContent) {
-        // Format the answer text - convert markdown-like formatting to HTML
-        const formattedAnswer = formatAnswer(data.answer || data.response || 'No se encontraron resultados específicos.');
+        const formattedAnswer = formatAnswer(data.answer || data.response || 'No se encontraron resultados especificos.');
         
         resultsContent.innerHTML = `
           <div class="prose prose-invert max-w-none">
-            <div class="text-on-surface text-body-base leading-relaxed space-y-3">
+            <div class="text-text-primary text-body-base leading-relaxed space-y-3">
               ${formattedAnswer}
             </div>
           </div>
           
           ${data.grupos && data.grupos.length > 0 ? `
-            <div class="pt-4 border-t border-white/10">
+            <div class="pt-4 border-t border-border-subtle">
               <div class="flex items-center gap-2 mb-4">
-                <span class="material-symbols-outlined text-primary text-sm" data-icon="groups">groups</span>
-                <p class="text-sm font-bold text-on-surface">Grupos encontrados</p>
-                <span class="px-2 py-0.5 rounded-lg bg-[#c0d881] text-[#284d21] text-xs font-label-mono">${data.grupos.length}</span>
+                <span class="material-symbols-outlined text-primary-light text-sm" data-icon="groups">groups</span>
+                <p class="text-sm font-bold text-text-primary">Grupos encontrados</p>
+                <span class="px-2 py-0.5 bg-primary/10 text-primary-light text-xs rounded-md">${data.grupos.length}</span>
               </div>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 ${data.grupos.map((g: any) => `
-                  <div class="group flex items-start gap-3 p-3 rounded-xl bg-surface-container-low/50 hover:bg-surface-container-high transition-all cursor-pointer border border-transparent hover:border-primary/30">
+                  <div class="group flex items-start gap-3 p-3 rounded-xl bg-bg-hover/50 hover:bg-bg-hover transition-all cursor-pointer border border-transparent hover:border-primary/30">
                     <div class="w-8 h-8 rounded-lg ${getTypeColor(g.tipo)} flex items-center justify-center shrink-0">
                       <span class="material-symbols-outlined text-white text-sm">${getTypeIcon(g.tipo)}</span>
                     </div>
                     <div class="flex-1 min-w-0">
-                      <p class="text-sm font-medium text-on-surface group-hover:text-primary transition-colors line-clamp-2">${g.nombre || g}</p>
-                      <p class="text-xs text-on-surface-variant/60 mt-0.5">${g.tipo || 'Grupo'}</p>
+                      <p class="text-sm font-medium text-text-primary group-hover:text-primary-light transition-colors line-clamp-2">${g.nombre || g}</p>
+                      <p class="text-xs text-text-muted mt-0.5">${g.tipo || 'Grupo'}</p>
                     </div>
-                    <span class="material-symbols-outlined text-on-surface-variant/40 group-hover:text-primary transition-colors text-sm">arrow_forward</span>
+                    <span class="material-symbols-outlined text-text-muted group-hover:text-primary-light transition-colors text-sm">arrow_forward</span>
                   </div>
                 `).join('')}
               </div>
             </div>
           ` : ''}
           
-          <div class="flex items-center justify-between pt-4 border-t border-white/10">
-            <p class="text-xs text-on-surface-variant/50">
-              ${data.isFallback ? 'Resultados basados en coincidencias de texto' : 'Respuesta generada por IA'}
+          <div class="flex items-center justify-between pt-4 border-t border-border-subtle">
+            <p class="text-xs text-text-muted">
+              ${data.fallback ? 'Resultados basados en coincidencias de texto' : 'Respuesta generada por IA'}
             </p>
-            <button id="ai-clear-btn" class="text-xs text-secondary hover:text-primary transition-colors flex items-center gap-1">
+            <button id="ai-clear-btn" class="text-xs text-primary-light hover:text-text-primary transition-colors flex items-center gap-1">
               <span class="material-symbols-outlined text-sm">close</span>
               Cerrar
             </button>
           </div>
         `;
         
-        // Add clear button listener
         document.getElementById('ai-clear-btn')?.addEventListener('click', () => {
           resultsState?.classList.add('hidden');
           if (searchInput) searchInput.value = '';
@@ -225,7 +207,7 @@ const { placeholder = "Pregunta sobre investigación..." } = Astro.props;
         resultsContent.innerHTML = `
           <div class="flex items-center gap-2 text-error">
             <span class="material-symbols-outlined" data-icon="error">error</span>
-            <p>Error al realizar la búsqueda. Intenta de nuevo más tarde.</p>
+            <p>Error al realizar la busqueda. Intenta de nuevo mas tarde.</p>
           </div>
         `;
       }
@@ -234,12 +216,8 @@ const { placeholder = "Pregunta sobre investigación..." } = Astro.props;
     }
   }
   
-  // Event listeners
   searchBtn?.addEventListener('click', performSearch);
-  
   searchInput?.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-      performSearch();
-    }
+    if (e.key === 'Enter') performSearch();
   });
 </script>

@@ -12,31 +12,28 @@ interface Props {
 }
 
 const { 
-  title = "Semilleros FIBOG | Universidad Nacional de Colombia", 
-  description = "Facultad de Ingeniería - Bogotá: Descubre grupos de investigación, semilleros y comunidades estudiantiles UNAL",
+  title = "FIBOG Semilleros", 
+  description = "Catálogo de semilleros, grupos de investigación y comunidades estudiantiles de la Facultad de Ingeniería",
   activePage = 'inicio'
 } = Astro.props;
 ---
 
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content={description} />
-  <meta name="theme-color" content="#466B3F" />
-  <title>{title} | Universidad Nacional de Colombia</title>
+  <meta name="theme-color" content="#0a0a0f" />
+  <title>{title}</title>
   
-  <!-- Favicon (Escudo UNAL) -->
-  <link rel="icon" type="image/png" href="/images/escudo-unal.png" />
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
-  
-  <!-- Kit UNAL - Fuente Ancízar Sans -->
-  <link href="https://gestionapp.unal.edu.co/cdn/kitUnal/12112024/css/kitUnal.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
   
   <!-- GSAP -->
   <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -44,19 +41,19 @@ const {
   
   <slot name="head" />
 </head>
-<body class="bg-[#f5f5f5] text-[#1c1b1f] antialiased min-h-screen">
-  <!-- Header UNAL -->
+<body class="bg-bg text-text-primary antialiased min-h-screen">
+  <!-- Header -->
   <UnalHeader activePage={activePage} />
   
-  <!-- Contenido principal -->
+  <!-- Main content -->
   <main class="min-h-screen">
     <slot />
   </main>
-  
-  <!-- Footer UNAL -->
+
+  <!-- Footer -->
   <UnalFooter />
   
-  <!-- Paneles de accesibilidad y servicios -->
+  <!-- Accessibility & Services panels -->
   <AccessibilityPanel />
   <ServicesTab />
   
@@ -64,9 +61,12 @@ const {
   <div id="global-modal-container"></div>
   
   <script>
-    // Initialize GSAP ScrollTrigger
+    // Initialize GSAP ScrollTrigger only when motion is not reduced
     if (typeof gsap !== 'undefined') {
-      gsap.registerPlugin(ScrollTrigger);
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (!prefersReducedMotion) {
+        gsap.registerPlugin(ScrollTrigger);
+      }
     }
   </script>
 </body>
