@@ -9,13 +9,13 @@ if (!supabaseUrl || supabaseUrl === 'https://your-project.supabase.co') {
   console.error(
     '❌ SUPABASE ERROR: PUBLIC_SUPABASE_URL is not configured correctly.\n' +
     'Current value:', supabaseUrl, '\n' +
-    'Set the correct Supabase URL in your .env file or Netlify environment variables.'
+    'Set the correct Supabase URL in your .env file or Vercel environment variables.'
   );
 }
 if (!supabaseAnonKey || supabaseAnonKey === 'your-anon-key') {
   console.error(
     '❌ SUPABASE ERROR: PUBLIC_SUPABASE_ANON_KEY is not configured correctly.\n' +
-    'Set the correct Supabase anon key in your .env file or Netlify environment variables.'
+    'Set the correct Supabase anon key in your .env file or Vercel environment variables.'
   );
 }
 
