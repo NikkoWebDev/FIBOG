@@ -1,6 +1,5 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Breadcrumb from '../components/unal/Breadcrumb.astro';
 import AISearch from '../components/AISearch.astro';
 import FilterBar from '../components/FilterBar.astro';
 import BentoGrid from '../components/BentoGrid.astro';
@@ -23,7 +22,6 @@ const filteredGrupos = filtrarGrupos(allGrupos, {
 ---
 
 <Layout title="FIBOG Semilleros" description="Catalogo de semilleros, grupos de investigacion y comunidades estudiantiles de la Facultad de Ingenieria" activePage="inicio">
-  <Breadcrumb items={[]} />
 
   <main class="pb-24">
     <!-- Hero Section -->

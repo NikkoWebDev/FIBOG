@@ -3,7 +3,6 @@ import '../styles/global.css';
 import UnalHeader from '../components/unal/UnalHeader.astro';
 import UnalFooter from '../components/unal/UnalFooter.astro';
 import AccessibilityPanel from '../components/unal/AccessibilityPanel.astro';
-import ServicesTab from '../components/unal/ServicesTab.astro';
 
 interface Props {
   title?: string;
@@ -34,6 +33,20 @@ const {
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+
+  <!-- Icon font: preload + ocultar ligaduras hasta que la fuente este lista -->
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+        href="https://fonts.gstatic.com/s/materialsymbolsoutlined/v367/kJEPBvYX7BgnkSrUwT8OhrdQw4oELdPIeeII9v6oDMzBwG-RpA6RzaxHMPdY40KH8nGzv3fzfVJO1Q.woff2" />
+  <script is:inline>
+    document.documentElement.classList.add('js');
+    (function () {
+      var ready = function () { document.documentElement.classList.add('icons-ready'); };
+      if (document.fonts && document.fonts.load) {
+        document.fonts.load('24px "Material Symbols Outlined"').then(ready).catch(ready);
+      }
+      setTimeout(ready, 2000);
+    })();
+  </script>
   
   <!-- GSAP -->
   <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
@@ -53,9 +66,8 @@ const {
   <!-- Footer -->
   <UnalFooter />
   
-  <!-- Accessibility & Services panels -->
+  <!-- Accessibility panel -->
   <AccessibilityPanel />
-  <ServicesTab />
   
   <!-- Global Modal Container -->
   <div id="global-modal-container"></div>

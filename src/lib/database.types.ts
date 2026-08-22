@@ -150,6 +150,7 @@ export type Database = {
           carreras: string[] | null
           comentarios_adicionales: string | null
           comentarios_revision: string | null
+          imagen_url: string | null
           descripcion: string | null
           docente_a_cargo: string | null
           email_contacto: string
@@ -179,6 +180,7 @@ export type Database = {
           carreras?: string[] | null
           comentarios_adicionales?: string | null
           comentarios_revision?: string | null
+          imagen_url?: string | null
           descripcion?: string | null
           docente_a_cargo?: string | null
           email_contacto: string
@@ -208,6 +210,7 @@ export type Database = {
           carreras?: string[] | null
           comentarios_adicionales?: string | null
           comentarios_revision?: string | null
+          imagen_url?: string | null
           descripcion?: string | null
           docente_a_cargo?: string | null
           email_contacto?: string

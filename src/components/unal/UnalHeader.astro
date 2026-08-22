@@ -299,4 +299,26 @@ const navItems = [
 
   updateAuthState();
   supabase.auth.onAuthStateChange(() => updateAuthState());
+
+  // ---- Scroll-spy: resalta "Catalogo" cuando la seccion #grupos es visible ----
+  const catalogSection = document.getElementById('grupos');
+  const catalogLinks = document.querySelectorAll<HTMLAnchorElement>('header a[href="/#grupos"]');
+  if (catalogSection && catalogLinks.length && window.location.pathname === '/') {
+    const setActive = (active: boolean) => {
+      catalogLinks.forEach((link) => {
+        if (active) {
+          link.classList.add('bg-primary/10', 'text-primary-light');
+          link.classList.remove('text-text-secondary', 'hover:text-text-primary', 'hover:bg-bg-hover');
+        } else {
+          link.classList.remove('bg-primary/10', 'text-primary-light');
+          link.classList.add('text-text-secondary', 'hover:text-text-primary', 'hover:bg-bg-hover');
+        }
+      });
+    };
+    const observer = new IntersectionObserver(
+      (entries) => entries.forEach((entry) => setActive(entry.isIntersecting)),
+      { rootMargin: '-64px 0px -40% 0px' }
+    );
+    observer.observe(catalogSection);
+  }
 </script>

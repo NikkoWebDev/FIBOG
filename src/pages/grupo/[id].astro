@@ -1,6 +1,5 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import Breadcrumb from '../../components/unal/Breadcrumb.astro';
 
 import gruposData from '../../data/grupos.json';
 import type { Grupo } from '../../data/grupos.types';
@@ -25,11 +24,6 @@ const tipoBadge = tipoColors[grupo.tipo] || tipoColors['Semillero'];
 ---
 
 <Layout title={`${grupo.nombre} | FIBOG Semilleros`} description={grupo.descripcion || ''} activePage="grupos">
-  <Breadcrumb items={[
-    { label: 'Grupos', url: '/#grupos' },
-    { label: grupo?.nombre || 'Grupo' }
-  ]} />
-  
   <main class="min-h-screen py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
     <!-- Back Button -->
     <div class="mb-8">

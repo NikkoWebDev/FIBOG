@@ -210,3 +210,8 @@ textarea:focus-visible {
     display: block !important;
   }
 }
+
+/* Iconos Material Symbols: ocultos hasta que la fuente carga (evita ver nombres de ligaduras) */
+html.js:not(.icons-ready) .material-symbols-outlined {
+  visibility: hidden;
+}

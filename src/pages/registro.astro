@@ -1,10 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Breadcrumb from '../components/unal/Breadcrumb.astro';
 ---
 
 <Layout title="Registrar Grupo | FIBOG Semilleros" description="Postula tu semillero o grupo de investigacion" activePage="registro">
-  <Breadcrumb items={[{ label: 'Registro' }]} />
   
   <main class="min-h-screen py-12 px-4 relative overflow-hidden">
     <!-- Background -->
@@ -336,6 +334,21 @@ import Breadcrumb from '../components/unal/Breadcrumb.astro';
                 class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all resize-none"
               ></textarea>
             </div>
+
+            <div>
+              <label class="block text-text-secondary text-sm font-medium mb-2">
+                Imagen del Grupo (opcional)
+              </label>
+              <input
+                type="file"
+                id="imagen_grupo"
+                name="imagen_grupo"
+                accept="image/png, image/jpeg, image/webp"
+                class="w-full px-4 py-3 bg-bg-input border border-border-default rounded-xl text-text-muted file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary/10 file:text-primary-light file:text-sm file:font-medium hover:file:bg-primary/20 transition-all cursor-pointer"
+              />
+              <p class="text-text-muted text-xs mt-2">PNG, JPG o WebP. Maximo 5 MB.</p>
+              <img id="imagen-preview" src="" alt="" class="hidden mt-3 max-h-48 rounded-xl border border-border-subtle" />
+            </div>
           </div>
           
           <!-- Error message -->
@@ -381,12 +394,25 @@ import Breadcrumb from '../components/unal/Breadcrumb.astro';
 </Layout>
 
 <script>
+  import { supabase } from '../lib/supabase';
+
   const form = document.getElementById('registro-form');
   const errorMessage = document.getElementById('error-message');
   const successMessage = document.getElementById('success-message');
   const submitBtn = document.getElementById('submit-btn');
   const submitText = document.getElementById('submit-text');
   const submitSpinner = document.getElementById('submit-spinner');
+
+  const imagenInput = document.getElementById('imagen_grupo') as HTMLInputElement;
+  const imagenPreview = document.getElementById('imagen-preview') as HTMLImageElement;
+
+  // Preview local de la imagen elegida
+  imagenInput?.addEventListener('change', () => {
+    const file = imagenInput.files?.[0];
+    if (!file || !imagenPreview) return;
+    imagenPreview.src = URL.createObjectURL(file);
+    imagenPreview.classList.remove('hidden');
+  });
 
   const isUnalEmail = (email: string): boolean =>
     email.trim().toLowerCase().endsWith('@unal.edu.co');
@@ -398,6 +424,7 @@ import Breadcrumb from '../components/unal/Breadcrumb.astro';
     const data: Record<string, any> = {};
 
     formData.forEach((value, key) => {
+      if (key === 'imagen_grupo') return; // la imagen se sube aparte al Storage
       if (key === 'carreras') {
         data[key] = (value as string).split(',').map(c => c.trim()).filter(c => c);
       } else {
@@ -423,6 +450,19 @@ import Breadcrumb from '../components/unal/Breadcrumb.astro';
     successMessage?.classList.add('hidden');
 
     try {
+      // Subir imagen del grupo a Supabase Storage si el usuario eligio una
+      const file = imagenInput?.files?.[0];
+      if (file) {
+        if (file.size > 5 * 1024 * 1024) throw new Error('La imagen supera el maximo de 5 MB.');
+        const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg';
+        const slug = String(data.nombre || 'grupo').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+        const path = `${slug}-${Date.now()}.${ext}`;
+        const { error: upErr } = await supabase.storage.from('imagenes-grupos').upload(path, file, { contentType: file.type });
+        if (upErr) throw new Error('No se pudo subir la imagen: ' + upErr.message);
+        const { data: pub } = supabase.storage.from('imagenes-grupos').getPublicUrl(path);
+        data.imagen_url = pub.publicUrl;
+      }
+
       const response = await fetch('/api/notify', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

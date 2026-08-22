@@ -1,6 +1,5 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import Breadcrumb from '../components/unal/Breadcrumb.astro';
 
 export const prerender = false;
 
@@ -9,7 +8,6 @@ export const prerender = false;
 ---
 
 <Layout title="Mi Perfil | FIBOG UNAL" description="Configuración de perfil de usuario." activePage="perfil">
-  <Breadcrumb items={[{ label: 'Mi Perfil' }]} />
   
   <main class="min-h-screen pt-32 pb-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
     <!-- Auth loading -->
