@@ -24,7 +24,7 @@
   "author": "",
   "license": "ISC",
   "engines": {
-    "node": "22.x"
+    "node": "18.x"
   },
   "dependencies": {
     "@astrojs/tailwind": "^5.1.5",
