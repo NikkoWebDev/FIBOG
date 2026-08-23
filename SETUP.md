@@ -116,6 +116,8 @@ La aplicación estará disponible en `http://localhost:4321`
 
 ### 5. Despliegue en Vercel
 
+URL actual: https://semilleros-fibog-fxl7tbf2f-nikkowebdevs-projects.vercel.app
+
 #### 5.1 Configurar Build
 
 En Vercel, configura:
