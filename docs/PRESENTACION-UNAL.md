@@ -14,7 +14,7 @@ El sitio **Semilleros FIBOG** es un catálogo web de semilleros, grupos de inves
 | CMS | Supabase | Gestión de contenido |
 | Base de datos | PostgreSQL 17 | Almacenamiento |
 | Estilos | Tailwind CSS | Diseño responsive |
-| Hosting | Netlify | Despliegue |
+| Hosting | Vercel | Despliegue |
 
 ## Cumplimiento Plantilla UNAL
 
@@ -95,7 +95,7 @@ El sitio utiliza **Supabase** como gestor de contenidos (CMS) headless:
 - **Build time**: ~3 segundos
 - **Páginas generadas**: 20
 - **Tamaño**: Optimizado para carga rápida
-- **CDN**: Netlify Edge Network
+- **CDN**: Vercel Edge Network
 
 ## Próximos Pasos
 

@@ -33,7 +33,7 @@ Me dirijo a ustedes para presentarles el desarrollo de una plataforma web diseñ
 | **Animaciones** | GSAP (GreenSock) + ScrollTrigger | Animaciones de entrada y transiciones suaves |
 | **Backend / Base de datos** | Supabase | PostgreSQL con Row Level Security, autenticación y funciones serverless |
 | **API de IA** | OpenRouter API | Búsqueda semántica y recomendaciones inteligentes |
-| **Despliegue** | Netlify | Hosting estático + Netlify Functions para endpoints serverless |
+| **Despliegue** | Vercel | Hosting híbrido + funciones serverless para endpoints |
 | **Iconografía** | Lucide React / Material Symbols | Íconos vectoriales |
 | **Tipografía** | Google Fonts | Fuentes web (Inter, JetBrains Mono, Geist) |
 | **Control de versiones** | Git | Repositorio del proyecto |

@@ -40,8 +40,8 @@ OPENROUTER_BASE_URL=https://openrouter.ai/api/v1
 OPENROUTER_MODEL=liquid/lfm-2.5-1.2b-instruct:free
 
 # Admin emails (para notificaciones)
-SUPER_ADMIN_EMAIL_1=admin1@unal.edu.co
-SUPER_ADMIN_EMAIL_2=admin2@unal.edu.co
+ADMIN_EMAIL_1=bgallo@unal.edu.co
+ADMIN_EMAIL_2=aiche_fibog@unal.edu.co
 ```
 
 ### 2. Configurar Supabase
@@ -59,6 +59,14 @@ Ve al SQL Editor de Supabase y ejecuta el archivo:
 ```bash
 /supabase/migrations/20250509000000_initial_schema.sql
 ```
+
+Despues ejecuta tambien:
+
+```bash
+/supabase/migrations/20250818000000_add_imagen_url.sql
+```
+
+Esto agrega la URL de imagen y crea el bucket publico `imagenes-grupos`.
 
 Esto creará:
 - Tipos ENUM (user_role, approval_status, group_type)
@@ -82,7 +90,7 @@ npm install
 # Configurar variables de entorno
 export PUBLIC_SUPABASE_URL=https://tu-proyecto.supabase.co
 export SUPABASE_SERVICE_ROLE_KEY=tu-service-role-key
-export SUPER_ADMIN_EMAIL_1=admin1@unal.edu.co
+export ADMIN_EMAIL_1=bgallo@unal.edu.co
 export SUPER_ADMIN_PASSWORD=TuPassword123!
 
 # Ejecutar migración

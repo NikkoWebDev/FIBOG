@@ -168,8 +168,8 @@
 | `PUBLIC_SUPABASE_URL` | URL del proyecto Supabase | Sí (para backend dinámico) |
 | `PUBLIC_SUPABASE_ANON_KEY` | Anon key de Supabase | Sí |
 | `SUPABASE_SERVICE_ROLE_KEY` | Service role key (solo server-side) | Sí (para scripts) |
-| `SUPER_ADMIN_EMAIL_1` | Email admin 1 (notificaciones) | Opcional |
-| `SUPER_ADMIN_EMAIL_2` | Email admin 2 (notificaciones) | Opcional |
+| `ADMIN_EMAIL_1` | Email admin 1 (notificaciones) | Opcional |
+| `ADMIN_EMAIL_2` | Email admin 2 (notificaciones) | Opcional |
 | `RESEND_API_KEY` | API Key de Resend (emails) | Sí (para notificaciones) |
 | `RESEND_FROM_EMAIL` | Remitente verificado en Resend | Sí (para notificaciones) |
 | `SITE_URL` | URL pública del sitio (usada en emails) | Sí (para notificaciones) |
@@ -630,7 +630,7 @@ export type NivelAcademico = 'No requerido (Abierto a todos los niveles)' | 'Int
 
 ### 10.4 create-admins.js (146 líneas)
 - Crea 2 cuentas SUPER_ADMIN desde env vars o defaults
-- `SUPER_ADMIN_EMAIL_1` y `SUPER_ADMIN_EMAIL_2`
+- `ADMIN_EMAIL_1` y `ADMIN_EMAIL_2`
 - Password temporal: `FIBOG2024!Admin`
 - Upsert: si el usuario ya existe, actualiza perfil a SUPER_ADMIN
 
