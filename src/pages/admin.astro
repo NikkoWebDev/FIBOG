@@ -123,6 +123,12 @@ export const prerender = false;
       supabase.from('perfiles').select('id', { count: 'exact' }).eq('rol', 'SUPER_ADMIN')
     ]);
 
+    const statsError = gruposRes.error || pendientesRes.error || lideresRes.error || adminsRes.error;
+    if (statsError) {
+      console.error('Error loading admin stats:', statsError);
+      showNotification(`No se pudieron cargar las métricas: ${statsError.message}`, 'error');
+    }
+
     document.getElementById('total-grupos').textContent = gruposRes.count || 0;
     document.getElementById('pending-grupos').textContent = pendientesRes.count || 0;
     document.getElementById('total-lideres').textContent = lideresRes.count || 0;
@@ -203,7 +209,12 @@ export const prerender = false;
   }
 
   async function loadPendientes() {
-    const { data: pendientes } = await supabase.from('solicitudes_pendientes').select('*').eq('estado', 'pendiente').order('fecha_solicitud', { ascending: false });
+    const { data: pendientes, error } = await supabase.from('solicitudes_pendientes').select('*').eq('estado', 'pendiente').order('fecha_solicitud', { ascending: false });
+    if (error) {
+      console.error('Error loading pending applications:', error);
+      showNotification(`No se pudieron cargar las solicitudes: ${error.message}`, 'error');
+      return;
+    }
     if (!pendientes) return;
 
     const pendingList = document.getElementById('pending-list');

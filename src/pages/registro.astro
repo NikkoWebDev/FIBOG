@@ -475,7 +475,10 @@ import Layout from '../layouts/Layout.astro';
         throw new Error(result.error || result.message || 'Error al enviar la solicitud. Intenta de nuevo.');
       }
 
-      successMessage!.textContent = 'Solicitud enviada exitosamente! Sera notificado cuando sea revisada.';
+      const emailWarning = result.warning || (result.message?.includes('no enviada') ? result.message : '');
+      successMessage!.textContent = emailWarning
+        ? `Solicitud guardada. ${emailWarning}`
+        : 'Solicitud enviada exitosamente! Sera notificado cuando sea revisada.';
       successMessage?.classList.remove('hidden');
 
       (form as HTMLFormElement).reset();
