@@ -13,7 +13,8 @@
     "migrate": "node scripts/migrate-to-supabase.js",
     "supabase:start": "npx supabase start",
     "supabase:stop": "npx supabase stop",
-    "supabase:reset": "npx supabase db reset"
+    "supabase:reset": "npx supabase db reset",
+    "postinstall": "node scripts/patch-vercel-adapter.js"
   },
   "keywords": [
     "semilleros",
@@ -24,7 +25,7 @@
   "author": "",
   "license": "ISC",
   "engines": {
-    "node": "20.x"
+    "node": "22.x"
   },
   "dependencies": {
     "@astrojs/tailwind": "^5.1.5",
