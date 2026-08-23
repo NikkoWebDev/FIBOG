@@ -14,7 +14,7 @@
     "supabase:start": "npx supabase start",
     "supabase:stop": "npx supabase stop",
     "supabase:reset": "npx supabase db reset",
-    "postinstall": "node scripts/patch-vercel-adapter.js"
+    "postinstall": "node scripts/patch-vercel-adapter.cjs"
   },
   "keywords": [
     "semilleros",
