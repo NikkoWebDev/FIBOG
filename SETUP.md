@@ -142,6 +142,8 @@ ADMIN_EMAIL_2
 SITE_URL
 ```
 
+El dominio verificado actual es `nikko.dev`; use `FIBOG UNAL <noreply@nikko.dev>` como remitente.
+
 #### 5.3 API Routes Serverless (para IA y notificaciones)
 
 Las API routes `src/pages/api/search.ts` (búsqueda IA) y `src/pages/api/notify.ts` (notificación por email con Resend) ya están configuradas como funciones serverless de Vercel.
