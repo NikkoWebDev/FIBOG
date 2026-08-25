@@ -41,7 +41,7 @@ OPENROUTER_MODEL=liquid/lfm-2.5-1.2b-instruct:free
 
 # Admin emails (para notificaciones)
 ADMIN_EMAIL_1=bgallo@unal.edu.co
-ADMIN_EMAIL_2=aiche_fibog@unal.edu.co
+ADMIN_EMAIL_2=ngutierrezga@unal.edu.co
 ```
 
 ### 2. Configurar Supabase
