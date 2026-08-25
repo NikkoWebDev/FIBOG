@@ -2,25 +2,25 @@
 // Admin management tabs navigation
 ---
 
-<div class="flex border-b border-white/10 bg-surface-container/50">
+<div class="flex overflow-x-auto border-b border-white/10 bg-surface-container/50" role="tablist" aria-label="Secciones de administración">
   <button 
     onclick="switchTab('grupos')" 
     id="tab-grupos"
-    class="px-8 py-5 text-sm font-medium transition-all hover:bg-white/5 active border-b-2 border-transparent [&.active]:border-primary [&.active]:text-primary"
+    role="tab" aria-controls="content-grupos" aria-selected="true" class="shrink-0 min-h-12 px-4 md:px-7 py-4 text-sm font-medium transition-all hover:bg-white/5 active border-b-2 border-transparent [&.active]:border-primary [&.active]:text-primary"
   >
     Todos los Grupos
   </button>
   <button 
     onclick="switchTab('pendientes')" 
     id="tab-pendientes"
-    class="px-8 py-5 text-sm font-medium transition-all hover:bg-white/5 border-b-2 border-transparent [&.active]:border-primary [&.active]:text-primary"
+    role="tab" aria-controls="content-pendientes" aria-selected="false" class="shrink-0 min-h-12 px-4 md:px-7 py-4 text-sm font-medium transition-all hover:bg-white/5 border-b-2 border-transparent [&.active]:border-primary [&.active]:text-primary"
   >
     Solicitudes Pendientes
   </button>
   <button 
     onclick="switchTab('usuarios')" 
     id="tab-usuarios"
-    class="px-8 py-5 text-sm font-medium transition-all hover:bg-white/5 border-b-2 border-transparent [&.active]:border-primary [&.active]:text-primary"
+    role="tab" aria-controls="content-usuarios" aria-selected="false" class="shrink-0 min-h-12 px-4 md:px-7 py-4 text-sm font-medium transition-all hover:bg-white/5 border-b-2 border-transparent [&.active]:border-primary [&.active]:text-primary"
   >
     Gestión de Usuarios
   </button>
