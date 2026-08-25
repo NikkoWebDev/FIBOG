@@ -213,6 +213,50 @@ export const prerender = false;
   }
 
   async function loadPendientes() {
+    // Intento via API con service_role (bypassa RLS mal configurada)
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      if (token) {
+        const res = await fetch('/api/admin-pendientes', { headers: { Authorization: `Bearer ${token}` } });
+        if (res.ok) {
+          const { data } = await res.json();
+          console.log('[admin] loadPendientes via API', data);
+          if (Array.isArray(data)) {
+            // render via API data
+            const pendingList = document.getElementById('pending-list');
+            if (data.length === 0) {
+              pendingList.innerHTML = '<div class="text-center text-on-surface-variant py-8">No hay solicitudes pendientes</div>';
+              return 0;
+            }
+            pendingList.innerHTML = data.map(solicitud => `
+              <div class="card rounded-xl p-6 border border-neutral-80">
+                <div class="flex justify-between items-start mb-4">
+                  <div>
+                    <h4 class="text-lg font-medium text-on-surface">${solicitud.nombre}</h4>
+                    <span class="text-sm text-on-surface-variant">${solicitud.tipo}</span>
+                  </div>
+                  <span class="px-3 py-1 rounded-full text-xs font-medium bg-warning/10 text-warning">${solicitud.estado}</span>
+                </div>
+                <div class="grid md:grid-cols-2 gap-4 mb-4 text-sm">
+                  <div><span class="text-on-surface-variant">Solicitante:</span><span class="text-on-surface ml-2">${solicitud.nombre_solicitante}</span></div>
+                  <div><span class="text-on-surface-variant">Email:</span><span class="text-on-surface ml-2">${solicitud.email_solicitante}</span></div>
+                  <div><span class="text-on-surface-variant">Líder:</span><span class="text-on-surface ml-2">${solicitud.lider_o_representante}</span></div>
+                  <div><span class="text-on-surface-variant">Fecha:</span><span class="text-on-surface ml-2">${new Date(solicitud.fecha_solicitud).toLocaleDateString()}</span></div>
+                </div>
+                <div class="flex gap-2">
+                  <button onclick="approveSolicitud('${solicitud.id}')" class="px-4 py-2 rounded-lg bg-primary/20 text-primary hover:bg-primary/30 transition-all flex items-center gap-2"><span class="material-symbols-outlined text-sm">check</span>Aprobar</button>
+                  <button onclick="rejectSolicitud('${solicitud.id}')" class="px-4 py-2 rounded-lg bg-error/20 text-error hover:bg-error/30 transition-all flex items-center gap-2"><span class="material-symbols-outlined text-sm">close</span>Rechazar</button>
+                </div>
+              </div>
+            `).join('');
+            return data.length;
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('[admin] API pendientes fallo, fallback a query directa', e);
+    }
     const { data: pendientes, error } = await supabase.from('solicitudes_pendientes').select('*').eq('estado', 'pendiente').order('fecha_solicitud', { ascending: false });
     console.log('[admin] loadPendientes result', { pendientes, error });
     if (error) {
