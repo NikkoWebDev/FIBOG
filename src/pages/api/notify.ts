@@ -189,7 +189,7 @@ Este es un mensaje automático del sistema FIBOG UNAL.
         JSON.stringify({
           success: true,
           id: insertedRows?.id,
-          warning: 'Solicitud guardada, pero ocurrió un error al enviar la notificación por email.',
+          warning: `Solicitud guardada, pero Resend rechazo el correo: ${emailError.message || 'error desconocido'}`,
         }),
         { status: 200, headers: { 'Content-Type': 'application/json' } }
       );
