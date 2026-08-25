@@ -75,6 +75,9 @@ export const prerender = false;
 <script>
   import { supabase } from '../lib/supabase';
 
+  // exponer para depuración en consola
+  (window as any).supabase = supabase;
+
   let allGrupos = [];
   let currentEditingGroup = null;
   let currentManagingGroup = null;
@@ -211,12 +214,16 @@ export const prerender = false;
 
   async function loadPendientes() {
     const { data: pendientes, error } = await supabase.from('solicitudes_pendientes').select('*').eq('estado', 'pendiente').order('fecha_solicitud', { ascending: false });
+    console.log('[admin] loadPendientes result', { pendientes, error });
     if (error) {
       console.error('Error loading pending applications:', error);
       showNotification(`No se pudieron cargar las solicitudes: ${error.message}`, 'error');
       return 0;
     }
-    if (!pendientes) return 0;
+    if (!pendientes) {
+      console.warn('[admin] pendientes es null');
+      return 0;
+    }
 
     const pendingList = document.getElementById('pending-list');
     if (pendientes.length === 0) {
