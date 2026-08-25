@@ -107,7 +107,8 @@ export const prerender = false;
       await loadStats();
       await loadGrupos();
       await loadUsuarios();
-      await loadPendientes();
+      const pendingCount = await loadPendientes();
+      if (pendingCount > 0) switchTab('pendientes');
     } catch (error) {
       console.error('Init error:', error);
       loadingEl?.classList.add('hidden');
@@ -213,14 +214,14 @@ export const prerender = false;
     if (error) {
       console.error('Error loading pending applications:', error);
       showNotification(`No se pudieron cargar las solicitudes: ${error.message}`, 'error');
-      return;
+      return 0;
     }
-    if (!pendientes) return;
+    if (!pendientes) return 0;
 
     const pendingList = document.getElementById('pending-list');
     if (pendientes.length === 0) {
       pendingList.innerHTML = '<div class="text-center text-on-surface-variant py-8">No hay solicitudes pendientes</div>';
-      return;
+      return 0;
     }
 
     pendingList.innerHTML = pendientes.map(solicitud => `
@@ -262,6 +263,7 @@ export const prerender = false;
         </div>
       </div>
     `).join('');
+    return pendientes.length;
   }
 
   window.approveSolicitud = async function(solicitudId) {
