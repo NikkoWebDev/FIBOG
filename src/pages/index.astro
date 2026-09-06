@@ -19,132 +19,166 @@ const filteredGrupos = filtrarGrupos(allGrupos, {
   carrera: carreraFilter || undefined,
   busqueda: searchQuery || undefined
 });
+
+const ultimaTexto = (metadata as any).ultima_actualizacion_texto || '2 de septiembre de 2026';
 ---
 
-<Layout title="FIBOG Semilleros" description="Catalogo de semilleros, grupos de investigacion y comunidades estudiantiles de la Facultad de Ingenieria" activePage="inicio">
+<Layout title="Base de Datos Ingenieria | Semilleros" description="Base de datos de semilleros, grupos de investigación y comunidades estudiantiles de la Facultad de Ingeniería" activePage="inicio" hideFooter={true}>
 
-  <main class="pb-24">
-    <!-- Hero Section -->
+  <main class="pb-16">
+    <!-- Última actualización - texto pequeño superior -->
+    <div class="max-w-7xl mx-auto px-6 pt-6">
+      <p class="text-[11px] tracking-widest uppercase text-text-muted/80 font-medium">Última actualización: {ultimaTexto}</p>
+    </div>
+
+    <!-- Hero -->
     <section class="relative overflow-hidden">
-      <!-- Background mesh gradient -->
-      <div class="absolute inset-0 bg-gradient-mesh opacity-60"></div>
-      <div class="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[120px]"></div>
-      <div class="absolute bottom-0 right-1/4 w-80 h-80 bg-accent/10 rounded-full blur-[100px]"></div>
+      <div class="absolute inset-0 bg-gradient-mesh opacity-50"></div>
+      <div class="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[120px] will-change-transform"></div>
+      <div class="absolute bottom-0 right-1/4 w-80 h-80 bg-accent/10 rounded-full blur-[100px] will-change-transform"></div>
 
-      <div class="relative z-10 max-w-7xl mx-auto px-6 py-16 sm:py-20 md:py-28">
+      <div class="relative z-10 max-w-7xl mx-auto px-6 py-14 sm:py-20">
         <div class="max-w-3xl">
-          <!-- Tag -->
-          <div class="inline-flex items-center gap-2 mb-6 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20">
+          <div id="hero-tag" class="inline-flex items-center gap-2 mb-6 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20">
             <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-            <span class="text-primary-light text-xs font-semibold uppercase tracking-widest">Investigacion de Vanguardia</span>
+            <span class="text-primary-light text-xs font-semibold uppercase tracking-widest">Base de Datos Ingenieria · Facultad de Ingeniería</span>
           </div>
 
-          <!-- Title -->
-          <h1 class="text-4xl sm:text-5xl md:text-display-xl font-extrabold mb-6 leading-[1.1]">
-            Semilleros y Grupos de
-            <span class="text-gradient">Investigacion</span>
+          <h1 id="hero-title" class="text-4xl sm:text-5xl font-extrabold mb-5 leading-[1.05]">
+            Base de Datos
+            <span class="text-gradient">Ingenieria</span>
+            <span class="block text-text-primary text-3xl sm:text-4xl mt-2 font-bold">Semilleros y grupos</span>
           </h1>
 
-          <!-- Subtitle -->
-          <p class="text-text-secondary text-lg sm:text-xl max-w-2xl mb-10 leading-relaxed">
-            Descubre el ecosistema de innovacion de la Facultad de Ingenieria. Impulsamos el conocimiento a traves de la experimentacion dinamica y el rigor academico.
+          <p id="hero-sub" class="text-text-secondary text-lg max-w-2xl mb-8 leading-relaxed">
+            Explora y conecta con el ecosistema de investigación estudiantil. Datos curados por y para estudiantes.
           </p>
 
-          <!-- CTAs -->
-          <div class="flex flex-col sm:flex-row gap-4 mb-14">
-            <a
-              href="#grupos"
-              class="inline-flex items-center justify-center gap-2.5 bg-gradient-to-r from-primary to-primary-dark text-white font-semibold px-8 py-3.5 rounded-xl hover:shadow-glow transition-all text-center text-sm sm:text-base"
-            >
+          <div id="hero-cta" class="flex flex-col sm:flex-row gap-4">
+            <a href="#catalogo" class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-primary to-primary-dark text-white font-semibold px-7 py-3.5 rounded-xl hover:shadow-glow hover:-translate-y-0.5 active:translate-y-0 transition-all text-sm">
               <span class="material-symbols-outlined text-lg">explore</span>
-              Explorar Grupos
+              Explorar catálogo
             </a>
-            <a
-              href="/registro"
-              class="inline-flex items-center justify-center gap-2.5 bg-transparent text-primary-light font-semibold px-8 py-3.5 rounded-xl border border-primary/30 hover:bg-primary/10 hover:border-primary/50 transition-all text-center text-sm sm:text-base"
-            >
+            <a href="/registro" class="inline-flex items-center justify-center gap-2 bg-transparent text-primary-light font-semibold px-7 py-3.5 rounded-xl border border-primary/30 hover:bg-primary/10 hover:border-primary/50 hover:-translate-y-0.5 active:translate-y-0 transition-all text-sm">
               <span class="material-symbols-outlined text-lg">group_add</span>
-              Registrar mi grupo
+              Registrar grupo
             </a>
           </div>
 
-          <!-- Stats -->
-          <div class="flex flex-wrap gap-6 sm:gap-10">
+          <div id="hero-stats" class="flex flex-wrap gap-6 sm:gap-10 mt-10">
             <div class="text-center min-w-[5rem]">
-              <span class="block text-primary-light text-3xl sm:text-4xl font-bold">{metadata.por_tipo['Semillero'] || 0}</span>
-              <span class="text-text-muted text-xs sm:text-sm font-medium">Semilleros</span>
+              <span class="block text-primary-light text-3xl font-bold">{metadata.por_tipo['Semillero'] || 0}</span>
+              <span class="text-text-muted text-xs font-medium">Semilleros</span>
             </div>
             <div class="text-center min-w-[5rem]">
-              <span class="block text-accent-light text-3xl sm:text-4xl font-bold">{metadata.por_tipo['Grupo de Investigacion'] || 0}</span>
-              <span class="text-text-muted text-xs sm:text-sm font-medium">Grupos de Investigacion</span>
+              <span class="block text-accent-light text-3xl font-bold">{metadata.por_tipo['Grupo de Investigación'] || 0}</span>
+              <span class="text-text-muted text-xs font-medium">Grupos de Investigación</span>
             </div>
             <div class="text-center min-w-[5rem]">
-              <span class="block text-neon text-3xl sm:text-4xl font-bold">{metadata.por_tipo['Grupo Estudiantil'] || 0}</span>
-              <span class="text-text-muted text-xs sm:text-sm font-medium">Grupos Estudiantiles</span>
-            </div>
-            <div class="text-center min-w-[5rem]">
-              <span class="block text-primary-light text-3xl sm:text-4xl font-bold">{metadata.carreras.length}</span>
-              <span class="text-text-muted text-xs sm:text-sm font-medium">Carreras</span>
+              <span class="block text-neon text-3xl font-bold">{metadata.por_tipo['Grupo Estudiantil'] || 0}</span>
+              <span class="text-text-muted text-xs font-medium">Grupos Estudiantiles</span>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <div id="grupos" class="max-w-7xl mx-auto px-6 pt-16">
-      <!-- Section title -->
-      <div class="mb-8">
-        <h2 class="text-2xl sm:text-3xl font-bold text-text-primary mb-3">Catalogo de grupos</h2>
+    <!-- Emails arriba + texto obligatorio -->
+    <section class="max-w-7xl mx-auto px-6">
+      <div class="max-w-3xl mx-auto">
+        <p class="text-xs text-text-muted mb-6 text-center sm:text-left">
+          Contacto directo: <a href="mailto:bgallo@unal.edu.co" class="text-primary-light hover:underline">bgallo@unal.edu.co</a> · <a href="mailto:ngutierrezga@unal.edu.co" class="text-primary-light hover:underline">ngutierrezga@unal.edu.co</a>
+        </p>
+
+        <div id="intro-text" class="card rounded-2xl p-6 sm:p-8 border border-border-default/50">
+          <p class="text-text-primary leading-relaxed">
+            Encuentra en un solo lugar información sobre los semilleros, grupos de investigación y comunidades estudiantiles de la Facultad de Ingeniería.
+          </p>
+          <p class="text-text-secondary leading-relaxed mt-4">
+            Explora cada iniciativa para conocer su enfoque, objetivos, áreas de trabajo y datos de contacto.
+          </p>
+          <p class="text-text-secondary leading-relaxed mt-4 text-sm">
+            <em>Este es un proyecto creado por y para estudiantes.</em> ¿Tienes dudas o comentarios? Contáctanos en: <a href="mailto:bgallo@unal.edu.co" class="text-primary-light hover:underline font-medium">bgallo@unal.edu.co</a>, <a href="mailto:ngutierrezga@unal.edu.co" class="text-primary-light hover:underline font-medium">ngutierrezga@unal.edu.co</a>.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Catálogo -->
+    <div id="catalogo" class="max-w-7xl mx-auto px-6 pt-12">
+      <div class="mb-6">
+        <h2 class="text-2xl sm:text-3xl font-bold text-text-primary mb-2">Catálogo</h2>
         <div class="h-1 w-20 bg-gradient-to-r from-primary to-accent rounded-full"></div>
+        <p class="text-text-muted text-sm mt-3">Filtra por tipo, carrera o usa la búsqueda inteligente.</p>
       </div>
 
-      <!-- AI Search -->
-      <AISearch placeholder="Area de investigacion: robotica, IA, energia..." />
+      <!-- AI Search mejorada -->
+      <div class="mb-4">
+        <AISearch placeholder="Búsqueda IA: ej. 'grupos de robótica con enfoque en visión artificial y horarios flexibles'" />
+        <p class="text-[11px] text-text-muted mt-2">Potenciado por OpenRouter · entiende intención, no solo palabras clave</p>
+      </div>
 
-      <!-- Filters -->
       <FilterBar
         metadata={{...metadata, total: filteredGrupos.length}}
         activeTipo={tipoFilter}
         activeCarrera={carreraFilter}
       />
 
-      <!-- Results Info -->
       {(tipoFilter || carreraFilter || searchQuery) && (
         <div class="flex items-center gap-2 mb-6">
-          <span class="text-text-secondary text-sm">
-            Mostrando {filteredGrupos.length} de {metadata.total} grupos
-          </span>
-          <a
-            href="/"
-            class="ml-4 px-3 py-1.5 bg-error/10 text-error text-sm rounded-lg hover:bg-error/20 transition-colors flex items-center gap-1"
-          >
-            <span class="material-symbols-outlined text-sm" data-icon="close">close</span>
+          <span class="text-text-secondary text-sm">Mostrando {filteredGrupos.length} de {metadata.total} grupos</span>
+          <a href="/" class="ml-4 px-3 py-1.5 bg-error/10 text-error text-sm rounded-lg hover:bg-error/20 transition-colors flex items-center gap-1">
+            <span class="material-symbols-outlined text-sm">close</span>
             Limpiar filtros
           </a>
         </div>
       )}
 
-      <!-- Bento Grid -->
       {filteredGrupos.length > 0 ? (
         <BentoGrid grupos={filteredGrupos} />
       ) : (
-        <div class="text-center py-20">
-          <div class="w-20 h-20 mx-auto mb-6 bg-bg-card rounded-2xl flex items-center justify-center border border-border-default">
-            <span class="material-symbols-outlined text-4xl text-text-muted" data-icon="search_off">search_off</span>
+        <div class="text-center py-16">
+          <div class="w-16 h-16 mx-auto mb-4 bg-bg-card rounded-2xl flex items-center justify-center border border-border-default">
+            <span class="material-symbols-outlined text-3xl text-text-muted">search_off</span>
           </div>
-          <h3 class="text-xl text-text-primary font-semibold mb-2">No se encontraron grupos</h3>
-          <p class="text-text-secondary max-w-md mx-auto mb-8">
-            No hay grupos que coincidan con los filtros seleccionados. Intenta con otros criterios o limpia los filtros.
-          </p>
-          <a
-            href="/"
-            class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-primary to-primary-dark text-white font-semibold rounded-xl hover:shadow-glow transition-all"
-          >
-            <span class="material-symbols-outlined" data-icon="refresh">refresh</span>
-            Ver todos los grupos
+          <h3 class="text-lg text-text-primary font-semibold mb-1">Sin resultados</h3>
+          <p class="text-text-secondary text-sm max-w-md mx-auto mb-6">Prueba con otros filtros o usa la búsqueda IA con una descripción más amplia.</p>
+          <a href="/" class="inline-flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-primary to-primary-dark text-white font-semibold rounded-xl hover:shadow-glow transition-all text-sm">
+            <span class="material-symbols-outlined text-base">refresh</span>
+            Ver todo
           </a>
         </div>
       )}
     </div>
   </main>
+
+  <script is:inline>
+    // GSAP hero stagger + reduced motion guard + lazy reveal
+    (function(){
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (typeof gsap === 'undefined' || prefersReduced) {
+        ['hero-tag','hero-title','hero-sub','hero-cta','hero-stats','intro-text'].forEach(id=>{
+          const el=document.getElementById(id);
+          if(el) el.style.opacity='1';
+        });
+        return;
+      }
+      gsap.registerPlugin(ScrollTrigger);
+      const tl = gsap.timeline({ defaults:{ ease:'power2.out' }});
+      tl.to('#hero-tag', { opacity:1, y:0, duration:0.5 }, 0)
+        .fromTo('#hero-title', { opacity:0, y:12 }, { opacity:1, y:0, duration:0.6 }, 0.1)
+        .fromTo('#hero-sub', { opacity:0, y:12 }, { opacity:1, y:0, duration:0.5 }, 0.25)
+        .fromTo('#hero-cta', { opacity:0, y:10 }, { opacity:1, y:0, duration:0.5 }, 0.35)
+        .fromTo('#hero-stats', { opacity:0, y:10 }, { opacity:1, y:0, duration:0.5 }, 0.45)
+        .fromTo('#intro-text', { opacity:0, y:10 }, { opacity:1, y:0, duration:0.5 }, 0.55);
+      gsap.utils.toArray('#catalogo').forEach(el=>{
+        gsap.from(el, { opacity:0, y:16, duration:0.6, scrollTrigger:{ trigger:el, start:'top 85%' }});
+      });
+      // hover suave para CTAs
+      document.querySelectorAll('a, button').forEach(el=>{
+        el.addEventListener('mouseenter', ()=> gsap.to(el, { scale:1.01, duration:0.15, ease:'power1.out' }));
+        el.addEventListener('mouseleave', ()=> gsap.to(el, { scale:1, duration:0.2, ease:'power1.out' }));
+      });
+    })();
+  </script>
 </Layout>

@@ -14,7 +14,7 @@ export const prerender = false;
 // This page requires SUPER_ADMIN role
 ---
 
-<Layout title="Panel de Administración | FIBOG UNAL" description="Gestión de activos de investigación y monitoreo institucional." activePage="admin">
+<Layout title="Panel de Administración | Base de Datos Ingenieria" description="Gestión de activos de investigación y monitoreo institucional." activePage="admin">
   
   <main class="min-h-screen pt-32 pb-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
     <!-- Loading / Auth check -->
@@ -650,7 +650,7 @@ export const prerender = false;
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
     link.setAttribute('href', url);
-    link.setAttribute('download', `fibog_grupos_export_${new Date().toISOString().split('T')[0]}.csv`);
+    link.setAttribute('download', `grupos_export_${new Date().toISOString().split('T')[0]}.csv`);
     link.style.visibility = 'hidden';
     document.body.appendChild(link);
     link.click();

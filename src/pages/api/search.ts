@@ -45,7 +45,7 @@ export const POST: APIRoute = async ({ request, site }) => {
         'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
         'HTTP-Referer': referer,
-        'X-OpenRouter-Title': 'Semilleros FIBOG',
+        'X-OpenRouter-Title': 'Base de Datos Ingenieria',
       },
       body: JSON.stringify({
         model,

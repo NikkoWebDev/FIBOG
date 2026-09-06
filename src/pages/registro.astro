@@ -390,18 +390,11 @@ import Layout from '../layouts/Layout.astro';
 <script>
   import { supabase } from '../lib/supabase';
 
-  // GSAP stagger entry + blobs flotando
+  // Blobs flotando - no oculta contenido, el formulario siempre es visible
   (function(){
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (typeof gsap !== 'undefined' && !reduced) {
-      const tl = gsap.timeline({ defaults:{ ease:'power2.out' }});
-      tl.from('#last-update', { opacity:0, y:8, duration:0.4 }, 0)
-        .from('#reg-header', { opacity:0, y:14, duration:0.5 }, 0.1)
-        .from('#reg-steps', { opacity:0, y:14, duration:0.5 }, 0.2)
-        .from('#reg-card', { opacity:0, y:24, scale:0.97, duration:0.6 }, 0.3);
       gsap.to('.blob', { y:-20, x:14, duration:7, yoyo:true, repeat:-1, ease:'sine.inOut', stagger:0.9 });
-    } else {
-      ['last-update','reg-header','reg-steps','reg-card'].forEach(id=>{ const el=document.getElementById(id); if(el) el.style.opacity='1'; });
     }
   })();
 

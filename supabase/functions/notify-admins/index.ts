@@ -96,10 +96,10 @@ Fecha de solicitud: ${new Date(record.fecha_solicitud).toLocaleString('es-CO')}
 
 Acciones:
 --------
-Revisar solicitud: ${Deno.env.get('SITE_URL') || 'https://fibog.vercel.app'}/admin
+Revisar solicitud: ${Deno.env.get('SITE_URL') || 'https://semilleros-fibog.vercel.app'}/admin
 
 ---
-Este es un mensaje automático del sistema FIBOG UNAL.
+Este es un mensaje automático del sistema Base de Datos Ingenieria.
     `;
 
     // Send emails using Supabase Auth API or external service
@@ -160,7 +160,7 @@ async function sendEmail(to: string, subject: string, body: string): Promise<boo
   //     'Content-Type': 'application/json',
   //   },
   //   body: JSON.stringify({
-  //     from: 'FIBOG UNAL <noreply@fibog.unal.edu.co>',
+  //     from: 'Base de Datos Ingenieria <noreply@nikko.dev>',
   //     to,
   //     subject,
   //     text: body,

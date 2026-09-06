@@ -142,7 +142,7 @@ ADMIN_EMAIL_2
 SITE_URL
 ```
 
-El dominio verificado actual es `nikko.dev`; use `FIBOG UNAL <noreply@nikko.dev>` como remitente.
+El dominio verificado actual es `nikko.dev`; use `Base de Datos Ingenieria <noreply@nikko.dev>` como remitente.
 
 #### 5.3 API Routes Serverless (para IA y notificaciones)
 

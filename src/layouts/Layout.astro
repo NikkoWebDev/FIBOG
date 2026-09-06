@@ -8,12 +8,14 @@ interface Props {
   title?: string;
   description?: string;
   activePage?: string;
+  hideFooter?: boolean;
 }
 
 const { 
-  title = "FIBOG Semilleros", 
+  title = "Base de Datos Ingenieria | Semilleros", 
   description = "Catálogo de semilleros, grupos de investigación y comunidades estudiantiles de la Facultad de Ingeniería",
-  activePage = 'inicio'
+  activePage = 'inicio',
+  hideFooter = false
 } = Astro.props;
 ---
 
@@ -64,7 +66,7 @@ const {
   </main>
 
   <!-- Footer -->
-  <UnalFooter />
+  {!hideFooter && <UnalFooter />}
   
   <!-- Accessibility panel -->
   <AccessibilityPanel />
