@@ -2,52 +2,54 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout title="Registrar Grupo | FIBOG Semilleros" description="Postula tu semillero o grupo de investigacion" activePage="registro">
+<Layout title="Registrar Grupo | Base de Datos Ingenieria" description="Postula tu semillero o grupo de investigación" activePage="registro" hideFooter={true}>
   
-  <main class="min-h-screen py-12 px-4 relative overflow-hidden">
-    <!-- Background -->
+  <main class="min-h-screen py-10 px-4 relative overflow-hidden">
     <div class="absolute inset-0 bg-gradient-mesh opacity-40"></div>
-    <div class="absolute top-0 right-0 w-[60%] h-[60%] bg-primary/5 rounded-full blur-[150px]"></div>
-    <div class="absolute bottom-0 left-0 w-[40%] h-[40%] bg-accent/5 rounded-full blur-[120px]"></div>
+    <div class="absolute top-0 right-0 w-[60%] h-[60%] bg-primary/5 rounded-full blur-[150px] will-change-transform"></div>
+    <div class="absolute bottom-0 left-0 w-[40%] h-[40%] bg-accent/5 rounded-full blur-[120px] will-change-transform"></div>
     
     <div class="relative z-10 max-w-4xl mx-auto">
+      <p class="text-[11px] tracking-widest uppercase text-text-muted/80 font-medium mb-4" id="last-update">Última actualización: 2 de septiembre de 2026</p>
       <!-- Header -->
-      <div class="text-center mb-10">
+      <div class="text-center mb-8" id="reg-header">
         <div class="inline-flex items-center gap-2 mb-4 px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
           <span class="material-symbols-outlined text-primary-light text-sm">workspace_premium</span>
-          <span class="text-primary-light text-xs font-semibold uppercase tracking-widest">Proceso de Postulacion</span>
+          <span class="text-primary-light text-xs font-semibold uppercase tracking-widest">Base de Datos Ingenieria · Registro</span>
         </div>
-        <h1 class="text-3xl sm:text-4xl md:text-display-lg font-extrabold text-text-primary mb-3">
+        <h1 class="text-3xl sm:text-4xl font-extrabold text-text-primary mb-3">
           Registrar <span class="text-gradient">Nuevo Grupo</span>
         </h1>
-        <p class="text-text-secondary text-base sm:text-lg max-w-2xl mx-auto">
-          Completa el formulario para postular tu semillero, grupo de investigacion o grupo estudiantil. 
-          La solicitud sera revisada por el administrador antes de su aprobacion.
+        <p class="text-text-secondary text-base max-w-2xl mx-auto">
+          Completa el paso 1. Los campos marcados con * son obligatorios.
+        </p>
+        <p class="text-xs text-text-muted mt-3">
+          Contacto: <a href="mailto:bgallo@unal.edu.co" class="text-primary-light hover:underline">bgallo@unal.edu.co</a> · <a href="mailto:ngutierrezga@unal.edu.co" class="text-primary-light hover:underline">ngutierrezga@unal.edu.co</a>
         </p>
       </div>
       
-      <!-- Progress Steps -->
-      <div class="flex justify-center mb-10">
+      <!-- Progress - solo paso 1 activo -->
+      <div class="flex justify-center mb-8" id="reg-steps">
         <div class="flex flex-wrap justify-center items-center gap-y-2 gap-x-3 sm:gap-x-6 max-w-full">
           <div class="flex items-center gap-2">
             <div class="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-primary-dark text-white flex items-center justify-center font-bold text-sm">1</div>
-            <span class="text-primary-light font-medium text-xs sm:text-sm">Informacion</span>
+            <span class="text-primary-light font-medium text-xs sm:text-sm">Información</span>
           </div>
           <div class="w-8 sm:w-14 h-[2px] bg-border-default"></div>
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2 opacity-60">
             <div class="w-8 h-8 rounded-full bg-bg-card border border-border-default text-text-muted flex items-center justify-center font-bold text-sm">2</div>
-            <span class="text-text-muted text-xs sm:text-sm">Revision</span>
+            <span class="text-text-muted text-xs sm:text-sm">Revisión</span>
           </div>
           <div class="w-8 sm:w-14 h-[2px] bg-border-default"></div>
-          <div class="flex items-center gap-2">
+          <div class="flex items-center gap-2 opacity-60">
             <div class="w-8 h-8 rounded-full bg-bg-card border border-border-default text-text-muted flex items-center justify-center font-bold text-sm">3</div>
-            <span class="text-text-muted text-xs sm:text-sm">Aprobacion</span>
+            <span class="text-text-muted text-xs sm:text-sm">Aprobación</span>
           </div>
         </div>
       </div>
 
       <!-- Form Card -->
-      <div class="card rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-10 relative overflow-hidden">
+      <div id="reg-card" class="card rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-10 relative overflow-hidden">
         
         <form id="registro-form" class="relative z-10 space-y-8">
           <!-- Section: Group Info -->
@@ -56,7 +58,7 @@ import Layout from '../layouts/Layout.astro';
               <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                 <span class="material-symbols-outlined text-primary-light">groups</span>
               </div>
-              <h2 class="text-lg font-bold text-text-primary">Informacion del Grupo</h2>
+              <h2 class="text-lg font-bold text-text-primary">Información del Grupo</h2>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -71,7 +73,7 @@ import Layout from '../layouts/Layout.astro';
                 >
                   <option value="">Selecciona el tipo</option>
                   <option value="Semillero">Semillero</option>
-                  <option value="Grupo de Investigacion">Grupo de Investigacion</option>
+                  <option value="Grupo de Investigación">Grupo de Investigación</option>
                   <option value="Grupo Estudiantil">Grupo Estudiantil</option>
                 </select>
               </div>
@@ -83,7 +85,7 @@ import Layout from '../layouts/Layout.astro';
                 <input 
                   type="text" 
                   name="nombre"
-                  placeholder="Ej: Semillero de Robotica"
+                  placeholder="Ej: Semillero de Robótica"
                   required
                   class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all"
                 />
@@ -91,24 +93,13 @@ import Layout from '../layouts/Layout.astro';
               
               <div class="md:col-span-2">
                 <label class="block text-text-secondary text-sm font-medium mb-2">
-                  Carrera(s) Relacionada(s)
+                  Carrera(s) Relacionada(s) *
                 </label>
                 <input 
                   type="text" 
                   name="carreras"
-                  placeholder="Ej: Ingenieria de Sistemas, Ingenieria Electronica"
-                  class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all"
-                />
-              </div>
-              
-              <div>
-                <label class="block text-text-secondary text-sm font-medium mb-2">
-                  Docente a Cargo
-                </label>
-                <input 
-                  type="text" 
-                  name="docente_a_cargo"
-                  placeholder="Nombre del docente"
+                  placeholder="Ej: Ingeniería de Sistemas, Ingeniería Electrónica"
+                  required
                   class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all"
                 />
               </div>
@@ -125,28 +116,30 @@ import Layout from '../layouts/Layout.astro';
                   class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all"
                 />
               </div>
+
+              <div>
+                <label class="block text-text-secondary text-sm font-medium mb-2">
+                  Enfoque / Línea de Investigación *
+                </label>
+                <input 
+                  type="text" 
+                  name="enfoque"
+                  placeholder="Ej: IA, Robótica, Energías Renovables"
+                  required
+                  class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all"
+                />
+              </div>
             </div>
             
             <div>
               <label class="block text-text-secondary text-sm font-medium mb-2">
-                Enfoque / Linea de Investigacion
-              </label>
-              <input 
-                type="text" 
-                name="enfoque"
-                placeholder="Ej: Inteligencia Artificial, Robotica, Energias Renovables"
-                class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all"
-              />
-            </div>
-            
-            <div>
-              <label class="block text-text-secondary text-sm font-medium mb-2">
-                Descripcion del Grupo
+                Descripción del Grupo *
               </label>
               <textarea 
                 name="descripcion"
                 rows="4"
-                placeholder="Describe los objetivos, actividades y proposito del grupo..."
+                placeholder="Describe objetivos, actividades y propósito..."
+                required
                 class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all resize-none"
               ></textarea>
             </div>
@@ -158,13 +151,13 @@ import Layout from '../layouts/Layout.astro';
               <div class="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center">
                 <span class="material-symbols-outlined text-accent-light">person</span>
               </div>
-              <h2 class="text-lg font-bold text-text-primary">Informacion del Solicitante</h2>
+              <h2 class="text-lg font-bold text-text-primary">Información del Solicitante</h2>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div class="md:col-span-2">
                 <label class="block text-text-secondary text-sm font-medium mb-2">
-                  Nombre Completo del Lider/Representante *
+                  Nombre Completo del Líder/Representante *
                 </label>
                 <input 
                   type="text" 
@@ -203,7 +196,7 @@ import Layout from '../layouts/Layout.astro';
               
               <div>
                 <label class="block text-text-secondary text-sm font-medium mb-2">
-                  Telefono
+                  Teléfono
                 </label>
                 <input 
                   type="tel" 
@@ -220,7 +213,7 @@ import Layout from '../layouts/Layout.astro';
                 <input 
                   type="text" 
                   name="carrera_solicitante"
-                  placeholder="Ej: Ingenieria de Sistemas"
+                  placeholder="Ej: Ingeniería de Sistemas"
                   class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all"
                 />
               </div>
@@ -243,7 +236,7 @@ import Layout from '../layouts/Layout.astro';
                   <option value="7">7° Semestre</option>
                   <option value="8">8° Semestre</option>
                   <option value="9">9° Semestre</option>
-                  <option value="10">10° Semestre o mas</option>
+                  <option value="10">10° Semestre o más</option>
                 </select>
               </div>
             </div>
@@ -255,16 +248,17 @@ import Layout from '../layouts/Layout.astro';
               <div class="w-10 h-10 rounded-xl bg-neon/10 flex items-center justify-center">
                 <span class="material-symbols-outlined text-neon">info</span>
               </div>
-              <h2 class="text-lg font-bold text-text-primary">Informacion Adicional</h2>
+              <h2 class="text-lg font-bold text-text-primary">Información Adicional</h2>
             </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
                 <label class="block text-text-secondary text-sm font-medium mb-2">
-                  Modalidad
+                  Modalidad *
                 </label>
                 <select 
                   name="modalidad"
+                  required
                   class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all appearance-none cursor-pointer"
                 >
                   <option value="">Selecciona</option>
@@ -276,12 +270,13 @@ import Layout from '../layouts/Layout.astro';
               
               <div>
                 <label class="block text-text-secondary text-sm font-medium mb-2">
-                  Horarios Habituales
+                  Horarios Habituales *
                 </label>
                 <input 
                   type="text" 
                   name="horarios_habituales"
                   placeholder="Ej: Viernes 2:00pm - 6:00pm"
+                  required
                   class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all"
                 />
               </div>
@@ -289,24 +284,26 @@ import Layout from '../layouts/Layout.astro';
             
             <div>
               <label class="block text-text-secondary text-sm font-medium mb-2">
-                Actividades Principales
+                Actividades Principales *
               </label>
               <textarea 
                 name="actividades"
                 rows="3"
                 placeholder="Describe las actividades que realiza el grupo..."
+                required
                 class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all resize-none"
               ></textarea>
             </div>
             
             <div>
               <label class="block text-text-secondary text-sm font-medium mb-2">
-                Requisitos para Ingresar
+                Requisitos para Ingresar *
               </label>
               <textarea 
                 name="requisitos_ingreso"
                 rows="2"
-                placeholder="Que requisitos deben cumplir los nuevos miembros?"
+                placeholder="Qué requisitos deben cumplir los nuevos miembros?"
+                required
                 class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all resize-none"
               ></textarea>
             </div>
@@ -318,7 +315,7 @@ import Layout from '../layouts/Layout.astro';
               <input 
                 type="text" 
                 name="redes_sociales"
-                placeholder="Instagram, Twitter, pagina web..."
+                placeholder="Instagram, Twitter, página web..."
                 class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all"
               />
             </div>
@@ -330,7 +327,7 @@ import Layout from '../layouts/Layout.astro';
               <textarea 
                 name="comentarios_adicionales"
                 rows="2"
-                placeholder="Cualquier informacion adicional que consideres relevante..."
+                placeholder="Cualquier información adicional..."
                 class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all resize-none"
               ></textarea>
             </div>
@@ -346,24 +343,21 @@ import Layout from '../layouts/Layout.astro';
                 accept="image/png, image/jpeg, image/webp"
                 class="w-full px-4 py-3 bg-bg-input border border-border-default rounded-xl text-text-muted file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary/10 file:text-primary-light file:text-sm file:font-medium hover:file:bg-primary/20 transition-all cursor-pointer"
               />
-              <p class="text-text-muted text-xs mt-2">PNG, JPG o WebP. Maximo 5 MB.</p>
-              <img id="imagen-preview" src="" alt="" class="hidden mt-3 max-h-48 rounded-xl border border-border-subtle" />
+              <p class="text-text-muted text-xs mt-2">PNG, JPG o WebP. Máximo 5 MB. Se carga con lazy preview.</p>
+              <img id="imagen-preview" src="" alt="" loading="lazy" class="hidden mt-3 max-h-48 rounded-xl border border-border-subtle" />
             </div>
           </div>
           
-          <!-- Error message -->
           <div id="error-message" class="hidden p-4 rounded-xl bg-error/10 border border-error/30 text-error text-sm text-center">
           </div>
           
-          <!-- Success message -->
           <div id="success-message" class="hidden p-4 rounded-xl bg-success/10 border border-success/30 text-success text-sm text-center">
           </div>
           
-          <!-- Actions -->
           <div class="flex flex-col sm:flex-row gap-4 pt-6 border-t border-border-subtle">
             <a 
               href="/"
-              class="px-6 py-3.5 rounded-xl border border-border-default text-text-secondary hover:bg-bg-hover transition-all flex items-center justify-center gap-2"
+              class="px-6 py-3.5 rounded-xl border border-border-default text-text-secondary hover:bg-bg-hover transition-all flex items-center justify-center gap-2 hover:-translate-y-0.5"
             >
               <span class="material-symbols-outlined">arrow_back</span>
               Cancelar
@@ -372,7 +366,7 @@ import Layout from '../layouts/Layout.astro';
             <button 
               type="submit"
               id="submit-btn"
-              class="flex-1 py-3.5 px-6 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white font-bold hover:shadow-glow transition-all flex items-center justify-center gap-2"
+              class="flex-1 py-3.5 px-6 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white font-bold hover:shadow-glow hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2"
             >
               <span class="material-symbols-outlined">send</span>
               <span id="submit-text">Enviar Solicitud</span>
@@ -382,7 +376,6 @@ import Layout from '../layouts/Layout.astro';
         </form>
       </div>
       
-      <!-- Back link -->
       <div class="mt-8 text-center">
         <a href="/" class="text-text-muted text-sm hover:text-primary-light transition-colors inline-flex items-center gap-1">
           <span class="material-symbols-outlined text-sm">arrow_back</span>
@@ -396,6 +389,16 @@ import Layout from '../layouts/Layout.astro';
 <script>
   import { supabase } from '../lib/supabase';
 
+  // GSAP stagger entry
+  (function(){
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (typeof gsap !== 'undefined' && !reduced) {
+      gsap.from(['#last-update','#reg-header','#reg-steps','#reg-card'], { opacity:0, y:14, duration:0.5, stagger:0.08, ease:'power2.out' });
+    } else {
+      ['last-update','reg-header','reg-steps','reg-card'].forEach(id=>{ const el=document.getElementById(id); if(el) el.style.opacity='1'; });
+    }
+  })();
+
   const form = document.getElementById('registro-form');
   const errorMessage = document.getElementById('error-message');
   const successMessage = document.getElementById('success-message');
@@ -406,12 +409,13 @@ import Layout from '../layouts/Layout.astro';
   const imagenInput = document.getElementById('imagen_grupo') as HTMLInputElement;
   const imagenPreview = document.getElementById('imagen-preview') as HTMLImageElement;
 
-  // Preview local de la imagen elegida
   imagenInput?.addEventListener('change', () => {
     const file = imagenInput.files?.[0];
     if (!file || !imagenPreview) return;
     imagenPreview.src = URL.createObjectURL(file);
     imagenPreview.classList.remove('hidden');
+    // lazy already, fade in
+    if (typeof gsap !== 'undefined') gsap.fromTo(imagenPreview, {opacity:0, scale:0.98}, {opacity:1, scale:1, duration:0.4});
   });
 
   const isUnalEmail = (email: string): boolean =>
@@ -424,13 +428,27 @@ import Layout from '../layouts/Layout.astro';
     const data: Record<string, any> = {};
 
     formData.forEach((value, key) => {
-      if (key === 'imagen_grupo') return; // la imagen se sube aparte al Storage
+      if (key === 'imagen_grupo') return;
       if (key === 'carreras') {
         data[key] = (value as string).split(',').map(c => c.trim()).filter(c => c);
       } else {
         data[key] = value || null;
       }
     });
+
+    // validación requerida primer paso
+    const required = ['modalidad','horarios_habituales','actividades','requisitos_ingreso','enfoque','descripcion','carreras','nombre_solicitante','email_solicitante'];
+    for (const f of required) {
+      const v = data[f];
+      const empty = v === null || v === '' || (Array.isArray(v) && v.length===0);
+      if (empty) {
+        errorMessage!.textContent = `Falta campo obligatorio: ${f}`;
+        errorMessage?.classList.remove('hidden');
+        successMessage?.classList.add('hidden');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+    }
 
     const emailSolicitante = String(data.email_solicitante || '');
     const emailContacto = String(data.email_contacto || '');
@@ -450,10 +468,9 @@ import Layout from '../layouts/Layout.astro';
     successMessage?.classList.add('hidden');
 
     try {
-      // Subir imagen del grupo a Supabase Storage si el usuario eligio una
       const file = imagenInput?.files?.[0];
       if (file) {
-        if (file.size > 5 * 1024 * 1024) throw new Error('La imagen supera el maximo de 5 MB.');
+        if (file.size > 5 * 1024 * 1024) throw new Error('La imagen supera el máximo de 5 MB.');
         const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg';
         const slug = String(data.nombre || 'grupo').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
         const path = `${slug}-${Date.now()}.${ext}`;
@@ -478,8 +495,9 @@ import Layout from '../layouts/Layout.astro';
       const emailWarning = result.warning || (result.message?.includes('no enviada') ? result.message : '');
       successMessage!.textContent = emailWarning
         ? `Solicitud guardada. ${emailWarning}`
-        : 'Solicitud enviada exitosamente! Sera notificado cuando sea revisada.';
+        : 'Solicitud enviada exitosamente! Será notificado cuando sea revisada.';
       successMessage?.classList.remove('hidden');
+      if (typeof gsap !== 'undefined') gsap.fromTo(successMessage, {opacity:0, y:8}, {opacity:1, y:0, duration:0.4});
 
       (form as HTMLFormElement).reset();
       window.scrollTo({ top: 0, behavior: 'smooth' });
