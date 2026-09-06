@@ -6,11 +6,11 @@ import Layout from '../layouts/Layout.astro';
   
   <main class="min-h-screen py-10 px-4 relative overflow-hidden">
     <div class="absolute inset-0 bg-gradient-mesh opacity-40"></div>
-    <div class="absolute top-0 right-0 w-[60%] h-[60%] bg-primary/5 rounded-full blur-[150px] will-change-transform"></div>
-    <div class="absolute bottom-0 left-0 w-[40%] h-[40%] bg-accent/5 rounded-full blur-[120px] will-change-transform"></div>
+    <div class="absolute top-0 right-0 w-[60%] h-[60%] bg-primary/5 rounded-full blur-[150px] will-change-transform blob"></div>
+    <div class="absolute bottom-0 left-0 w-[40%] h-[40%] bg-accent/5 rounded-full blur-[120px] will-change-transform blob"></div>
     
     <div class="relative z-10 max-w-4xl mx-auto">
-      <p class="text-[11px] tracking-widest uppercase text-text-muted/80 font-medium mb-4" id="last-update">Última actualización: 2 de septiembre de 2026</p>
+      <p class="text-[11px] tracking-widest uppercase text-text-secondary/80 font-medium mb-4" id="last-update">Última actualización: 2 de septiembre de 2026</p>
       <!-- Header -->
       <div class="text-center mb-8" id="reg-header">
         <div class="inline-flex items-center gap-2 mb-4 px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
@@ -23,7 +23,7 @@ import Layout from '../layouts/Layout.astro';
         <p class="text-text-secondary text-base max-w-2xl mx-auto">
           Completa el paso 1. Los campos marcados con * son obligatorios.
         </p>
-        <p class="text-xs text-text-muted mt-3">
+        <p class="text-xs text-text-secondary mt-3">
           Contacto: <a href="mailto:bgallo@unal.edu.co" class="text-primary-light hover:underline">bgallo@unal.edu.co</a> · <a href="mailto:ngutierrezga@unal.edu.co" class="text-primary-light hover:underline">ngutierrezga@unal.edu.co</a>
         </p>
       </div>
@@ -37,19 +37,20 @@ import Layout from '../layouts/Layout.astro';
           </div>
           <div class="w-8 sm:w-14 h-[2px] bg-border-default"></div>
           <div class="flex items-center gap-2 opacity-60">
-            <div class="w-8 h-8 rounded-full bg-bg-card border border-border-default text-text-muted flex items-center justify-center font-bold text-sm">2</div>
-            <span class="text-text-muted text-xs sm:text-sm">Revisión</span>
+            <div class="w-8 h-8 rounded-full bg-bg-card border border-[#3a3a52] text-text-secondary flex items-center justify-center font-bold text-sm">2</div>
+            <span class="text-text-secondary text-xs sm:text-sm">Revisión</span>
           </div>
           <div class="w-8 sm:w-14 h-[2px] bg-border-default"></div>
           <div class="flex items-center gap-2 opacity-60">
-            <div class="w-8 h-8 rounded-full bg-bg-card border border-border-default text-text-muted flex items-center justify-center font-bold text-sm">3</div>
-            <span class="text-text-muted text-xs sm:text-sm">Aprobación</span>
+            <div class="w-8 h-8 rounded-full bg-bg-card border border-[#3a3a52] text-text-secondary flex items-center justify-center font-bold text-sm">3</div>
+            <span class="text-text-secondary text-xs sm:text-sm">Aprobación</span>
           </div>
         </div>
       </div>
 
       <!-- Form Card -->
-      <div id="reg-card" class="card rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-10 relative overflow-hidden">
+      <div id="reg-card" class="card rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-10 relative overflow-hidden shadow-[0_25px_80px_-20px_rgba(0,0,0,0.7)]">
+        <div class="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-primary via-accent to-neon"></div>
         
         <form id="registro-form" class="relative z-10 space-y-8">
           <!-- Section: Group Info -->
@@ -63,13 +64,13 @@ import Layout from '../layouts/Layout.astro';
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
-                <label class="block text-text-secondary text-sm font-medium mb-2">
+                <label class="block text-text-primary text-sm font-semibold mb-2">
                   Tipo de Grupo *
                 </label>
                 <select 
                   name="tipo" 
                   required
-                  class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all appearance-none cursor-pointer"
+                  class="w-full px-4 py-3.5 bg-bg-hover border border-[#3a3a52] rounded-xl text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all appearance-none cursor-pointer"
                 >
                   <option value="">Selecciona el tipo</option>
                   <option value="Semillero">Semillero</option>
@@ -79,7 +80,7 @@ import Layout from '../layouts/Layout.astro';
               </div>
               
               <div>
-                <label class="block text-text-secondary text-sm font-medium mb-2">
+                <label class="block text-text-primary text-sm font-semibold mb-2">
                   Nombre del Grupo *
                 </label>
                 <input 
@@ -87,12 +88,12 @@ import Layout from '../layouts/Layout.astro';
                   name="nombre"
                   placeholder="Ej: Semillero de Robótica"
                   required
-                  class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-hover border border-[#3a3a52] rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
                 />
               </div>
               
               <div class="md:col-span-2">
-                <label class="block text-text-secondary text-sm font-medium mb-2">
+                <label class="block text-text-primary text-sm font-semibold mb-2">
                   Carrera(s) Relacionada(s) *
                 </label>
                 <input 
@@ -100,12 +101,12 @@ import Layout from '../layouts/Layout.astro';
                   name="carreras"
                   placeholder="Ej: Ingeniería de Sistemas, Ingeniería Electrónica"
                   required
-                  class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-hover border border-[#3a3a52] rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
                 />
               </div>
               
               <div>
-                <label class="block text-text-secondary text-sm font-medium mb-2">
+                <label class="block text-text-primary text-sm font-semibold mb-2">
                   Email de Contacto del Grupo *
                 </label>
                 <input 
@@ -113,12 +114,12 @@ import Layout from '../layouts/Layout.astro';
                   name="email_contacto"
                   placeholder="grupo@unal.edu.co"
                   required
-                  class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-hover border border-[#3a3a52] rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
                 />
               </div>
 
               <div>
-                <label class="block text-text-secondary text-sm font-medium mb-2">
+                <label class="block text-text-primary text-sm font-semibold mb-2">
                   Enfoque / Línea de Investigación *
                 </label>
                 <input 
@@ -126,13 +127,13 @@ import Layout from '../layouts/Layout.astro';
                   name="enfoque"
                   placeholder="Ej: IA, Robótica, Energías Renovables"
                   required
-                  class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-hover border border-[#3a3a52] rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
                 />
               </div>
             </div>
             
             <div>
-              <label class="block text-text-secondary text-sm font-medium mb-2">
+              <label class="block text-text-primary text-sm font-semibold mb-2">
                 Descripción del Grupo *
               </label>
               <textarea 
@@ -140,7 +141,7 @@ import Layout from '../layouts/Layout.astro';
                 rows="4"
                 placeholder="Describe objetivos, actividades y propósito..."
                 required
-                class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all resize-none"
+                class="w-full px-4 py-3.5 bg-bg-hover border border-[#3a3a52] rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all resize-none"
               ></textarea>
             </div>
           </div>
@@ -156,7 +157,7 @@ import Layout from '../layouts/Layout.astro';
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div class="md:col-span-2">
-                <label class="block text-text-secondary text-sm font-medium mb-2">
+                <label class="block text-text-primary text-sm font-semibold mb-2">
                   Nombre Completo del Líder/Representante *
                 </label>
                 <input 
@@ -164,12 +165,12 @@ import Layout from '../layouts/Layout.astro';
                   name="lider_o_representante"
                   placeholder="Nombre completo"
                   required
-                  class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-hover border border-[#3a3a52] rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
                 />
               </div>
               
               <div>
-                <label class="block text-text-secondary text-sm font-medium mb-2">
+                <label class="block text-text-primary text-sm font-semibold mb-2">
                   Nombre del Solicitante *
                 </label>
                 <input 
@@ -177,12 +178,12 @@ import Layout from '../layouts/Layout.astro';
                   name="nombre_solicitante"
                   placeholder="Tu nombre completo"
                   required
-                  class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-hover border border-[#3a3a52] rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
                 />
               </div>
               
               <div>
-                <label class="block text-text-secondary text-sm font-medium mb-2">
+                <label class="block text-text-primary text-sm font-semibold mb-2">
                   Email del Solicitante *
                 </label>
                 <input 
@@ -190,41 +191,41 @@ import Layout from '../layouts/Layout.astro';
                   name="email_solicitante"
                   placeholder="tuemail@unal.edu.co"
                   required
-                  class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-hover border border-[#3a3a52] rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
                 />
               </div>
               
               <div>
-                <label class="block text-text-secondary text-sm font-medium mb-2">
+                <label class="block text-text-primary text-sm font-semibold mb-2">
                   Teléfono
                 </label>
                 <input 
                   type="tel" 
                   name="telefono_solicitante"
                   placeholder="300 123 4567"
-                  class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-hover border border-[#3a3a52] rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
                 />
               </div>
               
               <div>
-                <label class="block text-text-secondary text-sm font-medium mb-2">
+                <label class="block text-text-primary text-sm font-semibold mb-2">
                   Carrera
                 </label>
                 <input 
                   type="text" 
                   name="carrera_solicitante"
                   placeholder="Ej: Ingeniería de Sistemas"
-                  class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-hover border border-[#3a3a52] rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
                 />
               </div>
               
               <div>
-                <label class="block text-text-secondary text-sm font-medium mb-2">
+                <label class="block text-text-primary text-sm font-semibold mb-2">
                   Semestre
                 </label>
                 <select 
                   name="semestre_solicitante"
-                  class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all appearance-none cursor-pointer"
+                  class="w-full px-4 py-3.5 bg-bg-hover border border-[#3a3a52] rounded-xl text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all appearance-none cursor-pointer"
                 >
                   <option value="">Selecciona</option>
                   <option value="1">1° Semestre</option>
@@ -253,13 +254,13 @@ import Layout from '../layouts/Layout.astro';
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
-                <label class="block text-text-secondary text-sm font-medium mb-2">
+                <label class="block text-text-primary text-sm font-semibold mb-2">
                   Modalidad *
                 </label>
                 <select 
                   name="modalidad"
                   required
-                  class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all appearance-none cursor-pointer"
+                  class="w-full px-4 py-3.5 bg-bg-hover border border-[#3a3a52] rounded-xl text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all appearance-none cursor-pointer"
                 >
                   <option value="">Selecciona</option>
                   <option value="Presencial">Presencial</option>
@@ -269,7 +270,7 @@ import Layout from '../layouts/Layout.astro';
               </div>
               
               <div>
-                <label class="block text-text-secondary text-sm font-medium mb-2">
+                <label class="block text-text-primary text-sm font-semibold mb-2">
                   Horarios Habituales *
                 </label>
                 <input 
@@ -277,13 +278,13 @@ import Layout from '../layouts/Layout.astro';
                   name="horarios_habituales"
                   placeholder="Ej: Viernes 2:00pm - 6:00pm"
                   required
-                  class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-hover border border-[#3a3a52] rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
                 />
               </div>
             </div>
             
             <div>
-              <label class="block text-text-secondary text-sm font-medium mb-2">
+              <label class="block text-text-primary text-sm font-semibold mb-2">
                 Actividades Principales *
               </label>
               <textarea 
@@ -291,12 +292,12 @@ import Layout from '../layouts/Layout.astro';
                 rows="3"
                 placeholder="Describe las actividades que realiza el grupo..."
                 required
-                class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all resize-none"
+                class="w-full px-4 py-3.5 bg-bg-hover border border-[#3a3a52] rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all resize-none"
               ></textarea>
             </div>
             
             <div>
-              <label class="block text-text-secondary text-sm font-medium mb-2">
+              <label class="block text-text-primary text-sm font-semibold mb-2">
                 Requisitos para Ingresar *
               </label>
               <textarea 
@@ -304,36 +305,36 @@ import Layout from '../layouts/Layout.astro';
                 rows="2"
                 placeholder="Qué requisitos deben cumplir los nuevos miembros?"
                 required
-                class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all resize-none"
+                class="w-full px-4 py-3.5 bg-bg-hover border border-[#3a3a52] rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all resize-none"
               ></textarea>
             </div>
             
             <div>
-              <label class="block text-text-secondary text-sm font-medium mb-2">
+              <label class="block text-text-primary text-sm font-semibold mb-2">
                 Redes Sociales / Sitio Web
               </label>
               <input 
                 type="text" 
                 name="redes_sociales"
                 placeholder="Instagram, Twitter, página web..."
-                class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all"
+                class="w-full px-4 py-3.5 bg-bg-hover border border-[#3a3a52] rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
               />
             </div>
             
             <div>
-              <label class="block text-text-secondary text-sm font-medium mb-2">
+              <label class="block text-text-primary text-sm font-semibold mb-2">
                 Comentarios Adicionales
               </label>
               <textarea 
                 name="comentarios_adicionales"
                 rows="2"
                 placeholder="Cualquier información adicional..."
-                class="w-full px-4 py-3.5 bg-bg-input border border-border-default rounded-xl text-text-primary placeholder-text-muted/50 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all resize-none"
+                class="w-full px-4 py-3.5 bg-bg-hover border border-[#3a3a52] rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all resize-none"
               ></textarea>
             </div>
 
             <div>
-              <label class="block text-text-secondary text-sm font-medium mb-2">
+              <label class="block text-text-primary text-sm font-semibold mb-2">
                 Imagen del Grupo (opcional)
               </label>
               <input
@@ -341,9 +342,9 @@ import Layout from '../layouts/Layout.astro';
                 id="imagen_grupo"
                 name="imagen_grupo"
                 accept="image/png, image/jpeg, image/webp"
-                class="w-full px-4 py-3 bg-bg-input border border-border-default rounded-xl text-text-muted file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary/10 file:text-primary-light file:text-sm file:font-medium hover:file:bg-primary/20 transition-all cursor-pointer"
+                class="w-full px-4 py-3 bg-bg-hover border border-[#3a3a52] rounded-xl text-text-secondary file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary/10 file:text-primary-light file:text-sm file:font-medium hover:file:bg-primary/20 transition-all cursor-pointer"
               />
-              <p class="text-text-muted text-xs mt-2">PNG, JPG o WebP. Máximo 5 MB. Se carga con lazy preview.</p>
+              <p class="text-text-secondary text-xs mt-2">PNG, JPG o WebP. Máximo 5 MB. Se carga con lazy preview.</p>
               <img id="imagen-preview" src="" alt="" loading="lazy" class="hidden mt-3 max-h-48 rounded-xl border border-border-subtle" />
             </div>
           </div>
@@ -357,7 +358,7 @@ import Layout from '../layouts/Layout.astro';
           <div class="flex flex-col sm:flex-row gap-4 pt-6 border-t border-border-subtle">
             <a 
               href="/"
-              class="px-6 py-3.5 rounded-xl border border-border-default text-text-secondary hover:bg-bg-hover transition-all flex items-center justify-center gap-2 hover:-translate-y-0.5"
+              class="px-6 py-3.5 rounded-xl border border-[#3a3a52] text-text-secondary hover:bg-bg-hover transition-all flex items-center justify-center gap-2 hover:-translate-y-0.5"
             >
               <span class="material-symbols-outlined">arrow_back</span>
               Cancelar
@@ -377,7 +378,7 @@ import Layout from '../layouts/Layout.astro';
       </div>
       
       <div class="mt-8 text-center">
-        <a href="/" class="text-text-muted text-sm hover:text-primary-light transition-colors inline-flex items-center gap-1">
+        <a href="/" class="text-text-secondary text-sm hover:text-primary-light transition-colors inline-flex items-center gap-1">
           <span class="material-symbols-outlined text-sm">arrow_back</span>
           Volver al explorador
         </a>
@@ -389,11 +390,16 @@ import Layout from '../layouts/Layout.astro';
 <script>
   import { supabase } from '../lib/supabase';
 
-  // GSAP stagger entry
+  // GSAP stagger entry + blobs flotando
   (function(){
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (typeof gsap !== 'undefined' && !reduced) {
-      gsap.from(['#last-update','#reg-header','#reg-steps','#reg-card'], { opacity:0, y:14, duration:0.5, stagger:0.08, ease:'power2.out' });
+      const tl = gsap.timeline({ defaults:{ ease:'power2.out' }});
+      tl.from('#last-update', { opacity:0, y:8, duration:0.4 }, 0)
+        .from('#reg-header', { opacity:0, y:14, duration:0.5 }, 0.1)
+        .from('#reg-steps', { opacity:0, y:14, duration:0.5 }, 0.2)
+        .from('#reg-card', { opacity:0, y:24, scale:0.97, duration:0.6 }, 0.3);
+      gsap.to('.blob', { y:-20, x:14, duration:7, yoyo:true, repeat:-1, ease:'sine.inOut', stagger:0.9 });
     } else {
       ['last-update','reg-header','reg-steps','reg-card'].forEach(id=>{ const el=document.getElementById(id); if(el) el.style.opacity='1'; });
     }
@@ -421,6 +427,16 @@ import Layout from '../layouts/Layout.astro';
   const isUnalEmail = (email: string): boolean =>
     email.trim().toLowerCase().endsWith('@unal.edu.co');
 
+  const showError = (msg: string) => {
+    errorMessage!.textContent = msg;
+    errorMessage?.classList.remove('hidden');
+    successMessage?.classList.add('hidden');
+    if (typeof gsap !== 'undefined') {
+      gsap.fromTo(errorMessage, {opacity:0, x:-8}, {opacity:1, x:0, duration:0.35, ease:'power2.out'});
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -442,10 +458,7 @@ import Layout from '../layouts/Layout.astro';
       const v = data[f];
       const empty = v === null || v === '' || (Array.isArray(v) && v.length===0);
       if (empty) {
-        errorMessage!.textContent = `Falta campo obligatorio: ${f}`;
-        errorMessage?.classList.remove('hidden');
-        successMessage?.classList.add('hidden');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        showError(`Falta campo obligatorio: ${f}`);
         return;
       }
     }
@@ -454,10 +467,7 @@ import Layout from '../layouts/Layout.astro';
     const emailContacto = String(data.email_contacto || '');
 
     if (!isUnalEmail(emailSolicitante) || !isUnalEmail(emailContacto)) {
-      errorMessage!.textContent = 'El email del solicitante y el email de contacto deben ser cuentas institucionales @unal.edu.co';
-      errorMessage?.classList.remove('hidden');
-      successMessage?.classList.add('hidden');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      showError('El email del solicitante y el email de contacto deben ser cuentas institucionales @unal.edu.co');
       return;
     }
 
@@ -504,8 +514,7 @@ import Layout from '../layouts/Layout.astro';
 
     } catch (error: any) {
       console.error('Error:', error);
-      errorMessage!.textContent = error.message || 'Error al enviar la solicitud. Intenta de nuevo.';
-      errorMessage?.classList.remove('hidden');
+      showError(error.message || 'Error al enviar la solicitud. Intenta de nuevo.');
     } finally {
       submitBtn?.removeAttribute('disabled');
       submitText?.classList.remove('hidden');
@@ -516,9 +525,13 @@ import Layout from '../layouts/Layout.astro';
 
 <style>
   select {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='%235a5a72'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='%239494a8'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 12px center;
     padding-right: 40px;
+  }
+  #reg-card.card {
+    background: linear-gradient(180deg, #20203a 0%, #1a1a26 100%);
+    border-color: #3a3a52;
   }
 </style>
