@@ -39,7 +39,7 @@ const ultimaTexto = (metadata as any).ultima_actualizacion_texto || '2 de septie
 
       <div class="relative z-10 max-w-7xl mx-auto px-6 py-14 sm:py-20">
         <div class="max-w-3xl">
-          <div id="hero-tag" class="inline-flex items-center gap-2 mb-6 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20">
+          <div id="hero-tag" class="inline-flex items-center gap-2 mb-6 px-4 py-1.5 rounded-full glass">
             <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
             <span class="text-primary-light text-xs font-semibold uppercase tracking-widest">Base de Datos Ingenieria · Facultad de Ingeniería</span>
           </div>
@@ -50,9 +50,25 @@ const ultimaTexto = (metadata as any).ultima_actualizacion_texto || '2 de septie
             <span class="block text-text-primary text-3xl sm:text-4xl mt-2 font-bold">Semilleros y grupos</span>
           </h1>
 
-          <p id="hero-sub" class="text-text-secondary text-lg max-w-2xl mb-8 leading-relaxed">
-            Explora y conecta con el ecosistema de investigación estudiantil. Datos curados por y para estudiantes.
+           <p class="text-text-secondary leading-relaxed mt-4 text-sm">
+            <em>Este es un proyecto creado por y para estudiantes.</em> ¿Tienes dudas o comentarios? Contáctanos en: <a href="mailto:bgallo@unal.edu.co" class="text-primary-light hover:underline font-medium">bgallo@unal.edu.co</a>, <a href="mailto:ngutierrezga@unal.edu.co" class="text-primary-light hover:underline font-medium">ngutierrezga@unal.edu.co</a>.
+            <em>   </em>
           </p>
+
+          <p class="text-text-primary leading-relaxed">
+            Encuentra en un solo lugar información sobre los semilleros, grupos de investigación y comunidades estudiantiles de la Facultad de Ingeniería.
+          </p>
+          <p class="text-text-secondary leading-relaxed mt-4">
+            Explora cada iniciativa para conocer su enfoque, objetivos, áreas de trabajo y datos de contacto.
+          </p>
+          <p class="text-text-secondary leading-relaxed mt-4 text-sm">
+                      </p>
+
+          <section class="max-w-7xl mx-auto px-6">
+      <div class="max-w-3xl mx-auto">
+        
+      </div>
+    </section>
 
           <div id="hero-cta" class="flex flex-col sm:flex-row gap-4">
             <a href="#catalogo" class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-primary to-primary-dark text-white font-semibold px-7 py-3.5 rounded-xl hover:shadow-glow hover:-translate-y-0.5 active:translate-y-0 transition-all text-sm">
@@ -65,41 +81,20 @@ const ultimaTexto = (metadata as any).ultima_actualizacion_texto || '2 de septie
             </a>
           </div>
 
-          <div id="hero-stats" class="flex flex-wrap gap-6 sm:gap-10 mt-10">
-            <div class="text-center min-w-[5rem]">
+          <div id="hero-stats" class="flex flex-wrap gap-4 sm:gap-6 mt-10">
+            <div class="glass rounded-2xl px-5 py-4 text-center min-w-[6.5rem]">
               <span class="block text-primary-light text-3xl font-bold">{metadata.por_tipo['Semillero'] || 0}</span>
               <span class="text-text-muted text-xs font-medium">Semilleros</span>
             </div>
-            <div class="text-center min-w-[5rem]">
+            <div class="glass rounded-2xl px-5 py-4 text-center min-w-[6.5rem]">
               <span class="block text-accent-light text-3xl font-bold">{metadata.por_tipo['Grupo de Investigación'] || 0}</span>
               <span class="text-text-muted text-xs font-medium">Grupos de Investigación</span>
             </div>
-            <div class="text-center min-w-[5rem]">
+            <div class="glass rounded-2xl px-5 py-4 text-center min-w-[6.5rem]">
               <span class="block text-neon text-3xl font-bold">{metadata.por_tipo['Grupo Estudiantil'] || 0}</span>
               <span class="text-text-muted text-xs font-medium">Grupos Estudiantiles</span>
             </div>
           </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Emails arriba + texto obligatorio -->
-    <section class="max-w-7xl mx-auto px-6">
-      <div class="max-w-3xl mx-auto">
-        <p class="text-xs text-text-muted mb-6 text-center sm:text-left">
-          Contacto directo: <a href="mailto:bgallo@unal.edu.co" class="text-primary-light hover:underline">bgallo@unal.edu.co</a> · <a href="mailto:ngutierrezga@unal.edu.co" class="text-primary-light hover:underline">ngutierrezga@unal.edu.co</a>
-        </p>
-
-        <div id="intro-text" class="card rounded-2xl p-6 sm:p-8 border border-border-default/50">
-          <p class="text-text-primary leading-relaxed">
-            Encuentra en un solo lugar información sobre los semilleros, grupos de investigación y comunidades estudiantiles de la Facultad de Ingeniería.
-          </p>
-          <p class="text-text-secondary leading-relaxed mt-4">
-            Explora cada iniciativa para conocer su enfoque, objetivos, áreas de trabajo y datos de contacto.
-          </p>
-          <p class="text-text-secondary leading-relaxed mt-4 text-sm">
-            <em>Este es un proyecto creado por y para estudiantes.</em> ¿Tienes dudas o comentarios? Contáctanos en: <a href="mailto:bgallo@unal.edu.co" class="text-primary-light hover:underline font-medium">bgallo@unal.edu.co</a>, <a href="mailto:ngutierrezga@unal.edu.co" class="text-primary-light hover:underline font-medium">ngutierrezga@unal.edu.co</a>.
-          </p>
         </div>
       </div>
     </section>

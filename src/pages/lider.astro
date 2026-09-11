@@ -8,27 +8,27 @@ export const prerender = false;
   
   <main class="min-h-screen py-8 px-4 relative overflow-hidden">
     <!-- Background -->
-    <div class="absolute inset-0 bg-[#f5f5f5]"></div>
+    <div class="absolute inset-0 bg-bg"></div>
     <div class="absolute inset-0">
-      <div class="absolute top-0 right-0 w-[40%] h-[40%] bg-[rgba(148,180,59,0.1)] rounded-full blur-[150px]"></div>
+      <div class="absolute top-0 right-0 w-[40%] h-[40%] bg-primary/10 rounded-full blur-[150px]"></div>
       <div class="absolute bottom-0 left-0 w-[30%] h-[30%] bg-tertiary/10 rounded-full blur-[120px]"></div>
     </div>
 
     <div class="relative z-10 max-w-4xl mx-auto">
       <!-- Auth loading -->
       <div id="lider-auth-loading" class="flex flex-col items-center justify-center min-h-[60vh]">
-        <div class="w-16 h-16 rounded-full bg-neutral-95 flex items-center justify-center mb-4">
-          <span class="material-symbols-outlined text-[#94b43b] text-2xl animate-spin">progress_activity</span>
+        <div class="w-16 h-16 rounded-full bg-bg-hover flex items-center justify-center mb-4">
+          <span class="material-symbols-outlined text-primary-light text-2xl animate-spin">progress_activity</span>
         </div>
-        <p class="text-neutral-60 text-center">Verificando acceso...</p>
+        <p class="text-text-secondary text-center">Verificando acceso...</p>
       </div>
 
       <!-- Access denied -->
       <div id="lider-access-denied" class="hidden flex flex-col items-center justify-center min-h-[60vh] text-center">
         <span class="material-symbols-outlined text-error text-5xl mb-4">gpp_bad</span>
-        <h2 class="text-2xl font-semibold text-neutral-40 mb-2">Acceso restringido</h2>
-        <p class="text-neutral-60 max-w-md mb-6">No tienes permisos para ver este panel. Si crees que es un error, contacta al administrador.</p>
-        <a href="/" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#94b43b] text-white font-bold hover:opacity-90 transition-opacity focus-visible:outline-2 focus-visible:outline-[#94b43b] focus-visible:outline-offset-2">
+        <h2 class="text-2xl font-semibold text-text-primary mb-2">Acceso restringido</h2>
+        <p class="text-text-secondary max-w-md mb-6">No tienes permisos para ver este panel. Si crees que es un error, contacta al administrador.</p>
+        <a href="/" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-white font-bold hover:opacity-90 transition-opacity focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2">
           Volver al inicio
         </a>
       </div>
@@ -39,22 +39,22 @@ export const prerender = false;
       <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
           <div class="flex items-center gap-2 mb-2">
-            <span class="h-[1px] w-8 bg-[#94b43b]"></span>
-            <span class="font-label-mono text-label-mono text-[#94b43b] uppercase tracking-widest">Panel de Gestión</span>
+            <span class="h-[1px] w-8 bg-primary"></span>
+            <span class="font-label-mono text-label-mono text-primary-light uppercase tracking-widest">Panel de Gestión</span>
           </div>
-          <h1 class="font-display-lg text-display-lg-mobile md:text-headline-md text-neutral-40">
-            Mi <span class="text-[#94b43b]">Grupo</span>
+          <h1 class="font-display-lg text-display-lg-mobile md:text-headline-md text-text-primary">
+            Mi <span class="text-primary-light">Grupo</span>
           </h1>
         </div>
         
         <div class="flex items-center gap-3">
           <div class="card rounded-full px-4 py-2 flex items-center gap-2">
-            <span class="material-symbols-outlined text-[#94b43b] text-sm">shield_person</span>
-            <span class="text-neutral-60 text-sm">Líder</span>
+            <span class="material-symbols-outlined text-primary-light text-sm">shield_person</span>
+            <span class="text-text-secondary text-sm">Líder</span>
           </div>
           <button 
             id="logout-btn"
-            class="card rounded-full p-2 text-neutral-60 hover:text-error transition-colors"
+            class="card rounded-full p-2 text-text-secondary hover:text-error transition-colors"
             title="Cerrar sesión"
           >
             <span class="material-symbols-outlined">logout</span>
@@ -64,23 +64,23 @@ export const prerender = false;
       
       <!-- Loading State -->
       <div id="loading-state" class="card rounded-3xl p-12 text-center">
-        <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-neutral-95 flex items-center justify-center">
-          <span class="material-symbols-outlined text-[#94b43b] text-2xl animate-spin">progress_activity</span>
+        <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-bg-hover flex items-center justify-center">
+          <span class="material-symbols-outlined text-primary-light text-2xl animate-spin">progress_activity</span>
         </div>
-        <p class="text-neutral-60">Cargando información del grupo...</p>
+        <p class="text-text-secondary">Cargando información del grupo...</p>
       </div>
       
       <!-- No Group State -->
       <div id="no-group-state" class="hidden card rounded-3xl p-12 text-center">
-        <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-neutral-95 flex items-center justify-center">
-          <span class="material-symbols-outlined text-neutral-70 text-3xl">group_off</span>
+        <div class="w-20 h-20 mx-auto mb-6 rounded-full bg-bg-hover flex items-center justify-center">
+          <span class="material-symbols-outlined text-text-muted text-3xl">group_off</span>
         </div>
-        <h2 class="text-neutral-40 font-headline-md text-headline-md mb-2">No tienes un grupo asignado</h2>
-        <p class="text-neutral-60 mb-6 max-w-md mx-auto">
+        <h2 class="text-text-primary font-headline-md text-headline-md mb-2">No tienes un grupo asignado</h2>
+        <p class="text-text-secondary mb-6 max-w-md mx-auto">
           Tu cuenta está activa pero aún no tienes un grupo vinculado. 
           Contacta al administrador para más información.
         </p>
-        <a href="/" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#94b43b]/10 text-[#94b43b] hover:bg-[#94b43b]/20 transition-colors">
+        <a href="/" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary/10 text-primary-light hover:bg-primary/20 transition-colors">
           <span class="material-symbols-outlined">arrow_back</span>
           Volver al inicio
         </a>
@@ -90,18 +90,18 @@ export const prerender = false;
       <div id="group-form" class="hidden space-y-6">
         <!-- Group Info Card -->
         <div class="card rounded-3xl p-6 md:p-8 relative overflow-hidden">
-          <div class="absolute top-0 right-0 w-32 h-32 bg-[#94b43b]/10 rounded-full blur-3xl"></div>
+          <div class="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl"></div>
           
           <div class="relative z-10">
             <div class="flex items-center gap-3 mb-6">
-              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#94b43b] to-[#4fc5e9] flex items-center justify-center shadow-lg shadow-[#94b43b]/20">
+              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg shadow-primary/20">
                 <span class="material-symbols-outlined text-white text-xl" id="group-type-icon">groups</span>
               </div>
               <div>
-                <span id="group-type-badge" class="px-2 py-0.5 rounded-full bg-[#94b43b]/10 text-[#94b43b] text-xs font-label-mono uppercase">-</span>
+                <span id="group-type-badge" class="px-2 py-0.5 rounded-full bg-primary/10 text-primary-light text-xs font-label-mono uppercase">-</span>
                 <div class="flex items-center gap-2 mt-1">
                   <span id="group-status" class="flex items-center gap-1 text-sm">
-                    <span class="w-2 h-2 rounded-full bg-[#c0d881]"></span>
+                    <span class="w-2 h-2 rounded-full bg-primary-light"></span>
                     <span class="text-primary">Aprobado</span>
                   </span>
                 </div>
@@ -110,76 +110,76 @@ export const prerender = false;
             
             <form id="edit-group-form" class="space-y-5">
               <div>
-                <label class="block text-neutral-60 text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+                <label class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
                   Nombre del Grupo
                 </label>
                 <input 
                   type="text" 
                   name="nombre"
                   id="field-nombre"
-                  class="w-full px-4 py-3.5 bg-white border border-neutral-80 rounded-xl text-neutral-40 focus:outline-none focus:border-[#94b43b]/50 focus:ring-1 focus:ring-[#94b43b]/30 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all"
                 />
               </div>
               
               <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
-                  <label class="block text-neutral-60 text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+                  <label class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
                     Docente a Cargo
                   </label>
                   <input 
                     type="text" 
                     name="docente_a_cargo"
                     id="field-docente"
-                    class="w-full px-4 py-3.5 bg-white border border-neutral-80 rounded-xl text-neutral-40 focus:outline-none focus:border-[#94b43b]/50 focus:ring-1 focus:ring-[#94b43b]/30 transition-all"
+                    class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all"
                   />
                 </div>
                 
                 <div>
-                  <label class="block text-neutral-60 text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+                  <label class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
                     Email de Contacto
                   </label>
                   <input 
                     type="email" 
                     name="email_contacto"
                     id="field-email"
-                    class="w-full px-4 py-3.5 bg-white border border-neutral-80 rounded-xl text-neutral-40 focus:outline-none focus:border-[#94b43b]/50 focus:ring-1 focus:ring-[#94b43b]/30 transition-all"
+                    class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all"
                   />
                 </div>
               </div>
               
               <div>
-                <label class="block text-neutral-60 text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+                <label class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
                   Líder o Representante
                 </label>
                 <input 
                   type="text" 
                   name="lider_o_representante"
                   id="field-lider"
-                  class="w-full px-4 py-3.5 bg-white border border-neutral-80 rounded-xl text-neutral-40 focus:outline-none focus:border-[#94b43b]/50 focus:ring-1 focus:ring-[#94b43b]/30 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all"
                 />
               </div>
               
               <div>
-                <label class="block text-neutral-60 text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+                <label class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
                   Enfoque / Línea de Investigación
                 </label>
                 <input 
                   type="text" 
                   name="enfoque"
                   id="field-enfoque"
-                  class="w-full px-4 py-3.5 bg-white border border-neutral-80 rounded-xl text-neutral-40 focus:outline-none focus:border-[#94b43b]/50 focus:ring-1 focus:ring-[#94b43b]/30 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all"
                 />
               </div>
               
               <div>
-                <label class="block text-neutral-60 text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+                <label class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
                   Descripción
                 </label>
                 <textarea 
                   name="descripcion"
                   id="field-descripcion"
                   rows="4"
-                  class="w-full px-4 py-3.5 bg-white border border-neutral-80 rounded-xl text-neutral-40 focus:outline-none focus:border-[#94b43b]/50 focus:ring-1 focus:ring-[#94b43b]/30 transition-all resize-none"
+                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all resize-none"
                 ></textarea>
               </div>
             </form>
@@ -189,22 +189,22 @@ export const prerender = false;
         <!-- Additional Info Card -->
         <div class="card rounded-3xl p-6 md:p-8">
           <div class="flex items-center gap-3 mb-6">
-            <div class="w-10 h-10 rounded-xl bg-[#4fc5e9]/10 flex items-center justify-center">
-              <span class="material-symbols-outlined text-[#4fc5e9]">info</span>
+            <div class="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center">
+              <span class="material-symbols-outlined text-accent-light">info</span>
             </div>
-            <h2 class="font-headline-md text-headline-md text-neutral-40">Información Adicional</h2>
+            <h2 class="font-headline-md text-headline-md text-text-primary">Información Adicional</h2>
           </div>
           
           <form id="edit-extra-form" class="space-y-5">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
-                <label class="block text-neutral-60 text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+                <label class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
                   Modalidad
                 </label>
                 <select 
                   name="modalidad"
                   id="field-modalidad"
-                  class="w-full px-4 py-3.5 bg-white border border-neutral-80 rounded-xl text-neutral-40 focus:outline-none focus:border-[#94b43b]/50 focus:ring-1 focus:ring-[#94b43b]/30 transition-all appearance-none cursor-pointer"
+                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all appearance-none cursor-pointer"
                 >
                   <option value="">Selecciona</option>
                   <option value="Presencial">Presencial</option>
@@ -214,7 +214,7 @@ export const prerender = false;
               </div>
               
               <div>
-                <label class="block text-neutral-60 text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+                <label class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
                   Horarios Habituales
                 </label>
                 <input 
@@ -222,56 +222,56 @@ export const prerender = false;
                   name="horarios_habituales"
                   id="field-horarios"
                   placeholder="Ej: Viernes 2:00pm - 6:00pm"
-                  class="w-full px-4 py-3.5 bg-white border border-neutral-80 rounded-xl text-neutral-40 placeholder-[#899487]/50 focus:outline-none focus:border-[#94b43b]/50 focus:ring-1 focus:ring-[#94b43b]/30 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-muted/60 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all"
                 />
               </div>
             </div>
             
             <div>
-              <label class="block text-neutral-60 text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+              <label class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
                 Actividades Principales
               </label>
               <textarea 
                 name="actividades"
                 id="field-actividades"
                 rows="3"
-                class="w-full px-4 py-3.5 bg-white border border-neutral-80 rounded-xl text-neutral-40 focus:outline-none focus:border-[#94b43b]/50 focus:ring-1 focus:ring-[#94b43b]/30 transition-all resize-none"
+                class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all resize-none"
               ></textarea>
             </div>
             
             <div>
-              <label class="block text-neutral-60 text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+              <label class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
                 Requisitos para Ingresar
               </label>
               <textarea 
                 name="requisitos_ingreso"
                 id="field-requisitos"
                 rows="2"
-                class="w-full px-4 py-3.5 bg-white border border-neutral-80 rounded-xl text-neutral-40 focus:outline-none focus:border-[#94b43b]/50 focus:ring-1 focus:ring-[#94b43b]/30 transition-all resize-none"
+                class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all resize-none"
               ></textarea>
             </div>
             
             <div>
-              <label class="block text-neutral-60 text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+              <label class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
                 Redes Sociales / Sitio Web
               </label>
               <input 
                 type="text" 
                 name="redes_sociales"
                 id="field-redes"
-                class="w-full px-4 py-3.5 bg-white border border-neutral-80 rounded-xl text-neutral-40 focus:outline-none focus:border-[#94b43b]/50 focus:ring-1 focus:ring-[#94b43b]/30 transition-all"
+                class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all"
               />
             </div>
             
             <div>
-              <label class="block text-neutral-60 text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+              <label class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
                 Comentarios Adicionales
               </label>
               <textarea 
                 name="comentarios_adicionales"
                 id="field-comentarios"
                 rows="2"
-                class="w-full px-4 py-3.5 bg-white border border-neutral-80 rounded-xl text-neutral-40 focus:outline-none focus:border-[#94b43b]/50 focus:ring-1 focus:ring-[#94b43b]/30 transition-all resize-none"
+                class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all resize-none"
               ></textarea>
             </div>
           </form>
@@ -281,7 +281,7 @@ export const prerender = false;
         <div class="flex flex-col sm:flex-row gap-4">
           <a 
             href="/"
-            class="px-6 py-3.5 rounded-xl border border-neutral-80 text-neutral-60 hover:bg-neutral-95 transition-all flex items-center justify-center gap-2"
+            class="px-6 py-3.5 rounded-xl border border-border-default text-text-secondary hover:bg-bg-hover transition-all flex items-center justify-center gap-2"
           >
             <span class="material-symbols-outlined">arrow_back</span>
             Volver al Inicio
@@ -289,11 +289,11 @@ export const prerender = false;
           
           <button 
             id="save-btn"
-            class="flex-1 py-3.5 px-6 rounded-xl bg-gradient-to-r from-[#94b43b] to-[#4fc5e9] text-white font-bold hover:opacity-90 transition-all shadow-lg shadow-[#94b43b]/20 flex items-center justify-center gap-2"
+            class="flex-1 py-3.5 px-6 rounded-xl bg-gradient-to-r from-primary to-accent text-white font-bold hover:opacity-90 transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2"
           >
             <span class="material-symbols-outlined">save</span>
             <span id="save-text">Guardar Cambios</span>
-            <div id="save-spinner" class="hidden w-5 h-5 border-2 border-[#2a3805]/30 border-t-[#2a3805] rounded-full animate-spin"></div>
+            <div id="save-spinner" class="hidden w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
           </button>
         </div>
         

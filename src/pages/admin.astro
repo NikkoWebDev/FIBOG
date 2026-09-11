@@ -19,16 +19,16 @@ export const prerender = false;
   <main class="min-h-screen pt-32 pb-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
     <!-- Loading / Auth check -->
     <div id="admin-loading" class="flex flex-col items-center justify-center min-h-[60vh]">
-      <div class="w-16 h-16 rounded-full bg-neutral-95 flex items-center justify-center mb-4">
+      <div class="w-16 h-16 rounded-full bg-bg-hover flex items-center justify-center mb-4">
         <span class="material-symbols-outlined text-primary text-2xl animate-spin">progress_activity</span>
       </div>
-      <p class="text-neutral-60 text-center">Verificando acceso...</p>
+      <p class="text-text-secondary text-center">Verificando acceso...</p>
     </div>
 
     <div id="admin-access-denied" class="hidden flex flex-col items-center justify-center min-h-[60vh] text-center">
       <span class="material-symbols-outlined text-error text-5xl mb-4">gpp_bad</span>
-      <h2 class="text-2xl font-semibold text-neutral-40 mb-2">Acceso restringido</h2>
-      <p class="text-neutral-60 max-w-md mb-6">No tienes permisos para ver este panel. Si crees que es un error, contacta al administrador.</p>
+      <h2 class="text-2xl font-semibold text-text-primary mb-2">Acceso restringido</h2>
+      <p class="text-text-secondary max-w-md mb-6">No tienes permisos para ver este panel. Si crees que es un error, contacta al administrador.</p>
       <a href="/" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-primary text-white font-bold hover:opacity-90 transition-opacity focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2">
         Volver al inicio
       </a>
@@ -150,7 +150,7 @@ export const prerender = false;
     allGrupos = grupos;
     const grid = document.getElementById('grupos-grid');
     grid.innerHTML = grupos.map(grupo => `
-      <div class="card rounded-2xl p-6 border border-neutral-80 hover:border-primary/50 transition-all group" data-grupo-id="${grupo.id}">
+      <div class="card rounded-2xl p-6 border border-border-default hover:border-primary/50 transition-all group" data-grupo-id="${grupo.id}">
         <div class="flex items-start justify-between mb-4">
           <div class="flex-1">
             <div class="flex items-center gap-2 mb-2">
@@ -173,16 +173,16 @@ export const prerender = false;
           </div>
         </div>
 
-        <div class="flex items-center gap-2 pt-4 border-t border-neutral-80">
-          <button onclick="editGroup('${grupo.id}')" class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-surface-container hover:bg-neutral-10 transition-all text-sm">
+        <div class="flex items-center gap-2 pt-4 border-t border-border-default">
+          <button onclick="editGroup('${grupo.id}')" class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-bg-hover hover:bg-bg-hover transition-all text-sm">
             <span class="material-symbols-outlined text-base">edit</span>
             <span>Editar</span>
           </button>
-          <button onclick="manageGroupAdmins('${grupo.id}', '${grupo.nombre}')" class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-surface-container hover:bg-secondary/20 transition-all text-sm text-secondary">
+          <button onclick="manageGroupAdmins('${grupo.id}', '${grupo.nombre}')" class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-bg-hover hover:bg-secondary/20 transition-all text-sm text-secondary">
             <span class="material-symbols-outlined text-base">admin_panel_settings</span>
             <span>Admins</span>
           </button>
-          <button onclick="deleteGroup('${grupo.id}')" class="p-2 rounded-lg bg-surface-container hover:bg-error/20 text-error transition-all">
+          <button onclick="deleteGroup('${grupo.id}')" class="p-2 rounded-lg bg-bg-hover hover:bg-error/20 text-error transition-all">
             <span class="material-symbols-outlined text-base">delete</span>
           </button>
         </div>
@@ -198,15 +198,15 @@ export const prerender = false;
 
     const tbody = document.getElementById('usuarios-table-body');
     tbody.innerHTML = usuarios.map(usuario => `
-      <tr class="hover:bg-neutral-10 transition-colors">
+      <tr class="hover:bg-bg-hover transition-colors">
         <td class="px-6 py-4 font-medium text-on-surface">${usuario.nombre_completo || 'Sin nombre'}</td>
         <td class="px-6 py-4 text-on-surface-variant text-sm">${usuario.email}</td>
         <td class="px-6 py-4">
-           <span class="px-2 py-1 rounded-md text-[10px] font-label-mono ${usuario.rol === 'SUPER_ADMIN' ? 'bg-error/10 text-error' : 'bg-surface-container-highest text-on-surface-variant'}">${usuario.rol}</span>
+           <span class="px-2 py-1 rounded-md text-[10px] font-label-mono ${usuario.rol === 'SUPER_ADMIN' ? 'bg-error/10 text-error' : 'bg-bg-hover-highest text-on-surface-variant'}">${usuario.rol}</span>
         </td>
         <td class="px-6 py-4 text-on-surface-variant text-sm">${new Date(usuario.fecha_registro).toLocaleDateString()}</td>
         <td class="px-6 py-4 text-center">
-          <button onclick="changeRole('${usuario.id}')" class="p-2 hover:bg-neutral-10 rounded-lg transition-all"><span class="material-symbols-outlined text-sm">admin_panel_settings</span></button>
+          <button onclick="changeRole('${usuario.id}')" class="p-2 hover:bg-bg-hover rounded-lg transition-all"><span class="material-symbols-outlined text-sm">admin_panel_settings</span></button>
         </td>
       </tr>
     `).join('');
@@ -230,7 +230,7 @@ export const prerender = false;
               return 0;
             }
             pendingList.innerHTML = data.map(solicitud => `
-              <div class="card rounded-xl p-6 border border-neutral-80">
+              <div class="card rounded-xl p-6 border border-border-default">
                 <div class="flex justify-between items-start mb-4">
                   <div>
                     <h4 class="text-lg font-medium text-on-surface">${solicitud.nombre}</h4>
@@ -276,7 +276,7 @@ export const prerender = false;
     }
 
     pendingList.innerHTML = pendientes.map(solicitud => `
-      <div class="card rounded-xl p-6 border border-neutral-80">
+      <div class="card rounded-xl p-6 border border-border-default">
         <div class="flex justify-between items-start mb-4">
           <div>
             <h4 class="text-lg font-medium text-on-surface">${solicitud.nombre}</h4>
@@ -723,9 +723,9 @@ export const prerender = false;
     }
 
     list.innerHTML = admins.map(admin => `
-      <div class="flex items-center justify-between p-4 rounded-xl bg-surface-container border border-neutral-80">
+      <div class="flex items-center justify-between p-4 rounded-xl bg-bg-hover border border-border-default">
         <div>
-          <div class="font-medium text-[#222222]">${admin.perfiles.nombre_completo || admin.perfiles.email}</div>
+          <div class="font-medium text-text-primary">${admin.perfiles.nombre_completo || admin.perfiles.email}</div>
           <div class="text-xs text-on-surface-variant">${admin.perfiles.rol}</div>
         </div>
         <button onclick="removeAdminFromGroup('${admin.usuario_id}')" class="p-2 hover:bg-error/10 text-error rounded-lg transition-all">

@@ -48,6 +48,13 @@ const navItems = [
 
         <!-- Right side -->
         <div class="flex items-center gap-3">
+          <!-- Theme toggle -->
+          <button type="button" data-theme-toggle aria-label="Cambiar tema"
+                  class="w-9 h-9 rounded-lg glass flex items-center justify-center text-text-secondary hover:text-primary-light transition-colors">
+            <span class="material-symbols-outlined text-base icon-sun">light_mode</span>
+            <span class="material-symbols-outlined text-base icon-moon hidden">dark_mode</span>
+          </button>
+
           <!-- Auth desktop -->
           <div id="auth-desktop" class="relative" data-dropdown>
             <a href="/login" id="auth-login-btn-desktop"
@@ -63,7 +70,7 @@ const navItems = [
                 <span id="auth-role-desktop"></span>
                 <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
               </button>
-              <ul class="hidden absolute right-0 top-full mt-2 bg-bg-card border border-border-default rounded-xl shadow-card min-w-[200px] list-none p-1.5 m-0 z-50">
+              <ul class="hidden glass absolute right-0 top-full mt-2 rounded-xl min-w-[200px] list-none p-1.5 m-0 z-50">
                 <li><a href="/lider" id="panel-link-desktop" class="hidden px-3 py-2.5 text-text-primary text-sm rounded-lg hover:bg-bg-hover flex items-center gap-2">
                   <span class="material-symbols-outlined text-base text-primary">dashboard</span> Panel de mi grupo
                 </a></li>
@@ -96,6 +103,11 @@ const navItems = [
             Base de Datos Ingenieria<span class="text-primary">.</span>
           </span>
         </a>
+        <button type="button" data-theme-toggle aria-label="Cambiar tema"
+                class="w-9 h-9 rounded-lg glass flex items-center justify-center text-text-secondary hover:text-primary-light transition-colors">
+          <span class="material-symbols-outlined text-base icon-sun">light_mode</span>
+          <span class="material-symbols-outlined text-base icon-moon hidden">dark_mode</span>
+        </button>
         <button id="mobile-menu-btn" type="button" aria-label="Abrir menu" aria-expanded="false"
                 aria-controls="mobile-menu"
                 class="text-text-secondary p-2 rounded-lg hover:bg-bg-hover transition-colors">
@@ -130,7 +142,7 @@ const navItems = [
             <span class="material-symbols-outlined text-base">login</span>
             Acceder
           </a>
-          <div id="user-menu-mobile" class="hidden mt-3 bg-bg-card border border-border-default rounded-xl overflow-hidden">
+          <div id="user-menu-mobile" class="hidden mt-3 glass rounded-xl overflow-hidden">
             <div class="px-4 py-3 text-text-primary text-sm font-semibold border-b border-border-subtle" id="user-role-mobile">Mi cuenta</div>
             <a href="/lider" id="panel-link-mobile" class="hidden px-4 py-3 text-text-primary text-sm border-b border-border-subtle flex items-center gap-2">
               <span class="material-symbols-outlined text-base text-primary">dashboard</span> Panel de mi grupo
@@ -156,6 +168,31 @@ const navItems = [
 
 <script>
   import { supabase } from '../../lib/supabase';
+
+  // ---- Theme toggle ----
+  const themeMeta = document.querySelector('meta[name="theme-color"]');
+
+  function syncThemeUI() {
+    const isDark = document.documentElement.classList.contains('dark');
+    document.querySelectorAll('[data-theme-toggle]').forEach(btn => {
+      const sun = btn.querySelector('.icon-sun');
+      const moon = btn.querySelector('.icon-moon');
+      sun?.classList.toggle('hidden', isDark);
+      moon?.classList.toggle('hidden', !isDark);
+      btn.setAttribute('aria-label', isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
+    });
+    themeMeta?.setAttribute('content', isDark ? '#0a0a0f' : '#f0eff4');
+  }
+
+  document.querySelectorAll('[data-theme-toggle]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const next = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
+      document.documentElement.classList.toggle('dark', next === 'dark');
+      try { localStorage.setItem('theme', next); } catch (e) {}
+      syncThemeUI();
+    });
+  });
+  syncThemeUI();
 
   // ---- Dropdowns ----
   const header = document.getElementById('site-header');

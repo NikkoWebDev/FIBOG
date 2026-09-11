@@ -37,19 +37,19 @@ import Layout from '../layouts/Layout.astro';
           </div>
           <div class="w-8 sm:w-14 h-[2px] bg-border-default"></div>
           <div class="flex items-center gap-2 opacity-60">
-            <div class="w-8 h-8 rounded-full bg-bg-card border border-[#3a3a52] text-text-secondary flex items-center justify-center font-bold text-sm">2</div>
+            <div class="w-8 h-8 rounded-full bg-bg-card border border-border-default text-text-secondary flex items-center justify-center font-bold text-sm">2</div>
             <span class="text-text-secondary text-xs sm:text-sm">Revisión</span>
           </div>
           <div class="w-8 sm:w-14 h-[2px] bg-border-default"></div>
           <div class="flex items-center gap-2 opacity-60">
-            <div class="w-8 h-8 rounded-full bg-bg-card border border-[#3a3a52] text-text-secondary flex items-center justify-center font-bold text-sm">3</div>
+            <div class="w-8 h-8 rounded-full bg-bg-card border border-border-default text-text-secondary flex items-center justify-center font-bold text-sm">3</div>
             <span class="text-text-secondary text-xs sm:text-sm">Aprobación</span>
           </div>
         </div>
       </div>
 
       <!-- Form Card -->
-      <div id="reg-card" class="card rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-10 relative overflow-hidden shadow-[0_25px_80px_-20px_rgba(0,0,0,0.7)]">
+      <div id="reg-card" class="card rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-10 relative overflow-hidden ">
         <div class="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-primary via-accent to-neon"></div>
         
         <form id="registro-form" class="relative z-10 space-y-8">
@@ -70,7 +70,7 @@ import Layout from '../layouts/Layout.astro';
                 <select 
                   name="tipo" 
                   required
-                  class="w-full px-4 py-3.5 bg-bg-hover border border-[#3a3a52] rounded-xl text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all appearance-none cursor-pointer"
+                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all appearance-none cursor-pointer"
                 >
                   <option value="">Selecciona el tipo</option>
                   <option value="Semillero">Semillero</option>
@@ -88,7 +88,7 @@ import Layout from '../layouts/Layout.astro';
                   name="nombre"
                   placeholder="Ej: Semillero de Robótica"
                   required
-                  class="w-full px-4 py-3.5 bg-bg-hover border border-[#3a3a52] rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
                 />
               </div>
               
@@ -101,7 +101,7 @@ import Layout from '../layouts/Layout.astro';
                   name="carreras"
                   placeholder="Ej: Ingeniería de Sistemas, Ingeniería Electrónica"
                   required
-                  class="w-full px-4 py-3.5 bg-bg-hover border border-[#3a3a52] rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
                 />
               </div>
               
@@ -114,7 +114,7 @@ import Layout from '../layouts/Layout.astro';
                   name="email_contacto"
                   placeholder="grupo@unal.edu.co"
                   required
-                  class="w-full px-4 py-3.5 bg-bg-hover border border-[#3a3a52] rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
                 />
               </div>
 
@@ -127,7 +127,7 @@ import Layout from '../layouts/Layout.astro';
                   name="enfoque"
                   placeholder="Ej: IA, Robótica, Energías Renovables"
                   required
-                  class="w-full px-4 py-3.5 bg-bg-hover border border-[#3a3a52] rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
                 />
               </div>
             </div>
@@ -141,7 +141,7 @@ import Layout from '../layouts/Layout.astro';
                 rows="4"
                 placeholder="Describe objetivos, actividades y propósito..."
                 required
-                class="w-full px-4 py-3.5 bg-bg-hover border border-[#3a3a52] rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all resize-none"
+                class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all resize-none"
               ></textarea>
             </div>
           </div>
@@ -165,7 +165,7 @@ import Layout from '../layouts/Layout.astro';
                   name="lider_o_representante"
                   placeholder="Nombre completo"
                   required
-                  class="w-full px-4 py-3.5 bg-bg-hover border border-[#3a3a52] rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
                 />
               </div>
               
@@ -178,7 +178,7 @@ import Layout from '../layouts/Layout.astro';
                   name="nombre_solicitante"
                   placeholder="Tu nombre completo"
                   required
-                  class="w-full px-4 py-3.5 bg-bg-hover border border-[#3a3a52] rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
                 />
               </div>
               
@@ -191,7 +191,7 @@ import Layout from '../layouts/Layout.astro';
                   name="email_solicitante"
                   placeholder="tuemail@unal.edu.co"
                   required
-                  class="w-full px-4 py-3.5 bg-bg-hover border border-[#3a3a52] rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
                 />
               </div>
               
@@ -203,7 +203,7 @@ import Layout from '../layouts/Layout.astro';
                   type="tel" 
                   name="telefono_solicitante"
                   placeholder="300 123 4567"
-                  class="w-full px-4 py-3.5 bg-bg-hover border border-[#3a3a52] rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
                 />
               </div>
               
@@ -215,7 +215,7 @@ import Layout from '../layouts/Layout.astro';
                   type="text" 
                   name="carrera_solicitante"
                   placeholder="Ej: Ingeniería de Sistemas"
-                  class="w-full px-4 py-3.5 bg-bg-hover border border-[#3a3a52] rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
                 />
               </div>
               
@@ -225,7 +225,7 @@ import Layout from '../layouts/Layout.astro';
                 </label>
                 <select 
                   name="semestre_solicitante"
-                  class="w-full px-4 py-3.5 bg-bg-hover border border-[#3a3a52] rounded-xl text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all appearance-none cursor-pointer"
+                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all appearance-none cursor-pointer"
                 >
                   <option value="">Selecciona</option>
                   <option value="1">1° Semestre</option>
@@ -260,7 +260,7 @@ import Layout from '../layouts/Layout.astro';
                 <select 
                   name="modalidad"
                   required
-                  class="w-full px-4 py-3.5 bg-bg-hover border border-[#3a3a52] rounded-xl text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all appearance-none cursor-pointer"
+                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all appearance-none cursor-pointer"
                 >
                   <option value="">Selecciona</option>
                   <option value="Presencial">Presencial</option>
@@ -278,7 +278,7 @@ import Layout from '../layouts/Layout.astro';
                   name="horarios_habituales"
                   placeholder="Ej: Viernes 2:00pm - 6:00pm"
                   required
-                  class="w-full px-4 py-3.5 bg-bg-hover border border-[#3a3a52] rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
                 />
               </div>
             </div>
@@ -292,7 +292,7 @@ import Layout from '../layouts/Layout.astro';
                 rows="3"
                 placeholder="Describe las actividades que realiza el grupo..."
                 required
-                class="w-full px-4 py-3.5 bg-bg-hover border border-[#3a3a52] rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all resize-none"
+                class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all resize-none"
               ></textarea>
             </div>
             
@@ -305,7 +305,7 @@ import Layout from '../layouts/Layout.astro';
                 rows="2"
                 placeholder="Qué requisitos deben cumplir los nuevos miembros?"
                 required
-                class="w-full px-4 py-3.5 bg-bg-hover border border-[#3a3a52] rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all resize-none"
+                class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all resize-none"
               ></textarea>
             </div>
             
@@ -317,7 +317,7 @@ import Layout from '../layouts/Layout.astro';
                 type="text" 
                 name="redes_sociales"
                 placeholder="Instagram, Twitter, página web..."
-                class="w-full px-4 py-3.5 bg-bg-hover border border-[#3a3a52] rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
+                class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
               />
             </div>
             
@@ -329,7 +329,7 @@ import Layout from '../layouts/Layout.astro';
                 name="comentarios_adicionales"
                 rows="2"
                 placeholder="Cualquier información adicional..."
-                class="w-full px-4 py-3.5 bg-bg-hover border border-[#3a3a52] rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all resize-none"
+                class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all resize-none"
               ></textarea>
             </div>
 
@@ -342,7 +342,7 @@ import Layout from '../layouts/Layout.astro';
                 id="imagen_grupo"
                 name="imagen_grupo"
                 accept="image/png, image/jpeg, image/webp"
-                class="w-full px-4 py-3 bg-bg-hover border border-[#3a3a52] rounded-xl text-text-secondary file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary/10 file:text-primary-light file:text-sm file:font-medium hover:file:bg-primary/20 transition-all cursor-pointer"
+                class="w-full px-4 py-3 bg-bg-input/60 border border-border-default rounded-xl text-text-secondary file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary/10 file:text-primary-light file:text-sm file:font-medium hover:file:bg-primary/20 transition-all cursor-pointer"
               />
               <p class="text-text-secondary text-xs mt-2">PNG, JPG o WebP. Máximo 5 MB. Se carga con lazy preview.</p>
               <img id="imagen-preview" src="" alt="" loading="lazy" class="hidden mt-3 max-h-48 rounded-xl border border-border-subtle" />
@@ -358,7 +358,7 @@ import Layout from '../layouts/Layout.astro';
           <div class="flex flex-col sm:flex-row gap-4 pt-6 border-t border-border-subtle">
             <a 
               href="/"
-              class="px-6 py-3.5 rounded-xl border border-[#3a3a52] text-text-secondary hover:bg-bg-hover transition-all flex items-center justify-center gap-2 hover:-translate-y-0.5"
+              class="px-6 py-3.5 rounded-xl border border-border-default text-text-secondary hover:bg-bg-hover transition-all flex items-center justify-center gap-2 hover:-translate-y-0.5"
             >
               <span class="material-symbols-outlined">arrow_back</span>
               Cancelar
@@ -522,9 +522,5 @@ import Layout from '../layouts/Layout.astro';
     background-repeat: no-repeat;
     background-position: right 12px center;
     padding-right: 40px;
-  }
-  #reg-card.card {
-    background: linear-gradient(180deg, #20203a 0%, #1a1a26 100%);
-    border-color: #3a3a52;
   }
 </style>

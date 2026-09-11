@@ -1,48 +1,49 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class',
   content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
   theme: {
     extend: {
       colors: {
-        // Core palette - Dark mode with vibrant accents
-        'primary': '#8b5cf6',
-        'primary-light': '#a78bfa',
-        'primary-dark': '#7c3aed',
+        // Tokens via CSS vars (RGB triplets) - ver global.css :root / html.dark
+        'primary': 'rgb(var(--c-primary) / <alpha-value>)',
+        'primary-light': 'rgb(var(--c-primary-light) / <alpha-value>)',
+        'primary-dark': 'rgb(var(--c-primary-dark) / <alpha-value>)',
 
-        'accent': '#06b6d4',
-        'accent-light': '#22d3ee',
-        'accent-dark': '#0891b2',
+        'accent': 'rgb(var(--c-accent) / <alpha-value>)',
+        'accent-light': 'rgb(var(--c-accent-light) / <alpha-value>)',
+        'accent-dark': 'rgb(var(--c-accent-dark) / <alpha-value>)',
 
-        'neon': '#f472b6',
-        'neon-light': '#f9a8d4',
+        'neon': 'rgb(var(--c-neon) / <alpha-value>)',
+        'neon-light': 'rgb(var(--c-neon-light) / <alpha-value>)',
 
         // Surfaces
-        'bg': '#0a0a0f',
-        'bg-raised': '#12121a',
-        'bg-card': '#1a1a26',
-        'bg-hover': '#22223a',
-        'bg-input': '#16162a',
+        'bg': 'rgb(var(--c-bg) / <alpha-value>)',
+        'bg-raised': 'rgb(var(--c-bg-raised) / <alpha-value>)',
+        'bg-card': 'rgb(var(--c-bg-card) / <alpha-value>)',
+        'bg-hover': 'rgb(var(--c-bg-hover) / <alpha-value>)',
+        'bg-input': 'rgb(var(--c-bg-input) / <alpha-value>)',
 
         // Text
-        'text-primary': '#f0f0f5',
-        'text-secondary': '#9494a8',
-        'text-muted': '#5a5a72',
-        'text-accent': '#a78bfa',
+        'text-primary': 'rgb(var(--c-text-primary) / <alpha-value>)',
+        'text-secondary': 'rgb(var(--c-text-secondary) / <alpha-value>)',
+        'text-muted': 'rgb(var(--c-text-muted) / <alpha-value>)',
+        'text-accent': 'rgb(var(--c-text-accent) / <alpha-value>)',
 
         // Borders
-        'border-default': '#2a2a3d',
-        'border-hover': '#8b5cf6',
-        'border-subtle': '#1e1e30',
+        'border-default': 'rgb(var(--c-border-default) / <alpha-value>)',
+        'border-hover': 'rgb(var(--c-border-hover) / <alpha-value>)',
+        'border-subtle': 'rgb(var(--c-border-subtle) / <alpha-value>)',
 
         // Semantic
-        'success': '#34d399',
-        'error': '#f87171',
-        'warning': '#fbbf24',
+        'success': 'rgb(var(--c-success) / <alpha-value>)',
+        'error': 'rgb(var(--c-error) / <alpha-value>)',
+        'warning': 'rgb(var(--c-warning) / <alpha-value>)',
 
         // Gradients (used as solid fallback)
-        'gradient-start': '#8b5cf6',
-        'gradient-mid': '#06b6d4',
-        'gradient-end': '#f472b6',
+        'gradient-start': 'rgb(var(--c-primary) / <alpha-value>)',
+        'gradient-mid': 'rgb(var(--c-accent) / <alpha-value>)',
+        'gradient-end': 'rgb(var(--c-neon) / <alpha-value>)',
       },
       fontFamily: {
         'sans': ['Inter', 'system-ui', '-apple-system', '"Segoe UI"', 'Roboto', 'sans-serif'],
