@@ -75,7 +75,7 @@ import Layout from '../layouts/Layout.astro';
 
             <!-- Email restriction notice -->
             <div class="p-3 bg-accent/10 border border-accent/30 text-accent-light text-sm text-center rounded-xl">
-              Solo se permiten correos @unal.edu.co
+              Preferimos correos @unal.edu.co. Cuentas de lider ya dadas de alta tambien pueden entrar.
             </div>
 
             <button
@@ -146,8 +146,10 @@ import Layout from '../layouts/Layout.astro';
 
     if (!email || !password) return;
 
-    if (!email.trim().toLowerCase().endsWith('@unal.edu.co')) {
-      errorMessage!.textContent = 'Solo se permiten correos institucionales @unal.edu.co.';
+    const emailNorm = email.trim().toLowerCase();
+    // Preferimos @unal.edu.co; permitimos excepciones ya dadas de alta (ej. grupos legacy).
+    if (!emailNorm.includes('@')) {
+      errorMessage!.textContent = 'Correo invalido.';
       errorMessage?.classList.remove('hidden');
       return;
     }

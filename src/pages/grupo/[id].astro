@@ -1,18 +1,21 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 
-import gruposData from '../../data/grupos.json';
-import type { Grupo } from '../../data/grupos.types';
+import { fetchApprovedGrupoById } from '../../lib/grupos';
 
-export async function getStaticPaths() {
-  const { data: allGrupos } = gruposData;
-  return allGrupos.map((grupo: Grupo) => ({
-    params: { id: grupo.id },
-    props: { grupo }
-  }));
+export const prerender = false;
+
+const { id } = Astro.params;
+
+if (!id) {
+  return Astro.redirect('/');
 }
 
-const { grupo } = Astro.props;
+const grupo = await fetchApprovedGrupoById(id);
+
+if (!grupo) {
+  return Astro.redirect('/');
+}
 
 const tipoColors: Record<string, string> = {
   'Semillero': 'bg-accent/10 text-accent-light border-accent/20',
@@ -116,10 +119,10 @@ const tipoBadge = tipoColors[grupo.tipo] || tipoColors['Semillero'];
               <span class="text-text-secondary">{grupo.modalidad}</span>
             </div>
           )}
-          {grupo.horarios_habituales && (
+          {grupo.horarios && (
             <div class="flex items-center gap-2">
               <span class="material-symbols-outlined text-text-muted text-base">event</span>
-              <span class="text-text-secondary">{grupo.horarios_habituales}</span>
+              <span class="text-text-secondary">{grupo.horarios}</span>
             </div>
           )}
         </div>
@@ -139,40 +142,40 @@ const tipoBadge = tipoColors[grupo.tipo] || tipoColors['Semillero'];
       )}
 
       <!-- Requisitos -->
-      {grupo.requisitos_ingreso && (
+      {grupo.requisitos && (
         <div class="card rounded-2xl p-6">
           <div class="flex items-center gap-2 mb-4">
             <span class="material-symbols-outlined text-error">rule</span>
             <h3 class="text-lg font-bold text-error">Requisitos</h3>
           </div>
           <p class="text-text-secondary leading-relaxed">
-            {grupo.requisitos_ingreso}
+            {grupo.requisitos}
           </p>
         </div>
       )}
 
       <!-- Nivel Academico -->
-      {grupo.nivel_academico_recomendado && (
+      {grupo.nivel_academico && (
         <div class="card rounded-2xl p-6">
           <div class="flex items-center gap-2 mb-4">
             <span class="material-symbols-outlined text-accent-light">school</span>
             <h3 class="text-lg font-bold text-accent-light">Nivel Recomendado</h3>
           </div>
           <p class="text-text-secondary">
-            {grupo.nivel_academico_recomendado}
+            {grupo.nivel_academico}
           </p>
         </div>
       )}
 
       <!-- Ubicacion -->
-      {grupo.edificio && (
+      {grupo.vinculacion && (
         <div class="card rounded-2xl p-6">
           <div class="flex items-center gap-2 mb-4">
             <span class="material-symbols-outlined text-primary-light">location_on</span>
-            <h3 class="text-lg font-bold text-primary-light">Ubicacion</h3>
+            <h3 class="text-lg font-bold text-primary-light">Vinculacion</h3>
           </div>
           <p class="text-text-secondary">
-            {grupo.edificio}
+            {grupo.vinculacion}
           </p>
         </div>
       )}
@@ -186,9 +189,14 @@ const tipoBadge = tipoColors[grupo.tipo] || tipoColors['Semillero'];
         </div>
         <div class="flex-1 text-center md:text-left">
           <h3 class="text-text-primary font-semibold text-xl mb-1">
-            {grupo.docente || grupo.lider_o_representante || 'Docente Investigador'}
+            {grupo.lider || grupo.docente || 'Lider del grupo'}
           </h3>
-          <span class="text-primary-light text-xs font-semibold uppercase tracking-wider">Lider del Grupo</span>
+          <span class="text-primary-light text-xs font-semibold uppercase tracking-wider">
+            {grupo.lider ? 'Lider / Representante' : 'Docente a cargo'}
+          </span>
+          {grupo.docente && grupo.lider && (
+            <p class="text-text-secondary text-sm mt-2">Docente: {grupo.docente}</p>
+          )}
         </div>
         {grupo.email && (
           <a 

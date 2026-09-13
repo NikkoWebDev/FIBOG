@@ -11,6 +11,7 @@
     "astro": "astro",
     "parse-csv": "node scripts/parse-csv.js",
     "migrate": "node scripts/migrate-to-supabase.js",
+    "sync-leaders": "node scripts/sync-group-leaders.js",
     "supabase:start": "npx supabase start",
     "supabase:stop": "npx supabase stop",
     "supabase:reset": "npx supabase db reset",

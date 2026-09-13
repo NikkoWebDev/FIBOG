@@ -1,0 +1,97 @@
+---
+// Panel de correo masivo / normal (Remitente nikko.dev)
+---
+
+<div id="content-correo" class="tab-content hidden" role="tabpanel" aria-labelledby="tab-correo">
+  <div class="mb-6">
+    <h3 class="text-lg font-bold text-text-primary">correo nikko.dev</h3>
+    <p class="text-sm text-text-secondary mt-1">
+      Envio masivo a contactos de grupos aprobados, o envio normal a destinatarios puntuales.
+      Remitente: Resend / dominio nikko.dev.
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+    <div class="xl:col-span-2 card rounded-2xl p-5 md:p-6 border border-border-subtle bg-bg-hover/30">
+      <form id="correo-form" class="space-y-5" onsubmit="return false;">
+        <div class="flex flex-wrap gap-3">
+          <label class="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-bg-input/50 border border-border-default cursor-pointer">
+            <input type="radio" name="mail-mode" value="masivo" checked class="accent-primary" />
+            <span class="text-sm text-text-primary">Envio masivo</span>
+          </label>
+          <label class="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-bg-input/50 border border-border-default cursor-pointer">
+            <input type="radio" name="mail-mode" value="normal" class="accent-primary" />
+            <span class="text-sm text-text-primary">Envio normal</span>
+          </label>
+        </div>
+
+        <div id="correo-to-wrap" class="hidden">
+          <label for="correo-to" class="block text-sm font-medium text-text-secondary mb-2">Destinatarios</label>
+          <textarea
+            id="correo-to"
+            rows="2"
+            placeholder="correo1@unal.edu.co, correo2@unal.edu.co"
+            class="w-full px-4 py-3 rounded-xl bg-bg-input/60 border border-border-default text-text-primary placeholder-text-muted/60 focus:outline-none focus:border-primary"
+          ></textarea>
+        </div>
+
+        <div>
+          <label for="correo-subject" class="block text-sm font-medium text-text-secondary mb-2">Asunto</label>
+          <input
+            id="correo-subject"
+            type="text"
+            maxlength="180"
+            placeholder="Asunto del correo"
+            class="w-full px-4 py-3 rounded-xl bg-bg-input/60 border border-border-default text-text-primary placeholder-text-muted/60 focus:outline-none focus:border-primary"
+          />
+        </div>
+
+        <div>
+          <label for="correo-message" class="block text-sm font-medium text-text-secondary mb-2">Mensaje</label>
+          <textarea
+            id="correo-message"
+            rows="10"
+            placeholder="Escribe el cuerpo del correo..."
+            class="w-full px-4 py-3 rounded-xl bg-bg-input/60 border border-border-default text-text-primary placeholder-text-muted/60 focus:outline-none focus:border-primary resize-y"
+          ></textarea>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+          <label class="inline-flex items-center gap-2 text-sm text-text-secondary">
+            <input id="correo-html" type="checkbox" class="accent-primary" />
+            Enviar como HTML
+          </label>
+
+          <button
+            id="correo-send-btn"
+            type="button"
+            onclick="sendAdminMail()"
+            class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white text-sm font-bold hover:shadow-glow transition-all"
+          >
+            <span class="material-symbols-outlined text-base">send</span>
+            <span id="correo-send-text">Enviar desde correo nikko.dev</span>
+            <span id="correo-send-spinner" class="hidden w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+          </button>
+        </div>
+      </form>
+
+      <div id="correo-result" class="hidden mt-4 p-4 rounded-xl text-sm"></div>
+    </div>
+
+    <div class="card rounded-2xl p-5 md:p-6 border border-border-subtle bg-bg-hover/20 space-y-4">
+      <h4 class="font-semibold text-text-primary">Plantillas rapidas</h4>
+      <button type="button" onclick="loadCorreoTemplate('bienvenida')" class="w-full text-left px-4 py-3 rounded-xl bg-bg-input/40 hover:bg-bg-input/70 border border-border-subtle text-sm text-text-secondary">
+        Bienvenida lideres / acceso panel
+      </button>
+      <button type="button" onclick="loadCorreoTemplate('actualizacion')" class="w-full text-left px-4 py-3 rounded-xl bg-bg-input/40 hover:bg-bg-input/70 border border-border-subtle text-sm text-text-secondary">
+        Pedir actualizacion de datos
+      </button>
+      <button type="button" onclick="loadCorreoTemplate('aviso')" class="w-full text-left px-4 py-3 rounded-xl bg-bg-input/40 hover:bg-bg-input/70 border border-border-subtle text-sm text-text-secondary">
+        Aviso general facultad
+      </button>
+      <p class="text-xs text-text-muted leading-relaxed">
+        El masivo usa `email_contacto` de grupos aprobados. El envio normal acepta lista separada por comas.
+      </p>
+    </div>
+  </div>
+</div>

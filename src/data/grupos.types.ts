@@ -90,10 +90,11 @@ export function filtrarGrupos(
     if (filtros.busqueda) {
       const search = filtros.busqueda.toLowerCase();
       const match = 
-        g.nombre.toLowerCase().includes(search) ||
-        g.enfoque.toLowerCase().includes(search) ||
-        g.descripcion.toLowerCase().includes(search) ||
-        g.docente.toLowerCase().includes(search);
+        (g.nombre || '').toLowerCase().includes(search) ||
+        (g.enfoque || '').toLowerCase().includes(search) ||
+        (g.descripcion || '').toLowerCase().includes(search) ||
+        (g.docente || '').toLowerCase().includes(search) ||
+        (g.lider || '').toLowerCase().includes(search);
       if (!match) return false;
     }
     return true;

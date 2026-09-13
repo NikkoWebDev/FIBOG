@@ -1,9 +1,8 @@
 import type { APIRoute } from 'astro';
-import gruposData from '../../data/grupos.json';
+import { fetchApprovedGrupos } from '../../lib/grupos';
+import type { Grupo } from '../../data/grupos.types';
 
 export const prerender = false;
-
-const { data: grupos } = gruposData;
 
 export const POST: APIRoute = async ({ request, site }) => {
   try {
@@ -17,12 +16,14 @@ export const POST: APIRoute = async ({ request, site }) => {
       );
     }
 
+    const grupos = await fetchApprovedGrupos();
+
     const apiKey = import.meta.env.OPENROUTER_API_KEY;
     const baseUrl = import.meta.env.OPENROUTER_BASE_URL || 'https://openrouter.ai/api/v1';
     const model = import.meta.env.OPENROUTER_MODEL || 'liquid/lfm-2.5-1.2b-instruct:free';
 
     // Always compute keyword matches so we can enrich the response or fall back
-    const relevantGrupos = findRelevantGrupos(query);
+    const relevantGrupos = findRelevantGrupos(query, grupos);
 
     if (!apiKey) {
       return new Response(
@@ -109,7 +110,7 @@ export const POST: APIRoute = async ({ request, site }) => {
   }
 };
 
-function generateFallbackResponse(query: string, relevantGrupos: typeof grupos) {
+function generateFallbackResponse(query: string, relevantGrupos: Grupo[]) {
   const answer = relevantGrupos.length > 0
     ? `Encontré ${relevantGrupos.length} grupo(s) relacionado(s) con "${query}": ${relevantGrupos.map(g => g.nombre).join(', ')}. Explora cada grupo para ver sus detalles, enfoques de investigación y carreras afines.`
     : `No encontré grupos específicos relacionados con "${query}". Te recomiendo explorar todos los grupos disponibles o intentar con otros términos de búsqueda.`;
@@ -130,7 +131,7 @@ function generateFallbackResponse(query: string, relevantGrupos: typeof grupos) 
 /**
  * Find relevant grupos based on query keywords
  */
-function findRelevantGrupos(query: string) {
+function findRelevantGrupos(query: string, grupos: Grupo[]) {
   const keywords = query.toLowerCase().split(/\s+/).filter(k => k.length > 2);
 
   if (keywords.length === 0) return grupos.slice(0, 3);

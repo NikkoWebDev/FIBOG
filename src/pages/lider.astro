@@ -367,17 +367,24 @@ export const prerender = false;
     groupId = data.id;
     
     // Fill form fields
-    const fields = [
-      'nombre', 'docente_a_cargo', 'email_contacto', 'lider_o_representante',
-      'enfoque', 'descripcion', 'modalidad', 'horarios_habituales',
-      'actividades', 'requisitos_ingreso', 'redes_sociales', 'comentarios_adicionales'
-    ];
-    
-    fields.forEach(field => {
-      const element = document.getElementById(`field-${field.replace(/_/g, '-')}`);
-      if (element) {
-        (element as HTMLInputElement).value = data[field] || '';
-      }
+    const fieldMap: Record<string, string> = {
+      nombre: 'field-nombre',
+      docente_a_cargo: 'field-docente',
+      email_contacto: 'field-email',
+      lider_o_representante: 'field-lider',
+      enfoque: 'field-enfoque',
+      descripcion: 'field-descripcion',
+      modalidad: 'field-modalidad',
+      horarios_habituales: 'field-horarios',
+      actividades: 'field-actividades',
+      requisitos_ingreso: 'field-requisitos',
+      redes_sociales: 'field-redes',
+      comentarios_adicionales: 'field-comentarios',
+    };
+
+    Object.entries(fieldMap).forEach(([column, elementId]) => {
+      const element = document.getElementById(elementId) as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | null;
+      if (element) element.value = data[column] || '';
     });
     
     // Set type badge and icon

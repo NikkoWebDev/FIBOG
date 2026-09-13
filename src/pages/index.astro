@@ -4,10 +4,13 @@ import AISearch from '../components/AISearch.astro';
 import FilterBar from '../components/FilterBar.astro';
 import BentoGrid from '../components/BentoGrid.astro';
 
-import gruposData from '../data/grupos.json';
+import { buildMetadata, fetchApprovedGrupos } from '../lib/grupos';
 import { filtrarGrupos } from '../data/grupos.types';
 
-const { metadata, data: allGrupos } = gruposData;
+export const prerender = false;
+
+const allGrupos = await fetchApprovedGrupos();
+const metadata = buildMetadata(allGrupos);
 
 const url = Astro.url;
 const tipoFilter = url.searchParams.get('tipo');
@@ -20,7 +23,11 @@ const filteredGrupos = filtrarGrupos(allGrupos, {
   busqueda: searchQuery || undefined
 });
 
-const ultimaTexto = (metadata as any).ultima_actualizacion_texto || '2 de septiembre de 2026';
+const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
 ---
 
 <Layout title="Base de Datos Ingenieria | Semilleros" description="Base de datos de semilleros, grupos de investigación y comunidades estudiantiles de la Facultad de Ingeniería" activePage="inicio" hideFooter={true}>

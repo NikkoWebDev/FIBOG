@@ -6,6 +6,7 @@ import AdminTabsNav from '../components/admin/AdminTabsNav.astro';
 import AdminGruposTab from '../components/admin/AdminGruposTab.astro';
 import AdminPendientesTab from '../components/admin/AdminPendientesTab.astro';
 import AdminUsuariosTab from '../components/admin/AdminUsuariosTab.astro';
+import AdminCorreoTab from '../components/admin/AdminCorreoTab.astro';
 import GroupFormModal from '../components/admin/GroupFormModal.astro';
 import AdminsModal from '../components/admin/AdminsModal.astro';
 
@@ -46,6 +47,7 @@ export const prerender = false;
             <AdminGruposTab />
             <AdminPendientesTab />
             <AdminUsuariosTab />
+            <AdminCorreoTab />
           </div>
         </div>
       </section>
@@ -340,7 +342,7 @@ export const prerender = false;
         return;
       }
 
-      const { error: insertError } = await supabase.from('grupos').insert({
+      const { data: createdGrupo, error: insertError } = await supabase.from('grupos').insert({
         tipo: solicitud.tipo,
         carreras: solicitud.carreras,
         nombre: solicitud.nombre,
@@ -359,8 +361,23 @@ export const prerender = false;
         comentarios_adicionales: solicitud.comentarios_adicionales,
         estado_aprobacion: 'aprobado',
         creado_por: user?.id
-      });
+      }).select('id').single();
       if (insertError) throw insertError;
+
+      // Si ya hay cuenta con ese email, engancharla como lider
+      if (solicitud.email_contacto && createdGrupo?.id) {
+        const email = String(solicitud.email_contacto).trim().toLowerCase();
+        const { data: leaderProfile } = await supabase
+          .from('perfiles')
+          .select('id')
+          .eq('email', email)
+          .maybeSingle();
+
+        if (leaderProfile?.id) {
+          await supabase.from('grupos').update({ id_lider: leaderProfile.id }).eq('id', createdGrupo.id);
+          await supabase.from('perfiles').update({ rol: 'ADMIN_GRUPO' }).eq('id', leaderProfile.id);
+        }
+      }
 
       // Update solicitud status
       const { error: updateError } = await supabase.from('solicitudes_pendientes').update({
@@ -792,6 +809,103 @@ export const prerender = false;
       showNotification('Error al remover admin', 'error');
     }
   }
+
+  const correoTemplates = {
+    bienvenida: {
+      subject: 'Acceso al panel de lideres — Base de Datos Ingenieria',
+      message: `Hola,\n\nYa puede ingresar al panel de lider de su grupo en la plataforma de Semilleros FIBOG.\n\nURL: ${(typeof window !== 'undefined' ? window.location.origin : '')}/login\nClave temporal (cambiela al entrar): Claveparacambiar123\n\nPasos:\n1. Inicie sesion con el correo de contacto del grupo\n2. Vaya a Mi perfil > Cambiar contraseña\n3. Actualice la informacion de su semillero/grupo en el panel Lider\n\nCualquier duda escriba a bgallo@unal.edu.co o ngutierrezga@unal.edu.co.\n\n— Base de Datos Ingenieria / correo nikko.dev`,
+    },
+    actualizacion: {
+      subject: 'Actualizar informacion de su grupo — Semilleros FIBOG',
+      message: `Hola,\n\nLes pedimos actualizar la ficha publica de su grupo (descripcion, enfoque, horarios, requisitos y contacto) en el panel de lider.\n\nIngreso: ${(typeof window !== 'undefined' ? window.location.origin : '')}/login\n\nGracias,\nBase de Datos Ingenieria`,
+    },
+    aviso: {
+      subject: 'Aviso — Base de Datos Ingenieria FIBOG',
+      message: `Estimados lideres,\n\n[Escriba aqui el aviso]\n\nCordialmente,\nBase de Datos Ingenieria`,
+    },
+  };
+
+  function syncCorreoModeUI() {
+    const mode = (document.querySelector('input[name="mail-mode"]:checked') as HTMLInputElement | null)?.value || 'masivo';
+    const wrap = document.getElementById('correo-to-wrap');
+    if (mode === 'normal') wrap?.classList.remove('hidden');
+    else wrap?.classList.add('hidden');
+  }
+
+  document.querySelectorAll('input[name="mail-mode"]').forEach((el) => {
+    el.addEventListener('change', syncCorreoModeUI);
+  });
+
+  window.loadCorreoTemplate = function(key) {
+    const tpl = correoTemplates[key];
+    if (!tpl) return;
+    (document.getElementById('correo-subject') as HTMLInputElement).value = tpl.subject;
+    (document.getElementById('correo-message') as HTMLTextAreaElement).value = tpl.message;
+  };
+
+  window.sendAdminMail = async function() {
+    const mode = (document.querySelector('input[name="mail-mode"]:checked') as HTMLInputElement | null)?.value || 'masivo';
+    const subject = (document.getElementById('correo-subject') as HTMLInputElement).value.trim();
+    const message = (document.getElementById('correo-message') as HTMLTextAreaElement).value.trim();
+    const to = (document.getElementById('correo-to') as HTMLTextAreaElement).value.trim();
+    const html = (document.getElementById('correo-html') as HTMLInputElement).checked;
+    const resultEl = document.getElementById('correo-result');
+    const btn = document.getElementById('correo-send-btn');
+    const text = document.getElementById('correo-send-text');
+    const spinner = document.getElementById('correo-send-spinner');
+
+    if (!subject || !message) {
+      showNotification('Asunto y mensaje son obligatorios', 'error');
+      return;
+    }
+    if (mode === 'normal' && !to) {
+      showNotification('Indique destinatarios para envio normal', 'error');
+      return;
+    }
+
+    const ok = confirm(mode === 'masivo'
+      ? 'Va a enviar un correo masivo a todos los contactos de grupos aprobados. Continuar?'
+      : `Enviar correo normal a:\n${to}`);
+    if (!ok) return;
+
+    btn?.setAttribute('disabled', 'true');
+    text?.classList.add('hidden');
+    spinner?.classList.remove('hidden');
+    resultEl?.classList.add('hidden');
+
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session?.access_token) throw new Error('Sesion expirada');
+
+      const res = await fetch('/api/admin-mail', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ mode, subject, message, to, html }),
+      });
+
+      const payload = await res.json();
+      if (!res.ok) throw new Error(payload.error || 'Error al enviar');
+
+      const failedCount = payload.failed?.length || 0;
+      resultEl!.className = `mt-4 p-4 rounded-xl text-sm ${failedCount ? 'bg-warning/10 border border-warning/30 text-warning' : 'bg-success/10 border border-success/30 text-success'}`;
+      resultEl!.textContent = `${payload.message || 'Enviado'}${failedCount ? ` · Fallidos: ${failedCount}` : ''}`;
+      resultEl?.classList.remove('hidden');
+      showNotification(payload.message || 'Correo enviado', failedCount ? 'error' : 'success');
+    } catch (error: any) {
+      console.error(error);
+      resultEl!.className = 'mt-4 p-4 rounded-xl text-sm bg-error/10 border border-error/30 text-error';
+      resultEl!.textContent = error.message || 'Error al enviar';
+      resultEl?.classList.remove('hidden');
+      showNotification(error.message || 'Error al enviar', 'error');
+    } finally {
+      btn?.removeAttribute('disabled');
+      text?.classList.remove('hidden');
+      spinner?.classList.add('hidden');
+    }
+  };
 
   init();
 </script>

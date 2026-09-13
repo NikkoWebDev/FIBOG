@@ -42,11 +42,5 @@ export const onRequest = defineMiddleware(async (context, next) => {
     return context.redirect('/login');
   }
 
-  const email = data.session.user.email;
-
-  if (!email || !email.toLowerCase().endsWith('@unal.edu.co')) {
-    return context.redirect('/login');
-  }
-
   return next();
 });
