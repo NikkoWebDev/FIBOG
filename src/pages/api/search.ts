@@ -139,23 +139,18 @@ function findRelevantGrupos(query: string, grupos: Grupo[]) {
   return grupos
     .map(grupo => {
       let score = 0;
-      const searchable = [
-        grupo.nombre,
-        grupo.enfoque,
-        grupo.descripcion,
-        grupo.carrera_str,
-        grupo.tipo
-      ].join(' ').toLowerCase();
+      const nombre = (grupo.nombre || '').toLowerCase();
+      const enfoque = (grupo.enfoque || '').toLowerCase();
+      const descripcion = (grupo.descripcion || '').toLowerCase();
+      const searchable = `${nombre} ${enfoque} ${descripcion} ${(grupo.carrera_str || '').toLowerCase()} ${(grupo.tipo || '').toLowerCase()}`;
 
-      keywords.forEach(keyword => {
-        if (searchable.includes(keyword)) {
-          score += 1;
-          // Extra points for title matches
-          if (grupo.nombre.toLowerCase().includes(keyword)) score += 3;
-          if (grupo.enfoque.toLowerCase().includes(keyword)) score += 2;
-          if (grupo.descripcion.toLowerCase().includes(keyword)) score += 1;
-        }
-      });
+      for (const keyword of keywords) {
+        if (!searchable.includes(keyword)) continue;
+        score += 1;
+        if (nombre.includes(keyword)) score += 3;
+        if (enfoque.includes(keyword)) score += 2;
+        if (descripcion.includes(keyword)) score += 1;
+      }
 
       return { grupo, score };
     })

@@ -43,6 +43,18 @@ const tipoBadge = tipoColors[grupo.tipo] || tipoColors['Semillero'];
         <span class="text-text-muted text-xs font-semibold uppercase tracking-widest">Detalle del Grupo</span>
       </div>
       
+      {grupo.imagen_url && (
+        <div class="mb-8 overflow-hidden rounded-2xl border border-border-subtle bg-bg-hover">
+          <img
+            src={grupo.imagen_url}
+            alt={`Imagen de ${grupo.nombre}`}
+            loading="eager"
+            decoding="async"
+            class="w-full max-h-[28rem] object-cover"
+          />
+        </div>
+      )}
+
       <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
         <div class="flex-1">
           <div class="flex items-center gap-2 mb-4 flex-wrap">
@@ -84,7 +96,7 @@ const tipoBadge = tipoColors[grupo.tipo] || tipoColors['Semillero'];
               class="px-6 py-3 rounded-xl border border-border-default text-text-secondary hover:bg-bg-hover transition-all flex items-center gap-2"
             >
               <span class="material-symbols-outlined">public</span>
-              Sitio Web
+              Web / red social
             </a>
           )}
         </div>

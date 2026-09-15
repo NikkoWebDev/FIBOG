@@ -33,12 +33,9 @@
     "@astrojs/vercel": "^7.8.2",
     "@supabase/supabase-js": "^2.105.4",
     "astro": "^4.16.19",
-    "gsap": "^3.15.0",
-    "lucide-react": "^1.14.0",
     "playwright": "^1.61.1",
     "resend": "^6.20.0",
-    "tailwindcss": "^3.4.19",
-    "ws": "^8.21.3"
+    "tailwindcss": "^3.4.19"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",

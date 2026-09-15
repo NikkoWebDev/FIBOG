@@ -182,6 +182,27 @@ export const prerender = false;
                   class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all resize-none"
                 ></textarea>
               </div>
+
+              <div>
+                <label class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+                  Imagen del Grupo
+                </label>
+                <input type="hidden" name="imagen_url" id="field-imagen-url" value="" />
+                <div id="lider-imagen-preview-wrap" class="hidden mb-3 overflow-hidden rounded-xl border border-border-subtle bg-bg-hover">
+                  <img id="lider-imagen-preview" src="" alt="Vista previa" class="h-44 w-full object-cover" />
+                </div>
+                <div class="flex flex-wrap gap-3">
+                  <label class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-bg-hover border border-border-default text-sm text-text-primary cursor-pointer hover:border-primary/40 transition-all">
+                    <span class="material-symbols-outlined text-base">upload</span>
+                    Subir / actualizar
+                    <input id="field-imagen-file" type="file" accept="image/png,image/jpeg,image/webp,image/gif" class="hidden" />
+                  </label>
+                  <button type="button" id="lider-imagen-remove" class="hidden px-4 py-2.5 rounded-xl border border-error/30 text-error text-sm hover:bg-error/10 transition-all">
+                    Quitar imagen
+                  </button>
+                </div>
+                <p class="text-xs text-text-muted mt-2">JPG/PNG/WEBP/GIF · max 5 MB. Aparece en el catalogo.</p>
+              </div>
             </form>
           </div>
         </div>
@@ -253,14 +274,18 @@ export const prerender = false;
             
             <div>
               <label class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
-                Redes Sociales / Sitio Web
+                Link de la web o red social del grupo
               </label>
-              <input 
-                type="text" 
+              <input
+                type="url"
                 name="redes_sociales"
                 id="field-redes"
+                placeholder="https://instagram.com/tu-grupo"
+                inputmode="url"
+                autocomplete="url"
                 class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all"
               />
+              <p class="text-xs text-text-muted mt-2">Un solo enlace. Preferible la pagina web o el perfil principal del grupo.</p>
             </div>
             
             <div>
@@ -311,8 +336,37 @@ export const prerender = false;
 
 <script>
   import { supabase } from '../lib/supabase';
+  import { removeGroupImage, uploadGroupImage } from '../lib/group-images';
   
   let groupId: string | null = null;
+  let pendingImageFile: File | null = null;
+  let removeExistingImage = false;
+  let currentImageUrl: string | null = null;
+
+  function setLiderImageUI(url: string | null) {
+    currentImageUrl = url || null;
+    pendingImageFile = null;
+    removeExistingImage = false;
+
+    const hidden = document.getElementById('field-imagen-url') as HTMLInputElement | null;
+    const preview = document.getElementById('lider-imagen-preview') as HTMLImageElement | null;
+    const wrap = document.getElementById('lider-imagen-preview-wrap');
+    const removeBtn = document.getElementById('lider-imagen-remove');
+    const fileInput = document.getElementById('field-imagen-file') as HTMLInputElement | null;
+
+    if (hidden) hidden.value = url || '';
+    if (fileInput) fileInput.value = '';
+
+    if (url && preview && wrap) {
+      preview.src = url;
+      wrap.classList.remove('hidden');
+      removeBtn?.classList.remove('hidden');
+    } else {
+      if (preview) preview.src = '';
+      wrap?.classList.add('hidden');
+      removeBtn?.classList.add('hidden');
+    }
+  }
   
   // Check auth
   async function checkAuth() {
@@ -384,8 +438,10 @@ export const prerender = false;
 
     Object.entries(fieldMap).forEach(([column, elementId]) => {
       const element = document.getElementById(elementId) as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | null;
-      if (element) element.value = data[column] || '';
+      if (element) element.value = (data as Record<string, string | null>)[column] || '';
     });
+
+    setLiderImageUI(data.imagen_url || null);
     
     // Set type badge and icon
     const typeBadge = document.getElementById('group-type-badge');
@@ -438,13 +494,36 @@ export const prerender = false;
       extraData.forEach((value, key) => {
         updateData[key] = value || null;
       });
+
+      const previousImageUrl = currentImageUrl || String(updateData.imagen_url || '').trim() || null;
+      let nextImageUrl = previousImageUrl;
+
+      if (removeExistingImage) {
+        if (previousImageUrl) await removeGroupImage(previousImageUrl);
+        nextImageUrl = null;
+      }
+
+      if (pendingImageFile) {
+        if (previousImageUrl && !removeExistingImage) await removeGroupImage(previousImageUrl);
+        nextImageUrl = await uploadGroupImage(
+          pendingImageFile,
+          String(updateData.nombre || 'grupo')
+        );
+      }
+
+      updateData.imagen_url = nextImageUrl;
       
       const { error } = await supabase
         .from('grupos')
-        .update(updateData)
+        .update(updateData as any)
         .eq('id', groupId);
       
       if (error) throw error;
+
+      currentImageUrl = nextImageUrl;
+      pendingImageFile = null;
+      removeExistingImage = false;
+      setLiderImageUI(nextImageUrl);
       
       successMessage!.textContent = 'Cambios guardados exitosamente';
       successMessage?.classList.remove('hidden');
@@ -466,6 +545,42 @@ export const prerender = false;
   
   // Event listeners
   document.getElementById('save-btn')?.addEventListener('click', saveChanges);
+
+  document.getElementById('field-imagen-file')?.addEventListener('change', (event) => {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0] || null;
+    if (!file) return;
+
+    pendingImageFile = file;
+    removeExistingImage = false;
+
+    const preview = document.getElementById('lider-imagen-preview') as HTMLImageElement | null;
+    const wrap = document.getElementById('lider-imagen-preview-wrap');
+    const removeBtn = document.getElementById('lider-imagen-remove');
+
+    if (preview && wrap) {
+      preview.src = URL.createObjectURL(file);
+      wrap.classList.remove('hidden');
+      removeBtn?.classList.remove('hidden');
+    }
+  });
+
+  document.getElementById('lider-imagen-remove')?.addEventListener('click', () => {
+    removeExistingImage = true;
+    pendingImageFile = null;
+
+    const hidden = document.getElementById('field-imagen-url') as HTMLInputElement | null;
+    const preview = document.getElementById('lider-imagen-preview') as HTMLImageElement | null;
+    const wrap = document.getElementById('lider-imagen-preview-wrap');
+    const removeBtn = document.getElementById('lider-imagen-remove');
+    const fileInput = document.getElementById('field-imagen-file') as HTMLInputElement | null;
+
+    if (hidden) hidden.value = '';
+    if (preview) preview.src = '';
+    wrap?.classList.add('hidden');
+    removeBtn?.classList.add('hidden');
+    if (fileInput) fileInput.value = '';
+  });
   
   const clearCookie = (name: string) => {
     document.cookie = `${name}=; path=/; max-age=0; SameSite=Lax`;

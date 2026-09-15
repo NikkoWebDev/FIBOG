@@ -21,6 +21,17 @@ const tipoBadge = tipoColors[grupo.tipo] || tipoColors['Semillero'];
 <div class="bento-card glass rounded-2xl p-6 hover:border-primary/40 transition-all duration-300 group" data-index={index}>
 
   <div class="relative z-10">
+    {grupo.imagen_url && (
+      <div class="mb-4 -mx-1 overflow-hidden rounded-xl border border-border-subtle bg-bg-hover">
+        <img
+          src={grupo.imagen_url}
+          alt={`Imagen de ${grupo.nombre}`}
+          loading="lazy"
+          decoding="async"
+          class="h-40 w-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+        />
+      </div>
+    )}
     <!-- Header -->
     <div class="flex items-start justify-between mb-4">
       <div class="flex-1">
@@ -61,15 +72,6 @@ const tipoBadge = tipoColors[grupo.tipo] || tipoColors['Semillero'];
         <span class="material-symbols-outlined text-base">visibility</span>
         <span>Ver detalles</span>
       </a>
-      {grupo.email && (
-        <a
-          href={`mailto:${grupo.email}`}
-          class="h-10 w-10 rounded-lg flex items-center justify-center bg-bg-hover hover:bg-accent/10 text-text-muted hover:text-accent-light transition-all"
-          onclick="event.stopPropagation();"
-        >
-          <span class="material-symbols-outlined text-base">email</span>
-        </a>
-      )}
     </div>
   </div>
 </div>

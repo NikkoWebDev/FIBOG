@@ -65,14 +65,23 @@ export async function isAdminGrupo() {
 
 // Helper to check if user can manage a specific group
 export async function canManageGroup(groupId: string) {
-  const role = await getUserRole();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return false;
+
+  const { data: profile } = await supabase
+    .from('perfiles')
+    .select('rol')
+    .eq('id', user.id)
+    .single();
+
+  const role = profile?.rol || 'VISITANTE';
   if (role === 'SUPER_ADMIN') return true;
   
   if (role === 'ADMIN_GRUPO') {
     const { data, error } = await supabase
       .from('admin_grupos')
-      .select('*')
-      .eq('usuario_id', (await supabase.auth.getUser()).data.user?.id)
+      .select('id')
+      .eq('usuario_id', user.id)
       .eq('grupo_id', groupId)
       .eq('activo', true)
       .single();
@@ -84,7 +93,7 @@ export async function canManageGroup(groupId: string) {
 
 // Helper to get all groups a user can manage
 export async function getManageableGroups() {
-  const { data, error } = await supabase.rpc('get_manageable_groups');
+  const { data, error } = await (supabase as any).rpc('get_manageable_groups');
   if (error) {
     console.error('Error getting manageable groups:', error);
     return [];
@@ -94,7 +103,7 @@ export async function getManageableGroups() {
 
 // Helper to assign admin to group (SUPER_ADMIN only)
 export async function assignAdminToGroup(usuarioId: string, grupoId: string) {
-  const { data, error } = await supabase.rpc('assign_admin_to_group', {
+  const { data, error } = await (supabase as any).rpc('assign_admin_to_group', {
     target_usuario_id: usuarioId,
     target_grupo_id: grupoId
   });
@@ -107,7 +116,7 @@ export async function assignAdminToGroup(usuarioId: string, grupoId: string) {
 
 // Helper to remove admin from group (SUPER_ADMIN only)
 export async function removeAdminFromGroup(usuarioId: string, grupoId: string) {
-  const { data, error } = await supabase.rpc('remove_admin_from_group', {
+  const { data, error } = await (supabase as any).rpc('remove_admin_from_group', {
     target_usuario_id: usuarioId,
     target_grupo_id: grupoId
   });

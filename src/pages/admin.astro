@@ -76,6 +76,7 @@ export const prerender = false;
 
 <script>
   import { supabase } from '../lib/supabase';
+  import { removeGroupImage, uploadGroupImage } from '../lib/group-images';
 
   // exponer para depuración en consola
   (window as any).supabase = supabase;
@@ -83,6 +84,8 @@ export const prerender = false;
   let allGrupos = [];
   let currentEditingGroup = null;
   let currentManagingGroup = null;
+  let pendingImageFile: File | null = null;
+  let removeExistingImage = false;
 
   async function init() {
     const loadingEl = document.getElementById('admin-loading');
@@ -159,6 +162,7 @@ export const prerender = false;
               <span class="px-2 py-1 rounded-md text-[10px] font-label-mono ${grupo.tipo === 'Semillero' ? 'bg-tertiary/10 text-tertiary' : grupo.tipo === 'Grupo de Investigación' ? 'bg-primary/10 text-primary' : 'bg-secondary/10 text-secondary'}">${grupo.tipo}</span>
               <span class="text-[10px] font-medium uppercase tracking-wider ${grupo.estado_aprobacion === 'aprobado' ? 'text-primary' : 'text-error'}">${grupo.estado_aprobacion}</span>
             </div>
+            ${grupo.imagen_url ? `<div class="mb-3 overflow-hidden rounded-xl border border-border-subtle"><img src="${grupo.imagen_url}" alt="" class="h-28 w-full object-cover" loading="lazy" /></div>` : ''}
             <h3 class="text-lg font-display-lg text-on-surface mb-1 group-hover:text-primary transition-colors">${grupo.nombre}</h3>
             <p class="text-sm text-on-surface-variant line-clamp-2">${grupo.descripcion || 'Sin descripción'}</p>
           </div>
@@ -359,6 +363,7 @@ export const prerender = false;
         nivel_academico_recomendado: solicitud.nivel_academico_recomendado,
         redes_sociales: solicitud.redes_sociales,
         comentarios_adicionales: solicitud.comentarios_adicionales,
+        imagen_url: solicitud.imagen_url || null,
         estado_aprobacion: 'aprobado',
         creado_por: user?.id
       }).select('id').single();
@@ -447,12 +452,71 @@ export const prerender = false;
     currentEditingGroup = null;
     document.getElementById('modal-title').textContent = 'Nuevo Grupo';
     if (document.getElementById('group-form')) document.getElementById('group-form').reset();
+    resetGroupImageUI();
     document.getElementById('group-modal').classList.remove('hidden');
   }
 
   window.closeGroupModal = function() {
     document.getElementById('group-modal').classList.add('hidden');
+    pendingImageFile = null;
+    removeExistingImage = false;
   }
+
+  function setGroupImageUI(url: string) {
+    pendingImageFile = null;
+    removeExistingImage = false;
+    const hidden = document.getElementById('group-imagen-url') as HTMLInputElement | null;
+    const preview = document.getElementById('group-imagen-preview') as HTMLImageElement | null;
+    const wrap = document.getElementById('group-imagen-preview-wrap');
+    const removeBtn = document.getElementById('group-imagen-remove');
+    const fileInput = document.getElementById('group-imagen-file') as HTMLInputElement | null;
+    if (hidden) hidden.value = url || '';
+    if (fileInput) fileInput.value = '';
+    if (url && preview && wrap) {
+      preview.src = url;
+      wrap.classList.remove('hidden');
+      removeBtn?.classList.remove('hidden');
+    } else {
+      if (preview) preview.src = '';
+      wrap?.classList.add('hidden');
+      removeBtn?.classList.add('hidden');
+    }
+  }
+
+  function resetGroupImageUI() {
+    setGroupImageUI('');
+  }
+
+  window.clearGroupImage = function() {
+    removeExistingImage = true;
+    pendingImageFile = null;
+    const hidden = document.getElementById('group-imagen-url') as HTMLInputElement | null;
+    const preview = document.getElementById('group-imagen-preview') as HTMLImageElement | null;
+    const wrap = document.getElementById('group-imagen-preview-wrap');
+    const removeBtn = document.getElementById('group-imagen-remove');
+    const fileInput = document.getElementById('group-imagen-file') as HTMLInputElement | null;
+    if (hidden) hidden.value = '';
+    if (preview) preview.src = '';
+    wrap?.classList.add('hidden');
+    removeBtn?.classList.add('hidden');
+    if (fileInput) fileInput.value = '';
+  };
+
+  document.getElementById('group-imagen-file')?.addEventListener('change', (event) => {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0] || null;
+    if (!file) return;
+    pendingImageFile = file;
+    removeExistingImage = false;
+    const preview = document.getElementById('group-imagen-preview') as HTMLImageElement | null;
+    const wrap = document.getElementById('group-imagen-preview-wrap');
+    const removeBtn = document.getElementById('group-imagen-remove');
+    if (preview && wrap) {
+      preview.src = URL.createObjectURL(file);
+      wrap.classList.remove('hidden');
+      removeBtn?.classList.remove('hidden');
+    }
+  });
 
   window.filterGrupos = function() {
     const term = document.getElementById('search-grupos').value.toLowerCase();
@@ -521,6 +585,18 @@ export const prerender = false;
         return;
       }
       
+      const previousImageUrl = String(groupData.imagen_url || '').trim() || null;
+      let nextImageUrl = previousImageUrl;
+      if (removeExistingImage) {
+        if (previousImageUrl) await removeGroupImage(previousImageUrl);
+        nextImageUrl = null;
+      }
+      if (pendingImageFile) {
+        if (previousImageUrl && !removeExistingImage) await removeGroupImage(previousImageUrl);
+        nextImageUrl = await uploadGroupImage(pendingImageFile, String(groupData.nombre || 'grupo'));
+      }
+      groupData.imagen_url = nextImageUrl;
+
       if (currentEditingGroup) {
         const { error } = await supabase
           .from('grupos')
@@ -543,13 +619,15 @@ export const prerender = false;
         if (error) throw error;
       }
       
+      pendingImageFile = null;
+      removeExistingImage = false;
       closeGroupModal();
       await loadGrupos();
       await loadStats();
       showNotification(currentEditingGroup ? 'Grupo actualizado' : 'Grupo creado', 'success');
     } catch (error) {
       console.error('Error saving group:', error);
-      showNotification('Error al guardar el grupo', 'error');
+      showNotification(error?.message || 'Error al guardar el grupo', 'error');
     }
   }
 
@@ -561,13 +639,8 @@ export const prerender = false;
     }
 
     try {
-      const { data: group, error } = await supabase
-        .from('grupos')
-        .select('*')
-        .eq('id', groupId)
-        .single();
-      if (error || !group) {
-        console.error('Error loading group:', error);
+      const group = allGrupos.find((g) => g.id === groupId);
+      if (!group) {
         showNotification('Error al cargar el grupo', 'error');
         return;
       }
@@ -577,8 +650,11 @@ export const prerender = false;
       const form = document.getElementById('group-form');
       Object.keys(group).forEach(key => {
         const input = form.elements[key];
-        if (input) input.value = group[key] || '';
+        if (!input) return;
+        const value = group[key];
+        input.value = Array.isArray(value) ? value.join(', ') : (value ?? '');
       });
+      setGroupImageUI(group.imagen_url || '');
       document.getElementById('group-modal').classList.remove('hidden');
     } catch (error) {
       console.error('Error loading group:', error);

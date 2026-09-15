@@ -1,5 +1,15 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import { fetchApprovedCatalog } from '../lib/grupos';
+
+export const prerender = false;
+
+const { metadata } = await fetchApprovedCatalog();
+const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
+  day: 'numeric',
+  month: 'long',
+  year: 'numeric',
+});
 ---
 
 <Layout title="Registrar Grupo | Base de Datos Ingenieria" description="Postula tu semillero o grupo de investigación" activePage="registro" hideFooter={true}>
@@ -10,7 +20,7 @@ import Layout from '../layouts/Layout.astro';
     <div class="absolute bottom-0 left-0 w-[40%] h-[40%] bg-accent/5 rounded-full blur-[120px] will-change-transform blob"></div>
     
     <div class="relative z-10 max-w-4xl mx-auto">
-      <p class="text-[11px] tracking-widest uppercase text-text-secondary/80 font-medium mb-4" id="last-update">Última actualización: 2 de septiembre de 2026</p>
+      <p class="text-[11px] tracking-widest uppercase text-text-secondary/80 font-medium mb-4" id="last-update">Última actualización: {ultimaTexto}</p>
       <!-- Header -->
       <div class="text-center mb-8" id="reg-header">
         <div class="inline-flex items-center gap-2 mb-4 px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
@@ -311,14 +321,17 @@ import Layout from '../layouts/Layout.astro';
             
             <div>
               <label class="block text-text-primary text-sm font-semibold mb-2">
-                Redes Sociales / Sitio Web
+                Link de la web o red social del grupo
               </label>
-              <input 
-                type="text" 
+              <input
+                type="url"
                 name="redes_sociales"
-                placeholder="Instagram, Twitter, página web..."
+                placeholder="https://instagram.com/tu-grupo"
+                inputmode="url"
+                autocomplete="url"
                 class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
               />
+              <p class="text-xs text-text-muted mt-2">Un solo enlace. Preferible la pagina web o el perfil principal del grupo.</p>
             </div>
             
             <div>
@@ -388,15 +401,7 @@ import Layout from '../layouts/Layout.astro';
 </Layout>
 
 <script>
-  import { supabase } from '../lib/supabase';
-
-  // Blobs flotando - no oculta contenido, el formulario siempre es visible
-  (function(){
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (typeof gsap !== 'undefined' && !reduced) {
-      gsap.to('.blob', { y:-20, x:14, duration:7, yoyo:true, repeat:-1, ease:'sine.inOut', stagger:0.9 });
-    }
-  })();
+  import { uploadGroupImage } from '../lib/group-images';
 
   const form = document.getElementById('registro-form');
   const errorMessage = document.getElementById('error-message');
@@ -413,8 +418,6 @@ import Layout from '../layouts/Layout.astro';
     if (!file || !imagenPreview) return;
     imagenPreview.src = URL.createObjectURL(file);
     imagenPreview.classList.remove('hidden');
-    // lazy already, fade in
-    if (typeof gsap !== 'undefined') gsap.fromTo(imagenPreview, {opacity:0, scale:0.98}, {opacity:1, scale:1, duration:0.4});
   });
 
   const isUnalEmail = (email: string): boolean =>
@@ -424,9 +427,6 @@ import Layout from '../layouts/Layout.astro';
     errorMessage!.textContent = msg;
     errorMessage?.classList.remove('hidden');
     successMessage?.classList.add('hidden');
-    if (typeof gsap !== 'undefined') {
-      gsap.fromTo(errorMessage, {opacity:0, x:-8}, {opacity:1, x:0, duration:0.35, ease:'power2.out'});
-    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -473,14 +473,7 @@ import Layout from '../layouts/Layout.astro';
     try {
       const file = imagenInput?.files?.[0];
       if (file) {
-        if (file.size > 5 * 1024 * 1024) throw new Error('La imagen supera el máximo de 5 MB.');
-        const ext = file.name.split('.').pop()?.toLowerCase() || 'jpg';
-        const slug = String(data.nombre || 'grupo').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-        const path = `${slug}-${Date.now()}.${ext}`;
-        const { error: upErr } = await supabase.storage.from('imagenes-grupos').upload(path, file, { contentType: file.type });
-        if (upErr) throw new Error('No se pudo subir la imagen: ' + upErr.message);
-        const { data: pub } = supabase.storage.from('imagenes-grupos').getPublicUrl(path);
-        data.imagen_url = pub.publicUrl;
+        data.imagen_url = await uploadGroupImage(file, String(data.nombre || 'grupo'));
       }
 
       const response = await fetch('/api/notify', {
@@ -500,7 +493,6 @@ import Layout from '../layouts/Layout.astro';
         ? `Solicitud guardada. ${emailWarning}`
         : 'Solicitud enviada exitosamente! Será notificado cuando sea revisada.';
       successMessage?.classList.remove('hidden');
-      if (typeof gsap !== 'undefined') gsap.fromTo(successMessage, {opacity:0, y:8}, {opacity:1, y:0, duration:0.4});
 
       (form as HTMLFormElement).reset();
       window.scrollTo({ top: 0, behavior: 'smooth' });

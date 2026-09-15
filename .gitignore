@@ -36,3 +36,6 @@ pnpm-debug.log*
 lerna-debug.log*
 
 STITCH DESIGNS/
+
+# Credenciales locales (no subir)
+lideres-grupos.csv

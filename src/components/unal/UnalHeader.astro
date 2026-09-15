@@ -33,6 +33,8 @@ const navItems = [
           {navItems.map((item) => (
             <a
               href={item.url}
+              id={item.page === 'registro' ? 'nav-registro-desktop' : undefined}
+              data-nav-registro={item.page === 'registro' ? 'true' : undefined}
               class:list={[
                 'px-4 py-2 rounded-lg text-sm font-medium transition-all',
                 activePage === item.page
@@ -126,6 +128,8 @@ const navItems = [
         <nav aria-label="Principal movil" class="space-y-1">
           {navItems.map((item) => (
             <a href={item.url}
+               id={item.page === 'registro' ? 'nav-registro-mobile' : undefined}
+               data-nav-registro={item.page === 'registro' ? 'true' : undefined}
                class:list={[
                  'block px-4 py-3 rounded-lg text-sm font-medium transition-all',
                  activePage === item.page
@@ -283,8 +287,10 @@ const navItems = [
   });
 
   // ---- Auth ----
-  async function updateAuthState() {
-    const { data: { user } } = await supabase.auth.getUser();
+  async function updateAuthState(currentUser?: { id: string } | null) {
+    const user = currentUser === undefined
+      ? (await supabase.auth.getUser()).data.user
+      : currentUser;
 
     const loginBtnD = document.getElementById('auth-login-btn-desktop');
     const userMenuD = document.getElementById('auth-user-menu-desktop');
@@ -324,11 +330,25 @@ const navItems = [
         adminLinkD?.classList.remove('hidden');
         adminLinkM?.classList.remove('hidden');
       }
+
+      const manageHref = role === 'SUPER_ADMIN' ? '/admin' : '/lider';
+      const manageLabel = role === 'SUPER_ADMIN' ? 'Administrar' : 'Administrar mi grupo';
+      document.querySelectorAll('[data-nav-registro="true"]').forEach((el) => {
+        const link = el as HTMLAnchorElement;
+        link.href = manageHref;
+        link.textContent = manageLabel;
+      });
     } else {
       loginBtnD?.classList.remove('hidden');
       userMenuD?.classList.add('hidden');
       loginBtnM?.classList.remove('hidden');
       userMenuM?.classList.add('hidden');
+
+      document.querySelectorAll('[data-nav-registro="true"]').forEach((el) => {
+        const link = el as HTMLAnchorElement;
+        link.href = '/registro';
+        link.textContent = 'Registro';
+      });
     }
   }
 
@@ -340,5 +360,5 @@ const navItems = [
   document.getElementById('logout-btn-mobile')?.addEventListener('click', doLogout);
 
   updateAuthState();
-  supabase.auth.onAuthStateChange(() => updateAuthState());
+  supabase.auth.onAuthStateChange((_event, session) => updateAuthState(session?.user ?? null));
 </script>

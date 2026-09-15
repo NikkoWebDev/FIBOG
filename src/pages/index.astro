@@ -4,13 +4,12 @@ import AISearch from '../components/AISearch.astro';
 import FilterBar from '../components/FilterBar.astro';
 import BentoGrid from '../components/BentoGrid.astro';
 
-import { buildMetadata, fetchApprovedGrupos } from '../lib/grupos';
+import { fetchApprovedCatalog } from '../lib/grupos';
 import { filtrarGrupos } from '../data/grupos.types';
 
 export const prerender = false;
 
-const allGrupos = await fetchApprovedGrupos();
-const metadata = buildMetadata(allGrupos);
+const { grupos: allGrupos, metadata } = await fetchApprovedCatalog();
 
 const url = Astro.url;
 const tipoFilter = url.searchParams.get('tipo');
@@ -122,8 +121,8 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
 
       <FilterBar
         metadata={{...metadata, total: filteredGrupos.length}}
-        activeTipo={tipoFilter}
-        activeCarrera={carreraFilter}
+        activeTipo={tipoFilter || undefined}
+        activeCarrera={carreraFilter || undefined}
       />
 
       {(tipoFilter || carreraFilter || searchQuery) && (
@@ -154,6 +153,11 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
     </div>
   </main>
 
+  <Fragment slot="head">
+    <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  </Fragment>
+
   <script is:inline>
     // GSAP hero stagger + reduced motion guard + lazy reveal
     (function(){
@@ -173,14 +177,10 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
         .fromTo('#hero-cta', { opacity:0, y:10 }, { opacity:1, y:0, duration:0.5 }, 0.35)
         .fromTo('#hero-stats', { opacity:0, y:10 }, { opacity:1, y:0, duration:0.5 }, 0.45)
         .fromTo('#intro-text', { opacity:0, y:10 }, { opacity:1, y:0, duration:0.5 }, 0.55);
-      gsap.utils.toArray('#catalogo').forEach(el=>{
-        gsap.from(el, { opacity:0, y:16, duration:0.6, scrollTrigger:{ trigger:el, start:'top 85%' }});
-      });
-      // hover suave para CTAs
-      document.querySelectorAll('a, button').forEach(el=>{
-        el.addEventListener('mouseenter', ()=> gsap.to(el, { scale:1.01, duration:0.15, ease:'power1.out' }));
-        el.addEventListener('mouseleave', ()=> gsap.to(el, { scale:1, duration:0.2, ease:'power1.out' }));
-      });
+      const catalogo = document.getElementById('catalogo');
+      if (catalogo) {
+        gsap.from(catalogo, { opacity:0, y:16, duration:0.6, scrollTrigger:{ trigger:catalogo, start:'top 85%' }});
+      }
     })();
   </script>
 </Layout>

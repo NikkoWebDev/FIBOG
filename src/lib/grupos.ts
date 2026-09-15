@@ -3,13 +3,20 @@ import type { Database } from './database.types';
 import type { Grupo, Metadata } from '../data/grupos.types';
 
 export type DbGrupo = Database['public']['Tables']['grupos']['Row'];
+type CatalogGrupo = Pick<DbGrupo,
+  | 'id' | 'tipo' | 'carreras' | 'nombre' | 'docente_a_cargo'
+  | 'lider_o_representante' | 'email_contacto' | 'vinculacion' | 'enfoque'
+  | 'descripcion' | 'actividades' | 'modalidad' | 'horarios_habituales'
+  | 'requisitos_ingreso' | 'nivel_academico_recomendado' | 'redes_sociales'
+  | 'comentarios_adicionales' | 'imagen_url'
+>;
 
 function text(value: string | null | undefined): string {
   return (value || '').trim();
 }
 
 /** Mapea fila de Supabase al shape publico que usan cards/detalle/filtros. */
-export function mapDbGrupoToPublic(row: DbGrupo): Grupo {
+export function mapDbGrupoToPublic(row: CatalogGrupo): Grupo {
   const carreras = Array.isArray(row.carreras) ? row.carreras.filter(Boolean) : [];
 
   return {
@@ -31,6 +38,7 @@ export function mapDbGrupoToPublic(row: DbGrupo): Grupo {
     nivel_academico: text(row.nivel_academico_recomendado),
     redes: text(row.redes_sociales),
     comentarios: text(row.comentarios_adicionales),
+    imagen_url: text(row.imagen_url) || undefined,
   };
 }
 
@@ -60,26 +68,46 @@ function serverClient() {
 
 /** Grupos aprobados para el catalogo publico. */
 export async function fetchApprovedGrupos(): Promise<Grupo[]> {
+  const { grupos } = await fetchApprovedCatalog();
+  return grupos;
+}
+
+/** Catalogo + fecha real de ultima edicion en DB. */
+export async function fetchApprovedCatalog(): Promise<{ grupos: Grupo[]; metadata: Metadata }> {
   const client = serverClient() || supabase;
   const { data, error } = await client
     .from('grupos')
-    .select('*')
+    .select('id,tipo,carreras,nombre,docente_a_cargo,lider_o_representante,email_contacto,vinculacion,enfoque,descripcion,actividades,modalidad,horarios_habituales,requisitos_ingreso,nivel_academico_recomendado,redes_sociales,comentarios_adicionales,imagen_url,fecha_actualizacion,fecha_creacion')
     .eq('estado_aprobacion', 'aprobado')
     .order('nombre');
 
   if (error) {
-    console.error('fetchApprovedGrupos:', error.message);
-    return [];
+    console.error('fetchApprovedCatalog:', error.message);
+    return { grupos: [], metadata: buildMetadata([]) };
   }
 
-  return (data || []).map(mapDbGrupoToPublic);
+  const rows = data || [];
+  let latest = '';
+  for (const row of rows) {
+    const ts = row.fecha_actualizacion || row.fecha_creacion || '';
+    if (ts > latest) latest = ts;
+  }
+
+  const grupos = rows.map(mapDbGrupoToPublic);
+  return {
+    grupos,
+    metadata: {
+      ...buildMetadata(grupos),
+      actualizado: latest || new Date().toISOString(),
+    },
+  };
 }
 
 export async function fetchApprovedGrupoById(id: string): Promise<Grupo | null> {
   const client = serverClient() || supabase;
   const { data, error } = await client
     .from('grupos')
-    .select('*')
+    .select('id,tipo,carreras,nombre,docente_a_cargo,lider_o_representante,email_contacto,vinculacion,enfoque,descripcion,actividades,modalidad,horarios_habituales,requisitos_ingreso,nivel_academico_recomendado,redes_sociales,comentarios_adicionales,imagen_url,fecha_actualizacion,fecha_creacion')
     .eq('id', id)
     .eq('estado_aprobacion', 'aprobado')
     .maybeSingle();

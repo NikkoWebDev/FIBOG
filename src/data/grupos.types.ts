@@ -26,6 +26,7 @@ export interface Grupo {
   nivel_academico: NivelAcademico | string;
   redes: string;
   comentarios: string;
+  imagen_url?: string;
 }
 
 export interface Metadata {
@@ -82,10 +83,11 @@ export function filtrarGrupos(
     if (filtros.tipo && !g.tipo.toLowerCase().includes(filtros.tipo.toLowerCase())) {
       return false;
     }
-    if (filtros.carrera && !g.carreras.some(c => 
-      c.toLowerCase().includes(filtros.carrera.toLowerCase())
-    )) {
-      return false;
+    if (filtros.carrera) {
+      const carrera = filtros.carrera.toLowerCase();
+      if (!g.carreras.some(c => c.toLowerCase().includes(carrera))) {
+        return false;
+      }
     }
     if (filtros.busqueda) {
       const search = filtros.busqueda.toLowerCase();

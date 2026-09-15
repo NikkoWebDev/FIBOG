@@ -99,13 +99,33 @@
           </div>
 
           <div class="flex flex-col gap-2">
-            <label class="font-label-mono text-text-secondary text-[10px] uppercase px-1">REDES SOCIALES</label>
-            <input type="text" name="redes_sociales" placeholder="Instagram, Twitter, LinkedIn" class="input-glass rounded-xl px-4 py-3 text-text-primary font-body-base" />
+            <label class="font-label-mono text-text-secondary text-[10px] uppercase px-1">LINK WEB / RED SOCIAL</label>
+            <input type="url" name="redes_sociales" placeholder="https://instagram.com/tu-grupo" inputmode="url" autocomplete="url" class="input-glass rounded-xl px-4 py-3 text-text-primary font-body-base" />
+            <p class="text-[11px] text-text-muted">Un solo enlace (pagina web o perfil principal).</p>
           </div>
 
           <div class="flex flex-col gap-2">
             <label class="font-label-mono text-text-secondary text-[10px] uppercase px-1">COMENTARIOS ADICIONALES</label>
             <textarea name="comentarios_adicionales" rows="2" class="input-glass rounded-xl px-4 py-3 text-text-primary font-body-base"></textarea>
+          </div>
+
+          <div class="flex flex-col gap-3">
+            <label class="font-label-mono text-text-secondary text-[10px] uppercase px-1">IMAGEN DEL GRUPO</label>
+            <input type="hidden" name="imagen_url" id="group-imagen-url" value="" />
+            <div id="group-imagen-preview-wrap" class="hidden overflow-hidden rounded-xl border border-border-subtle bg-bg-hover">
+              <img id="group-imagen-preview" src="" alt="Vista previa" class="h-44 w-full object-cover" />
+            </div>
+            <div class="flex flex-wrap gap-3">
+              <label class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-bg-hover border border-border-default text-sm text-text-primary cursor-pointer hover:border-primary/40 transition-all">
+                <span class="material-symbols-outlined text-base">upload</span>
+                Subir / actualizar
+                <input id="group-imagen-file" type="file" accept="image/png,image/jpeg,image/webp,image/gif" class="hidden" />
+              </label>
+              <button type="button" id="group-imagen-remove" onclick="clearGroupImage()" class="hidden px-4 py-2.5 rounded-xl border border-error/30 text-error text-sm hover:bg-error/10 transition-all">
+                Quitar imagen
+              </button>
+            </div>
+            <p class="text-xs text-text-muted">JPG/PNG/WEBP/GIF · max 5 MB. Se muestra en el catalogo publico.</p>
           </div>
 
           <div class="flex justify-end gap-4 mt-8">

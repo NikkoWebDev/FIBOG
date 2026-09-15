@@ -69,6 +69,7 @@ export type Database = {
           horarios_habituales: string | null
           id: string
           id_lider: string | null
+          imagen_url: string | null
           lider_o_representante: string | null
           modalidad: string | null
           nivel_academico_recomendado: string | null
@@ -93,6 +94,7 @@ export type Database = {
           horarios_habituales?: string | null
           id?: string
           id_lider?: string | null
+          imagen_url?: string | null
           lider_o_representante?: string | null
           modalidad?: string | null
           nivel_academico_recomendado?: string | null
@@ -117,6 +119,7 @@ export type Database = {
           horarios_habituales?: string | null
           id?: string
           id_lider?: string | null
+          imagen_url?: string | null
           lider_o_representante?: string | null
           modalidad?: string | null
           nivel_academico_recomendado?: string | null
