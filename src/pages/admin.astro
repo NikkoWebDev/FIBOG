@@ -781,17 +781,108 @@ export const prerender = false;
     currentManagingGroup = null;
   }
 
+  let allUsersForPicker: Array<{ id: string; nombre_completo: string | null; email: string; rol: string }> = [];
+
+  function userLabel(user: { nombre_completo: string | null; email: string; rol: string }) {
+    return `${user.nombre_completo || user.email} (${user.rol})`;
+  }
+
+  function escapeOptionText(value: string | null): string {
+    return String(value || '').replace(/[&<>"']/g, (c) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+    })[c] || c);
+  }
+
+  function setSelectedUser(user: { id: string; nombre_completo: string | null; email: string; rol: string } | null) {
+    const hidden = document.getElementById('user-select') as HTMLInputElement | null;
+    const search = document.getElementById('user-search') as HTMLInputElement | null;
+    const hint = document.getElementById('user-selected-hint');
+    if (hidden) hidden.value = user?.id || '';
+    if (search && user) search.value = user.nombre_completo || user.email;
+    if (hint) hint.textContent = user ? `Seleccionado: ${userLabel(user)}` : 'Escribe para buscar. Ningún usuario seleccionado.';
+  }
+
+  function renderUserOptions(filter = '') {
+    const list = document.getElementById('user-options');
+    if (!list) return;
+    const term = filter.trim().toLowerCase();
+    const matches = allUsersForPicker
+      .filter((user) => {
+        if (!term) return true;
+        return (user.nombre_completo || '').toLowerCase().includes(term)
+          || user.email.toLowerCase().includes(term);
+      })
+      .slice(0, 50);
+
+    if (matches.length === 0) {
+      list.innerHTML = '<li class="px-4 py-3 text-sm text-on-surface-variant">Sin resultados</li>';
+    } else {
+      list.innerHTML = matches.map((user) => `
+        <li role="option" aria-selected="false" data-user-id="${user.id}" tabindex="0"
+            class="px-4 py-2.5 rounded-lg text-sm text-text-primary cursor-pointer hover:bg-bg-hover focus:bg-bg-hover focus:outline-none">
+          <span class="font-medium">${escapeOptionText(user.nombre_completo || user.email)}</span>
+          <span class="text-on-surface-variant text-xs ml-2">${escapeOptionText(user.email)} · ${escapeOptionText(user.rol)}</span>
+        </li>
+      `).join('');
+    }
+
+    list.querySelectorAll('[data-user-id]').forEach((item) => {
+      const pick = () => {
+        const user = allUsersForPicker.find((u) => u.id === (item as HTMLElement).dataset.userId);
+        if (user) setSelectedUser(user);
+        list.classList.add('hidden');
+        (document.getElementById('user-search') as HTMLInputElement | null)?.setAttribute('aria-expanded', 'false');
+      };
+      item.addEventListener('click', pick);
+      item.addEventListener('keydown', (e) => {
+        if ((e as KeyboardEvent).key === 'Enter' || (e as KeyboardEvent).key === ' ') {
+          e.preventDefault();
+          pick();
+        }
+      });
+    });
+  }
+
+  function openUserOptions() {
+    const list = document.getElementById('user-options');
+    const search = document.getElementById('user-search') as HTMLInputElement | null;
+    renderUserOptions(search?.value || '');
+    list?.classList.remove('hidden');
+    search?.setAttribute('aria-expanded', 'true');
+  }
+
+  function closeUserOptions() {
+    document.getElementById('user-options')?.classList.add('hidden');
+    (document.getElementById('user-search') as HTMLInputElement | null)?.setAttribute('aria-expanded', 'false');
+  }
+
+  document.getElementById('user-search')?.addEventListener('input', () => {
+    setSelectedUser(null);
+    openUserOptions();
+  });
+  document.getElementById('user-search')?.addEventListener('focus', openUserOptions);
+  document.getElementById('user-search')?.addEventListener('keydown', (e) => {
+    if ((e as KeyboardEvent).key === 'Escape') closeUserOptions();
+    if ((e as KeyboardEvent).key === 'ArrowDown') {
+      e.preventDefault();
+      openUserOptions();
+      document.querySelector('#user-options [data-user-id]')?.focus();
+    }
+  });
+  document.addEventListener('click', (e) => {
+    const picker = (e.target as HTMLElement).closest?.('[data-user-picker]');
+    if (!picker) closeUserOptions();
+  });
+
   async function loadUserSelect() {
     const { data: users } = await supabase.from('perfiles').select('id, nombre_completo, email, rol').order('nombre_completo');
     if (!users) return;
 
-    const select = document.getElementById('user-select');
-    select.innerHTML = '<option value="">Seleccionar usuario...</option>';
-    users.forEach(user => {
-      if (user.rol !== 'SUPER_ADMIN') {
-        select.innerHTML += `<option value="${user.id}">${user.nombre_completo || user.email} (${user.rol})</option>`;
-      }
-    });
+    allUsersForPicker = users.filter((user) => user.rol !== 'SUPER_ADMIN');
+    setSelectedUser(null);
+    const search = document.getElementById('user-search') as HTMLInputElement | null;
+    if (search) search.value = '';
+    renderUserOptions('');
   }
 
   async function loadCurrentAdmins(groupId) {
@@ -829,11 +920,11 @@ export const prerender = false;
   }
 
   window.addAdminToGroup = async function() {
-    const userId = document.getElementById('user-select').value;
-    
+    const userId = (document.getElementById('user-select') as HTMLInputElement | null)?.value || '';
+
     // Validate inputs
     if (!userId || typeof userId !== 'string' || userId.length !== 36) {
-      showNotification('Usuario inválido', 'error');
+      showNotification('Busca y selecciona un usuario de la lista primero', 'error');
       return;
     }
     

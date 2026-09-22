@@ -88,6 +88,16 @@ export const prerender = false;
       
       <!-- Group Form -->
       <div id="group-form" class="hidden space-y-6">
+        <!-- Group selector (solo si el líder gestiona varios grupos) -->
+        <div id="group-selector-wrap" class="hidden card rounded-2xl px-5 py-4">
+          <label for="group-selector" class="block text-text-secondary text-xs font-medium mb-2 font-label-mono uppercase tracking-wider">
+            Grupo a editar
+          </label>
+          <select
+            id="group-selector"
+            class="w-full px-4 py-3 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all cursor-pointer"
+          ></select>
+        </div>
         <!-- Group Info Card -->
         <div class="card rounded-3xl p-6 md:p-8 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl"></div>
@@ -314,7 +324,8 @@ export const prerender = false;
           
           <button 
             id="save-btn"
-            class="flex-1 py-3.5 px-6 rounded-xl bg-gradient-to-r from-primary to-accent text-white font-bold hover:opacity-90 transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2"
+            type="button"
+            class="flex-1 py-3.5 px-6 rounded-xl bg-gradient-to-r from-primary to-accent text-white font-bold hover:opacity-90 transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
           >
             <span class="material-symbols-outlined">save</span>
             <span id="save-text">Guardar Cambios</span>
@@ -339,9 +350,58 @@ export const prerender = false;
   import { removeGroupImage, uploadGroupImage } from '../lib/group-images';
   
   let groupId: string | null = null;
+  let managedGroups: Array<Record<string, any>> = [];
   let pendingImageFile: File | null = null;
   let removeExistingImage = false;
   let currentImageUrl: string | null = null;
+  let saving = false;
+
+  // Columnas que el líder puede editar. Nunca se envían id, id_lider,
+  // estado_aprobacion, creado_por ni marcas de tiempo (las protege RLS).
+  const EDITABLE_COLUMNS = [
+    'nombre',
+    'docente_a_cargo',
+    'email_contacto',
+    'lider_o_representante',
+    'enfoque',
+    'descripcion',
+    'modalidad',
+    'horarios_habituales',
+    'actividades',
+    'requisitos_ingreso',
+    'redes_sociales',
+    'comentarios_adicionales',
+    'imagen_url',
+  ];
+
+  const FIELD_MAP: Record<string, string> = {
+    nombre: 'field-nombre',
+    docente_a_cargo: 'field-docente',
+    email_contacto: 'field-email',
+    lider_o_representante: 'field-lider',
+    enfoque: 'field-enfoque',
+    descripcion: 'field-descripcion',
+    modalidad: 'field-modalidad',
+    horarios_habituales: 'field-horarios',
+    actividades: 'field-actividades',
+    requisitos_ingreso: 'field-requisitos',
+    redes_sociales: 'field-redes',
+    comentarios_adicionales: 'field-comentarios',
+  };
+
+  function friendlySaveError(error: any): string {
+    const raw = String(error?.message || error || '');
+    if (/row-level security|RLS|policy|permission|not authorized|JWT/i.test(raw)) {
+      return 'Sin permiso para actualizar este grupo. Tu cuenta de líder no está vinculada al grupo: contacta al administrador.';
+    }
+    if (/imagen|storage|bucket|5 MB|Formato no soportado/i.test(raw)) {
+      return raw;
+    }
+    if (/network|fetch|Failed to fetch|Load failed/i.test(raw)) {
+      return 'Error de red. Revisa tu conexión e inténtalo de nuevo.';
+    }
+    return raw || 'Error al guardar los cambios. Inténtalo de nuevo.';
+  }
 
   function setLiderImageUI(url: string | null) {
     currentImageUrl = url || null;
@@ -403,68 +463,122 @@ export const prerender = false;
     return user.id;
   }
   
-  // Load group data
+  // Load group data (por id_lider y/o tabla admin_grupos)
   async function loadGroup(userId: string) {
-    const { data, error } = await supabase
+    let byLider: Array<Record<string, any>> = [];
+    let byAsignacion: Array<Record<string, any>> = [];
+
+    const { data: liderRows, error: liderError } = await supabase
       .from('grupos')
       .select('*')
-      .eq('id_lider', userId)
-      .single();
-    
+      .eq('id_lider', userId);
+
+    if (!liderError && Array.isArray(liderRows)) byLider = liderRows;
+
+    // admin_grupos puede no existir en despliegues antiguos: se ignora el error
+    try {
+      const { data: asignaciones, error: asignError } = await supabase
+        .from('admin_grupos')
+        .select('grupo_id, grupos(*)')
+        .eq('usuario_id', userId)
+        .eq('activo', true);
+      if (!asignError && Array.isArray(asignaciones)) {
+        byAsignacion = asignaciones
+          .map((a: any) => a.grupos)
+          .filter((g: any) => g && g.id);
+      }
+    } catch {
+      byAsignacion = [];
+    }
+
+    const merged = new Map<string, Record<string, any>>();
+    [...byLider, ...byAsignacion].forEach((g) => {
+      if (g && g.id && !merged.has(g.id)) merged.set(g.id, g);
+    });
+    managedGroups = [...merged.values()];
+
     document.getElementById('loading-state')!.classList.add('hidden');
-    
-    if (error || !data) {
+
+    if (managedGroups.length === 0) {
+      if (liderError) console.error('loadGroup:', liderError);
       document.getElementById('no-group-state')!.classList.remove('hidden');
       return;
     }
-    
-    groupId = data.id;
-    
-    // Fill form fields
-    const fieldMap: Record<string, string> = {
-      nombre: 'field-nombre',
-      docente_a_cargo: 'field-docente',
-      email_contacto: 'field-email',
-      lider_o_representante: 'field-lider',
-      enfoque: 'field-enfoque',
-      descripcion: 'field-descripcion',
-      modalidad: 'field-modalidad',
-      horarios_habituales: 'field-horarios',
-      actividades: 'field-actividades',
-      requisitos_ingreso: 'field-requisitos',
-      redes_sociales: 'field-redes',
-      comentarios_adicionales: 'field-comentarios',
-    };
 
-    Object.entries(fieldMap).forEach(([column, elementId]) => {
+    renderGroupSelector();
+    fillGroupForm(managedGroups[0]);
+
+    // Show form
+    document.getElementById('group-form')!.classList.remove('hidden');
+  }
+
+  function renderGroupSelector() {
+    const wrap = document.getElementById('group-selector-wrap');
+    const select = document.getElementById('group-selector') as HTMLSelectElement | null;
+    if (!wrap || !select) return;
+
+    if (managedGroups.length < 2) {
+      wrap.classList.add('hidden');
+      return;
+    }
+
+    wrap.classList.remove('hidden');
+    select.innerHTML = managedGroups
+      .map((g) => `<option value="${g.id}">${escapeHtml(String(g.nombre || 'Sin nombre'))}</option>`)
+      .join('');
+    select.value = groupId || managedGroups[0].id;
+    select.onchange = () => {
+      const next = managedGroups.find((g) => g.id === select.value);
+      if (next) fillGroupForm(next);
+    };
+  }
+
+  function escapeHtml(value: string): string {
+    return value.replace(/[&<>"']/g, (c) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+    })[c] || c);
+  }
+
+  function fillGroupForm(data: Record<string, any>) {
+    groupId = data.id;
+
+    Object.entries(FIELD_MAP).forEach(([column, elementId]) => {
       const element = document.getElementById(elementId) as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | null;
       if (element) element.value = (data as Record<string, string | null>)[column] || '';
     });
 
     setLiderImageUI(data.imagen_url || null);
-    
+
     // Set type badge and icon
     const typeBadge = document.getElementById('group-type-badge');
     const typeIcon = document.getElementById('group-type-icon');
-    
-    if (typeBadge) typeBadge.textContent = data.tipo;
-    
+
+    if (typeBadge) typeBadge.textContent = data.tipo || '-';
+
     const icons: Record<string, string> = {
       'Semillero': 'school',
       'Grupo de Investigación': 'science',
       'Grupo Estudiantil': 'groups'
     };
     if (typeIcon) typeIcon.textContent = icons[data.tipo] || 'groups';
-    
-    // Show form
-    document.getElementById('group-form')!.classList.remove('hidden');
+
+    const selector = document.getElementById('group-selector') as HTMLSelectElement | null;
+    if (selector && data.id) selector.value = data.id;
+
+    hideFormMessages();
+  }
+
+  function hideFormMessages() {
+    document.getElementById('error-message')?.classList.add('hidden');
+    document.getElementById('success-message')?.classList.add('hidden');
   }
   
   // Save changes
   async function saveChanges() {
-    if (!groupId) return;
-    
-    const saveBtn = document.getElementById('save-btn');
+    if (!groupId || saving) return;
+    saving = true;
+
+    const saveBtn = document.getElementById('save-btn') as HTMLButtonElement | null;
     const saveText = document.getElementById('save-text');
     const saveSpinner = document.getElementById('save-spinner');
     const errorMessage = document.getElementById('error-message');
@@ -478,24 +592,36 @@ export const prerender = false;
     successMessage?.classList.add('hidden');
     
     try {
-      // Collect data from both forms
+      // Collect data from both forms (solo columnas editables)
       const mainForm = document.getElementById('edit-group-form') as HTMLFormElement;
       const extraForm = document.getElementById('edit-extra-form') as HTMLFormElement;
-      
-      const formData = new FormData(mainForm);
-      const extraData = new FormData(extraForm);
-      
-      const updateData: Record<string, any> = {};
-      
-      formData.forEach((value, key) => {
-        updateData[key] = value || null;
+
+      const raw: Record<string, string> = {};
+      new FormData(mainForm).forEach((value, key) => {
+        if (typeof value === 'string') raw[key] = value.trim();
       });
-      
-      extraData.forEach((value, key) => {
-        updateData[key] = value || null;
+      new FormData(extraForm).forEach((value, key) => {
+        if (typeof value === 'string') raw[key] = value.trim();
       });
 
-      const previousImageUrl = currentImageUrl || String(updateData.imagen_url || '').trim() || null;
+      const nombre = raw.nombre || '';
+      if (!nombre) {
+        throw new Error('El nombre del grupo es obligatorio.');
+      }
+
+      const email = raw.email_contacto || '';
+      if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        throw new Error('El email de contacto no es válido.');
+      }
+
+      const updateData: Record<string, string | null> = {};
+      EDITABLE_COLUMNS.forEach((column) => {
+        if (column === 'imagen_url') return;
+        if (column in raw) updateData[column] = raw[column] === '' ? null : raw[column];
+      });
+
+      const hiddenImagen = (document.getElementById('field-imagen-url') as HTMLInputElement | null)?.value.trim() || null;
+      const previousImageUrl = currentImageUrl || hiddenImagen;
       let nextImageUrl = previousImageUrl;
 
       if (removeExistingImage) {
@@ -512,13 +638,17 @@ export const prerender = false;
       }
 
       updateData.imagen_url = nextImageUrl;
-      
-      const { error } = await supabase
+
+      const { data: updated, error } = await supabase
         .from('grupos')
         .update(updateData as any)
-        .eq('id', groupId);
-      
+        .eq('id', groupId)
+        .select('id');
+
       if (error) throw error;
+      if (!updated || updated.length === 0) {
+        throw new Error('Sin permiso para actualizar este grupo. Tu cuenta de líder no está vinculada al grupo: contacta al administrador.');
+      }
 
       currentImageUrl = nextImageUrl;
       pendingImageFile = null;
@@ -534,9 +664,10 @@ export const prerender = false;
       
     } catch (error: any) {
       console.error('Error:', error);
-      errorMessage!.textContent = error.message || 'Error al guardar los cambios';
+      errorMessage!.textContent = friendlySaveError(error);
       errorMessage?.classList.remove('hidden');
     } finally {
+      saving = false;
       saveBtn?.removeAttribute('disabled');
       saveText?.classList.remove('hidden');
       saveSpinner?.classList.add('hidden');

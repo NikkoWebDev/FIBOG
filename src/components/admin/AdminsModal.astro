@@ -20,13 +20,31 @@
         <div class="mb-6">
           <h4 class="font-label-mono text-text-secondary text-[10px] uppercase mb-3">AGREGAR NUEVO ADMIN</h4>
           <div class="flex gap-2">
-            <select id="user-select" class="flex-1 input-glass rounded-xl px-4 py-3 text-text-primary font-body-base">
-              <option value="">Seleccionar usuario...</option>
-            </select>
-            <button onclick="addAdminToGroup()" class="px-6 py-3 rounded-xl bg-primary text-on-primary font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all">
+            <div class="relative flex-1" data-user-picker>
+              <input type="hidden" id="user-select" value="" />
+              <input
+                id="user-search"
+                type="text"
+                placeholder="Buscar usuario por nombre o correo..."
+                autocomplete="off"
+                role="combobox"
+                aria-expanded="false"
+                aria-controls="user-options"
+                aria-autocomplete="list"
+                class="w-full input-glass rounded-xl px-4 py-3 text-text-primary font-body-base focus:outline-none focus:border-primary"
+              />
+              <ul
+                id="user-options"
+                role="listbox"
+                aria-label="Usuarios disponibles"
+                class="hidden absolute left-0 right-0 top-full mt-1 z-50 card rounded-xl p-1.5 max-h-56 overflow-y-auto shadow-2xl"
+              ></ul>
+            </div>
+            <button onclick="addAdminToGroup()" aria-label="Agregar admin" class="px-6 py-3 rounded-xl bg-primary text-on-primary font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-95 transition-all">
               <span class="material-symbols-outlined text-sm">add</span>
             </button>
           </div>
+          <p id="user-selected-hint" class="text-xs text-text-muted mt-2">Escribe para buscar. Ningún usuario seleccionado.</p>
         </div>
 
         <div>
