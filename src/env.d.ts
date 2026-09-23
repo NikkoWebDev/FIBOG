@@ -2,6 +2,8 @@
 /// <reference types="astro/client" />
 
 interface ImportMetaEnv {
+  readonly GROQ_API_KEY: string | undefined;
+  readonly GROQ_MODEL: string | undefined;
   readonly OPENROUTER_API_KEY: string;
   readonly OPENROUTER_BASE_URL: string;
   readonly OPENROUTER_MODEL: string;

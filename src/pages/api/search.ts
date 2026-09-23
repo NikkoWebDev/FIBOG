@@ -18,14 +18,17 @@ export const POST: APIRoute = async ({ request, site }) => {
 
     const grupos = await fetchApprovedGrupos();
 
-    const apiKey = import.meta.env.OPENROUTER_API_KEY;
-    const baseUrl = import.meta.env.OPENROUTER_BASE_URL || 'https://openrouter.ai/api/v1';
-    const model = import.meta.env.OPENROUTER_MODEL || 'liquid/lfm-2.5-1.2b-instruct:free';
+    // Proveedor IA: Groq primero, OpenRouter como alternativa legacy.
+    const groqKey = import.meta.env.GROQ_API_KEY;
+    const groqModel = import.meta.env.GROQ_MODEL || 'openai/gpt-oss-20b';
+    const openRouterKey = import.meta.env.OPENROUTER_API_KEY;
+    const openRouterBase = import.meta.env.OPENROUTER_BASE_URL || 'https://openrouter.ai/api/v1';
+    const openRouterModel = import.meta.env.OPENROUTER_MODEL || 'liquid/lfm-2.5-1.2b-instruct:free';
 
     // Always compute keyword matches so we can enrich the response or fall back
     const relevantGrupos = findRelevantGrupos(query, grupos);
 
-    if (!apiKey) {
+    if (!groqKey && !openRouterKey) {
       return new Response(
         JSON.stringify(generateFallbackResponse(query, relevantGrupos)),
         { status: 200, headers: { 'Content-Type': 'application/json' } }
@@ -38,40 +41,13 @@ export const POST: APIRoute = async ({ request, site }) => {
       .map(g => `- ${g.nombre} (${g.tipo}): ${g.enfoque || g.descripcion || 'Sin descripción'}`)
       .join('\n');
 
-    const systemPrompt = 'Eres un asistente que ayuda a estudiantes a encontrar semilleros de investigación en la Facultad de Ingeniería UNAL Bogotá. Responde de forma breve y útil en español.';
+    const systemPrompt = 'Eres un asistente que ayuda a estudiantes a encontrar semilleros de investigación en la Facultad de Ingeniería UNAL Bogotá. Responde de forma breve y útil en español. Menciona nombres exactos de grupos de la lista cuando sean relevantes.';
 
-    const response = await fetch(`${baseUrl}/chat/completions`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-        'HTTP-Referer': referer,
-        'X-OpenRouter-Title': 'Base de Datos Ingenieria',
-      },
-      body: JSON.stringify({
-        model,
-        messages: [
-          { role: 'system', content: systemPrompt },
-          {
-            role: 'user',
-            content: `Los siguientes son los grupos disponibles:\n${gruposContext}\n\nPregunta del estudiante: ${query}`
-          }
-        ],
-        temperature: 0.7,
-        max_tokens: 500,
-      }),
-    });
+    const userContent = `Los siguientes son los grupos disponibles:\n${gruposContext}\n\nPregunta del estudiante: ${query}`;
 
-    if (!response.ok) {
-      console.error('OpenRouter API error:', response.status, await response.text());
-      return new Response(
-        JSON.stringify(generateFallbackResponse(query, relevantGrupos)),
-        { status: 200, headers: { 'Content-Type': 'application/json' } }
-      );
-    }
-
-    const aiData = await response.json();
-    const answer = aiData.choices?.[0]?.message?.content?.trim();
+    const answer = groqKey
+      ? await askGroq(groqKey, groqModel, systemPrompt, userContent)
+      : await askOpenRouter(openRouterKey, openRouterBase, openRouterModel, referer, systemPrompt, userContent);
 
     if (!answer) {
       return new Response(
@@ -109,6 +85,72 @@ export const POST: APIRoute = async ({ request, site }) => {
     );
   }
 };
+
+async function askGroq(apiKey: string, model: string, system: string, user: string): Promise<string | null> {
+  try {
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        model,
+        messages: [
+          { role: 'system', content: system },
+          { role: 'user', content: user },
+        ],
+        temperature: 0.7,
+        max_tokens: 500,
+      }),
+    });
+
+    if (!response.ok) {
+      console.error('Groq API error:', response.status, (await response.text()).slice(0, 300));
+      return null;
+    }
+
+    const data = await response.json();
+    return data.choices?.[0]?.message?.content?.trim() || null;
+  } catch (error) {
+    console.error('Groq request failed:', error);
+    return null;
+  }
+}
+
+async function askOpenRouter(apiKey: string, baseUrl: string, model: string, referer: string, system: string, user: string): Promise<string | null> {
+  try {
+    const response = await fetch(`${baseUrl}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json',
+        'HTTP-Referer': referer,
+        'X-Title': 'Base de Datos Ingenieria',
+      },
+      body: JSON.stringify({
+        model,
+        messages: [
+          { role: 'system', content: system },
+          { role: 'user', content: user },
+        ],
+        temperature: 0.7,
+        max_tokens: 500,
+      }),
+    });
+
+    if (!response.ok) {
+      console.error('OpenRouter API error:', response.status, (await response.text()).slice(0, 300));
+      return null;
+    }
+
+    const data = await response.json();
+    return data.choices?.[0]?.message?.content?.trim() || null;
+  } catch (error) {
+    console.error('OpenRouter request failed:', error);
+    return null;
+  }
+}
 
 function generateFallbackResponse(query: string, relevantGrupos: Grupo[]) {
   const answer = relevantGrupos.length > 0
