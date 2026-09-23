@@ -78,15 +78,20 @@ const tipoBadge = tipoColors[grupo.tipo] || tipoColors['Semillero'];
         </div>
         
         <!-- Quick Actions -->
-        <div class="flex gap-3">
+        <div class="flex flex-wrap items-center gap-3">
           {grupo.email && (
-            <a 
-              href={`mailto:${grupo.email}`}
-              class="px-6 py-3 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white font-semibold hover:shadow-glow transition-all flex items-center gap-2"
-            >
-              <span class="material-symbols-outlined">email</span>
-              Contactar
-            </a>
+            <div class="flex items-center gap-2 pl-4 pr-2 py-2 rounded-xl border border-border-default bg-bg-hover max-w-full">
+              <span class="material-symbols-outlined text-primary-light">email</span>
+              <span class="text-text-primary text-sm font-medium break-all">{grupo.email}</span>
+              <button
+                type="button"
+                data-copy-email={grupo.email}
+                class="shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-primary/10 text-primary-light text-sm font-semibold hover:bg-primary/20 transition-all focus-visible:outline-2 focus-visible:outline-primary"
+              >
+                <span class="material-symbols-outlined text-base">content_copy</span>
+                <span data-copy-label>Copiar</span>
+              </button>
+            </div>
           )}
           {grupo.redes && (
             <a 
@@ -211,14 +216,62 @@ const tipoBadge = tipoColors[grupo.tipo] || tipoColors['Semillero'];
           )}
         </div>
         {grupo.email && (
-          <a 
-            href={`mailto:${grupo.email}`}
-            class="px-6 py-3 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white font-semibold hover:shadow-glow transition-all"
-          >
-            Contactar Lider
-          </a>
+          <div class="flex items-center gap-2 pl-4 pr-2 py-2 rounded-xl border border-border-default bg-bg-hover max-w-full">
+            <span class="material-symbols-outlined text-primary-light">email</span>
+            <span class="text-text-primary text-sm font-medium break-all">{grupo.email}</span>
+            <button
+              type="button"
+              data-copy-email={grupo.email}
+              class="shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-primary/10 text-primary-light text-sm font-semibold hover:bg-primary/20 transition-all focus-visible:outline-2 focus-visible:outline-primary"
+            >
+              <span class="material-symbols-outlined text-base">content_copy</span>
+              <span data-copy-label>Copiar</span>
+            </button>
+          </div>
         )}
       </div>
     </div>
   </main>
 </Layout>
+
+<script>
+  document.querySelectorAll('[data-copy-email]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const email = btn.getAttribute('data-copy-email') || '';
+      if (!email) return;
+      let ok = false;
+      try {
+        await navigator.clipboard.writeText(email);
+        ok = true;
+      } catch {
+        const ta = document.createElement('textarea');
+        ta.value = email;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        try {
+          ok = document.execCommand('copy');
+        } catch {
+          ok = false;
+        }
+        ta.remove();
+      }
+      const label = btn.querySelector('[data-copy-label]');
+      const icon = btn.querySelector('.material-symbols-outlined');
+      if (ok) {
+        if (label) label.textContent = 'Copiado';
+        if (icon) icon.textContent = 'check';
+        setTimeout(() => {
+          if (label) label.textContent = 'Copiar';
+          if (icon) icon.textContent = 'content_copy';
+        }, 2000);
+      } else if (label) {
+        label.textContent = 'No se pudo copiar';
+        setTimeout(() => {
+          label.textContent = 'Copiar';
+        }, 2000);
+      }
+    });
+  });
+</script>
