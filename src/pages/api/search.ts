@@ -7,9 +7,15 @@ export const prerender = false;
 export const POST: APIRoute = async ({ request, site }) => {
   try {
     const body = await request.json();
-    const { query } = body;
+    const { query, messages } = body;
 
-    if (!query || typeof query !== 'string') {
+    // Historial de chat (con contexto) o pregunta suelta (modo legacy)
+    const history = normalizeHistory(messages);
+    const currentQuery =
+      [...history].reverse().find((m) => m.role === 'user')?.content ||
+      (typeof query === 'string' ? query.trim() : '');
+
+    if (!currentQuery) {
       return new Response(
         JSON.stringify({ error: 'Query is required' }),
         { status: 400, headers: { 'Content-Type': 'application/json' } }
@@ -26,11 +32,11 @@ export const POST: APIRoute = async ({ request, site }) => {
     const openRouterModel = import.meta.env.OPENROUTER_MODEL || 'liquid/lfm-2.5-1.2b-instruct:free';
 
     // Always compute keyword matches so we can enrich the response or fall back
-    const relevantGrupos = findRelevantGrupos(query, grupos);
+    const relevantGrupos = findRelevantGrupos(currentQuery, grupos);
 
     if (!groqKey && !openRouterKey) {
       return new Response(
-        JSON.stringify(generateFallbackResponse(query, relevantGrupos)),
+        JSON.stringify(generateFallbackResponse(currentQuery, relevantGrupos)),
         { status: 200, headers: { 'Content-Type': 'application/json' } }
       );
     }
@@ -38,20 +44,38 @@ export const POST: APIRoute = async ({ request, site }) => {
     const referer = site?.origin || request.headers.get('origin') || 'https://semilleros-fibog.vercel.app';
 
     const gruposContext = grupos
-      .map(g => `- ${g.nombre} (${g.tipo}): ${g.enfoque || g.descripcion || 'Sin descripción'}`)
+      .map((g) => {
+        const extras = [
+          g.modalidad ? `modalidad ${g.modalidad}` : '',
+          g.horarios ? `horarios ${g.horarios}` : '',
+          g.email ? `contacto ${g.email}` : '',
+          g.requisitos ? `requisitos: ${g.requisitos}` : '',
+        ].filter(Boolean).join(' · ');
+        return `- ${g.nombre} (${g.tipo}): ${g.enfoque || g.descripcion || 'Sin descripción'}${extras ? ` [${extras}]` : ''}`;
+      })
       .join('\n');
 
-    const systemPrompt = 'Eres Kala AI, el asistente de la Base de Datos de Semilleros de la Facultad de Ingeniería UNAL Bogotá, creada por nikko.dev. Ayudas a estudiantes a encontrar semilleros de investigación. Responde de forma breve y útil en español. Menciona nombres exactos de grupos de la lista cuando sean relevantes. Si te preguntan quién eres, di que eres Kala AI creada por nikko.dev e incluye este enlace en formato markdown: [nikko.dev](https://nikko.dev).';
+    const systemPrompt = 'Eres Kala AI, el asistente de la Base de Datos de Semilleros de la Facultad de Ingeniería UNAL Bogotá, creada por nikko.dev. Conversas con naturalidad y libertad: respondes sobre semilleros, grupos de investigación, carreras de ingeniería y vida universitaria, y también puedes charlar de otros temas de forma breve. Cuando la pregunta sea sobre grupos, usa la siguiente lista y menciona nombres exactos. Responde en español, de forma clara y sin extenderte demasiado. Si te preguntan quién eres, di que eres Kala AI creada por nikko.dev e incluye este enlace en formato markdown: [nikko.dev](https://nikko.dev).';
 
-    const userContent = `Los siguientes son los grupos disponibles:\n${gruposContext}\n\nPregunta del estudiante: ${query}`;
+    const providerMessages =
+      history.length > 0
+        ? [
+            { role: 'system', content: systemPrompt } as ChatMsg,
+            { role: 'system', content: `Catálogo actual de grupos (úsalo cuando pregunten por semilleros o grupos):\n${gruposContext}` } as ChatMsg,
+            ...history,
+          ]
+        : [
+            { role: 'system', content: systemPrompt } as ChatMsg,
+            { role: 'user', content: `Los siguientes son los grupos disponibles:\n${gruposContext}\n\nPregunta del estudiante: ${currentQuery}` } as ChatMsg,
+          ];
 
     const answer = groqKey
-      ? await askGroq(groqKey, groqModel, systemPrompt, userContent)
-      : await askOpenRouter(openRouterKey, openRouterBase, openRouterModel, referer, systemPrompt, userContent);
+      ? await askGroq(groqKey, groqModel, providerMessages)
+      : await askOpenRouter(openRouterKey, openRouterBase, openRouterModel, referer, providerMessages);
 
     if (!answer) {
       return new Response(
-        JSON.stringify(generateFallbackResponse(query, relevantGrupos)),
+        JSON.stringify(generateFallbackResponse(currentQuery, relevantGrupos)),
         { status: 200, headers: { 'Content-Type': 'application/json' } }
       );
     }
@@ -59,7 +83,7 @@ export const POST: APIRoute = async ({ request, site }) => {
     return new Response(
       JSON.stringify({
         answer,
-        query,
+        query: currentQuery,
         grupos: relevantGrupos.map(g => ({
           id: g.id,
           nombre: g.nombre,
@@ -86,7 +110,29 @@ export const POST: APIRoute = async ({ request, site }) => {
   }
 };
 
-async function askGroq(apiKey: string, model: string, system: string, user: string): Promise<string | null> {
+interface ChatMsg {
+  role: 'system' | 'user' | 'assistant';
+  content: string;
+}
+
+// Historial del chat: solo user/assistant, acotado en turnos y longitud
+// para mantener contexto sin disparar costos ni tokens.
+function normalizeHistory(messages: unknown): ChatMsg[] {
+  if (!Array.isArray(messages)) return [];
+  return messages
+    .filter(
+      (m): m is { role: string; content: string } =>
+        !!m &&
+        typeof m === 'object' &&
+        ((m as { role: unknown }).role === 'user' || (m as { role: unknown }).role === 'assistant') &&
+        typeof (m as { content: unknown }).content === 'string'
+    )
+    .map((m) => ({ role: m.role as 'user' | 'assistant', content: m.content.trim().slice(0, 1000) }))
+    .filter((m) => m.content.length > 0)
+    .slice(-10);
+}
+
+async function askGroq(apiKey: string, model: string, providerMessages: ChatMsg[]): Promise<string | null> {
   try {
     const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
@@ -96,10 +142,7 @@ async function askGroq(apiKey: string, model: string, system: string, user: stri
       },
       body: JSON.stringify({
         model,
-        messages: [
-          { role: 'system', content: system },
-          { role: 'user', content: user },
-        ],
+        messages: providerMessages,
         temperature: 0.7,
         max_tokens: 500,
       }),
@@ -118,7 +161,7 @@ async function askGroq(apiKey: string, model: string, system: string, user: stri
   }
 }
 
-async function askOpenRouter(apiKey: string, baseUrl: string, model: string, referer: string, system: string, user: string): Promise<string | null> {
+async function askOpenRouter(apiKey: string, baseUrl: string, model: string, referer: string, providerMessages: ChatMsg[]): Promise<string | null> {
   try {
     const response = await fetch(`${baseUrl}/chat/completions`, {
       method: 'POST',
@@ -130,10 +173,7 @@ async function askOpenRouter(apiKey: string, baseUrl: string, model: string, ref
       },
       body: JSON.stringify({
         model,
-        messages: [
-          { role: 'system', content: system },
-          { role: 'user', content: user },
-        ],
+        messages: providerMessages,
         temperature: 0.7,
         max_tokens: 500,
       }),

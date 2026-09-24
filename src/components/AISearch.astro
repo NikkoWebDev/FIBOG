@@ -3,7 +3,7 @@ interface Props {
   placeholder?: string;
 }
 
-const { placeholder = "Pregunta sobre investigacion..." } = Astro.props;
+const { placeholder = "Pregúntale a Kala AI..." } = Astro.props;
 ---
 
 <section class="max-w-4xl mx-auto mb-12" id="ai-search-section">
@@ -17,67 +17,61 @@ const { placeholder = "Pregunta sobre investigacion..." } = Astro.props;
         class="bg-transparent border-none focus:ring-0 text-base sm:text-lg md:text-xl w-full min-w-0 text-text-primary placeholder-text-muted outline-none"
         placeholder={placeholder}
         autocomplete="off"
+        maxlength="500"
       />
       <div class="flex gap-2 shrink-0">
         <button
           id="ai-search-btn"
           class="p-1.5 sm:p-2 rounded-lg bg-gradient-to-br from-primary to-primary-dark hover:shadow-glow-sm text-white transition-all"
-          title="Buscar con IA"
+          title="Preguntar a Kala AI"
+          aria-label="Preguntar a Kala AI"
         >
           <span class="material-symbols-outlined filled text-lg sm:text-xl" data-icon="auto_awesome">auto_awesome</span>
         </button>
       </div>
     </div>
   </div>
-  
-  <!-- AI Thinking State -->
-  <div id="ai-thinking" class="hidden bg-primary/10 p-4 sm:p-6 md:p-8 border border-primary/20 mb-8 rounded-xl">
-    <div class="flex items-start gap-3 sm:gap-6">
-      <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shrink-0 shadow-glow-sm">
-        <span class="material-symbols-outlined text-white filled text-lg sm:text-2xl" data-icon="psychology_alt">psychology_alt</span>
+
+  <!-- AI Chat -->
+  <div id="ai-chat" class="hidden mb-8">
+    <div class="glass p-4 sm:p-6 rounded-xl">
+      <!-- Header -->
+      <div class="flex items-center gap-3 mb-4 pb-4 border-b border-border-subtle">
+        <div class="w-10 h-10 bg-gradient-to-br from-primary to-accent flex items-center justify-center shrink-0 rounded-xl shadow-glow-sm">
+          <span class="material-symbols-outlined text-white text-lg" data-icon="auto_awesome">auto_awesome</span>
+        </div>
+        <div class="flex-1 min-w-0">
+          <h3 class="text-text-primary font-semibold">Kala AI</h3>
+          <p class="text-text-muted text-xs">Modelo Kala AI · Base de Datos Ingenieria</p>
+        </div>
+        <button id="ai-new-chat" class="text-xs text-text-muted hover:text-text-primary transition-colors flex items-center gap-1 shrink-0">
+          <span class="material-symbols-outlined text-sm">refresh</span>
+          Nueva conversación
+        </button>
       </div>
-      <div class="flex-1 space-y-4">
-        <div class="flex items-center gap-2">
-          <h3 class="text-primary-light text-sm font-bold uppercase tracking-widest">Sistematizando Resultados</h3>
-          <div class="flex gap-1">
-            <span class="w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style="animation-delay: 0s"></span>
-            <span class="w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style="animation-delay: 0.2s"></span>
-            <span class="w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style="animation-delay: 0.4s"></span>
-          </div>
-        </div>
-        <div class="space-y-3">
-          <div class="h-4 w-3/4 rounded-lg bg-bg-card border border-border-subtle"></div>
-          <div class="h-4 w-full rounded-lg bg-bg-card border border-border-subtle"></div>
-          <div class="h-4 w-5/6 rounded-lg bg-bg-card border border-border-subtle"></div>
-        </div>
-        <div class="flex gap-3 pt-4 overflow-x-auto no-scrollbar">
-          <span class="px-4 py-1.5 border border-primary/30 bg-primary/10 text-primary-light text-sm whitespace-nowrap rounded-lg">Analizando grupos...</span>
-          <span class="px-4 py-1.5 border border-accent/30 bg-accent/10 text-accent-light text-sm whitespace-nowrap rounded-lg">Mapeando carreras...</span>
-          <span class="px-4 py-1.5 border border-neon/30 bg-neon/10 text-neon text-sm whitespace-nowrap rounded-lg">Consultando semilleros...</span>
-        </div>
-      </div>
-    </div>
-  </div>
-  
-  <!-- AI Results -->
-  <div id="ai-results" class="hidden mb-8">
-    <div class="glass p-4 sm:p-6 md:p-8 rounded-xl">
-      <div>
-        <!-- Header -->
-        <div class="flex items-center gap-3 mb-4 sm:mb-6 pb-4 border-b border-border-subtle">
-          <div class="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-primary to-accent flex items-center justify-center shrink-0 rounded-xl shadow-glow-sm">
-            <span class="material-symbols-outlined text-white text-lg sm:text-xl" data-icon="auto_awesome">auto_awesome</span>
-          </div>
-          <div>
-            <h3 class="text-text-primary font-semibold">Kala AI</h3>
-            <p class="text-text-muted text-xs">Modelo Kala AI · Base de Datos Ingenieria</p>
-          </div>
-        </div>
-        
-        <!-- Content -->
-        <div id="ai-results-content" class="space-y-6">
-        </div>
-      </div>
+
+      <!-- Thread -->
+      <div id="ai-thread" class="space-y-4 max-h-[60vh] overflow-y-auto pr-1"></div>
+
+      <!-- Follow-up -->
+      <form id="ai-followup-form" class="flex gap-2 mt-4 pt-4 border-t border-border-subtle">
+        <input
+          id="ai-followup-input"
+          type="text"
+          placeholder="Escríbele a Kala AI..."
+          maxlength="500"
+          autocomplete="off"
+          class="flex-1 min-w-0 bg-transparent border border-border-subtle rounded-xl px-4 py-2.5 text-sm text-text-primary placeholder-text-muted outline-none focus:border-primary transition-colors"
+        />
+        <button
+          id="ai-followup-btn"
+          type="submit"
+          aria-label="Enviar mensaje"
+          class="p-2.5 rounded-xl bg-gradient-to-br from-primary to-primary-dark text-white hover:shadow-glow-sm transition-all shrink-0"
+        >
+          <span class="material-symbols-outlined text-lg">send</span>
+        </button>
+      </form>
     </div>
   </div>
 </section>
@@ -99,7 +93,13 @@ const { placeholder = "Pregunta sobre investigacion..." } = Astro.props;
         return `<p class="my-2">${match}</p>`;
       });
   }
-  
+
+  function escapeHtml(value: string): string {
+    return value.replace(/[&<>"']/g, (c) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+    })[c] || c);
+  }
+
   function getTypeColor(tipo: string): string {
     const colors: Record<string, string> = {
       'Semillero': 'bg-accent',
@@ -108,7 +108,7 @@ const { placeholder = "Pregunta sobre investigacion..." } = Astro.props;
     };
     return colors[tipo] || 'bg-bg-hover';
   }
-  
+
   function getTypeIcon(tipo: string): string {
     const icons: Record<string, string> = {
       'Semillero': 'school',
@@ -117,108 +117,151 @@ const { placeholder = "Pregunta sobre investigacion..." } = Astro.props;
     };
     return icons[tipo] || 'group';
   }
-  
-  const searchInput = document.getElementById('ai-search-input') as HTMLInputElement;
+
+  interface ChatTurn {
+    role: 'user' | 'assistant';
+    content: string;
+  }
+
+  const searchInput = document.getElementById('ai-search-input') as HTMLInputElement | null;
   const searchBtn = document.getElementById('ai-search-btn');
-  const thinkingState = document.getElementById('ai-thinking');
-  const resultsState = document.getElementById('ai-results');
-  const resultsContent = document.getElementById('ai-results-content');
-  
-  let isSearching = false;
-  
-  async function performSearch() {
-    const query = searchInput?.value?.trim();
-    if (!query || isSearching) return;
-    
-    isSearching = true;
-    
-    thinkingState?.classList.remove('hidden');
-    resultsState?.classList.add('hidden');
-    
+  const chatBox = document.getElementById('ai-chat');
+  const thread = document.getElementById('ai-thread');
+  const followupForm = document.getElementById('ai-followup-form') as HTMLFormElement | null;
+  const followupInput = document.getElementById('ai-followup-input') as HTMLInputElement | null;
+
+  let history: ChatTurn[] = [];
+  let isAnswering = false;
+
+  function scrollThread() {
+    if (thread) thread.scrollTop = thread.scrollHeight;
+  }
+
+  function addUserBubble(text: string) {
+    const el = document.createElement('div');
+    el.className = 'flex justify-end';
+    el.innerHTML = `<div class="max-w-[85%] px-4 py-2.5 rounded-2xl rounded-br-md bg-primary/15 border border-primary/20 text-text-primary text-sm leading-relaxed">${escapeHtml(text)}</div>`;
+    thread?.appendChild(el);
+  }
+
+  function addThinkingBubble(): HTMLElement | null {
+    const el = document.createElement('div');
+    el.className = 'flex justify-start';
+    el.innerHTML = `
+      <div class="max-w-[85%] px-4 py-3 rounded-2xl rounded-bl-md bg-bg-hover/60 border border-border-subtle flex items-center gap-2">
+        <span class="w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style="animation-delay: 0s"></span>
+        <span class="w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style="animation-delay: 0.2s"></span>
+        <span class="w-1.5 h-1.5 rounded-full bg-primary animate-bounce" style="animation-delay: 0.4s"></span>
+      </div>`;
+    thread?.appendChild(el);
+    return el;
+  }
+
+  function groupCardsHtml(grupos: Array<any>): string {
+    if (!grupos || grupos.length === 0) return '';
+    return `
+      <div class="pt-3 mt-3 border-t border-border-subtle">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="material-symbols-outlined text-primary-light text-sm" data-icon="groups">groups</span>
+          <p class="text-xs font-bold text-text-primary">Grupos relacionados</p>
+          <span class="px-2 py-0.5 bg-primary/10 text-primary-light text-xs rounded-md">${grupos.length}</span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          ${grupos.map((g: any) => `
+            <a href="/grupo/${g.id || ''}" class="group flex items-start gap-3 p-3 rounded-xl bg-bg-hover/50 hover:bg-bg-hover transition-all border border-transparent hover:border-primary/30">
+              <div class="w-8 h-8 rounded-lg ${getTypeColor(g.tipo)} flex items-center justify-center shrink-0">
+                <span class="material-symbols-outlined text-white text-sm">${getTypeIcon(g.tipo)}</span>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-medium text-text-primary group-hover:text-primary-light transition-colors line-clamp-2">${escapeHtml(String(g.nombre || g))}</p>
+                <p class="text-xs text-text-muted mt-0.5">${escapeHtml(String(g.tipo || 'Grupo'))}</p>
+              </div>
+              <span class="material-symbols-outlined text-text-muted group-hover:text-primary-light transition-colors text-sm">arrow_forward</span>
+            </a>
+          `).join('')}
+        </div>
+      </div>`;
+  }
+
+  function fillKalaBubble(el: HTMLElement, answer: string | null, grupos: Array<any>, fallback: boolean) {
+    if (!answer) {
+      el.innerHTML = `
+        <div class="max-w-[85%] px-4 py-3 rounded-2xl rounded-bl-md bg-bg-hover/60 border border-border-subtle flex items-center gap-2 text-error text-sm">
+          <span class="material-symbols-outlined" data-icon="error">error</span>
+          <p>Error al responder. Intenta de nuevo.</p>
+        </div>`;
+      return;
+    }
+    el.innerHTML = `
+      <div class="max-w-[95%] px-4 py-3 rounded-2xl rounded-bl-md bg-bg-hover/60 border border-border-subtle">
+        <div class="text-text-primary text-sm leading-relaxed space-y-2">
+          ${formatAnswer(answer)}
+        </div>
+        ${groupCardsHtml(grupos)}
+        ${fallback ? '<p class="text-[11px] text-text-muted pt-2">Respuesta basada en coincidencias de texto</p>' : ''}
+      </div>`;
+  }
+
+  async function sendMessage(rawText: string): Promise<boolean> {
+    const text = rawText.trim().slice(0, 500);
+    if (!text || isAnswering) return false;
+    isAnswering = true;
+
+    chatBox?.classList.remove('hidden');
+    history.push({ role: 'user', content: text });
+    addUserBubble(text);
+    const thinking = addThinkingBubble();
+    scrollThread();
+
     try {
       const response = await fetch('/api/search', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ query }),
+        body: JSON.stringify({ messages: history }),
       });
-      
+
       if (!response.ok) throw new Error(`Error: ${response.status}`);
-      
+
       const data = await response.json();
-      
-      thinkingState?.classList.add('hidden');
-      resultsState?.classList.remove('hidden');
-      
-      if (resultsContent) {
-        const formattedAnswer = formatAnswer(data.answer || data.response || 'No se encontraron resultados especificos.');
-        
-        resultsContent.innerHTML = `
-          <div class="prose prose-invert max-w-none">
-            <div class="text-text-primary text-body-base leading-relaxed space-y-3">
-              ${formattedAnswer}
-            </div>
-          </div>
-          
-          ${data.grupos && data.grupos.length > 0 ? `
-            <div class="pt-4 border-t border-border-subtle">
-              <div class="flex items-center gap-2 mb-4">
-                <span class="material-symbols-outlined text-primary-light text-sm" data-icon="groups">groups</span>
-                <p class="text-sm font-bold text-text-primary">Grupos encontrados</p>
-                <span class="px-2 py-0.5 bg-primary/10 text-primary-light text-xs rounded-md">${data.grupos.length}</span>
-              </div>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                ${data.grupos.map((g: any) => `
-                  <div class="group flex items-start gap-3 p-3 rounded-xl bg-bg-hover/50 hover:bg-bg-hover transition-all cursor-pointer border border-transparent hover:border-primary/30">
-                    <div class="w-8 h-8 rounded-lg ${getTypeColor(g.tipo)} flex items-center justify-center shrink-0">
-                      <span class="material-symbols-outlined text-white text-sm">${getTypeIcon(g.tipo)}</span>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                      <p class="text-sm font-medium text-text-primary group-hover:text-primary-light transition-colors line-clamp-2">${g.nombre || g}</p>
-                      <p class="text-xs text-text-muted mt-0.5">${g.tipo || 'Grupo'}</p>
-                    </div>
-                    <span class="material-symbols-outlined text-text-muted group-hover:text-primary-light transition-colors text-sm">arrow_forward</span>
-                  </div>
-                `).join('')}
-              </div>
-            </div>
-          ` : ''}
-          
-          <div class="flex items-center justify-between pt-4 border-t border-border-subtle">
-            <p class="text-xs text-text-muted">
-              ${data.fallback ? 'Resultados basados en coincidencias de texto' : 'Respuesta generada por IA'}
-            </p>
-            <button id="ai-clear-btn" class="text-xs text-primary-light hover:text-text-primary transition-colors flex items-center gap-1">
-              <span class="material-symbols-outlined text-sm">close</span>
-              Cerrar
-            </button>
-          </div>
-        `;
-        
-        document.getElementById('ai-clear-btn')?.addEventListener('click', () => {
-          resultsState?.classList.add('hidden');
-          if (searchInput) searchInput.value = '';
-        });
-      }
+      const answer = data.answer || 'No tengo una respuesta para eso ahora mismo.';
+      history.push({ role: 'assistant', content: answer });
+      if (thinking) fillKalaBubble(thinking, answer, data.grupos || [], !!data.fallback);
     } catch (error) {
       console.error('Search error:', error);
-      thinkingState?.classList.add('hidden');
-      resultsState?.classList.remove('hidden');
-      
-      if (resultsContent) {
-        resultsContent.innerHTML = `
-          <div class="flex items-center gap-2 text-error">
-            <span class="material-symbols-outlined" data-icon="error">error</span>
-            <p>Error al realizar la busqueda. Intenta de nuevo mas tarde.</p>
-          </div>
-        `;
-      }
+      if (thinking) fillKalaBubble(thinking, null, [], true);
     } finally {
-      isSearching = false;
+      isAnswering = false;
+      scrollThread();
+      followupInput?.focus();
+    }
+    return true;
+  }
+
+  function startNewChat() {
+    history = [];
+    if (thread) thread.innerHTML = '';
+    chatBox?.classList.add('hidden');
+    if (searchInput) {
+      searchInput.value = '';
+      searchInput.focus();
     }
   }
-  
-  searchBtn?.addEventListener('click', performSearch);
-  searchInput?.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') performSearch();
+
+  searchBtn?.addEventListener('click', async () => {
+    if (searchInput && (await sendMessage(searchInput.value))) {
+      searchInput.value = '';
+    }
   });
+  searchInput?.addEventListener('keypress', async (e) => {
+    if (e.key === 'Enter' && searchInput && (await sendMessage(searchInput.value))) {
+      searchInput.value = '';
+    }
+  });
+  followupForm?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (followupInput && (await sendMessage(followupInput.value))) {
+      followupInput.value = '';
+    }
+  });
+  document.getElementById('ai-new-chat')?.addEventListener('click', startNewChat);
 </script>
