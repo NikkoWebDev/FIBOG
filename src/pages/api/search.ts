@@ -41,7 +41,7 @@ export const POST: APIRoute = async ({ request, site }) => {
       .map(g => `- ${g.nombre} (${g.tipo}): ${g.enfoque || g.descripcion || 'Sin descripción'}`)
       .join('\n');
 
-    const systemPrompt = 'Eres un asistente que ayuda a estudiantes a encontrar semilleros de investigación en la Facultad de Ingeniería UNAL Bogotá. Responde de forma breve y útil en español. Menciona nombres exactos de grupos de la lista cuando sean relevantes.';
+    const systemPrompt = 'Eres Kala AI, el asistente de la Base de Datos de Semilleros de la Facultad de Ingeniería UNAL Bogotá, creada por nikko.dev. Ayudas a estudiantes a encontrar semilleros de investigación. Responde de forma breve y útil en español. Menciona nombres exactos de grupos de la lista cuando sean relevantes. Si te preguntan quién eres, di que eres Kala AI creada por nikko.dev e incluye este enlace en formato markdown: [nikko.dev](https://nikko.dev).';
 
     const userContent = `Los siguientes son los grupos disponibles:\n${gruposContext}\n\nPregunta del estudiante: ${query}`;
 
