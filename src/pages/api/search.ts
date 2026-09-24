@@ -34,6 +34,18 @@ export const POST: APIRoute = async ({ request, site }) => {
     // Always compute keyword matches so we can enrich the response or fall back
     const relevantGrupos = findRelevantGrupos(currentQuery, grupos);
 
+    // Identidad: se responde local, sin depender del proveedor de IA.
+    if (isIdentityQuestion(currentQuery)) {
+      return new Response(
+        JSON.stringify({
+          answer: 'Soy **Kala AI**, creada por [nikko.dev](https://nikko.dev). Te ayudo a encontrar semilleros y grupos de investigación de la Facultad de Ingeniería UNAL. ¿Qué te interesa?',
+          query: currentQuery,
+          grupos: [],
+        }),
+        { status: 200, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
     if (!groqKey && !openRouterKey) {
       return new Response(
         JSON.stringify(generateFallbackResponse(currentQuery, relevantGrupos)),
@@ -208,6 +220,27 @@ function generateFallbackResponse(query: string, relevantGrupos: Grupo[]) {
       carreras: g.carreras
     }))
   };
+}
+
+/**
+ * Detecta preguntas sobre la identidad del asistente ("quién eres", etc.)
+ * para responderlas de forma determinista sin llamar al proveedor.
+ */
+function isIdentityQuestion(text: string): boolean {
+  const normalized = text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+  return (
+    /quien eres/.test(normalized) ||
+    /who are you/.test(normalized) ||
+    /what are you/.test(normalized) ||
+    /como te llamas/.test(normalized) ||
+    /(cual es|dime) tu nombre/.test(normalized) ||
+    /que modelo eres/.test(normalized) ||
+    /cual es tu modelo/.test(normalized) ||
+    /que eres(?!\s+capaz)/.test(normalized)
+  );
 }
 
 /**
