@@ -102,22 +102,32 @@ const { placeholder = "Pregúntale a Kala AI..." } = Astro.props;
     })[c] || c);
   }
 
+  function normTipo(s: string): string {
+    return (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  }
+
+  function lookup(map: Record<string, string>, tipo: string, fallback: string): string {
+    if (map[tipo]) return map[tipo];
+    const key = Object.keys(map).find((k) => normTipo(k) === normTipo(tipo));
+    return (key && map[key]) || fallback;
+  }
+
   function getTypeColor(tipo: string): string {
     const colors: Record<string, string> = {
       'Semillero': 'bg-accent',
-      'Grupo de Investigacion': 'bg-primary',
+      'Grupo de Investigación': 'bg-primary',
       'Grupo Estudiantil': 'bg-neon',
     };
-    return colors[tipo] || 'bg-bg-hover';
+    return lookup(colors, tipo, 'bg-bg-hover');
   }
 
   function getTypeIcon(tipo: string): string {
     const icons: Record<string, string> = {
       'Semillero': 'school',
-      'Grupo de Investigacion': 'science',
+      'Grupo de Investigación': 'science',
       'Grupo Estudiantil': 'groups',
     };
-    return icons[tipo] || 'group';
+    return lookup(icons, tipo, 'group');
   }
 
   interface ChatTurn {

@@ -123,15 +123,21 @@ export const prerender = false;
       loadingEl?.classList.add('hidden');
       contentEl?.classList.remove('hidden');
 
-      await loadStats();
-      await loadGrupos();
-      await loadUsuarios();
-      const pendingCount = await loadPendientes();
-      if (pendingCount > 0) switchTab('pendientes');
+      try { await loadStats(); } catch (e) { console.error('loadStats fallo:', e); showNotification('No se pudieron cargar las métricas', 'error'); }
+      try { await loadGrupos(); } catch (e) { console.error('loadGrupos fallo:', e); }
+      try { await loadUsuarios(); } catch (e) { console.error('loadUsuarios fallo:', e); }
+      let pendingCount = 0;
+      try { pendingCount = await loadPendientes(); } catch (e) { console.error('loadPendientes fallo:', e); }
+      if (pendingCount > 0) {
+        switchTab('pendientes');
+        showNotification(`Hay ${pendingCount} solicitudes pendientes`, 'info');
+      }
     } catch (error) {
       console.error('Init error:', error);
       loadingEl?.classList.add('hidden');
-      deniedEl?.classList.remove('hidden');
+      // Solo denegar acceso si aun no se mostro el panel; si ya es visible, dejarlo parcial
+      if (contentEl?.classList.contains('hidden')) deniedEl?.classList.remove('hidden');
+      else showNotification('Parte del panel no pudo cargarse', 'error');
     }
   }
 
@@ -158,10 +164,17 @@ export const prerender = false;
 
   async function loadGrupos() {
     const loader = document.getElementById('loading-grupos');
-    loader.classList.remove('hidden');
+    loader?.classList.remove('hidden');
     
     const { data: grupos, error } = await supabase.from('grupos').select('*').order('nombre');
-    if (error) return;
+    if (error) {
+      console.error('Error loading grupos:', error);
+      loader?.classList.add('hidden');
+      const grid = document.getElementById('grupos-grid');
+      if (grid) grid.innerHTML = `<div class="col-span-full text-center py-8 text-on-surface-variant">No se pudieron cargar los grupos <button data-action="retry-grupos" class="ml-2 px-3 py-1.5 rounded-lg bg-bg-hover text-sm">Reintentar</button></div>`;
+      showNotification('No se pudieron cargar los grupos', 'error');
+      return;
+    }
 
     allGrupos = grupos;
     const grid = document.getElementById('grupos-grid');
@@ -206,15 +219,21 @@ export const prerender = false;
       </div>
     `).join('');
     
-    loader.classList.add('hidden');
+    loader?.classList.add('hidden');
   }
 
   async function loadUsuarios() {
-    const { data: usuarios } = await supabase.from('perfiles').select('*').order('fecha_registro', { ascending: false });
+    const { data: usuarios, error } = await supabase.from('perfiles').select('*').order('fecha_registro', { ascending: false });
+    const tbody = document.getElementById('usuarios-table-body');
+    if (error) {
+      console.error('Error loading usuarios:', error);
+      showNotification('No se pudieron cargar los usuarios', 'error');
+      if (tbody) tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-8 text-center text-on-surface-variant">No se pudieron cargar los usuarios</td></tr>';
+      return;
+    }
     if (!usuarios) return;
 
-    const tbody = document.getElementById('usuarios-table-body');
-    tbody.innerHTML = usuarios.map(usuario => `
+    if (tbody) tbody.innerHTML = usuarios.map(usuario => `
       <tr class="hover:bg-bg-hover transition-colors">
         <td class="px-6 py-4 font-medium text-on-surface">${escapeHtml(usuario.nombre_completo || 'Sin nombre')}</td>
         <td class="px-6 py-4 text-on-surface-variant text-sm">${escapeHtml(usuario.email)}</td>
@@ -341,12 +360,21 @@ export const prerender = false;
       return;
     }
 
+    if (!confirm('Aprobar y crear el grupo a partir de esta solicitud?')) return;
+
+    const btns = Array.from(document.querySelectorAll(`[data-action="approve"][data-id="${solicitudId}"], [data-action="reject"][data-id="${solicitudId}"]`));
+    btns.forEach((b) => ((b as HTMLButtonElement).disabled = true));
+
     try {
       // Get solicitud data
       const { data: solicitud, error: fetchError } = await supabase.from('solicitudes_pendientes').select('*').eq('id', solicitudId).single();
       if (fetchError || !solicitud) {
         console.error('Error fetching solicitud:', fetchError);
         showNotification('Error al cargar solicitud', 'error');
+        return;
+      }
+      if (solicitud.estado !== 'pendiente') {
+        showNotification(`La solicitud ya fue procesada (${solicitud.estado})`, 'error');
         return;
       }
 
@@ -385,13 +413,21 @@ export const prerender = false;
         const email = String(solicitud.email_contacto).trim().toLowerCase();
         const { data: leaderProfile } = await supabase
           .from('perfiles')
-          .select('id')
+          .select('id, rol')
           .eq('email', email)
           .maybeSingle();
 
         if (leaderProfile?.id) {
-          await supabase.from('grupos').update({ id_lider: leaderProfile.id }).eq('id', createdGrupo.id);
-          await supabase.from('perfiles').update({ rol: 'ADMIN_GRUPO' }).eq('id', leaderProfile.id);
+          const { error: linkError } = await supabase.from('grupos').update({ id_lider: leaderProfile.id }).eq('id', createdGrupo.id);
+          let roleError = null;
+          if (leaderProfile.rol !== 'SUPER_ADMIN') {
+            const { error } = await supabase.from('perfiles').update({ rol: 'ADMIN_GRUPO' }).eq('id', leaderProfile.id);
+            roleError = error;
+          }
+          if (linkError || roleError) {
+            console.error('Error vinculando lider:', linkError || roleError);
+            showNotification(`Grupo creado pero sin líder vinculado (email_contacto: ${email}). Vincúlelo manualmente.`, 'error');
+          }
         }
       }
 
@@ -401,7 +437,11 @@ export const prerender = false;
         fecha_revision: new Date().toISOString(),
         revisado_por: user?.id
       }).eq('id', solicitudId);
-      if (updateError) throw updateError;
+      if (updateError) {
+        console.error('Grupo creado pero solicitud sin marcar:', updateError);
+        showNotification('Grupo creado pero solicitud sin marcar — NO reintentar sin revisar', 'error');
+        return;
+      }
 
       await loadPendientes();
       await loadStats();
@@ -410,6 +450,8 @@ export const prerender = false;
     } catch (error) {
       console.error('Error approving solicitud:', error);
       showNotification('Error al aprobar solicitud', 'error');
+    } finally {
+      btns.forEach((b) => ((b as HTMLButtonElement).disabled = false));
     }
   }
 
@@ -421,6 +463,7 @@ export const prerender = false;
     }
 
     const reason = prompt('Motivo del rechazo (opcional):');
+    if (reason === null) return;
     try {
       const { data: { user }, error: userError } = await supabase.auth.getUser();
       if (userError || !user) {
@@ -461,11 +504,13 @@ export const prerender = false;
     document.querySelectorAll('.tab-button, [id^="tab-"]').forEach(btn => btn.classList.remove('active'));
     document.querySelectorAll('[id^="tab-"]').forEach(btn => btn.setAttribute('aria-selected', 'false'));
     const activeTab = document.getElementById(`tab-${tabName}`);
+    const content = document.getElementById(`content-${tabName}`);
+    if (!activeTab || !content) return;
     activeTab.classList.add('active');
     activeTab.setAttribute('aria-selected', 'true');
     
     document.querySelectorAll('.tab-content').forEach(content => content.classList.add('hidden'));
-    document.getElementById(`content-${tabName}`).classList.remove('hidden');
+    content.classList.remove('hidden');
   }
 
   window.openCreateModal = function() {
@@ -552,16 +597,17 @@ export const prerender = false;
   });
 
   window.filterGrupos = function() {
-    const term = document.getElementById('search-grupos').value.toLowerCase();
+    const normalize = (s: string) => String(s || '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const term = normalize((document.getElementById('search-grupos') as HTMLInputElement).value);
     const tipo = document.getElementById('filter-tipo').value;
     const cards = document.querySelectorAll('#grupos-grid > div');
     
     cards.forEach(card => {
-      const text = card.textContent.toLowerCase();
+      const text = normalize(card.textContent || '');
       const cardTipo = card.querySelector('span')?.textContent || '';
       const matchTerm = text.includes(term);
       const matchTipo = !tipo || cardTipo.includes(tipo);
-      card.style.display = matchTerm && matchTipo ? '' : 'none';
+      (card as HTMLElement).style.display = matchTerm && matchTipo ? '' : 'none';
     });
   }
 
@@ -764,9 +810,31 @@ export const prerender = false;
     }
     
     const roles = ['SUPER_ADMIN', 'ADMIN_GRUPO', 'VISITANTE'];
+    if (roles.indexOf(user.rol) === -1) {
+      showNotification('Rol actual desconocido, no se puede cambiar', 'error');
+      return;
+    }
     const currentRoleIndex = roles.indexOf(user.rol);
     const nextRoleIndex = (currentRoleIndex + 1) % roles.length;
     const newRole = roles[nextRoleIndex];
+
+    const { data: { user: currentUser } } = await supabase.auth.getUser();
+    if (currentUser && currentUser.id === userId) {
+      showNotification('No puedes cambiar tu propio rol', 'error');
+      return;
+    }
+
+    if (user.rol === 'SUPER_ADMIN' && newRole !== 'SUPER_ADMIN') {
+      const { count, error: countError } = await supabase.from('perfiles').select('id', { count: 'exact', head: true }).eq('rol', 'SUPER_ADMIN');
+      if (countError) {
+        showNotification('No se pudo verificar SUPER_ADMIN restantes', 'error');
+        return;
+      }
+      if ((count || 0) < 2) {
+        showNotification('No se puede degradar al último SUPER_ADMIN', 'error');
+        return;
+      }
+    }
     
     if (!confirm(`¿Cambiar rol de ${user.nombre_completo} de ${user.rol} a ${newRole}?`)) return;
     
@@ -787,26 +855,32 @@ export const prerender = false;
       return;
     }
     
-    // Obtener todas las claves (columnas) del primer grupo
-    const headers = Object.keys(allGrupos[0]);
+    // Columnas blancas para exportar
+    const headers = ['nombre','tipo','lider_o_representante','email_contacto','carreras','descripcion','enfoque','modalidad','horarios_habituales','estado_aprobacion'];
+
+    const sanitizeCell = (value: unknown) => {
+      let cell = value === null || value === undefined ? '' : String(value);
+      if (/^[=+\-@]/.test(cell)) cell = '\t' + cell;
+      return cell;
+    };
     
     // Construir el contenido CSV
     const csvContent = [
       headers.join(','),
       ...allGrupos.map(grupo => 
         headers.map(header => {
-          let cell = grupo[header] === null || grupo[header] === undefined ? '' : String(grupo[header]);
-          // Escapar comillas dobles y envolver en comillas si contiene comas, saltos de línea o comillas
-          if (cell.includes(',') || cell.includes('"') || cell.includes('\n')) {
+          let cell = sanitizeCell(grupo[header]);
+          // Escapar comillas dobles y envolver en comillas si contiene comas, saltos de línea, retornos o comillas
+          if (cell.includes(',') || cell.includes('"') || cell.includes('\n') || cell.includes('\r')) {
             cell = `"${cell.replace(/"/g, '""')}"`;
           }
           return cell;
         }).join(',')
       )
-    ].join('\n');
+    ].join('\r\n');
     
     // Crear el archivo y forzar la descarga
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
     link.setAttribute('href', url);
@@ -868,7 +942,7 @@ export const prerender = false;
     const hint = document.getElementById('user-selected-hint');
     if (hidden) hidden.value = user?.id || '';
     if (search && user) search.value = user.nombre_completo || user.email;
-    if (hint) hint.textContent = user ? `Seleccionado: ${userLabel(user)}` : 'Escribe para buscar. Ningún usuario seleccionado.';
+    if (hint) hint.textContent = user ? `Seleccionado: ${userLabel(user)}` : 'Escribe para buscar (SUPER_ADMIN excluidos). Ningún usuario seleccionado.';
   }
 
   function renderUserOptions(filter = '') {
@@ -991,7 +1065,14 @@ export const prerender = false;
   }
 
   window.addAdminToGroup = async function() {
-    const userId = (document.getElementById('user-select') as HTMLInputElement | null)?.value || '';
+    let userId = (document.getElementById('user-select') as HTMLInputElement | null)?.value || '';
+    if (!userId) {
+      const typed = ((document.getElementById('user-search') as HTMLInputElement | null)?.value || '').trim().toLowerCase();
+      if (typed) {
+        const exact = allUsersForPicker.filter((u) => u.email.toLowerCase() === typed);
+        if (exact.length === 1) userId = exact[0].id;
+      }
+    }
 
     // Validate inputs
     if (!userId || typeof userId !== 'string' || userId.length !== 36) {
@@ -1012,6 +1093,10 @@ export const prerender = false;
       if (error) throw error;
 
       await loadCurrentAdmins(currentManagingGroup);
+      setSelectedUser(null);
+      const search = document.getElementById('user-search') as HTMLInputElement | null;
+      if (search) search.value = '';
+      await loadUserSelect();
       showNotification('Admin asignado correctamente', 'success');
     } catch (error) {
       console.error('Error assigning admin:', error);
@@ -1152,6 +1237,7 @@ export const prerender = false;
     if (action === 'edit') window.editGroup(id);
     else if (action === 'delete') window.deleteGroup(id);
     else if (action === 'admins') window.manageGroupAdmins(id, name);
+    else if ((btn as HTMLElement).dataset.action === 'retry-grupos') loadGrupos();
   });
 
   document.getElementById('usuarios-table-body')?.addEventListener('click', (e) => {

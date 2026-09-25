@@ -9,13 +9,17 @@ export const prerender = false;
 const { id } = Astro.params;
 
 if (!id) {
-  return Astro.redirect('/');
+  Astro.response.status = 404;
 }
 
-const grupo = await fetchApprovedGrupoById(id);
+const grupo = id ? await fetchApprovedGrupoById(id) : null;
 
 if (!grupo) {
-  return Astro.redirect('/');
+  Astro.response.status = 404;
+  return new Response(
+    `<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Grupo no encontrado</title></head><body style="font-family:system-ui;background:#0f1115;color:#e6e8ee;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0"><main style="text-align:center;max-width:480px;padding:24px"><h1>El grupo no existe o está pendiente de aprobación</h1><p><a href="/" style="color:#7aa2ff">Volver al catálogo</a></p></main></body></html>`,
+    { status: 404, headers: { 'Content-Type': 'text/html; charset=utf-8' } }
+  );
 }
 
 // Solo se muestra el botón web si hay una URL real; el campo trae
@@ -24,11 +28,14 @@ const webUrl = normalizeUrl(grupo.redes);
 
 const tipoColors: Record<string, string> = {
   'Semillero': 'bg-accent/10 text-accent-light border-accent/20',
-  'Grupo de Investigacion': 'bg-primary/10 text-primary-light border-primary/20',
+  'Grupo de Investigación': 'bg-primary/10 text-primary-light border-primary/20',
   'Grupo Estudiantil': 'bg-neon/10 text-neon border-neon/20'
 };
 
-const tipoBadge = tipoColors[grupo.tipo] || tipoColors['Semillero'];
+const normTipo = (s: string) =>
+  (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+const tipoKey = Object.keys(tipoColors).find(k => normTipo(k) === normTipo(grupo.tipo));
+const tipoBadge = (tipoKey && tipoColors[tipoKey]) || tipoColors['Semillero'];
 ---
 
 <Layout title={`${grupo.nombre} | Base de Datos Ingenieria`} description={grupo.descripcion || ''} activePage="grupos">
@@ -55,6 +62,7 @@ const tipoBadge = tipoColors[grupo.tipo] || tipoColors['Semillero'];
             alt={`Imagen de ${grupo.nombre}`}
             loading="eager"
             decoding="async"
+            onerror="this.style.display='none'"
             class="w-full max-h-[28rem] object-cover"
           />
         </div>
@@ -66,9 +74,9 @@ const tipoBadge = tipoColors[grupo.tipo] || tipoColors['Semillero'];
             <span class={`px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border ${tipoBadge}`}>
               {grupo.tipo}
             </span>
-            {grupo.carreras?.slice(0, 2).map(carrera => (
-              <span class="px-3 py-1 rounded-lg bg-bg-hover text-text-secondary text-[10px] font-medium border border-border-subtle">
-                {carrera.length > 20 ? carrera.slice(0, 20) + '...' : carrera}
+            {grupo.carreras?.map(carrera => (
+              <span title={carrera} class="px-3 py-1 rounded-lg bg-bg-hover text-text-secondary text-[10px] font-medium border border-border-subtle">
+                {carrera}
               </span>
             ))}
           </div>
@@ -96,6 +104,7 @@ const tipoBadge = tipoColors[grupo.tipo] || tipoColors['Semillero'];
                 <span class="material-symbols-outlined text-base">content_copy</span>
                 <span data-copy-label>Copiar</span>
               </button>
+              <a href={`mailto:${grupo.email}`} class="text-xs text-primary-light hover:underline shrink-0 pr-1">Abrir en tu correo</a>
             </div>
           )}
           {webUrl && (
@@ -129,6 +138,7 @@ const tipoBadge = tipoColors[grupo.tipo] || tipoColors['Semillero'];
       )}
 
       <!-- Modalidad y Horarios -->
+      {(grupo.modalidad || grupo.horarios) && (
       <div class="card rounded-2xl p-6">
         <div class="flex items-center gap-2 mb-4">
           <span class="material-symbols-outlined text-accent-light">schedule</span>
@@ -149,6 +159,7 @@ const tipoBadge = tipoColors[grupo.tipo] || tipoColors['Semillero'];
           )}
         </div>
       </div>
+      )}
 
       <!-- Actividades -->
       {grupo.actividades && (
@@ -232,6 +243,7 @@ const tipoBadge = tipoColors[grupo.tipo] || tipoColors['Semillero'];
               <span class="material-symbols-outlined text-base">content_copy</span>
               <span data-copy-label>Copiar</span>
             </button>
+            <a href={`mailto:${grupo.email}`} class="text-xs text-primary-light hover:underline shrink-0 pr-1">Abrir en tu correo</a>
           </div>
         )}
       </div>

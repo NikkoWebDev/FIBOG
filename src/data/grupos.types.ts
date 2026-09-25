@@ -75,28 +75,32 @@ export function getTipoSlug(tipo: string): string {
     .replace(/[^a-z0-9-]/g, '');
 }
 
+export function norm(s: string): string {
+  return (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
 export function filtrarGrupos(
   grupos: Grupo[],
   filtros: { tipo?: string; carrera?: string; busqueda?: string }
 ): Grupo[] {
   return grupos.filter(g => {
-    if (filtros.tipo && !g.tipo.toLowerCase().includes(filtros.tipo.toLowerCase())) {
+    if (filtros.tipo && !norm(g.tipo).includes(norm(filtros.tipo))) {
       return false;
     }
     if (filtros.carrera) {
-      const carrera = filtros.carrera.toLowerCase();
-      if (!g.carreras.some(c => c.toLowerCase().includes(carrera))) {
+      const carrera = norm(filtros.carrera);
+      if (!g.carreras.some(c => norm(c).includes(carrera))) {
         return false;
       }
     }
     if (filtros.busqueda) {
-      const search = filtros.busqueda.toLowerCase();
-      const match = 
-        (g.nombre || '').toLowerCase().includes(search) ||
-        (g.enfoque || '').toLowerCase().includes(search) ||
-        (g.descripcion || '').toLowerCase().includes(search) ||
-        (g.docente || '').toLowerCase().includes(search) ||
-        (g.lider || '').toLowerCase().includes(search);
+      const search = norm(filtros.busqueda);
+      const match =
+        norm(g.nombre || '').includes(search) ||
+        norm(g.enfoque || '').includes(search) ||
+        norm(g.descripcion || '').includes(search) ||
+        norm(g.docente || '').includes(search) ||
+        norm(g.lider || '').includes(search);
       if (!match) return false;
     }
     return true;

@@ -54,6 +54,7 @@ export const prerender = false;
           </div>
           <button 
             id="logout-btn"
+            aria-label="Cerrar sesión"
             class="card rounded-full p-2 text-text-secondary hover:text-error transition-colors"
             title="Cerrar sesión"
           >
@@ -99,6 +100,7 @@ export const prerender = false;
           ></select>
         </div>
         <!-- Group Info Card -->
+        <form id="edit-group-form" novalidate class="space-y-6">
         <div class="card rounded-3xl p-6 md:p-8 relative overflow-hidden">
           <div class="absolute top-0 right-0 w-32 h-32 bg-primary/10 rounded-full blur-3xl"></div>
           
@@ -111,110 +113,117 @@ export const prerender = false;
                 <span id="group-type-badge" class="px-2 py-0.5 rounded-full bg-primary/10 text-primary-light text-xs font-label-mono uppercase">-</span>
                 <div class="flex items-center gap-2 mt-1">
                   <span id="group-status" class="flex items-center gap-1 text-sm">
-                    <span class="w-2 h-2 rounded-full bg-primary-light"></span>
-                    <span class="text-primary">Aprobado</span>
+                    <span class="w-2 h-2 rounded-full bg-gray-400"></span>
+                    <span class="text-gray-400">-</span>
                   </span>
                 </div>
               </div>
             </div>
             
-            <form id="edit-group-form" class="space-y-5">
+            <div class="space-y-5">
               <div>
-                <label class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+                <label for="field-nombre" class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
                   Nombre del Grupo
                 </label>
                 <input 
                   type="text" 
                   name="nombre"
                   id="field-nombre"
+                  required
+                  maxlength="120"
                   class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all"
                 />
               </div>
               
               <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
-                  <label class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+                  <label for="field-docente" class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
                     Docente a Cargo
                   </label>
                   <input 
                     type="text" 
                     name="docente_a_cargo"
                     id="field-docente"
+                    maxlength="255"
                     class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all"
                   />
                 </div>
                 
                 <div>
-                  <label class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+                  <label for="field-email" class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
                     Email de Contacto
                   </label>
                   <input 
                     type="email" 
                     name="email_contacto"
                     id="field-email"
+                    maxlength="255"
                     class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all"
                   />
                 </div>
               </div>
               
               <div>
-                <label class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+                <label for="field-lider" class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
                   Líder o Representante
                 </label>
                 <input 
                   type="text" 
                   name="lider_o_representante"
                   id="field-lider"
+                  maxlength="255"
                   class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all"
                 />
               </div>
               
               <div>
-                <label class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+                <label for="field-enfoque" class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
                   Enfoque / Línea de Investigación
                 </label>
                 <input 
                   type="text" 
                   name="enfoque"
                   id="field-enfoque"
+                  maxlength="255"
                   class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all"
                 />
               </div>
               
               <div>
-                <label class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+                <label for="field-descripcion" class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
                   Descripción
                 </label>
                 <textarea 
                   name="descripcion"
                   id="field-descripcion"
                   rows="4"
+                  maxlength="2000"
                   class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all resize-none"
                 ></textarea>
               </div>
 
               <div>
-                <label class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+                <span id="lider-imagen-label" class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
                   Imagen del Grupo
-                </label>
+                </span>
                 <input type="hidden" name="imagen_url" id="field-imagen-url" value="" />
                 <div id="lider-imagen-preview-wrap" class="hidden mb-3 overflow-hidden rounded-xl border border-border-subtle bg-bg-hover">
                   <img id="lider-imagen-preview" src="" alt="Vista previa" class="h-44 w-full object-cover" />
                 </div>
                 <div class="flex flex-wrap gap-3">
-                  <label class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-bg-hover border border-border-default text-sm text-text-primary cursor-pointer hover:border-primary/40 transition-all">
+                  <button type="button" id="lider-imagen-btn" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-bg-hover border border-border-default text-sm text-text-primary cursor-pointer hover:border-primary/40 transition-all">
                     <span class="material-symbols-outlined text-base">upload</span>
                     Subir / actualizar
-                    <input id="field-imagen-file" type="file" accept="image/png,image/jpeg,image/webp,image/gif" class="hidden" />
-                  </label>
+                  </button>
+                  <input id="field-imagen-file" type="file" accept="image/png,image/jpeg,image/webp,image/gif" class="sr-only" />
                   <button type="button" id="lider-imagen-remove" class="hidden px-4 py-2.5 rounded-xl border border-error/30 text-error text-sm hover:bg-error/10 transition-all">
                     Quitar imagen
                   </button>
                 </div>
                 <p class="text-xs text-text-muted mt-2">JPG/PNG/WEBP/GIF · max 5 MB. Aparece en el catalogo.</p>
-                <p id="lider-imagen-error" class="hidden text-xs text-error mt-2"></p>
+                <p id="lider-imagen-error" aria-live="polite" class="hidden text-xs text-error mt-2"></p>
               </div>
-            </form>
+            </div>
           </div>
         </div>
         
@@ -227,10 +236,10 @@ export const prerender = false;
             <h2 class="font-headline-md text-headline-md text-text-primary">Información Adicional</h2>
           </div>
           
-          <form id="edit-extra-form" class="space-y-5">
+          <div class="space-y-5">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
-                <label class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+                <label for="field-modalidad" class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
                   Modalidad
                 </label>
                 <select 
@@ -246,13 +255,14 @@ export const prerender = false;
               </div>
               
               <div>
-                <label class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+                <label for="field-horarios" class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
                   Horarios Habituales
                 </label>
                 <input 
                   type="text" 
                   name="horarios_habituales"
                   id="field-horarios"
+                  maxlength="255"
                   placeholder="Ej: Viernes 2:00pm - 6:00pm"
                   class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-muted/60 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all"
                 />
@@ -260,37 +270,40 @@ export const prerender = false;
             </div>
             
             <div>
-              <label class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+              <label for="field-actividades" class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
                 Actividades Principales
               </label>
               <textarea 
                 name="actividades"
                 id="field-actividades"
                 rows="3"
+                maxlength="2000"
                 class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all resize-none"
               ></textarea>
             </div>
             
             <div>
-              <label class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+              <label for="field-requisitos" class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
                 Requisitos para Ingresar
               </label>
               <textarea 
                 name="requisitos_ingreso"
                 id="field-requisitos"
                 rows="2"
+                maxlength="2000"
                 class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all resize-none"
               ></textarea>
             </div>
             
             <div>
-              <label class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+              <label for="field-redes" class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
                 Link de la web o red social del grupo
               </label>
               <input
                 type="url"
                 name="redes_sociales"
                 id="field-redes"
+                maxlength="255"
                 placeholder="https://instagram.com/tu-grupo"
                 inputmode="url"
                 autocomplete="url"
@@ -300,17 +313,18 @@ export const prerender = false;
             </div>
             
             <div>
-              <label class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
+              <label for="field-comentarios" class="block text-text-secondary text-sm font-medium mb-2 font-label-mono uppercase tracking-wider text-label-mono">
                 Comentarios Adicionales
               </label>
               <textarea 
                 name="comentarios_adicionales"
                 id="field-comentarios"
                 rows="2"
+                maxlength="2000"
                 class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all resize-none"
               ></textarea>
             </div>
-          </form>
+          </div>
         </div>
         
         <!-- Actions -->
@@ -325,7 +339,7 @@ export const prerender = false;
           
           <button 
             id="save-btn"
-            type="button"
+            type="submit"
             class="flex-1 py-3.5 px-6 rounded-xl bg-gradient-to-r from-primary to-accent text-white font-bold hover:opacity-90 transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
           >
             <span class="material-symbols-outlined">save</span>
@@ -333,6 +347,7 @@ export const prerender = false;
             <div id="save-spinner" class="hidden w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
           </button>
         </div>
+        </form>
         
         <!-- Messages -->
         <div id="error-message" class="hidden p-4 rounded-xl bg-error/10 border border-error/30 text-error text-sm text-center">
@@ -357,6 +372,19 @@ export const prerender = false;
   let removeExistingImage = false;
   let currentImageUrl: string | null = null;
   let saving = false;
+  let isDirty = false;
+  let filling = false;
+  let successTimer: number | undefined = undefined;
+
+  function markDirty() {
+    if (!filling) isDirty = true;
+  }
+
+  function updateRemoveBtnLabel() {
+    const removeBtn = document.getElementById('lider-imagen-remove');
+    if (!removeBtn) return;
+    removeBtn.textContent = pendingImageFile ? 'Descartar selección' : 'Quitar imagen';
+  }
 
   // Columnas que el líder puede editar. Nunca se envían id, id_lider,
   // estado_aprobacion, creado_por ni marcas de tiempo (las protege RLS).
@@ -428,6 +456,7 @@ export const prerender = false;
       wrap?.classList.add('hidden');
       removeBtn?.classList.add('hidden');
     }
+    updateRemoveBtnLabel();
   }
   
   // Check auth
@@ -469,6 +498,7 @@ export const prerender = false;
   async function loadGroup(userId: string) {
     let byLider: Array<Record<string, any>> = [];
     let byAsignacion: Array<Record<string, any>> = [];
+    let asignError: any = null;
 
     const { data: liderRows, error: liderError } = await supabase
       .from('grupos')
@@ -479,17 +509,21 @@ export const prerender = false;
 
     // admin_grupos puede no existir en despliegues antiguos: se ignora el error
     try {
-      const { data: asignaciones, error: asignError } = await supabase
+      const { data: asignaciones, error } = await supabase
         .from('admin_grupos')
         .select('grupo_id, grupos(*)')
         .eq('usuario_id', userId)
         .eq('activo', true);
+      asignError = error || null;
+      if (asignError) console.warn('loadGroup admin_grupos:', asignError);
       if (!asignError && Array.isArray(asignaciones)) {
         byAsignacion = asignaciones
           .map((a: any) => a.grupos)
           .filter((g: any) => g && g.id);
       }
-    } catch {
+    } catch (err) {
+      asignError = err;
+      console.warn('loadGroup admin_grupos:', err);
       byAsignacion = [];
     }
 
@@ -498,11 +532,29 @@ export const prerender = false;
       if (g && g.id && !merged.has(g.id)) merged.set(g.id, g);
     });
     managedGroups = [...merged.values()];
+    managedGroups.sort((a, b) => String(a.nombre || '').localeCompare(String(b.nombre || ''), 'es'));
 
     document.getElementById('loading-state')!.classList.add('hidden');
 
     if (managedGroups.length === 0) {
       if (liderError) console.error('loadGroup:', liderError);
+      if (liderError || asignError) {
+        const banner = document.getElementById('error-message');
+        document.getElementById('group-form')?.classList.remove('hidden');
+        if (banner) {
+          banner.innerHTML = '';
+          const msg = document.createElement('span');
+          msg.textContent = 'No se pudo cargar la información del grupo. Revisa tu conexión. ';
+          const retry = document.createElement('button');
+          retry.type = 'button';
+          retry.textContent = 'Reintentar';
+          retry.className = 'underline font-bold ml-1';
+          retry.addEventListener('click', () => location.reload());
+          banner.append(msg, retry);
+          banner.classList.remove('hidden');
+        }
+        return;
+      }
       document.getElementById('no-group-state')!.classList.remove('hidden');
       return;
     }
@@ -530,6 +582,10 @@ export const prerender = false;
       .join('');
     select.value = groupId || managedGroups[0].id;
     select.onchange = () => {
+      if (isDirty && !confirm('Tienes cambios sin guardar. ¿Cambiar de grupo?')) {
+        select.value = groupId || managedGroups[0].id;
+        return;
+      }
       const next = managedGroups.find((g) => g.id === select.value);
       if (next) fillGroupForm(next);
     };
@@ -542,32 +598,70 @@ export const prerender = false;
   }
 
   function fillGroupForm(data: Record<string, any>) {
-    groupId = data.id;
+    filling = true;
+    try {
+      groupId = data.id;
 
-    Object.entries(FIELD_MAP).forEach(([column, elementId]) => {
-      const element = document.getElementById(elementId) as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | null;
-      if (element) element.value = (data as Record<string, string | null>)[column] || '';
-    });
+      Object.entries(FIELD_MAP).forEach(([column, elementId]) => {
+        const element = document.getElementById(elementId) as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | null;
+        if (element) element.value = (data as Record<string, string | null>)[column] || '';
+      });
 
-    setLiderImageUI(data.imagen_url || null);
+      setLiderImageUI(data.imagen_url || null);
 
-    // Set type badge and icon
-    const typeBadge = document.getElementById('group-type-badge');
-    const typeIcon = document.getElementById('group-type-icon');
+      // Set type badge and icon
+      const typeBadge = document.getElementById('group-type-badge');
+      const typeIcon = document.getElementById('group-type-icon');
 
-    if (typeBadge) typeBadge.textContent = data.tipo || '-';
+      if (typeBadge) typeBadge.textContent = data.tipo || '-';
 
-    const icons: Record<string, string> = {
-      'Semillero': 'school',
-      'Grupo de Investigación': 'science',
-      'Grupo Estudiantil': 'groups'
-    };
-    if (typeIcon) typeIcon.textContent = icons[data.tipo] || 'groups';
+      const icons: Record<string, string> = {
+        'Semillero': 'school',
+        'Grupo de Investigación': 'science',
+        'Grupo Estudiantil': 'groups'
+      };
+      if (typeIcon) typeIcon.textContent = icons[data.tipo] || 'groups';
 
-    const selector = document.getElementById('group-selector') as HTMLSelectElement | null;
-    if (selector && data.id) selector.value = data.id;
+      const estadoRaw = String(data.estado_aprobacion || '').trim();
+      const estado = estadoRaw.toLowerCase();
+      const statusEl = document.getElementById('group-status');
+      if (statusEl) {
+        let dot = 'bg-gray-400';
+        let text = 'text-gray-400';
+        let label = estadoRaw || '-';
+        if (estado === 'pendiente') {
+          dot = 'bg-amber-400';
+          text = 'text-amber-400';
+          label = 'En revisión';
+        } else if (estado === 'aprobado') {
+          dot = 'bg-emerald-400';
+          text = 'text-emerald-400';
+          label = 'Aprobado';
+        } else if (estado === 'rechazado') {
+          dot = 'bg-red-400';
+          text = 'text-red-400';
+          label = 'Rechazado';
+        }
+        statusEl.innerHTML = '';
+        const dotEl = document.createElement('span');
+        dotEl.className = `w-2 h-2 rounded-full ${dot}`;
+        const labelEl = document.createElement('span');
+        labelEl.className = text;
+        labelEl.textContent = label;
+        statusEl.append(dotEl, labelEl);
+        if (typeBadge) {
+          typeBadge.textContent = data.tipo || label;
+        }
+      }
 
-    hideFormMessages();
+      const selector = document.getElementById('group-selector') as HTMLSelectElement | null;
+      if (selector && data.id) selector.value = data.id;
+
+      hideFormMessages();
+      isDirty = false;
+    } finally {
+      filling = false;
+    }
   }
 
   function hideFormMessages() {
@@ -578,6 +672,56 @@ export const prerender = false;
   // Save changes
   async function saveChanges() {
     if (!groupId || saving) return;
+
+    const mainForm = document.getElementById('edit-group-form') as HTMLFormElement | null;
+    if (!mainForm) return;
+
+    const raw: Record<string, string> = {};
+    new FormData(mainForm).forEach((value, key) => {
+      if (typeof value === 'string') raw[key] = value.trim();
+    });
+
+    const nombre = raw.nombre || '';
+    if (!nombre) {
+      const errorMessage = document.getElementById('error-message');
+      if (errorMessage) {
+        errorMessage.textContent = 'El nombre del grupo es obligatorio.';
+        errorMessage.classList.remove('hidden');
+      }
+      return;
+    }
+
+    const email = raw.email_contacto || '';
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      const errorMessage = document.getElementById('error-message');
+      if (errorMessage) {
+        errorMessage.textContent = 'El email de contacto no es válido.';
+        errorMessage.classList.remove('hidden');
+      }
+      return;
+    }
+
+    if (raw.redes_sociales) {
+      if (/[,;]/.test(raw.redes_sociales)) {
+        const errorMessage = document.getElementById('error-message');
+        if (errorMessage) {
+          errorMessage.textContent = 'Solo se permite un enlace en la web o red social. Revisa que no haya comas ni punto y coma.';
+          errorMessage.classList.remove('hidden');
+        }
+        return;
+      }
+      const normalized = normalizeUrl(raw.redes_sociales);
+      if (!normalized) {
+        const errorMessage = document.getElementById('error-message');
+        if (errorMessage) {
+          errorMessage.textContent = 'El enlace web no es válido. Use una URL completa (ej: https://instagram.com/tu-grupo) o déjelo vacío.';
+          errorMessage.classList.remove('hidden');
+        }
+        return;
+      }
+      raw.redes_sociales = normalized;
+    }
+
     saving = true;
 
     const saveBtn = document.getElementById('save-btn') as HTMLButtonElement | null;
@@ -594,36 +738,6 @@ export const prerender = false;
     successMessage?.classList.add('hidden');
     
     try {
-      // Collect data from both forms (solo columnas editables)
-      const mainForm = document.getElementById('edit-group-form') as HTMLFormElement;
-      const extraForm = document.getElementById('edit-extra-form') as HTMLFormElement;
-
-      const raw: Record<string, string> = {};
-      new FormData(mainForm).forEach((value, key) => {
-        if (typeof value === 'string') raw[key] = value.trim();
-      });
-      new FormData(extraForm).forEach((value, key) => {
-        if (typeof value === 'string') raw[key] = value.trim();
-      });
-
-      const nombre = raw.nombre || '';
-      if (!nombre) {
-        throw new Error('El nombre del grupo es obligatorio.');
-      }
-
-      const email = raw.email_contacto || '';
-      if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        throw new Error('El email de contacto no es válido.');
-      }
-
-      if (raw.redes_sociales) {
-        const normalized = normalizeUrl(raw.redes_sociales);
-        if (!normalized) {
-          throw new Error('El enlace web no es válido. Use una URL completa (ej: https://instagram.com/tu-grupo) o déjelo vacío.');
-        }
-        raw.redes_sociales = normalized;
-      }
-
       const updateData: Record<string, string | null> = {};
       EDITABLE_COLUMNS.forEach((column) => {
         if (column === 'imagen_url') return;
@@ -672,11 +786,33 @@ export const prerender = false;
       pendingImageFile = null;
       removeExistingImage = false;
       setLiderImageUI(nextImageUrl);
+      isDirty = false;
+
+      try {
+        const { data: fresh } = await supabase
+          .from('grupos')
+          .select('*')
+          .eq('id', groupId)
+          .single();
+        if (fresh) {
+          const idx = managedGroups.findIndex((g) => g.id === groupId);
+          if (idx >= 0) managedGroups[idx] = fresh;
+          const selector = document.getElementById('group-selector') as HTMLSelectElement | null;
+          if (selector) {
+            const opt = selector.querySelector(`option[value="${groupId}"]`);
+            if (opt) opt.textContent = String((fresh as Record<string, any>).nombre || 'Sin nombre');
+            selector.value = groupId;
+          }
+        }
+      } catch {
+        // la vista ya quedó actualizada; el refetch es solo sincronización
+      }
       
       successMessage!.textContent = 'Cambios guardados exitosamente';
       successMessage?.classList.remove('hidden');
       
-      setTimeout(() => {
+      if (successTimer) clearTimeout(successTimer);
+      successTimer = window.setTimeout(() => {
         successMessage?.classList.add('hidden');
       }, 3000);
       
@@ -695,7 +831,24 @@ export const prerender = false;
   }
   
   // Event listeners
-  document.getElementById('save-btn')?.addEventListener('click', saveChanges);
+  document.getElementById('edit-group-form')?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    saveChanges();
+  });
+
+  document.getElementById('edit-group-form')?.addEventListener('input', () => {
+    markDirty();
+    const successMessage = document.getElementById('success-message');
+    if (successMessage && !successMessage.classList.contains('hidden')) {
+      if (successTimer) clearTimeout(successTimer);
+      successMessage.classList.add('hidden');
+    }
+  });
+  document.getElementById('edit-group-form')?.addEventListener('change', markDirty);
+
+  document.getElementById('lider-imagen-btn')?.addEventListener('click', () => {
+    (document.getElementById('field-imagen-file') as HTMLInputElement | null)?.click();
+  });
 
   document.getElementById('field-imagen-file')?.addEventListener('change', (event) => {
     const input = event.target as HTMLInputElement;
@@ -717,6 +870,7 @@ export const prerender = false;
 
     pendingImageFile = file;
     removeExistingImage = false;
+    markDirty();
 
     const preview = document.getElementById('lider-imagen-preview') as HTMLImageElement | null;
     const wrap = document.getElementById('lider-imagen-preview-wrap');
@@ -728,11 +882,21 @@ export const prerender = false;
       wrap.classList.remove('hidden');
       removeBtn?.classList.remove('hidden');
     }
+    updateRemoveBtnLabel();
   });
 
   document.getElementById('lider-imagen-remove')?.addEventListener('click', () => {
+    if (pendingImageFile) {
+      pendingImageFile = null;
+      const fileInput = document.getElementById('field-imagen-file') as HTMLInputElement | null;
+      if (fileInput) fileInput.value = '';
+      setLiderImageUI(currentImageUrl);
+      return;
+    }
+    if (!confirm('¿Quitar la imagen del grupo? Se aplicará al guardar.')) return;
     removeExistingImage = true;
     pendingImageFile = null;
+    markDirty();
 
     const hidden = document.getElementById('field-imagen-url') as HTMLInputElement | null;
     const preview = document.getElementById('lider-imagen-preview') as HTMLImageElement | null;

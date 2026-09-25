@@ -5,11 +5,17 @@ interface Props {
   metadata: Metadata;
   activeTipo?: string;
   activeCarrera?: string;
+  activeQuery?: string;
 }
 
-const { metadata, activeTipo, activeCarrera } = Astro.props;
+const { metadata, activeTipo, activeCarrera, activeQuery } = Astro.props;
 
-const tipos = ['Todos', 'Semillero', 'Grupo de Investigacion', 'Grupo Estudiantil'];
+const tipos = ['Todos', 'Semillero', 'Grupo de Investigación', 'Grupo Estudiantil'];
+
+const norm = (s: string) =>
+  (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+const qSuffix = activeQuery ? `&q=${encodeURIComponent(activeQuery)}` : '';
 ---
 
 <div class="glass rounded-xl p-4 mb-8">
@@ -19,10 +25,10 @@ const tipos = ['Todos', 'Semillero', 'Grupo de Investigacion', 'Grupo Estudianti
       <span class="text-text-muted text-sm mr-2 self-center font-medium">Tipo:</span>
       {tipos.map(tipo => {
         const isActive = (tipo === 'Todos' && !activeTipo) ||
-                         (tipo !== 'Todos' && activeTipo?.toLowerCase() === tipo.toLowerCase());
+                          (tipo !== 'Todos' && activeTipo && norm(activeTipo) === norm(tipo));
         const href = tipo === 'Todos'
-          ? (activeCarrera ? `?carrera=${activeCarrera}` : '/')
-          : `?tipo=${encodeURIComponent(tipo)}${activeCarrera ? `&carrera=${activeCarrera}` : ''}`;
+          ? (activeCarrera ? `?carrera=${encodeURIComponent(activeCarrera)}${qSuffix}` : (activeQuery ? `?q=${encodeURIComponent(activeQuery)}` : '/'))
+          : `?tipo=${encodeURIComponent(tipo)}${activeCarrera ? `&carrera=${encodeURIComponent(activeCarrera)}` : ''}${qSuffix}`;
 
         return (
           <a
@@ -48,13 +54,13 @@ const tipos = ['Todos', 'Semillero', 'Grupo de Investigacion', 'Grupo Estudianti
         class="bg-bg-input border border-border-default px-4 py-2 text-sm text-text-primary rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all cursor-pointer appearance-none"
         onchange="window.location.href=this.value"
       >
-        <option value={activeTipo ? `?tipo=${activeTipo}` : '/'}>
+        <option value={activeTipo ? `?tipo=${encodeURIComponent(activeTipo)}${qSuffix}` : (activeQuery ? `?q=${encodeURIComponent(activeQuery)}` : '/')}>
           Todas las carreras
         </option>
         {metadata.carreras.map(carrera => {
           const value = activeTipo
-            ? `?tipo=${encodeURIComponent(activeTipo)}&carrera=${encodeURIComponent(carrera)}`
-            : `?carrera=${encodeURIComponent(carrera)}`;
+            ? `?tipo=${encodeURIComponent(activeTipo)}&carrera=${encodeURIComponent(carrera)}${qSuffix}`
+            : `?carrera=${encodeURIComponent(carrera)}${qSuffix}`;
           const isSelected = activeCarrera === carrera;
 
           return (

@@ -324,7 +324,7 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
                 Link de la web o red social del grupo
               </label>
               <input
-                type="url"
+                type="text"
                 name="redes_sociales"
                 placeholder="https://instagram.com/tu-grupo"
                 inputmode="url"
@@ -462,15 +462,40 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
     });
 
     // validación requerida primer paso
-    const required = ['modalidad','horarios_habituales','actividades','requisitos_ingreso','enfoque','descripcion','carreras','nombre_solicitante','email_solicitante'];
+    const required = ['tipo','nombre','lider_o_representante','email_contacto','modalidad','horarios_habituales','actividades','requisitos_ingreso','enfoque','descripcion','carreras','nombre_solicitante','email_solicitante'];
+    const friendly: Record<string, string> = {
+      tipo: 'el tipo de grupo',
+      nombre: 'el nombre del grupo',
+      lider_o_representante: 'el nombre del líder o representante',
+      email_contacto: 'el email de contacto del grupo',
+      modalidad: 'la modalidad',
+      horarios_habituales: 'los horarios habituales',
+      actividades: 'las actividades principales',
+      requisitos_ingreso: 'los requisitos de ingreso',
+      enfoque: 'el enfoque del grupo',
+      descripcion: 'la descripción del grupo',
+      carreras: 'las carreras relacionadas',
+      nombre_solicitante: 'tu nombre como solicitante',
+      email_solicitante: 'tu email como solicitante',
+    };
     for (const f of required) {
       const v = data[f];
       const empty = v === null || v === '' || (Array.isArray(v) && v.length===0);
       if (empty) {
-        showError(`Falta campo obligatorio: ${f}`);
+        showError(`Falta ${friendly[f] || 'un campo obligatorio'}. Por favor complétalo para continuar.`);
         return;
       }
     }
+
+    const normTipo = (s: string) =>
+      (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    const tiposValidos = ['Semillero', 'Grupo de Investigación', 'Grupo Estudiantil'];
+    const tipoMatch = tiposValidos.find(t => normTipo(t) === normTipo(String(data.tipo || '')));
+    if (!tipoMatch) {
+      showError('El tipo de grupo no es válido. Elige Semillero, Grupo de Investigación o Grupo Estudiantil.');
+      return;
+    }
+    data.tipo = tipoMatch;
 
     const emailSolicitante = String(data.email_solicitante || '');
     const emailContacto = String(data.email_contacto || '');

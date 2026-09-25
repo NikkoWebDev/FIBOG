@@ -11,11 +11,14 @@ const { grupo, index = 0 } = Astro.props;
 
 const tipoColors: Record<string, string> = {
   'Semillero': 'bg-accent/10 text-accent-light border-accent/20',
-  'Grupo de Investigacion': 'bg-primary/10 text-primary-light border-primary/20',
+  'Grupo de Investigación': 'bg-primary/10 text-primary-light border-primary/20',
   'Grupo Estudiantil': 'bg-neon/10 text-neon border-neon/20'
 };
 
-const tipoBadge = tipoColors[grupo.tipo] || tipoColors['Semillero'];
+const normTipo = (s: string) =>
+  (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+const tipoKey = Object.keys(tipoColors).find(k => normTipo(k) === normTipo(grupo.tipo));
+const tipoBadge = (tipoKey && tipoColors[tipoKey]) || tipoColors['Semillero'];
 ---
 
 <div class="bento-card glass rounded-2xl p-6 hover:border-primary/40 transition-all duration-300 group" data-index={index}>

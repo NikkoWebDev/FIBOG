@@ -9,7 +9,7 @@ import { filtrarGrupos } from '../data/grupos.types';
 
 export const prerender = false;
 
-const { grupos: allGrupos, metadata } = await fetchApprovedCatalog();
+const { grupos: allGrupos, metadata, error: catalogError } = await fetchApprovedCatalog();
 
 const url = Astro.url;
 const tipoFilter = url.searchParams.get('tipo');
@@ -123,6 +123,7 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
         metadata={{...metadata, total: filteredGrupos.length}}
         activeTipo={tipoFilter || undefined}
         activeCarrera={carreraFilter || undefined}
+        activeQuery={searchQuery || undefined}
       />
 
       {(tipoFilter || carreraFilter || searchQuery) && (
@@ -135,7 +136,15 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
         </div>
       )}
 
-      {filteredGrupos.length > 0 ? (
+      {catalogError ? (
+        <div class="text-center py-16">
+          <h3 class="text-lg text-text-primary font-semibold mb-1">No pudimos cargar el catálogo</h3>
+          <p class="text-text-secondary text-sm max-w-md mx-auto mb-6">Intenta recargar la página. Si el problema persiste, contáctanos.</p>
+          <button onclick="location.reload()" class="inline-flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-primary to-primary-dark text-white font-semibold rounded-xl hover:shadow-glow transition-all text-sm">
+            Reintentar
+          </button>
+        </div>
+      ) : filteredGrupos.length > 0 ? (
         <BentoGrid grupos={filteredGrupos} />
       ) : (
         <div class="text-center py-16">

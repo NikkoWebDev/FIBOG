@@ -73,7 +73,7 @@ export async function fetchApprovedGrupos(): Promise<Grupo[]> {
 }
 
 /** Catalogo + fecha real de ultima edicion en DB. */
-export async function fetchApprovedCatalog(): Promise<{ grupos: Grupo[]; metadata: Metadata }> {
+export async function fetchApprovedCatalog(): Promise<{ grupos: Grupo[]; metadata: Metadata; error: string | null }> {
   const client = serverClient() || supabase;
   const { data, error } = await client
     .from('grupos')
@@ -83,7 +83,7 @@ export async function fetchApprovedCatalog(): Promise<{ grupos: Grupo[]; metadat
 
   if (error) {
     console.error('fetchApprovedCatalog:', error.message);
-    return { grupos: [], metadata: buildMetadata([]) };
+    return { grupos: [], metadata: buildMetadata([]), error: error.message };
   }
 
   const rows = data || [];
@@ -100,6 +100,7 @@ export async function fetchApprovedCatalog(): Promise<{ grupos: Grupo[]; metadat
       ...buildMetadata(grupos),
       actualizado: latest || new Date().toISOString(),
     },
+    error: null,
   };
 }
 

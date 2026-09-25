@@ -42,6 +42,19 @@ export const POST: APIRoute = async ({ request, site }) => {
     // Always compute keyword matches so we can enrich the response or fall back
     const relevantGrupos = findRelevantGrupos(currentQuery, grupos);
 
+    // Término demasiado corto: no llamar al proveedor
+    const keywords = extractKeywords(currentQuery);
+    if (keywords.length === 0) {
+      return new Response(
+        JSON.stringify({
+          answer: 'Término muy corto, prueba con más detalle',
+          query: currentQuery,
+          grupos: [],
+        }),
+        { status: 200, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
     // Identidad: se responde local, sin depender del proveedor de IA.
     if (isIdentityQuestion(currentQuery)) {
       return new Response(
@@ -260,8 +273,12 @@ function isIdentityQuestion(text: string): boolean {
 /**
  * Find relevant grupos based on query keywords
  */
+function extractKeywords(query: string): string[] {
+  return query.toLowerCase().split(/\s+/).filter(k => k.length > 1);
+}
+
 function findRelevantGrupos(query: string, grupos: Grupo[]) {
-  const keywords = query.toLowerCase().split(/\s+/).filter(k => k.length > 2);
+  const keywords = extractKeywords(query);
 
   if (keywords.length === 0) return grupos.slice(0, 3);
 
