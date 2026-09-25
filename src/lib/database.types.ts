@@ -13,7 +13,7 @@ export type Database = {
         Row: {
           carrera: string | null
           email: string
-          es_admin_multi_grupo: boolean
+          es_admin_multi_grupo: boolean | null
           fecha_registro: string
           id: string
           nombre_completo: string | null
@@ -24,7 +24,7 @@ export type Database = {
         Insert: {
           carrera?: string | null
           email: string
-          es_admin_multi_grupo?: boolean
+          es_admin_multi_grupo?: boolean | null
           fecha_registro?: string
           id: string
           nombre_completo?: string | null
@@ -35,7 +35,7 @@ export type Database = {
         Update: {
           carrera?: string | null
           email?: string
-          es_admin_multi_grupo?: boolean
+          es_admin_multi_grupo?: boolean | null
           fecha_registro?: string
           id?: string
           nombre_completo?: string | null
@@ -337,6 +337,24 @@ export type Database = {
           },
         ]
       }
+      rate_limits: {
+        Row: {
+          key: string
+          count: number
+          window_start: string
+        }
+        Insert: {
+          key: string
+          count?: number
+          window_start?: string
+        }
+        Update: {
+          key?: string
+          count?: number
+          window_start?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -345,6 +363,34 @@ export type Database = {
       get_my_role: {
         Args: Record<PropertyKey, never>
         Returns: string
+      }
+      is_admin_of_group: {
+        Args: { group_id: string }
+        Returns: boolean
+      }
+      get_manageable_groups: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          grupo_id: string
+          grupo_nombre: string
+          tipo: string
+        }[]
+      }
+      assign_admin_to_group: {
+        Args: {
+          target_usuario_id: string
+          target_grupo_id: string
+          asignado_por_uuid?: string
+        }
+        Returns: boolean
+      }
+      remove_admin_from_group: {
+        Args: { target_usuario_id: string; target_grupo_id: string }
+        Returns: boolean
+      }
+      is_super_admin: {
+        Args: Record<PropertyKey, never>
+        Returns: boolean
       }
     }
     Enums: {

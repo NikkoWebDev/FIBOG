@@ -41,14 +41,19 @@ export const createServerClient = (url: string, key: string) => {
 export async function getUserRole() {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return null;
-  
-  const { data: profile } = await supabase
+
+  const { data: profile, error } = await supabase
     .from('perfiles')
     .select('rol')
     .eq('id', user.id)
     .single();
-    
-  return profile?.rol || 'VISITANTE';
+
+  if (error || !profile?.rol) {
+    console.warn('sin perfil para', user.id);
+    return null;
+  }
+
+  return profile.rol;
 }
 
 // Helper to check if user is SUPER_ADMIN

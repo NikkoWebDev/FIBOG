@@ -10,7 +10,7 @@
  */
 
 import { createClient } from '@supabase/supabase-js';
-import { readFileSync } from 'fs';
+import { readFileSync, writeFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
@@ -101,6 +101,35 @@ function cleanField(value) {
     .replace(/\n+/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
+}
+
+/**
+ * Tipos permitidos en la tabla grupos.
+ * Los alias sin tilde se mapean al valor canonico.
+ */
+const TIPOS_VALIDOS = ['Semillero', 'Grupo de Investigación', 'Grupo Estudiantil'];
+
+const TIPO_ALIAS = {
+  'semillero': 'Semillero',
+  'grupo de investigacion': 'Grupo de Investigación',
+  'grupo de investigación': 'Grupo de Investigación',
+  'grupo estudiantil': 'Grupo Estudiantil',
+};
+
+function normalizeTipo(raw) {
+  if (!raw) return null;
+  const key = raw.trim().replace(/\s+/g, ' ').toLowerCase();
+  return TIPO_ALIAS[key] || null;
+}
+
+// Vuelca la tabla actual a JSON antes de escribir nada (rollback manual)
+async function backupGrupos() {
+  const { data, error } = await supabase.from('grupos').select('*');
+  if (error) throw new Error(`No se pudo crear backup: ${error.message}`);
+  const fecha = new Date().toISOString().slice(0, 10);
+  const path = join(__dirname, `backup-grupos-${fecha}.json`);
+  writeFileSync(path, JSON.stringify(data, null, 2));
+  console.log(`   Backup de ${data.length} grupos en ${path}`);
 }
 
 /**
@@ -239,9 +268,10 @@ async function createSuperAdmin(email, password, nombre) {
 
 /**
  * Insert grupos into Supabase
+ * Idempotente: upsert por nombre, no borra nada previo
  */
 async function insertGrupos(grupos) {
-  console.log(`\n📤 Inserting ${grupos.length} grupos into Supabase...`);
+  console.log(`\n📤 Upserting ${grupos.length} grupos into Supabase...`);
   
   const batchSize = 50;
   let inserted = 0;
@@ -252,7 +282,7 @@ async function insertGrupos(grupos) {
     
     const { data, error } = await supabase
       .from('grupos')
-      .insert(batch)
+      .upsert(batch, { onConflict: 'nombre' })
       .select();
     
     if (error) {
@@ -320,6 +350,15 @@ async function migrate() {
       }
       
       const grupo = processRecord(fields, headers);
+
+      // Fila con tipo invalido: se aborta solo esa fila, el batch sigue
+      const tipoOk = normalizeTipo(grupo.tipo);
+      if (!tipoOk) {
+        console.error(`   ⚠️  Fila ${i + 1} descartada: tipo inválido "${grupo.tipo}" (${grupo.nombre || 'sin nombre'})`);
+        skipped++;
+        continue;
+      }
+      grupo.tipo = tipoOk;
       
       if (grupo.nombre && grupo.nombre.length > 0) {
         grupos.push(grupo);
@@ -343,18 +382,9 @@ async function migrate() {
     
     await new Promise(resolve => setTimeout(resolve, 5000));
     
-    // Clear existing grupos (optional - comment out if you want to keep existing)
-    console.log('🧹 Clearing existing grupos...');
-    const { error: deleteError } = await supabase
-      .from('grupos')
-      .delete()
-      .neq('id', '00000000-0000-0000-0000-000000000000');
-    
-    if (deleteError) {
-      console.log(`   ⚠️  Could not clear existing grupos: ${deleteError.message}`);
-    } else {
-      console.log(`   ✅ Existing grupos cleared`);
-    }
+    // Backup previo: nunca se borra la tabla, el upsert es idempotente
+    console.log('💾 Creando backup de grupos existentes...');
+    await backupGrupos();
     
     // Insert grupos
     const result = await insertGrupos(grupos);

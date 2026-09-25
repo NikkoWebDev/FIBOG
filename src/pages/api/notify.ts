@@ -21,9 +21,17 @@ const REQUIRED_FIELDS: (keyof SolicitudInsert)[] = [
 const isUnalEmail = (email: string): boolean =>
   typeof email === 'string' && /^[a-z0-9._%+-]+@unal\.edu\.co$/i.test(email.trim());
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, clientAddress }) => {
   try {
-    const body = (await request.json()) as Partial<SolicitudInsert>;
+    const body = (await request.json()) as Partial<SolicitudInsert> & { website?: unknown };
+
+    // Honeypot: los bots rellenan `website`; responder exito falso sin insertar
+    if (typeof body.website === 'string' && body.website.trim() !== '') {
+      return new Response(
+        JSON.stringify({ success: true, message: 'Solicitud enviada exitosamente.' }),
+        { status: 200, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
 
     // Required fields validation
     const missingFields = REQUIRED_FIELDS.filter((field) => {
@@ -125,6 +133,41 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     const serverClient = createServerClient(supabaseUrl, serviceRoleKey);
+
+    // Rate-limit: 10 solicitudes/hora por IP
+    const forwarded = request.headers.get('x-forwarded-for');
+    const ip = (forwarded?.split(',')[0]?.trim() || clientAddress || 'unknown');
+    const rateKey = `notify:${ip}`;
+    const WINDOW_MS = 60 * 60 * 1000;
+
+    const { data: bucket, error: rateError } = await serverClient
+      .from('rate_limits')
+      .select('key, count, window_start')
+      .eq('key', rateKey)
+      .maybeSingle();
+
+    if (rateError) {
+      console.error('Error checking rate limit:', rateError);
+    } else if (!bucket) {
+      await serverClient.from('rate_limits').insert({ key: rateKey, count: 1 });
+    } else if (Date.now() - new Date(bucket.window_start).getTime() > WINDOW_MS) {
+      await serverClient
+        .from('rate_limits')
+        .update({ count: 1, window_start: new Date().toISOString() })
+        .eq('key', rateKey);
+    } else {
+      const next = bucket.count + 1;
+      await serverClient
+        .from('rate_limits')
+        .update({ count: next })
+        .eq('key', rateKey);
+      if (next > 10) {
+        return new Response(
+          JSON.stringify({ error: 'Demasiadas solicitudes, intenta en una hora' }),
+          { status: 429, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+    }
 
     // Lista blanca: nunca insertar el body crudo (evita columnas inventadas
     // e imagen_url externas al bucket).

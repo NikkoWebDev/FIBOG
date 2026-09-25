@@ -117,7 +117,7 @@ import Layout from '../layouts/Layout.astro';
 </Layout>
 
 <script>
-  import { supabase } from '../lib/supabase';
+  import { supabase, getUserRole } from '../lib/supabase';
 
   const form = document.getElementById('login-form');
   const emailInput = document.getElementById('email') as HTMLInputElement;
@@ -171,15 +171,17 @@ import Layout from '../layouts/Layout.astro';
         setCookie('sb-refresh-token', data.session.refresh_token, THIRTY_DAYS);
       }
 
-      const { data: profile } = await supabase
-        .from('perfiles')
-        .select('rol')
-        .eq('id', data.user.id)
-        .single();
+      const role = await getUserRole();
+      if (!role) {
+        errorMessage!.textContent = 'Tu cuenta no tiene perfil asignado, contacta al administrador';
+        errorMessage?.classList.remove('hidden');
+        await supabase.auth.signOut();
+        return;
+      }
 
-      if (profile?.rol === 'SUPER_ADMIN') {
+      if (role === 'SUPER_ADMIN') {
         window.location.href = '/admin';
-      } else if (profile?.rol === 'ADMIN_GRUPO') {
+      } else if (role === 'ADMIN_GRUPO') {
         window.location.href = '/lider';
       } else {
         window.location.href = '/';

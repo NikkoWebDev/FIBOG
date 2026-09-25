@@ -36,6 +36,9 @@ loadEnv();
 const supabaseUrl = process.env.PUBLIC_SUPABASE_URL;
 const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const PASSWORD = process.env.LEADER_TEMP_PASSWORD || 'Claveparacambiar123';
+const RESET_PASSWORD = process.argv.includes('--reset-password');
+const FORCE = process.argv.includes('--force');
+const INVOKER_ID = process.env.INVOKER_ID || null;
 
 if (!supabaseUrl || !serviceKey) {
   console.error('Faltan PUBLIC_SUPABASE_URL o SUPABASE_SERVICE_ROLE_KEY');
@@ -60,7 +63,7 @@ async function findAuthUserByEmail(email) {
   return null;
 }
 
-async function ensureLeader({ grupoId, email, nombre }) {
+async function ensureLeader({ grupoId, email, nombre, currentLiderId }) {
   const cleanEmail = email.trim().toLowerCase();
   const displayName = (nombre || '').trim() || `Lider ${cleanEmail}`;
 
@@ -76,7 +79,7 @@ async function ensureLeader({ grupoId, email, nombre }) {
     if (error) throw error;
     user = data.user;
     console.log(`  + auth creado: ${cleanEmail}`);
-  } else {
+  } else if (RESET_PASSWORD) {
     const { error } = await sb.auth.admin.updateUserById(user.id, {
       password: PASSWORD,
       email_confirm: true,
@@ -84,18 +87,32 @@ async function ensureLeader({ grupoId, email, nombre }) {
     });
     if (error) throw error;
     console.log(`  ~ auth reset password: ${cleanEmail}`);
+  } else {
+    console.log(`  = auth existe, password intacto: ${cleanEmail}`);
   }
 
-  const { error: profileError } = await sb.from('perfiles').upsert(
-    {
-      id: user.id,
-      email: cleanEmail,
-      rol: 'ADMIN_GRUPO',
-      nombre_completo: displayName,
-    },
-    { onConflict: 'id' }
-  );
-  if (profileError) throw profileError;
+  // Nunca degradar un SUPER_ADMIN a ADMIN_GRUPO
+  const { data: perfil } = await sb.from('perfiles').select('rol').eq('id', user.id).single();
+  if (!perfil || perfil.rol !== 'SUPER_ADMIN') {
+    const { error: profileError } = await sb.from('perfiles').upsert(
+      {
+        id: user.id,
+        email: cleanEmail,
+        rol: 'ADMIN_GRUPO',
+        nombre_completo: displayName,
+      },
+      { onConflict: 'id' }
+    );
+    if (profileError) throw profileError;
+  } else {
+    console.log(`  ! ${cleanEmail} es SUPER_ADMIN, rol preservado`);
+  }
+
+  // No pisar un lider ya asignado salvo --force
+  if (currentLiderId && currentLiderId !== user.id && !FORCE) {
+    console.log(`  ! grupo ya tiene id_lider (${currentLiderId}), se conserva (usa --force para pisar)`);
+    return user.id;
+  }
 
   const { error: groupError } = await sb
     .from('grupos')
@@ -104,12 +121,13 @@ async function ensureLeader({ grupoId, email, nombre }) {
   if (groupError) throw groupError;
 
   // admin_grupos puede no existir en el schema desplegado; id_lider basta para /lider
+  // asignado_por nunca es auto-asignacion: null o INVOKER_ID explicito
   const { error: assignError } = await sb.from('admin_grupos').upsert(
     {
       usuario_id: user.id,
       grupo_id: grupoId,
       activo: true,
-      asignado_por: user.id,
+      asignado_por: INVOKER_ID,
     },
     { onConflict: 'usuario_id,grupo_id', ignoreDuplicates: false }
   );
@@ -122,11 +140,11 @@ async function ensureLeader({ grupoId, email, nombre }) {
 
 async function main() {
   console.log('Sync lideres por email_contacto...');
-  console.log(`Password temporal: ${PASSWORD}`);
+  if (!RESET_PASSWORD) console.log('(password intacto en cuentas existentes; usa --reset-password para rotar)');
 
   const { data: grupos, error } = await sb
     .from('grupos')
-    .select('id, nombre, email_contacto, lider_o_representante, estado_aprobacion')
+    .select('id, nombre, email_contacto, lider_o_representante, estado_aprobacion, id_lider')
     .order('nombre');
 
   if (error) throw error;
@@ -134,14 +152,36 @@ async function main() {
   const targets = (grupos || []).filter((g) => g.email_contacto && String(g.email_contacto).includes('@'));
   console.log(`Grupos con email: ${targets.length}/${grupos.length}`);
 
+  // Emails duplicados: un mismo contacto en N grupos no se asigna en silencio
+  const byEmail = new Map();
+  for (const g of targets) {
+    const key = String(g.email_contacto).trim().toLowerCase();
+    if (!byEmail.has(key)) byEmail.set(key, []);
+    byEmail.get(key).push(g);
+  }
+  const dupes = [...byEmail.entries()].filter(([, list]) => list.length > 1);
+  const dupeIds = new Set();
+  if (dupes.length) {
+    console.log('\n⚠️  Emails duplicados — revisión manual, no se asignan automáticamente:');
+    for (const [email, list] of dupes) {
+      console.log(`  - ${email} en ${list.length} grupos: ${list.map(g => g.nombre).join(' | ')}`);
+      list.forEach(g => dupeIds.add(g.id));
+    }
+  }
+
   const results = [];
   for (const g of targets) {
+    if (dupeIds.has(g.id)) {
+      results.push({ nombre: g.nombre, email: g.email_contacto, ok: false, error: 'email duplicado: revision manual' });
+      continue;
+    }
     console.log(`\n> ${g.nombre}`);
     try {
       const userId = await ensureLeader({
         grupoId: g.id,
         email: g.email_contacto,
         nombre: g.lider_o_representante || g.nombre,
+        currentLiderId: g.id_lider,
       });
       results.push({ nombre: g.nombre, email: g.email_contacto, ok: true, userId });
     } catch (err) {

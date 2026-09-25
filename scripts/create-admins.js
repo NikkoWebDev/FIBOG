@@ -59,7 +59,6 @@ async function createSuperAdmin(email, password, name) {
               email: email,
               rol: 'SUPER_ADMIN',
               nombre_completo: name,
-              activo: true,
             }, { onConflict: 'id' });
           
           if (profileError) {

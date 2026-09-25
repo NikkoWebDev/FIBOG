@@ -57,11 +57,15 @@ export async function uploadGroupImage(file: File, nombreGrupo: string): Promise
   if (validationError) throw new Error(validationError);
 
   const ext = EXT_BY_MIME[file.type] || (ALLOWED_EXT.has((file.name.split('.').pop() || '').toLowerCase()) ? (file.name.split('.').pop() || 'jpg').toLowerCase() : 'jpg');
+  // MIME efectivo: si el navegador no reportó type, se infiere de la extensión
+  // (la policy de storage exige mimetype válido, no acepta vacío)
+  const extKey = ext === 'jpg' ? 'jpg' : ext;
+  const effectiveMime = file.type || { jpg: 'image/jpeg', jpeg: 'image/jpeg', png: 'image/png', webp: 'image/webp', gif: 'image/gif' }[extKey] || 'image/jpeg';
   const rand = Math.random().toString(36).slice(2, 8);
   const path = `${slugify(nombreGrupo)}-${Date.now()}-${rand}.${ext}`;
 
   const { error } = await supabase.storage.from(BUCKET).upload(path, file, {
-    contentType: file.type,
+    contentType: effectiveMime,
     upsert: false,
     cacheControl: '3600',
   });

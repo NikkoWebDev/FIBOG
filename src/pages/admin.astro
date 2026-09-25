@@ -638,15 +638,18 @@ export const prerender = false;
                         'horarios_habituales', 'requisitos_ingreso', 'nivel_academico_recomendado', 
                         'redes_sociales', 'comentarios_adicionales'];
     
+    let truncated = false;
     textFields.forEach(field => {
       if (groupData[field]) {
         groupData[field] = sanitizeInput(groupData[field]);
         // Basic length validation
         if (groupData[field].length > 2000) {
           groupData[field] = groupData[field].substring(0, 2000);
+          truncated = true;
         }
       }
     });
+    if (truncated) showNotification('Un campo superó 2000 caracteres y fue recortado', 'info');
 
     // Email validation
     if (groupData.email_contacto) {

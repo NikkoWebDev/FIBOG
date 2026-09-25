@@ -252,7 +252,7 @@ function processFields(fields, headers, index) {
     carrera_str: carreras.join(', '),
     nombre,
     docente: cleanText(record.docente_a_cargo),
-    lider: cleanText(record.lider_o_representate),
+    lider: cleanText(record.lider_o_representante ?? record.lider_o_representate ?? ''),
     email: cleanText(record.e_mail_de_contacto),
     vinculacion: cleanText(record.vinculación),
     enfoque: cleanText(record.enfoque),

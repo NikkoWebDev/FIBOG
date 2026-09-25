@@ -83,6 +83,38 @@ function normalizeCarrera(carrera) {
   return result;
 }
 
+const DRY_RUN = process.argv.includes('--dry-run');
+
+// Solo estas columnas se pueden actualizar; el resto se preserva siempre
+const UPDATABLE = [
+  'tipo', 'carreras', 'nombre', 'docente_a_cargo', 'lider_o_representante',
+  'email_contacto', 'vinculacion', 'enfoque', 'descripcion', 'actividades',
+  'modalidad', 'horarios_habituales', 'requisitos_ingreso', 'nivel_academico_recomendado',
+  'redes_sociales', 'comentarios_adicionales', 'fecha_actualizacion'
+];
+
+function normStr(v) {
+  return String(v ?? '').trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, ' ');
+}
+
+function pickUpdatable(grupo) {
+  const out = {};
+  for (const k of UPDATABLE) {
+    if (k in grupo) out[k] = grupo[k];
+  }
+  return out;
+}
+
+function diffPayload(existing, next) {
+  const changes = {};
+  for (const [k, v] of Object.entries(next)) {
+    if (JSON.stringify(existing[k] ?? null) !== JSON.stringify(v ?? null)) {
+      changes[k] = { from: existing[k] ?? null, to: v ?? null };
+    }
+  }
+  return changes;
+}
+
 async function runMerge() {
   console.log('🚀 Iniciando fusión y actualización de base de datos...');
 
@@ -137,33 +169,59 @@ async function runMerge() {
 
   console.log(`✅ Procesados ${gruposFromCSV.length} grupos del CSV original.`);
 
-  // 2. Fetch existing groups from Supabase
+  // 2. Fetch existing groups from Supabase (paginado hasta cubrir todos)
   console.log('📡 Obteniendo grupos actuales de Supabase...');
-  const { data: existingGrupos, error: fetchError } = await supabase.from('grupos').select('*');
-  
-  if (fetchError) {
-    console.error('❌ Error al obtener grupos:', fetchError.message);
-    process.exit(1);
+  const existingGrupos = [];
+  const PAGE = 1000;
+  let from = 0;
+  for (;;) {
+    const { data, error: fetchError } = await supabase
+      .from('grupos')
+      .select('*')
+      .range(from, from + PAGE - 1);
+    if (fetchError) {
+      console.error('❌ Error al obtener grupos:', fetchError.message);
+      process.exit(1);
+    }
+    existingGrupos.push(...(data || []));
+    if (!data || data.length < PAGE) break;
+    from += PAGE;
   }
 
   console.log(`✅ Se encontraron ${existingGrupos.length} grupos existentes en Supabase.`);
 
   // 3. Upsert Logic (Update if exists, Insert if not)
+  if (DRY_RUN) console.log('🔍 DRY-RUN: solo se imprime el diff, no se escribe nada.');
   let updatedCount = 0;
   let insertedCount = 0;
   let errorCount = 0;
 
+  // Indice por id y por nombre+email normalizados
+  const byId = new Map(existingGrupos.filter(g => g.id).map(g => [String(g.id), g]));
+  const byNameEmail = new Map(
+    existingGrupos.map(g => [`${normStr(g.nombre)}||${normStr(g.email_contacto)}`, g])
+  );
+
   for (const csvGrupo of gruposFromCSV) {
-    // Find matching group by name (ignoring case)
-    const existing = existingGrupos.find(g => g.nombre.toLowerCase().trim() === csvGrupo.nombre.toLowerCase().trim());
+    // Match por id si el CSV lo trae, si no por nombre normalizado + email
+    const existing = (csvGrupo.id && byId.get(String(csvGrupo.id)))
+      || byNameEmail.get(`${normStr(csvGrupo.nombre)}||${normStr(csvGrupo.email_contacto)}`);
 
     if (existing) {
-      // Update existing record, preserving id, id_lider, creado_por, and fecha_creacion
+      // Solo columnas de la whitelist; nunca se tocan
+      // estado_aprobacion, imagen_url, id_lider, creado_por ni fecha_creacion
       const updatePayload = {
-        ...csvGrupo,
+        ...pickUpdatable(csvGrupo),
         fecha_actualizacion: new Date().toISOString()
       };
-      
+      const changes = diffPayload(existing, updatePayload);
+      if (Object.keys(changes).length === 0) continue;
+
+      if (DRY_RUN) {
+        console.log(`~ '${csvGrupo.nombre}':`, JSON.stringify(changes).slice(0, 500));
+        updatedCount++;
+        continue;
+      }
       const { error } = await supabase.from('grupos').update(updatePayload).eq('id', existing.id);
       
       if (error) {
@@ -175,11 +233,17 @@ async function runMerge() {
     } else {
       // Insert new record
       const insertPayload = {
-        ...csvGrupo,
+        ...pickUpdatable(csvGrupo),
+        estado_aprobacion: 'aprobado',
         fecha_creacion: new Date().toISOString(),
         fecha_actualizacion: new Date().toISOString()
       };
 
+      if (DRY_RUN) {
+        console.log(`+ '${csvGrupo.nombre}' (nuevo)`);
+        insertedCount++;
+        continue;
+      }
       const { error } = await supabase.from('grupos').insert(insertPayload);
       
       if (error) {
