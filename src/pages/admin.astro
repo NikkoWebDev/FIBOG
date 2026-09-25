@@ -76,7 +76,8 @@ export const prerender = false;
 
 <script>
   import { supabase } from '../lib/supabase';
-  import { removeGroupImage, uploadGroupImage } from '../lib/group-images';
+  import { removeGroupImage, uploadGroupImage, validateImageFile } from '../lib/group-images';
+  import { normalizeUrl } from '../lib/urls';
 
   // exponer para depuración en consola
   (window as any).supabase = supabase;
@@ -420,6 +421,13 @@ export const prerender = false;
       // Sanitize reason
       const sanitizedReason = reason ? reason.trim().replace(/[<>]/g, '').substring(0, 500) : null;
 
+      const { data: solicitud, error: fetchError } = await supabase
+        .from('solicitudes_pendientes')
+        .select('imagen_url')
+        .eq('id', solicitudId)
+        .single();
+      if (fetchError) throw fetchError;
+
       const { error } = await supabase.from('solicitudes_pendientes').update({
         estado: 'rechazado',
         fecha_revision: new Date().toISOString(),
@@ -427,6 +435,8 @@ export const prerender = false;
         comentarios_revision: sanitizedReason
       }).eq('id', solicitudId);
       if (error) throw error;
+
+      if (solicitud?.imagen_url) await removeGroupImage(solicitud.imagen_url);
 
       await loadPendientes();
       await loadStats();
@@ -506,12 +516,25 @@ export const prerender = false;
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0] || null;
     if (!file) return;
+    const fileError = validateImageFile(file);
+    const inlineError = document.getElementById('group-imagen-error');
+    if (fileError) {
+      pendingImageFile = null;
+      input.value = '';
+      if (inlineError) {
+        inlineError.textContent = fileError;
+        inlineError.classList.remove('hidden');
+      }
+      return;
+    }
+    inlineError?.classList.add('hidden');
     pendingImageFile = file;
     removeExistingImage = false;
     const preview = document.getElementById('group-imagen-preview') as HTMLImageElement | null;
     const wrap = document.getElementById('group-imagen-preview-wrap');
     const removeBtn = document.getElementById('group-imagen-remove');
     if (preview && wrap) {
+      if (preview.src.startsWith('blob:')) URL.revokeObjectURL(preview.src);
       preview.src = URL.createObjectURL(file);
       wrap.classList.remove('hidden');
       removeBtn?.classList.remove('hidden');
@@ -577,23 +600,36 @@ export const prerender = false;
         return;
       }
     }
+
+    // Web/red social: opcional, pero si trae algo debe ser URL válida
+    if (groupData.redes_sociales) {
+      const normalized = normalizeUrl(groupData.redes_sociales);
+      if (!normalized) {
+        showNotification('El enlace web no es válido. Use una URL completa (ej: https://instagram.com/tu-grupo) o déjelo vacío.', 'error');
+        return;
+      }
+      groupData.redes_sociales = normalized;
+    }
     
+    let uploadedFreshUrl: string | null = null;
     try {
       const { data: { user }, error: userError } = await supabase.auth.getUser();
       if (userError || !user) {
         showNotification('Error de autenticación', 'error');
         return;
       }
-      
+
       const previousImageUrl = String(groupData.imagen_url || '').trim() || null;
       let nextImageUrl = previousImageUrl;
-      if (removeExistingImage) {
-        if (previousImageUrl) await removeGroupImage(previousImageUrl);
-        nextImageUrl = null;
-      }
+
+      // Orden seguro: primero subir lo nuevo y guardar en DB;
+      // lo viejo solo se borra cuando el guardado quedó confirmado.
       if (pendingImageFile) {
-        if (previousImageUrl && !removeExistingImage) await removeGroupImage(previousImageUrl);
-        nextImageUrl = await uploadGroupImage(pendingImageFile, String(groupData.nombre || 'grupo'));
+        uploadedFreshUrl = await uploadGroupImage(pendingImageFile, String(groupData.nombre || 'grupo'));
+        nextImageUrl = uploadedFreshUrl;
+      }
+      if (removeExistingImage) {
+        nextImageUrl = null;
       }
       groupData.imagen_url = nextImageUrl;
 
@@ -618,6 +654,10 @@ export const prerender = false;
           });
         if (error) throw error;
       }
+
+      if (previousImageUrl && previousImageUrl !== nextImageUrl) {
+        await removeGroupImage(previousImageUrl);
+      }
       
       pendingImageFile = null;
       removeExistingImage = false;
@@ -627,6 +667,8 @@ export const prerender = false;
       showNotification(currentEditingGroup ? 'Grupo actualizado' : 'Grupo creado', 'success');
     } catch (error) {
       console.error('Error saving group:', error);
+      // Si se subió imagen nueva pero la DB falló, borrarla para no dejar huérfanos
+      if (uploadedFreshUrl) await removeGroupImage(uploadedFreshUrl);
       showNotification(error?.message || 'Error al guardar el grupo', 'error');
     }
   }
@@ -671,8 +713,10 @@ export const prerender = false;
 
     if (!confirm('¿Estás seguro de eliminar este grupo?')) return;
     try {
+      const group = allGrupos.find((g) => g.id === groupId);
       const { error } = await supabase.from('grupos').delete().eq('id', groupId);
       if (error) throw error;
+      if (group?.imagen_url) await removeGroupImage(group.imagen_url);
       await loadGrupos();
       await loadStats();
       showNotification('Grupo eliminado', 'success');

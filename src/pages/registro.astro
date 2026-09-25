@@ -354,10 +354,11 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
                 type="file"
                 id="imagen_grupo"
                 name="imagen_grupo"
-                accept="image/png, image/jpeg, image/webp"
+                accept="image/png, image/jpeg, image/webp, image/gif"
                 class="w-full px-4 py-3 bg-bg-input/60 border border-border-default rounded-xl text-text-secondary file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-primary/10 file:text-primary-light file:text-sm file:font-medium hover:file:bg-primary/20 transition-all cursor-pointer"
               />
-              <p class="text-text-secondary text-xs mt-2">PNG, JPG o WebP. Máximo 5 MB. Se carga con lazy preview.</p>
+              <p class="text-text-secondary text-xs mt-2">PNG, JPG, WebP o GIF. Máximo 5 MB. Se carga con lazy preview.</p>
+              <p id="imagen-error" class="hidden text-error text-xs mt-2"></p>
               <img id="imagen-preview" src="" alt="" loading="lazy" class="hidden mt-3 max-h-48 rounded-xl border border-border-subtle" />
             </div>
           </div>
@@ -401,7 +402,8 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
 </Layout>
 
 <script>
-  import { uploadGroupImage } from '../lib/group-images';
+  import { removeGroupImage, uploadGroupImage, validateImageFile } from '../lib/group-images';
+  import { normalizeUrl } from '../lib/urls';
 
   const form = document.getElementById('registro-form');
   const errorMessage = document.getElementById('error-message');
@@ -416,6 +418,20 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
   imagenInput?.addEventListener('change', () => {
     const file = imagenInput.files?.[0];
     if (!file || !imagenPreview) return;
+    const fileError = validateImageFile(file);
+    const inlineError = document.getElementById('imagen-error');
+    if (fileError) {
+      imagenInput.value = '';
+      imagenPreview.src = '';
+      imagenPreview.classList.add('hidden');
+      if (inlineError) {
+        inlineError.textContent = fileError;
+        inlineError.classList.remove('hidden');
+      }
+      return;
+    }
+    inlineError?.classList.add('hidden');
+    if (imagenPreview.src.startsWith('blob:')) URL.revokeObjectURL(imagenPreview.src);
     imagenPreview.src = URL.createObjectURL(file);
     imagenPreview.classList.remove('hidden');
   });
@@ -464,6 +480,15 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
       return;
     }
 
+    if (data.redes_sociales) {
+      const normalized = normalizeUrl(data.redes_sociales);
+      if (!normalized) {
+        showError('El enlace web no es válido. Use una URL completa (ej: https://instagram.com/tu-grupo) o déjelo vacío.');
+        return;
+      }
+      data.redes_sociales = normalized;
+    }
+
     submitBtn?.setAttribute('disabled', 'true');
     submitText?.classList.add('hidden');
     submitSpinner?.classList.remove('hidden');
@@ -485,6 +510,8 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
       const result = await response.json().catch(() => ({}));
 
       if (!response.ok) {
+        // La imagen ya quedó subida pero la solicitud no: borrarla para no dejar huérfanos
+        if (data.imagen_url) await removeGroupImage(String(data.imagen_url));
         throw new Error(result.error || result.message || 'Error al enviar la solicitud. Intenta de nuevo.');
       }
 
@@ -495,6 +522,11 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
       successMessage?.classList.remove('hidden');
 
       (form as HTMLFormElement).reset();
+      if (imagenPreview) {
+        if (imagenPreview.src.startsWith('blob:')) URL.revokeObjectURL(imagenPreview.src);
+        imagenPreview.src = '';
+        imagenPreview.classList.add('hidden');
+      }
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
     } catch (error: any) {

@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 
 import { fetchApprovedGrupoById } from '../../lib/grupos';
+import { normalizeUrl } from '../../lib/urls';
 
 export const prerender = false;
 
@@ -16,6 +17,10 @@ const grupo = await fetchApprovedGrupoById(id);
 if (!grupo) {
   return Astro.redirect('/');
 }
+
+// Solo se muestra el botón web si hay una URL real; el campo trae
+// texto libre histórico ("Instagram", "Página web", ...) que generaba href rotos.
+const webUrl = normalizeUrl(grupo.redes);
 
 const tipoColors: Record<string, string> = {
   'Semillero': 'bg-accent/10 text-accent-light border-accent/20',
@@ -93,9 +98,9 @@ const tipoBadge = tipoColors[grupo.tipo] || tipoColors['Semillero'];
               </button>
             </div>
           )}
-          {grupo.redes && (
+          {webUrl && (
             <a 
-              href={grupo.redes.includes('http') ? grupo.redes : `https://${grupo.redes}`}
+              href={webUrl}
               target="_blank"
               rel="noopener noreferrer"
               class="px-6 py-3 rounded-xl border border-border-default text-text-secondary hover:bg-bg-hover transition-all flex items-center gap-2"

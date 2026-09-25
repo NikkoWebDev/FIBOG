@@ -212,6 +212,7 @@ export const prerender = false;
                   </button>
                 </div>
                 <p class="text-xs text-text-muted mt-2">JPG/PNG/WEBP/GIF · max 5 MB. Aparece en el catalogo.</p>
+                <p id="lider-imagen-error" class="hidden text-xs text-error mt-2"></p>
               </div>
             </form>
           </div>
@@ -347,7 +348,8 @@ export const prerender = false;
 
 <script>
   import { supabase } from '../lib/supabase';
-  import { removeGroupImage, uploadGroupImage } from '../lib/group-images';
+  import { removeGroupImage, uploadGroupImage, validateImageFile } from '../lib/group-images';
+  import { normalizeUrl } from '../lib/urls';
   
   let groupId: string | null = null;
   let managedGroups: Array<Record<string, any>> = [];
@@ -614,6 +616,14 @@ export const prerender = false;
         throw new Error('El email de contacto no es válido.');
       }
 
+      if (raw.redes_sociales) {
+        const normalized = normalizeUrl(raw.redes_sociales);
+        if (!normalized) {
+          throw new Error('El enlace web no es válido. Use una URL completa (ej: https://instagram.com/tu-grupo) o déjelo vacío.');
+        }
+        raw.redes_sociales = normalized;
+      }
+
       const updateData: Record<string, string | null> = {};
       EDITABLE_COLUMNS.forEach((column) => {
         if (column === 'imagen_url') return;
@@ -623,18 +633,20 @@ export const prerender = false;
       const hiddenImagen = (document.getElementById('field-imagen-url') as HTMLInputElement | null)?.value.trim() || null;
       const previousImageUrl = currentImageUrl || hiddenImagen;
       let nextImageUrl = previousImageUrl;
+      let uploadedFreshUrl: string | null = null;
 
-      if (removeExistingImage) {
-        if (previousImageUrl) await removeGroupImage(previousImageUrl);
-        nextImageUrl = null;
-      }
-
+      // Orden seguro: primero se sube lo nuevo y se actualiza la DB;
+      // lo viejo solo se borra cuando el UPDATE ya quedó guardado.
       if (pendingImageFile) {
-        if (previousImageUrl && !removeExistingImage) await removeGroupImage(previousImageUrl);
-        nextImageUrl = await uploadGroupImage(
+        uploadedFreshUrl = await uploadGroupImage(
           pendingImageFile,
           String(updateData.nombre || 'grupo')
         );
+        nextImageUrl = uploadedFreshUrl;
+      }
+
+      if (removeExistingImage) {
+        nextImageUrl = null;
       }
 
       updateData.imagen_url = nextImageUrl;
@@ -647,7 +659,13 @@ export const prerender = false;
 
       if (error) throw error;
       if (!updated || updated.length === 0) {
+        // Limpieza: lo recién subido no quedó referenciado
+        if (uploadedFreshUrl) await removeGroupImage(uploadedFreshUrl);
         throw new Error('Sin permiso para actualizar este grupo. Tu cuenta de líder no está vinculada al grupo: contacta al administrador.');
+      }
+
+      if (previousImageUrl && previousImageUrl !== nextImageUrl) {
+        await removeGroupImage(previousImageUrl);
       }
 
       currentImageUrl = nextImageUrl;
@@ -664,6 +682,8 @@ export const prerender = false;
       
     } catch (error: any) {
       console.error('Error:', error);
+      // Restaurar la UI al estado guardado para no mostrar datos inconsistentes
+      setLiderImageUI(currentImageUrl);
       errorMessage!.textContent = friendlySaveError(error);
       errorMessage?.classList.remove('hidden');
     } finally {
@@ -682,6 +702,19 @@ export const prerender = false;
     const file = input.files?.[0] || null;
     if (!file) return;
 
+    const fileError = validateImageFile(file);
+    const inlineError = document.getElementById('lider-imagen-error');
+    if (fileError) {
+      pendingImageFile = null;
+      input.value = '';
+      if (inlineError) {
+        inlineError.textContent = fileError;
+        inlineError.classList.remove('hidden');
+      }
+      return;
+    }
+    inlineError?.classList.add('hidden');
+
     pendingImageFile = file;
     removeExistingImage = false;
 
@@ -690,6 +723,7 @@ export const prerender = false;
     const removeBtn = document.getElementById('lider-imagen-remove');
 
     if (preview && wrap) {
+      if (preview.src.startsWith('blob:')) URL.revokeObjectURL(preview.src);
       preview.src = URL.createObjectURL(file);
       wrap.classList.remove('hidden');
       removeBtn?.classList.remove('hidden');

@@ -1,6 +1,8 @@
 import type { APIRoute } from 'astro';
 import { Resend } from 'resend';
 import { createServerClient } from '../../lib/supabase';
+import { extractStoragePath } from '../../lib/group-images';
+import { normalizeUrl } from '../../lib/urls';
 import type { Database } from '../../lib/database.types';
 
 export const prerender = false;
@@ -48,6 +50,24 @@ export const POST: APIRoute = async ({ request }) => {
       );
     }
 
+    // Web/red social: opcional, pero si trae algo debe ser URL válida
+    let redesSociales: string | null = null;
+    if (body.redes_sociales) {
+      redesSociales = normalizeUrl(body.redes_sociales);
+      if (!redesSociales) {
+        return new Response(
+          JSON.stringify({
+            error: 'El enlace web no es válido. Use una URL completa (ej: https://instagram.com/tu-grupo) o déjelo vacío.',
+          }),
+          { status: 400, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
+    }
+
+    // Imagen: solo se aceptan archivos del bucket propio (no URLs externas arbitrarias)
+    const imagenUrl =
+      body.imagen_url && extractStoragePath(String(body.imagen_url)) ? String(body.imagen_url) : null;
+
     // Insert into Supabase using service role key
     const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL;
     const serviceRoleKey = import.meta.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -62,8 +82,31 @@ export const POST: APIRoute = async ({ request }) => {
 
     const serverClient = createServerClient(supabaseUrl, serviceRoleKey);
 
+    // Lista blanca: nunca insertar el body crudo (evita columnas inventadas
+    // e imagen_url externas al bucket).
     const insertData = {
-      ...body,
+      tipo: body.tipo,
+      carreras: body.carreras,
+      nombre: body.nombre,
+      docente_a_cargo: body.docente_a_cargo ?? null,
+      lider_o_representante: body.lider_o_representante,
+      email_contacto: body.email_contacto,
+      vinculacion: body.vinculacion ?? null,
+      enfoque: body.enfoque ?? null,
+      descripcion: body.descripcion ?? null,
+      actividades: body.actividades ?? null,
+      modalidad: body.modalidad ?? null,
+      horarios_habituales: body.horarios_habituales ?? null,
+      requisitos_ingreso: body.requisitos_ingreso ?? null,
+      nivel_academico_recomendado: body.nivel_academico_recomendado ?? null,
+      redes_sociales: redesSociales,
+      comentarios_adicionales: body.comentarios_adicionales ?? null,
+      nombre_solicitante: body.nombre_solicitante,
+      email_solicitante: body.email_solicitante,
+      telefono_solicitante: body.telefono_solicitante ?? null,
+      carrera_solicitante: body.carrera_solicitante ?? null,
+      semestre_solicitante: body.semestre_solicitante ?? null,
+      imagen_url: imagenUrl,
       estado: 'pendiente' as const,
       fecha_solicitud: new Date().toISOString(),
     } as SolicitudInsert;
