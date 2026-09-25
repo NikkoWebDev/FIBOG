@@ -5,8 +5,16 @@ import type { Grupo } from '../../data/grupos.types';
 export const prerender = false;
 
 export const POST: APIRoute = async ({ request, site }) => {
+  let body: any;
   try {
-    const body = await request.json();
+    body = await request.json();
+  } catch {
+    return new Response(
+      JSON.stringify({ error: 'Body JSON malformado' }),
+      { status: 400, headers: { 'Content-Type': 'application/json' } }
+    );
+  }
+  try {
     const { query, messages } = body;
 
     // Historial de chat (con contexto) o pregunta suelta (modo legacy)
@@ -205,9 +213,12 @@ async function askOpenRouter(apiKey: string, baseUrl: string, model: string, ref
 }
 
 function generateFallbackResponse(query: string, relevantGrupos: Grupo[]) {
+  const safeQuery = query.replace(/[<>"'&]/g, (c) => ({
+    '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;', '&': '&amp;',
+  })[c] || c);
   const answer = relevantGrupos.length > 0
-    ? `Encontré ${relevantGrupos.length} grupo(s) relacionado(s) con "${query}": ${relevantGrupos.map(g => g.nombre).join(', ')}. Explora cada grupo para ver sus detalles, enfoques de investigación y carreras afines.`
-    : `No encontré grupos específicos relacionados con "${query}". Te recomiendo explorar todos los grupos disponibles o intentar con otros términos de búsqueda.`;
+    ? `Encontré ${relevantGrupos.length} grupo(s) relacionado(s) con "${safeQuery}": ${relevantGrupos.map(g => g.nombre).join(', ')}. Explora cada grupo para ver sus detalles, enfoques de investigación y carreras afines.`
+    : `No encontré grupos específicos relacionados con "${safeQuery}". Te recomiendo explorar todos los grupos disponibles o intentar con otros términos de búsqueda.`;
 
   return {
     answer,
@@ -239,6 +250,9 @@ function isIdentityQuestion(text: string): boolean {
     /(cual es|dime) tu nombre/.test(normalized) ||
     /que modelo eres/.test(normalized) ||
     /cual es tu modelo/.test(normalized) ||
+    /quien te (creo|hizo|desarrollo)/.test(normalized) ||
+    /que es kala/.test(normalized) ||
+    /quien es kala/.test(normalized) ||
     /que eres(?!\s+capaz)/.test(normalized)
   );
 }

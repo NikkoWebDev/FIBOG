@@ -230,26 +230,25 @@ const navItems = [
 
   document.querySelectorAll('#site-header [data-dropdown-trigger]').forEach(trigger => {
     trigger.addEventListener('click', (e) => {
+      if (e.detail === 0) return;
       e.stopPropagation();
       const dd = (e.currentTarget as HTMLElement).closest('[data-dropdown]');
       const willOpen = !isDropdownOpen(dd);
       closeAllDropdowns();
       setDropdownOpen(dd, willOpen);
-      if (willOpen) {
-        const firstItem = dd?.querySelector('[data-dropdown-menu] a, [data-dropdown-menu] button') as HTMLElement | null;
-        if (document.activeElement === trigger && e.detail === 0) firstItem?.focus();
-      }
     });
 
     trigger.addEventListener('keydown', (e) => {
       const dd = (e.currentTarget as HTMLElement).closest('[data-dropdown]');
       if (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
         if (!isDropdownOpen(dd)) {
-          e.preventDefault();
           closeAllDropdowns();
           setDropdownOpen(dd, true);
           const firstItem = dd?.querySelector('[data-dropdown-menu] a, [data-dropdown-menu] button') as HTMLElement | null;
           firstItem?.focus();
+        } else {
+          closeAllDropdowns();
         }
       }
     });
@@ -264,12 +263,25 @@ const navItems = [
     const target = e.target as HTMLElement;
     if (!header?.contains(target)) {
       closeAllDropdowns();
+    } else if (!target.closest('[data-dropdown]')) {
+      closeAllDropdowns();
     }
+  });
+
+  document.querySelectorAll('#site-header [data-dropdown]').forEach(dd => {
+    dd.addEventListener('focusout', (e) => {
+      const next = (e as FocusEvent).relatedTarget as Node | null;
+      if (next && dd.contains(next)) return;
+      setDropdownOpen(dd, false);
+    });
   });
 
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
+      const openDd = Array.from(document.querySelectorAll('#site-header [data-dropdown]')).find(dd => isDropdownOpen(dd)) as Element | undefined;
       closeAllDropdowns();
+      const trigger = openDd?.querySelector('[data-dropdown-trigger]') as HTMLElement | null;
+      if (trigger) trigger.focus();
       closeMobileMenu(false);
     }
   });
@@ -280,14 +292,17 @@ const navItems = [
   const iconOpen = document.getElementById('mobile-menu-icon-open');
   const iconClose = document.getElementById('mobile-menu-icon-close');
 
-  function openMobileMenu() {
+  function openMobileMenu(fromKeyboard = false) {
     mobileMenu?.classList.remove('hidden');
     iconOpen?.classList.add('hidden');
     iconClose?.classList.remove('hidden');
     menuBtn?.setAttribute('aria-expanded', 'true');
+    menuBtn?.setAttribute('aria-label', 'Cerrar menú');
     document.body.classList.add('overflow-hidden');
-    const firstFocusable = mobileMenu?.querySelector('a, button, input') as HTMLElement | null;
-    firstFocusable?.focus();
+    if (fromKeyboard) {
+      const firstFocusable = mobileMenu?.querySelector('a, button, input') as HTMLElement | null;
+      firstFocusable?.focus();
+    }
   }
 
   function closeMobileMenu(focusTrigger = true) {
@@ -296,13 +311,14 @@ const navItems = [
     iconOpen?.classList.remove('hidden');
     iconClose?.classList.add('hidden');
     menuBtn?.setAttribute('aria-expanded', 'false');
+    menuBtn?.setAttribute('aria-label', 'Abrir menú');
     document.body.classList.remove('overflow-hidden');
     if (focusTrigger) menuBtn?.focus();
   }
 
-  menuBtn?.addEventListener('click', () => {
+  menuBtn?.addEventListener('click', (e) => {
     const isOpen = !mobileMenu?.classList.contains('hidden');
-    isOpen ? closeMobileMenu() : openMobileMenu();
+    isOpen ? closeMobileMenu() : openMobileMenu(e.detail === 0);
   });
 
   mobileMenu?.querySelectorAll('a').forEach(link => {
@@ -313,10 +329,13 @@ const navItems = [
   });
 
   // ---- Auth ----
+  let authSeq = 0;
   async function updateAuthState(currentUser?: { id: string } | null) {
+    const my = ++authSeq;
     const user = currentUser === undefined
       ? (await supabase.auth.getUser()).data.user
       : currentUser;
+    if (my !== authSeq) return;
 
     const loginBtnD = document.getElementById('auth-login-btn-desktop');
     const userMenuD = document.getElementById('auth-user-menu-desktop');
@@ -331,11 +350,17 @@ const navItems = [
     const adminLinkM = document.getElementById('admin-link-mobile');
 
     if (user) {
+      panelLinkD?.classList.add('hidden');
+      adminLinkD?.classList.add('hidden');
+      panelLinkM?.classList.add('hidden');
+      adminLinkM?.classList.add('hidden');
+
       const { data: profile } = await supabase
         .from('perfiles')
         .select('rol')
         .eq('id', user.id)
         .single();
+      if (my !== authSeq) return;
 
       const role = profile?.rol || 'VISITANTE';
       const label = role === 'SUPER_ADMIN' ? 'Admin' : role === 'ADMIN_GRUPO' ? 'Lider' : 'Mi cuenta';
@@ -357,14 +382,30 @@ const navItems = [
         adminLinkM?.classList.remove('hidden');
       }
 
-      const manageHref = role === 'SUPER_ADMIN' ? '/admin' : '/lider';
-      const manageLabel = role === 'SUPER_ADMIN' ? 'Administrar' : 'Administrar mi grupo';
-      document.querySelectorAll('[data-nav-registro="true"]').forEach((el) => {
-        const link = el as HTMLAnchorElement;
-        link.href = manageHref;
-        link.textContent = manageLabel;
-      });
+      if (role === 'SUPER_ADMIN') {
+        document.querySelectorAll('[data-nav-registro="true"]').forEach((el) => {
+          const link = el as HTMLAnchorElement;
+          link.href = '/admin';
+          link.textContent = 'Administrar';
+        });
+      } else if (role === 'ADMIN_GRUPO') {
+        document.querySelectorAll('[data-nav-registro="true"]').forEach((el) => {
+          const link = el as HTMLAnchorElement;
+          link.href = '/lider';
+          link.textContent = 'Administrar mi grupo';
+        });
+      } else {
+        document.querySelectorAll('[data-nav-registro="true"]').forEach((el) => {
+          const link = el as HTMLAnchorElement;
+          link.href = '/registro';
+          link.textContent = 'Registro';
+        });
+      }
     } else {
+      panelLinkD?.classList.add('hidden');
+      adminLinkD?.classList.add('hidden');
+      panelLinkM?.classList.add('hidden');
+      adminLinkM?.classList.add('hidden');
       loginBtnD?.classList.remove('hidden');
       userMenuD?.classList.add('hidden');
       loginBtnM?.classList.remove('hidden');
@@ -378,8 +419,13 @@ const navItems = [
     }
   }
 
+  const clearCookie = (name: string) => {
+    document.cookie = `${name}=; path=/; max-age=0; SameSite=Lax`;
+  };
   const doLogout = async () => {
     await supabase.auth.signOut();
+    clearCookie('sb-access-token');
+    clearCookie('sb-refresh-token');
     window.location.href = '/';
   };
   document.getElementById('logout-btn-desktop')?.addEventListener('click', doLogout);

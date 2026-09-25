@@ -10,17 +10,20 @@ type MailBody = {
   message?: string;
   to?: string | string[];
   html?: boolean;
+  confirmed?: boolean;
 };
+
+const EMAIL_RE = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
 
 function parseRecipients(to: MailBody['to']): string[] {
   if (!to) return [];
   if (Array.isArray(to)) {
-    return to.map((e) => String(e).trim().toLowerCase()).filter(Boolean);
+    return to.map((e) => String(e).trim().toLowerCase()).filter((e) => EMAIL_RE.test(e));
   }
   return String(to)
     .split(/[,;\s]+/)
     .map((e) => e.trim().toLowerCase())
-    .filter((e) => e.includes('@'));
+    .filter((e) => EMAIL_RE.test(e));
 }
 
 async function requireSuperAdmin(request: Request) {
@@ -78,6 +81,27 @@ export const POST: APIRoute = async ({ request }) => {
       });
     }
 
+    if (subject.length > 180) {
+      return new Response(JSON.stringify({ error: 'El asunto no puede exceder 180 caracteres' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    if (message.length > 20000) {
+      return new Response(JSON.stringify({ error: 'El mensaje no puede exceder 20000 caracteres' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    if (body.confirmed !== true) {
+      return new Response(JSON.stringify({ error: 'Debe confirmar el envío (confirmed: true)' }), {
+        status: 400,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
     let recipients: string[] = [];
 
     if (mode === 'masivo') {
@@ -92,13 +116,19 @@ export const POST: APIRoute = async ({ request }) => {
         new Set(
           (grupos || [])
             .map((g) => (g.email_contacto || '').trim().toLowerCase())
-            .filter((e) => e.includes('@'))
+            .filter((e) => EMAIL_RE.test(e))
         )
       );
     } else {
       recipients = parseRecipients(body.to);
       if (recipients.length === 0) {
         return new Response(JSON.stringify({ error: 'Indique al menos un destinatario' }), {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+      if (recipients.length > 50) {
+        return new Response(JSON.stringify({ error: 'Modo normal: máximo 50 destinatarios' }), {
           status: 400,
           headers: { 'Content-Type': 'application/json' },
         });
@@ -163,8 +193,7 @@ export const POST: APIRoute = async ({ request }) => {
     );
   } catch (error) {
     console.error('admin-mail error:', error);
-    const message = error instanceof Error ? error.message : 'Error interno';
-    return new Response(JSON.stringify({ error: message }), {
+    return new Response(JSON.stringify({ error: 'Error interno al enviar' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });

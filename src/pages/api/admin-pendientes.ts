@@ -12,7 +12,10 @@ export const GET: APIRoute = async ({ request }) => {
   }
 
   const authHeader = request.headers.get('authorization') || '';
-  const token = authHeader.replace('Bearer ', '').trim();
+  if (!authHeader.startsWith('Bearer ')) {
+    return new Response(JSON.stringify({ error: 'No auth' }), { status: 401 });
+  }
+  const token = authHeader.slice(7).trim();
   if (!token) return new Response(JSON.stringify({ error: 'No auth' }), { status: 401 });
 
   // verificar usuario con anon
@@ -32,6 +35,9 @@ export const GET: APIRoute = async ({ request }) => {
     .eq('estado', 'pendiente')
     .order('fecha_solicitud', { ascending: false });
 
-  if (error) return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+  if (error) {
+    console.error('admin-pendientes error:', error);
+    return new Response(JSON.stringify({ error: 'Error al cargar solicitudes' }), { status: 500 });
+  }
   return new Response(JSON.stringify({ data }), { headers: { 'Content-Type': 'application/json' } });
 };

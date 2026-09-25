@@ -80,7 +80,9 @@ const { placeholder = "Pregúntale a Kala AI..." } = Astro.props;
   function formatAnswer(text: string): string {
     if (!text) return '';
 
-    return text
+    const safe = escapeHtml(text);
+
+    return safe
       .replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-primary-light hover:underline font-medium">$1</a>')
       .replace(/\*\*(.+?)\*\*/g, '<strong class="text-primary-light font-semibold">$1</strong>')
       .replace(/\*(.+?)\*/g, '<em>$1</em>')
@@ -158,16 +160,17 @@ const { placeholder = "Pregúntale a Kala AI..." } = Astro.props;
   }
 
   function groupCardsHtml(grupos: Array<any>): string {
-    if (!grupos || grupos.length === 0) return '';
+    const valid = (grupos || []).filter((g) => g && g.id);
+    if (valid.length === 0) return '';
     return `
       <div class="pt-3 mt-3 border-t border-border-subtle">
         <div class="flex items-center gap-2 mb-3">
           <span class="material-symbols-outlined text-primary-light text-sm" data-icon="groups">groups</span>
           <p class="text-xs font-bold text-text-primary">Grupos relacionados</p>
-          <span class="px-2 py-0.5 bg-primary/10 text-primary-light text-xs rounded-md">${grupos.length}</span>
+          <span class="px-2 py-0.5 bg-primary/10 text-primary-light text-xs rounded-md">${valid.length}</span>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          ${grupos.map((g: any) => `
+          ${valid.map((g: any) => `
             <a href="/grupo/${g.id || ''}" class="group flex items-start gap-3 p-3 rounded-xl bg-bg-hover/50 hover:bg-bg-hover transition-all border border-transparent hover:border-primary/30">
               <div class="w-8 h-8 rounded-lg ${getTypeColor(g.tipo)} flex items-center justify-center shrink-0">
                 <span class="material-symbols-outlined text-white text-sm">${getTypeIcon(g.tipo)}</span>

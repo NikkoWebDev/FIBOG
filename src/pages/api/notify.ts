@@ -19,7 +19,7 @@ const REQUIRED_FIELDS: (keyof SolicitudInsert)[] = [
 ];
 
 const isUnalEmail = (email: string): boolean =>
-  typeof email === 'string' && email.trim().toLowerCase().endsWith('@unal.edu.co');
+  typeof email === 'string' && /^[a-z0-9._%+-]+@unal\.edu\.co$/i.test(email.trim());
 
 export const POST: APIRoute = async ({ request }) => {
   try {
@@ -48,6 +48,50 @@ export const POST: APIRoute = async ({ request }) => {
         }),
         { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
+    }
+
+    const TIPOS_VALIDOS = ['Semillero', 'Grupo de Investigación', 'Grupo Estudiantil'];
+    let tipo = typeof body.tipo === 'string' ? body.tipo.trim() : '';
+    if (tipo === 'Grupo de Investigacion') tipo = 'Grupo de Investigación';
+    if (!TIPOS_VALIDOS.includes(tipo)) {
+      return new Response(
+        JSON.stringify({ error: 'Tipo inválido. Debe ser: Semillero, Grupo de Investigación o Grupo Estudiantil' }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    let carreras = (body as any).carreras as unknown;
+    if (typeof carreras === 'string') {
+      carreras = carreras.split(',').map((c) => c.trim()).filter(Boolean);
+    }
+    if (!Array.isArray(carreras) || carreras.length === 0 || !carreras.every((c) => typeof c === 'string' && c.trim())) {
+      return new Response(
+        JSON.stringify({ error: 'Carreras debe ser un array no-vacío de strings' }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const tooLong = (v: unknown, max: number) => typeof v === 'string' && v.trim().length > max;
+    if (tooLong(body.nombre, 200)) {
+      return new Response(
+        JSON.stringify({ error: 'El nombre no puede exceder 200 caracteres' }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+    const textFields = [
+      'lider_o_representante', 'email_contacto', 'nombre_solicitante', 'email_solicitante',
+      'docente_a_cargo', 'vinculacion', 'enfoque', 'descripcion', 'actividades',
+      'modalidad', 'horarios_habituales', 'requisitos_ingreso', 'nivel_academico_recomendado',
+      'redes_sociales', 'comentarios_adicionales', 'telefono_solicitante',
+      'carrera_solicitante', 'semestre_solicitante',
+    ] as const;
+    for (const f of textFields) {
+      if (tooLong((body as any)[f], 2000)) {
+        return new Response(
+          JSON.stringify({ error: `El campo ${f} no puede exceder 2000 caracteres` }),
+          { status: 400, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
     }
 
     // Web/red social: opcional, pero si trae algo debe ser URL válida
@@ -85,8 +129,8 @@ export const POST: APIRoute = async ({ request }) => {
     // Lista blanca: nunca insertar el body crudo (evita columnas inventadas
     // e imagen_url externas al bucket).
     const insertData = {
-      tipo: body.tipo,
-      carreras: body.carreras,
+      tipo,
+      carreras: carreras as string[],
       nombre: body.nombre,
       docente_a_cargo: body.docente_a_cargo ?? null,
       lider_o_representante: body.lider_o_representante,
@@ -120,7 +164,7 @@ export const POST: APIRoute = async ({ request }) => {
     if (insertError) {
       console.error('Error inserting solicitud:', insertError);
       return new Response(
-        JSON.stringify({ error: insertError.message || 'Error al guardar la solicitud' }),
+        JSON.stringify({ error: 'Error al guardar la solicitud' }),
         { status: 500, headers: { 'Content-Type': 'application/json' } }
       );
     }
@@ -232,7 +276,7 @@ Este es un mensaje automático del sistema Base de Datos Ingenieria.
         JSON.stringify({
           success: true,
           id: insertedRows?.id,
-          warning: `Solicitud guardada, pero Resend rechazo el correo: ${emailError.message || 'error desconocido'}`,
+          warning: 'Solicitud guardada, notificación por email pendiente.',
         }),
         { status: 200, headers: { 'Content-Type': 'application/json' } }
       );
@@ -248,9 +292,8 @@ Este es un mensaje automático del sistema Base de Datos Ingenieria.
     );
   } catch (error) {
     console.error('Notify API error:', error);
-    const message = error instanceof Error ? error.message : 'Error interno del servidor';
     return new Response(
-      JSON.stringify({ error: message }),
+      JSON.stringify({ error: 'Error interno del servidor' }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }

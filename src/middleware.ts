@@ -42,5 +42,36 @@ export const onRequest = defineMiddleware(async (context, next) => {
     return context.redirect('/login');
   }
 
+  const user = data.session.user;
+
+  const isAdminRoute = pathname === '/admin' || pathname.startsWith('/admin/');
+  const isLiderRoute = pathname === '/lider' || pathname.startsWith('/lider/');
+
+  if (isAdminRoute || isLiderRoute) {
+    const { data: profile, error: roleError } = await serverClient
+      .from('perfiles')
+      .select('rol')
+      .eq('id', user.id)
+      .single();
+
+    if (roleError || !profile) {
+      return context.redirect('/login');
+    }
+
+    const role = (profile as { rol: string }).rol;
+
+    if (isAdminRoute) {
+      if (role !== 'SUPER_ADMIN') {
+        return context.redirect(role === 'ADMIN_GRUPO' ? '/lider' : '/');
+      }
+    }
+
+    if (isLiderRoute) {
+      if (role !== 'ADMIN_GRUPO' && role !== 'SUPER_ADMIN') {
+        return context.redirect('/');
+      }
+    }
+  }
+
   return next();
 });

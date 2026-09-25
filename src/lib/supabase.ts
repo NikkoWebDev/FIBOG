@@ -85,7 +85,7 @@ export async function canManageGroup(groupId: string) {
       .eq('grupo_id', groupId)
       .eq('activo', true)
       .single();
-    return !error && data;
+    return !error && !!data;
   }
   
   return false;

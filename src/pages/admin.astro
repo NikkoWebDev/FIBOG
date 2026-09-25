@@ -88,6 +88,16 @@ export const prerender = false;
   let pendingImageFile: File | null = null;
   let removeExistingImage = false;
 
+  function escapeHtml(value: unknown) {
+    return String(value ?? '').replace(/[&<>"']/g, (c) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    })[c] || c);
+  }
+
+  function isValidGroupImageUrl(url: unknown) {
+    return String(url || '').includes('/object/public/imagenes-grupos/');
+  }
+
   async function init() {
     const loadingEl = document.getElementById('admin-loading');
     const contentEl = document.getElementById('admin-content');
@@ -156,40 +166,40 @@ export const prerender = false;
     allGrupos = grupos;
     const grid = document.getElementById('grupos-grid');
     grid.innerHTML = grupos.map(grupo => `
-      <div class="card rounded-2xl p-6 border border-border-default hover:border-primary/50 transition-all group" data-grupo-id="${grupo.id}">
+      <div class="card rounded-2xl p-6 border border-border-default hover:border-primary/50 transition-all group" data-grupo-id="${escapeHtml(grupo.id)}">
         <div class="flex items-start justify-between mb-4">
           <div class="flex-1">
             <div class="flex items-center gap-2 mb-2">
-              <span class="px-2 py-1 rounded-md text-[10px] font-label-mono ${grupo.tipo === 'Semillero' ? 'bg-tertiary/10 text-tertiary' : grupo.tipo === 'Grupo de Investigación' ? 'bg-primary/10 text-primary' : 'bg-secondary/10 text-secondary'}">${grupo.tipo}</span>
-              <span class="text-[10px] font-medium uppercase tracking-wider ${grupo.estado_aprobacion === 'aprobado' ? 'text-primary' : 'text-error'}">${grupo.estado_aprobacion}</span>
+              <span class="px-2 py-1 rounded-md text-[10px] font-label-mono ${grupo.tipo === 'Semillero' ? 'bg-tertiary/10 text-tertiary' : grupo.tipo === 'Grupo de Investigación' ? 'bg-primary/10 text-primary' : 'bg-secondary/10 text-secondary'}">${escapeHtml(grupo.tipo)}</span>
+              <span class="text-[10px] font-medium uppercase tracking-wider ${grupo.estado_aprobacion === 'aprobado' ? 'text-primary' : 'text-error'}">${escapeHtml(grupo.estado_aprobacion)}</span>
             </div>
-            ${grupo.imagen_url ? `<div class="mb-3 overflow-hidden rounded-xl border border-border-subtle"><img src="${grupo.imagen_url}" alt="" class="h-28 w-full object-cover" loading="lazy" /></div>` : ''}
-            <h3 class="text-lg font-display-lg text-on-surface mb-1 group-hover:text-primary transition-colors">${grupo.nombre}</h3>
-            <p class="text-sm text-on-surface-variant line-clamp-2">${grupo.descripcion || 'Sin descripción'}</p>
+            ${isValidGroupImageUrl(grupo.imagen_url) ? `<div class="mb-3 overflow-hidden rounded-xl border border-border-subtle"><img src="${escapeHtml(grupo.imagen_url)}" alt="${escapeHtml(grupo.nombre)}" class="h-28 w-full object-cover" loading="lazy" /></div>` : ''}
+            <h3 class="text-lg font-display-lg text-on-surface mb-1 group-hover:text-primary transition-colors">${escapeHtml(grupo.nombre)}</h3>
+            <p class="text-sm text-on-surface-variant line-clamp-2">${escapeHtml(grupo.descripcion || 'Sin descripción')}</p>
           </div>
         </div>
         
         <div class="space-y-2 mb-4">
           <div class="flex items-center gap-2 text-sm">
             <span class="material-symbols-outlined text-on-surface-variant text-base">person</span>
-            <span class="text-on-surface-variant">${grupo.lider_o_representante || 'Sin líder'}</span>
+            <span class="text-on-surface-variant">${escapeHtml(grupo.lider_o_representante || 'Sin líder')}</span>
           </div>
           <div class="flex items-center gap-2 text-sm">
             <span class="material-symbols-outlined text-on-surface-variant text-base">school</span>
-            <span class="text-on-surface-variant">${grupo.carreras?.join(', ') || 'Sin carreras'}</span>
+            <span class="text-on-surface-variant">${escapeHtml(grupo.carreras?.join(', ') || 'Sin carreras')}</span>
           </div>
         </div>
 
         <div class="flex items-center gap-2 pt-4 border-t border-border-default">
-          <button onclick="editGroup('${grupo.id}')" class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-bg-hover hover:bg-bg-hover transition-all text-sm">
+          <button data-action="edit" data-id="${escapeHtml(grupo.id)}" class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-bg-hover hover:bg-bg-hover transition-all text-sm">
             <span class="material-symbols-outlined text-base">edit</span>
             <span>Editar</span>
           </button>
-          <button onclick="manageGroupAdmins('${grupo.id}', '${grupo.nombre}')" class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-bg-hover hover:bg-secondary/20 transition-all text-sm text-secondary">
+          <button data-action="admins" data-id="${escapeHtml(grupo.id)}" data-name="${escapeHtml(grupo.nombre)}" class="flex-1 flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-bg-hover hover:bg-secondary/20 transition-all text-sm text-secondary">
             <span class="material-symbols-outlined text-base">admin_panel_settings</span>
             <span>Admins</span>
           </button>
-          <button onclick="deleteGroup('${grupo.id}')" class="p-2 rounded-lg bg-bg-hover hover:bg-error/20 text-error transition-all">
+          <button data-action="delete" data-id="${escapeHtml(grupo.id)}" class="p-2 rounded-lg bg-bg-hover hover:bg-error/20 text-error transition-all">
             <span class="material-symbols-outlined text-base">delete</span>
           </button>
         </div>
@@ -206,14 +216,14 @@ export const prerender = false;
     const tbody = document.getElementById('usuarios-table-body');
     tbody.innerHTML = usuarios.map(usuario => `
       <tr class="hover:bg-bg-hover transition-colors">
-        <td class="px-6 py-4 font-medium text-on-surface">${usuario.nombre_completo || 'Sin nombre'}</td>
-        <td class="px-6 py-4 text-on-surface-variant text-sm">${usuario.email}</td>
+        <td class="px-6 py-4 font-medium text-on-surface">${escapeHtml(usuario.nombre_completo || 'Sin nombre')}</td>
+        <td class="px-6 py-4 text-on-surface-variant text-sm">${escapeHtml(usuario.email)}</td>
         <td class="px-6 py-4">
-           <span class="px-2 py-1 rounded-md text-[10px] font-label-mono ${usuario.rol === 'SUPER_ADMIN' ? 'bg-error/10 text-error' : 'bg-bg-hover-highest text-on-surface-variant'}">${usuario.rol}</span>
+           <span class="px-2 py-1 rounded-md text-[10px] font-label-mono ${usuario.rol === 'SUPER_ADMIN' ? 'bg-error/10 text-error' : 'bg-bg-hover-highest text-on-surface-variant'}">${escapeHtml(usuario.rol)}</span>
         </td>
-        <td class="px-6 py-4 text-on-surface-variant text-sm">${new Date(usuario.fecha_registro).toLocaleDateString()}</td>
+        <td class="px-6 py-4 text-on-surface-variant text-sm">${escapeHtml(new Date(usuario.fecha_registro).toLocaleDateString())}</td>
         <td class="px-6 py-4 text-center">
-          <button onclick="changeRole('${usuario.id}')" class="p-2 hover:bg-bg-hover rounded-lg transition-all"><span class="material-symbols-outlined text-sm">admin_panel_settings</span></button>
+          <button data-action="role" data-id="${escapeHtml(usuario.id)}" class="p-2 hover:bg-bg-hover rounded-lg transition-all"><span class="material-symbols-outlined text-sm">admin_panel_settings</span></button>
         </td>
       </tr>
     `).join('');
@@ -240,20 +250,20 @@ export const prerender = false;
               <div class="card rounded-xl p-6 border border-border-default">
                 <div class="flex justify-between items-start mb-4">
                   <div>
-                    <h4 class="text-lg font-medium text-on-surface">${solicitud.nombre}</h4>
-                    <span class="text-sm text-on-surface-variant">${solicitud.tipo}</span>
+                    <h4 class="text-lg font-medium text-on-surface">${escapeHtml(solicitud.nombre)}</h4>
+                    <span class="text-sm text-on-surface-variant">${escapeHtml(solicitud.tipo)}</span>
                   </div>
-                  <span class="px-3 py-1 rounded-full text-xs font-medium bg-warning/10 text-warning">${solicitud.estado}</span>
+                  <span class="px-3 py-1 rounded-full text-xs font-medium bg-warning/10 text-warning">${escapeHtml(solicitud.estado)}</span>
                 </div>
                 <div class="grid md:grid-cols-2 gap-4 mb-4 text-sm">
-                  <div><span class="text-on-surface-variant">Solicitante:</span><span class="text-on-surface ml-2">${solicitud.nombre_solicitante}</span></div>
-                  <div><span class="text-on-surface-variant">Email:</span><span class="text-on-surface ml-2">${solicitud.email_solicitante}</span></div>
-                  <div><span class="text-on-surface-variant">Líder:</span><span class="text-on-surface ml-2">${solicitud.lider_o_representante}</span></div>
-                  <div><span class="text-on-surface-variant">Fecha:</span><span class="text-on-surface ml-2">${new Date(solicitud.fecha_solicitud).toLocaleDateString()}</span></div>
+                  <div><span class="text-on-surface-variant">Solicitante:</span><span class="text-on-surface ml-2">${escapeHtml(solicitud.nombre_solicitante)}</span></div>
+                  <div><span class="text-on-surface-variant">Email:</span><span class="text-on-surface ml-2">${escapeHtml(solicitud.email_solicitante)}</span></div>
+                  <div><span class="text-on-surface-variant">Líder:</span><span class="text-on-surface ml-2">${escapeHtml(solicitud.lider_o_representante)}</span></div>
+                  <div><span class="text-on-surface-variant">Fecha:</span><span class="text-on-surface ml-2">${escapeHtml(new Date(solicitud.fecha_solicitud).toLocaleDateString())}</span></div>
                 </div>
                 <div class="flex gap-2">
-                  <button onclick="approveSolicitud('${solicitud.id}')" class="px-4 py-2 rounded-lg bg-primary/20 text-primary hover:bg-primary/30 transition-all flex items-center gap-2"><span class="material-symbols-outlined text-sm">check</span>Aprobar</button>
-                  <button onclick="rejectSolicitud('${solicitud.id}')" class="px-4 py-2 rounded-lg bg-error/20 text-error hover:bg-error/30 transition-all flex items-center gap-2"><span class="material-symbols-outlined text-sm">close</span>Rechazar</button>
+                  <button data-action="approve" data-id="${escapeHtml(solicitud.id)}" class="px-4 py-2 rounded-lg bg-primary/20 text-primary hover:bg-primary/30 transition-all flex items-center gap-2"><span class="material-symbols-outlined text-sm">check</span>Aprobar</button>
+                  <button data-action="reject" data-id="${escapeHtml(solicitud.id)}" class="px-4 py-2 rounded-lg bg-error/20 text-error hover:bg-error/30 transition-all flex items-center gap-2"><span class="material-symbols-outlined text-sm">close</span>Rechazar</button>
                 </div>
               </div>
             `).join('');
@@ -286,35 +296,35 @@ export const prerender = false;
       <div class="card rounded-xl p-6 border border-border-default">
         <div class="flex justify-between items-start mb-4">
           <div>
-            <h4 class="text-lg font-medium text-on-surface">${solicitud.nombre}</h4>
-            <span class="text-sm text-on-surface-variant">${solicitud.tipo}</span>
+            <h4 class="text-lg font-medium text-on-surface">${escapeHtml(solicitud.nombre)}</h4>
+            <span class="text-sm text-on-surface-variant">${escapeHtml(solicitud.tipo)}</span>
           </div>
-          <span class="px-3 py-1 rounded-full text-xs font-medium bg-warning/10 text-warning">${solicitud.estado}</span>
+          <span class="px-3 py-1 rounded-full text-xs font-medium bg-warning/10 text-warning">${escapeHtml(solicitud.estado)}</span>
         </div>
         <div class="grid md:grid-cols-2 gap-4 mb-4 text-sm">
           <div>
             <span class="text-on-surface-variant">Solicitante:</span>
-            <span class="text-on-surface ml-2">${solicitud.nombre_solicitante}</span>
+            <span class="text-on-surface ml-2">${escapeHtml(solicitud.nombre_solicitante)}</span>
           </div>
           <div>
             <span class="text-on-surface-variant">Email:</span>
-            <span class="text-on-surface ml-2">${solicitud.email_solicitante}</span>
+            <span class="text-on-surface ml-2">${escapeHtml(solicitud.email_solicitante)}</span>
           </div>
           <div>
             <span class="text-on-surface-variant">Líder:</span>
-            <span class="text-on-surface ml-2">${solicitud.lider_o_representante}</span>
+            <span class="text-on-surface ml-2">${escapeHtml(solicitud.lider_o_representante)}</span>
           </div>
           <div>
             <span class="text-on-surface-variant">Fecha:</span>
-            <span class="text-on-surface ml-2">${new Date(solicitud.fecha_solicitud).toLocaleDateString()}</span>
+            <span class="text-on-surface ml-2">${escapeHtml(new Date(solicitud.fecha_solicitud).toLocaleDateString())}</span>
           </div>
         </div>
         <div class="flex gap-2">
-          <button onclick="approveSolicitud('${solicitud.id}')" class="px-4 py-2 rounded-lg bg-primary/20 text-primary hover:bg-primary/30 transition-all flex items-center gap-2">
+          <button data-action="approve" data-id="${escapeHtml(solicitud.id)}" class="px-4 py-2 rounded-lg bg-primary/20 text-primary hover:bg-primary/30 transition-all flex items-center gap-2">
             <span class="material-symbols-outlined text-sm">check</span>
             Aprobar
           </button>
-          <button onclick="rejectSolicitud('${solicitud.id}')" class="px-4 py-2 rounded-lg bg-error/20 text-error hover:bg-error/30 transition-all flex items-center gap-2">
+          <button data-action="reject" data-id="${escapeHtml(solicitud.id)}" class="px-4 py-2 rounded-lg bg-error/20 text-error hover:bg-error/30 transition-all flex items-center gap-2">
             <span class="material-symbols-outlined text-sm">close</span>
             Rechazar
           </button>
@@ -610,6 +620,12 @@ export const prerender = false;
       }
       groupData.redes_sociales = normalized;
     }
+
+    const rawImageUrl = String(groupData.imagen_url || '').trim();
+    if (rawImageUrl && !rawImageUrl.includes('/object/public/imagenes-grupos/')) {
+      showNotification('URL de imagen no válida', 'error');
+      return;
+    }
     
     let uploadedFreshUrl: string | null = null;
     try {
@@ -619,7 +635,7 @@ export const prerender = false;
         return;
       }
 
-      const previousImageUrl = String(groupData.imagen_url || '').trim() || null;
+      const previousImageUrl = rawImageUrl || null;
       let nextImageUrl = previousImageUrl;
 
       // Orden seguro: primero subir lo nuevo y guardar en DB;
@@ -631,13 +647,20 @@ export const prerender = false;
       if (removeExistingImage) {
         nextImageUrl = null;
       }
-      groupData.imagen_url = nextImageUrl;
+
+      const allowedCols = ['nombre', 'tipo', 'docente_a_cargo', 'lider_o_representante', 'email_contacto', 'carreras', 'descripcion', 'enfoque', 'vinculacion', 'actividades', 'modalidad', 'horarios_habituales', 'requisitos_ingreso', 'nivel_academico_recomendado', 'redes_sociales', 'comentarios_adicionales', 'imagen_url'];
+      const cleanData = {};
+      allowedCols.forEach((col) => {
+        if (col === 'imagen_url') cleanData[col] = nextImageUrl;
+        else if (col === 'carreras') cleanData[col] = groupData.carreras || [];
+        else cleanData[col] = groupData[col] ?? null;
+      });
 
       if (currentEditingGroup) {
         const { error } = await supabase
           .from('grupos')
           .update({
-            ...groupData,
+            ...cleanData,
             fecha_actualizacion: new Date().toISOString()
           })
           .eq('id', currentEditingGroup);
@@ -646,7 +669,7 @@ export const prerender = false;
         const { error } = await supabase
           .from('grupos')
           .insert({
-            ...groupData,
+            ...cleanData,
             estado_aprobacion: 'aprobado',
             fecha_creacion: new Date().toISOString(),
             fecha_actualizacion: new Date().toISOString(),
@@ -801,10 +824,12 @@ export const prerender = false;
     notification.className = `fixed top-4 right-4 z-[200] px-6 py-4 rounded-xl card flex items-center gap-3 shadow-2xl animate-fade-in ${
       type === 'success' ? 'text-primary' : type === 'error' ? 'text-error' : 'text-tertiary'
     }`;
-    notification.innerHTML = `
-      <span class="material-symbols-outlined">${type === 'success' ? 'check_circle' : type === 'error' ? 'error' : 'info'}</span>
-      <span>${message}</span>
-    `;
+    const icon = document.createElement('span');
+    icon.className = 'material-symbols-outlined';
+    icon.textContent = type === 'success' ? 'check_circle' : type === 'error' ? 'error' : 'info';
+    const text = document.createElement('span');
+    text.textContent = String(message ?? '');
+    notification.append(icon, text);
     document.body.appendChild(notification);
     setTimeout(() => notification.remove(), 3000);
   }
@@ -950,17 +975,19 @@ export const prerender = false;
       return;
     }
 
-    list.innerHTML = admins.map(admin => `
+    list.innerHTML = admins.map(admin => {
+      const perfil = admin.perfiles || {};
+      return `
       <div class="flex items-center justify-between p-4 rounded-xl bg-bg-hover border border-border-default">
         <div>
-          <div class="font-medium text-text-primary">${admin.perfiles.nombre_completo || admin.perfiles.email}</div>
-          <div class="text-xs text-on-surface-variant">${admin.perfiles.rol}</div>
+          <div class="font-medium text-text-primary">${escapeHtml(perfil.nombre_completo || perfil.email || 'Usuario eliminado')}</div>
+          <div class="text-xs text-on-surface-variant">${escapeHtml(perfil.rol || '')}</div>
         </div>
-        <button onclick="removeAdminFromGroup('${admin.usuario_id}')" class="p-2 hover:bg-error/10 text-error rounded-lg transition-all">
+        <button data-action="remove" data-id="${escapeHtml(admin.usuario_id)}" class="p-2 hover:bg-error/10 text-error rounded-lg transition-all">
           <span class="material-symbols-outlined text-sm">remove</span>
         </button>
       </div>
-    `).join('');
+    `}).join('');
   }
 
   window.addAdminToGroup = async function() {
@@ -1094,7 +1121,7 @@ export const prerender = false;
           'Content-Type': 'application/json',
           Authorization: `Bearer ${session.access_token}`,
         },
-        body: JSON.stringify({ mode, subject, message, to, html }),
+        body: JSON.stringify({ mode, subject, message, to, html, confirmed: true }),
       });
 
       const payload = await res.json();
@@ -1117,6 +1144,32 @@ export const prerender = false;
       spinner?.classList.add('hidden');
     }
   };
+
+  document.getElementById('grupos-grid')?.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest?.('[data-action]') as HTMLElement | null;
+    if (!btn) return;
+    const { action, id, name } = btn.dataset;
+    if (action === 'edit') window.editGroup(id);
+    else if (action === 'delete') window.deleteGroup(id);
+    else if (action === 'admins') window.manageGroupAdmins(id, name);
+  });
+
+  document.getElementById('usuarios-table-body')?.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest?.('[data-action="role"]') as HTMLElement | null;
+    if (btn?.dataset.id) window.changeRole(btn.dataset.id);
+  });
+
+  document.getElementById('pending-list')?.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest?.('[data-action]') as HTMLElement | null;
+    if (!btn) return;
+    if (btn.dataset.action === 'approve') window.approveSolicitud(btn.dataset.id);
+    else if (btn.dataset.action === 'reject') window.rejectSolicitud(btn.dataset.id);
+  });
+
+  document.getElementById('current-admins-list')?.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest?.('[data-action="remove"]') as HTMLElement | null;
+    if (btn?.dataset.id) window.removeAdminFromGroup(btn.dataset.id);
+  });
 
   init();
 </script>

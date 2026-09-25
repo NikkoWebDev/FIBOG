@@ -135,7 +135,9 @@ import Layout from '../layouts/Layout.astro';
   togglePasswordBtn?.addEventListener('click', () => {
     const type = passwordInput?.type === 'password' ? 'text' : 'password';
     passwordInput.type = type;
-    togglePasswordBtn.querySelector('span')?.setAttribute('data-icon', type === 'password' ? 'visibility_off' : 'visibility');
+    const icon = togglePasswordBtn.querySelector('span');
+    icon?.setAttribute('data-icon', type === 'password' ? 'visibility_off' : 'visibility');
+    if (icon) icon.textContent = type === 'password' ? 'visibility_off' : 'visibility';
   });
 
   form?.addEventListener('submit', async (e) => {
@@ -160,7 +162,7 @@ import Layout from '../layouts/Layout.astro';
     errorMessage?.classList.add('hidden');
 
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      const { data, error } = await supabase.auth.signInWithPassword({ email: emailNorm, password });
       if (error) throw error;
 
       if (data.session) {
