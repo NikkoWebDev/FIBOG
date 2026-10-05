@@ -88,7 +88,7 @@ export const POST: APIRoute = async ({ request, site }) => {
       })
       .join('\n');
 
-    const systemPrompt = 'Eres Kala AI, el asistente de la Base de Datos de Semilleros de la Facultad de Ingeniería UNAL Bogotá, creada por nikko.dev. Conversas con naturalidad y libertad: respondes sobre semilleros, grupos de investigación, carreras de ingeniería y vida universitaria, y también puedes charlar de otros temas de forma breve. Cuando la pregunta sea sobre grupos, usa la siguiente lista y menciona nombres exactos. Responde en español, de forma clara y sin extenderte demasiado. Si te preguntan quién eres, di que eres Kala AI creada por nikko.dev e incluye este enlace en formato markdown: [nikko.dev](https://nikko.dev).';
+    const systemPrompt = 'Eres Kala AI, el asistente de la Base de Datos de Semilleros de la Facultad de Ingeniería UNAL Bogotá, creada por nikko.dev. Conversas con naturalidad y libertad: respondes sobre semilleros, grupos de investigación, carreras de ingeniería y vida universitaria, y también puedes charlar de otros temas de forma breve. Cuando la pregunta sea sobre grupos, usa la siguiente lista y menciona nombres exactos. Prioriza los grupos cuyo enfoque y actividades coincidan con lo pedido, no solo los que compartan palabras con la pregunta. Responde en español, de forma clara y sin extenderte demasiado. Si te preguntan quién eres, di que eres Kala AI creada por nikko.dev e incluye este enlace en formato markdown: [nikko.dev](https://nikko.dev).';
 
     const providerMessages =
       history.length > 0
@@ -273,13 +273,52 @@ function isIdentityQuestion(text: string): boolean {
 /**
  * Find relevant grupos based on query keywords
  */
-function extractKeywords(query: string): string[] {
-  return query
+const STOPWORDS = new Set([
+  'de', 'la', 'el', 'en', 'y', 'e', 'o', 'u', 'que', 'los', 'las', 'un', 'una',
+  'con', 'para', 'por', 'del', 'al', 'se', 'su', 'sus', 'lo', 'le', 'les',
+  'es', 'son', 'hay', 'esta', 'este', 'estos', 'estas', 'como', 'cual', 'cuales',
+  'quien', 'quienes', 'donde', 'cuando', 'porque', 'muy', 'mas', 'pero', 'sobre',
+  'entre', 'hasta', 'desde', 'durante', 'sin', 'otro', 'otra', 'tener', 'tiene',
+  'tienen', 'quiero', 'busco', 'buscan', 'necesito', 'dime', 'dame', 'quisiera',
+  'algo', 'alguna', 'alguno', 'estan', 'estoy', 'hace', 'hacen',
+]);
+
+/** Sinónimos: ia <-> inteligencia artificial */
+const SYNONYMS: Record<string, string[]> = {
+  ia: ['inteligencia', 'artificial'],
+  inteligencia: ['ia'],
+  artificial: ['ia'],
+};
+
+/** Stemming español mínimo (plurales): semilleros->semillero, grupos->grupo */
+function stemEs(w: string): string {
+  if (w.length > 4 && w.endsWith('es')) return w.slice(0, -2);
+  if (w.length > 3 && w.endsWith('s')) return w.slice(0, -1);
+  return w;
+}
+
+function normText(s: string | null | undefined): string {
+  return (s || '')
     .toLowerCase()
     .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[\u0300-\u036f]/g, '');
+}
+
+/** Coincidencia: substring, salvo tokens de <=2 letras que exigen palabra completa
+ *  (para que "ia" no case con "ingeniería"). */
+function fieldMatch(haystack: string, needle: string): boolean {
+  if (!needle) return false;
+  if (needle.length <= 2) {
+    const safe = needle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return new RegExp(`\\b${safe}\\b`).test(haystack);
+  }
+  return haystack.includes(needle);
+}
+
+function extractKeywords(query: string): string[] {
+  return normText(query)
     .split(/\s+/)
-    .filter(k => k.length >= 2);
+    .filter(k => k.length >= 2 && !STOPWORDS.has(k));
 }
 
 function findRelevantGrupos(query: string, grupos: Grupo[]) {
@@ -287,21 +326,40 @@ function findRelevantGrupos(query: string, grupos: Grupo[]) {
 
   if (keywords.length === 0) return grupos.slice(0, 3);
 
+  const normQuery = normText(query);
+  // Intención de tipo: si preguntan por "semilleros", priorizar Semilleros
+  const wantsSemillero = /\bsemillero/.test(normQuery);
+  const wantsInvestigacion = /investigacion/.test(normQuery);
+  const wantsEstudiantil = /estudiantil/.test(normQuery);
+
   return grupos
     .map(grupo => {
       let score = 0;
-      const nombre = (grupo.nombre || '').toLowerCase();
-      const enfoque = (grupo.enfoque || '').toLowerCase();
-      const descripcion = (grupo.descripcion || '').toLowerCase();
-      const searchable = `${nombre} ${enfoque} ${descripcion} ${(grupo.carrera_str || '').toLowerCase()} ${(grupo.tipo || '').toLowerCase()}`;
+      const nombre = normText(grupo.nombre);
+      const enfoque = normText(grupo.enfoque);
+      const descripcion = normText(grupo.descripcion);
+      const actividades = normText(grupo.actividades);
+      const resto = `${normText(grupo.carrera_str)} ${normText(grupo.tipo)} ${normText(grupo.docente)} ${normText(grupo.lider)}`;
 
       for (const keyword of keywords) {
-        if (!searchable.includes(keyword)) continue;
+        const variants = [keyword, stemEs(keyword), ...(SYNONYMS[keyword] || [])];
+        const inNombre = variants.some((v) => fieldMatch(nombre, v));
+        const inEnfoque = variants.some((v) => fieldMatch(enfoque, v));
+        const inDesc = variants.some((v) => fieldMatch(descripcion, v));
+        const inAct = variants.some((v) => fieldMatch(actividades, v));
+        const inResto = variants.some((v) => fieldMatch(resto, v));
+        if (!inNombre && !inEnfoque && !inDesc && !inAct && !inResto) continue;
         score += 1;
-        if (nombre.includes(keyword)) score += 3;
-        if (enfoque.includes(keyword)) score += 2;
-        if (descripcion.includes(keyword)) score += 1;
+        if (inNombre) score += 3;
+        if (inEnfoque) score += 2;
+        if (inDesc) score += 1;
+        if (inAct) score += 1;
       }
+
+      const tipoN = normText(grupo.tipo);
+      if (wantsSemillero && tipoN.includes('semillero')) score += 3;
+      if (wantsInvestigacion && tipoN.includes('investigacion')) score += 3;
+      if (wantsEstudiantil && tipoN.includes('estudiantil')) score += 3;
 
       return { grupo, score };
     })
