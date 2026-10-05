@@ -143,10 +143,10 @@ export const prerender = false;
 
   async function loadStats() {
     const [gruposRes, pendientesRes, lideresRes, adminsRes] = await Promise.all([
-      supabase.from('grupos').select('id', { count: 'exact' }),
-      supabase.from('solicitudes_pendientes').select('id', { count: 'exact' }),
-      supabase.from('perfiles').select('id', { count: 'exact' }).eq('rol', 'ADMIN_GRUPO'),
-      supabase.from('perfiles').select('id', { count: 'exact' }).eq('rol', 'SUPER_ADMIN')
+      supabase.from('grupos').select('id', { count: 'exact', head: true }),
+      supabase.from('solicitudes_pendientes').select('id', { count: 'exact', head: true }).eq('estado', 'pendiente'),
+      supabase.from('perfiles').select('id', { count: 'exact', head: true }).eq('rol', 'ADMIN_GRUPO'),
+      supabase.from('perfiles').select('id', { count: 'exact', head: true }).eq('rol', 'SUPER_ADMIN')
     ]);
 
     const statsError = gruposRes.error || pendientesRes.error || lideresRes.error || adminsRes.error;
@@ -155,11 +155,11 @@ export const prerender = false;
       showNotification(`No se pudieron cargar las métricas: ${statsError.message}`, 'error');
     }
 
-    document.getElementById('total-grupos').textContent = gruposRes.count || 0;
-    document.getElementById('pending-grupos').textContent = pendientesRes.count || 0;
-    document.getElementById('total-lideres').textContent = lideresRes.count || 0;
-    document.getElementById('total-admins').textContent = adminsRes.count || 0;
-    document.getElementById('pending-count-badge').textContent = pendientesRes.count || 0;
+    document.getElementById('total-grupos').textContent = String(gruposRes.count ?? 0);
+    document.getElementById('pending-grupos').textContent = String(pendientesRes.count ?? 0);
+    document.getElementById('total-lideres').textContent = String(lideresRes.count ?? 0);
+    document.getElementById('total-admins').textContent = String(adminsRes.count ?? 0);
+    document.getElementById('pending-count-badge').textContent = String(pendientesRes.count ?? 0);
   }
 
   async function loadGrupos() {

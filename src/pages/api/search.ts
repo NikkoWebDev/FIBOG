@@ -274,7 +274,12 @@ function isIdentityQuestion(text: string): boolean {
  * Find relevant grupos based on query keywords
  */
 function extractKeywords(query: string): string[] {
-  return query.toLowerCase().split(/\s+/).filter(k => k.length > 1);
+  return query
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .split(/\s+/)
+    .filter(k => k.length >= 2);
 }
 
 function findRelevantGrupos(query: string, grupos: Grupo[]) {

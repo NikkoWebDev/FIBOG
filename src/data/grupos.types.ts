@@ -45,12 +45,13 @@ export interface GruposData {
 export const CARRERAS_DISPONIBLES = [
     'Ingeniería Agrícola',
   'Ingeniería Civil',
-  'Ingeniería Electrica',
+  'Ingeniería Eléctrica',
   'Ingeniería Electrónica',
   'Ingeniería Mecatrónica',
   'Ingeniería Mecánica',
   'Ingeniería Química',
   'Ingeniería de Sistemas',
+  'Ingeniería Industrial',
   'Ingeniería y Afines'
 ] as const;
 
@@ -71,7 +72,7 @@ export function getCarreraSlug(carrera: string): string {
 export function getTipoSlug(tipo: string): string {
   return tipo.toLowerCase()
     .replace(/grupo de /g, '')
-    .replace(/s+/g, '-')
+    .replace(/\s+/g, '-')
     .replace(/[^a-z0-9-]/g, '');
 }
 

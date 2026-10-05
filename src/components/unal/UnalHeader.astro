@@ -230,7 +230,8 @@ const navItems = [
 
   document.querySelectorAll('#site-header [data-dropdown-trigger]').forEach(trigger => {
     trigger.addEventListener('click', (e) => {
-      if (e.detail === 0) return;
+      const me = e as MouseEvent;
+      if (me.detail === 0) return;
       e.stopPropagation();
       const dd = (e.currentTarget as HTMLElement).closest('[data-dropdown]');
       const willOpen = !isDropdownOpen(dd);
@@ -239,8 +240,9 @@ const navItems = [
     });
 
     trigger.addEventListener('keydown', (e) => {
+      const ke = e as KeyboardEvent;
       const dd = (e.currentTarget as HTMLElement).closest('[data-dropdown]');
-      if (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ') {
+      if (ke.key === 'ArrowDown' || ke.key === 'Enter' || ke.key === ' ') {
         e.preventDefault();
         if (!isDropdownOpen(dd)) {
           closeAllDropdowns();
