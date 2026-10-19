@@ -1,6 +1,6 @@
 # CLAUDE.md — Semilleros UNAL (FIBOG)
 
-Catálogo web de semilleros, grupos de investigación y comunidades estudiantiles de la Facultad de Ingeniería - Universidad Nacional de Colombia (Bogotá).
+Catálogo web de semilleros, grupos de investigación y comunidades estudiantiles de la Facultad de Ingeniería y Afines - Universidad Nacional de Colombia (Bogotá).
 
 ## Stack
 
@@ -70,7 +70,7 @@ src/
 
 ## Identidad Visual FIBOG
 
-El sitio replica la identidad visual de **ingenieria.bogota.unal.edu.co** (Facultad de Ingeniería Bogotá). Documentación completa: `docs/REDESIGN.md`
+El sitio replica la identidad visual de **ingenieria.bogota.unal.edu.co** (Facultad de Ingeniería y Afines Bogotá). Documentación completa: `docs/REDESIGN.md`
 
 ### Paleta de Colores FIBOG
 

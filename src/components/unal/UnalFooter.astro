@@ -1,5 +1,5 @@
 ---
-// UnalFooter.astro - Modern footer for Base de Datos Ingenieria
+// UnalFooter.astro - Modern footer for Base de Datos Ingeniería y Afines
 
 const navLinks = [
   { label: 'Inicio', url: '/' },
@@ -19,15 +19,15 @@ const navLinks = [
         <!-- Brand -->
         <div>
           <a href="/" class="flex items-center gap-3 mb-4" rel="home">
-            <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-glow-sm">
-              <span class="material-symbols-outlined text-white text-lg">science</span>
-            </div>
+            <img src="/logo.png" alt="Base de Datos Ingeniería y Afines — logo"
+                 class="w-9 h-9 rounded-lg object-cover shadow-glow-sm"
+                 width="36" height="36" loading="lazy" decoding="async" />
             <span class="text-text-primary font-bold text-lg tracking-tight">
-              Base de Datos Ingenieria<span class="text-primary">.</span>
+              Base de Datos Ingeniería y Afines<span class="text-primary">.</span>
             </span>
           </a>
           <p class="text-text-secondary text-sm leading-relaxed max-w-xs">
-            Catalogo de semilleros, grupos de investigacion y comunidades estudiantiles de la Facultad de Ingenieria.
+            Catalogo de semilleros, grupos de investigacion y comunidades estudiantiles de la Facultad de Ingeniería y Afines.
           </p>
         </div>
 
@@ -49,7 +49,7 @@ const navLinks = [
       <!-- Bottom bar -->
       <div class="mt-10 pt-8 border-t border-border-subtle flex flex-col sm:flex-row items-center justify-between gap-4">
         <p class="text-text-muted text-xs">
-          &copy; {new Date().getFullYear()} Base de Datos Ingenieria &mdash; Facultad de Ingenieria, UNAL Bogota
+          &copy; {new Date().getFullYear()} Base de Datos Ingeniería y Afines &mdash; Facultad de Ingeniería y Afines, UNAL Bogota
         </p>
         <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-text-muted text-xs">
           <a href="/privacidad" class="hover:text-text-secondary transition-colors">Privacidad</a>

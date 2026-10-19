@@ -4,7 +4,7 @@
     "fuentes": [
       "identidad.unal.edu.co - Guía de identidad visual oficial",
       "gestionapp.unal.edu.co/cdn/doc/ - Kit de diseño para aplicaciones web",
-      "ingenieria.bogota.unal.edu.co - Facultad de Ingeniería Bogotá"
+      "ingenieria.bogota.unal.edu.co - Facultad de Ingeniería y Afines Bogotá"
     ],
     "notas": "El design system de gestionapp requiere autenticación. Los tokens de diseño fueron extraídos directamente del CSS kit (kitUnal.min.css y main.min.css)."
   },

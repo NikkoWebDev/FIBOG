@@ -1,6 +1,6 @@
-# FIBOG — UNAL Facultad de Ingeniería Bogotá
+# FIBOG — UNAL Facultad de Ingeniería y Afines Bogotá
 
-**Plataforma web para descubrir semilleros, grupos de investigación y comunidades estudiantiles de la Facultad de Ingeniería - Universidad Nacional de Colombia, Sede Bogotá.**
+**Plataforma web para descubrir semilleros, grupos de investigación y comunidades estudiantiles de la Facultad de Ingeniería y Afines - Universidad Nacional de Colombia, Sede Bogotá.**
 
 ---
 
@@ -8,7 +8,7 @@
 
 | Campo | Valor |
 |---|---|
-| **Nombre del proyecto** | FIBOG (Facultad de Ingeniería BOGotá) |
+| **Nombre del proyecto** | FIBOG (Facultad de Ingeniería y Afines BOGotá) |
 | **Nombre en código** | Semilleros |
 | **Versión** | 1.0.0 |
 | **Licencia** | ISC |

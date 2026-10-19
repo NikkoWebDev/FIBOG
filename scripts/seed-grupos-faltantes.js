@@ -2,7 +2,7 @@
  * Seed de grupos faltantes — Fuentes verificadas:
  *  - DIB UNAL Sede Bogotá (investigacion.bogota.unal.edu.co/grupos-investigacion)
  *    63 grupos de Ingeniería y Tecnología (Minciencias A1/A/B/C). Se importan
- *    solo los adscritos a Facultad de Ingeniería Bogotá no presentes en DB.
+ *    solo los adscritos a Facultad de Ingeniería y Afines Bogotá no presentes en DB.
  *  - GruposUNAL (caroramirezhe.github.io/GruposUNAL, repo caroRamirezHE/GruposUNAL)
  *    Capítulos estudiantiles IEEE, semilleros IA/ciberseguridad y grupos
  *    de investigación de Sistemas verificados con email _fibog.
@@ -410,7 +410,7 @@ const GRUPOS = [
     email_contacto: 'jhlopezv@unal.edu.co',
     vinculacion: 'Grupo avalado UNAL (DIB)',
     enfoque: 'Análisis, diseño y materiales (Categoría A1 Minciencias)',
-    descripcion: 'Grupo de investigación en análisis, diseño y materiales. Categoría A1 Minciencias, Facultad de Ingeniería Bogotá.',
+    descripcion: 'Grupo de investigación en análisis, diseño y materiales. Categoría A1 Minciencias, Facultad de Ingeniería y Afines Bogotá.',
     actividades: 'Investigación en materiales y diseño estructural',
     modalidad: 'Mixta',
     horarios_habituales: null,

@@ -1,7 +1,7 @@
 {
   "name": "semilleros",
   "version": "1.0.0",
-  "description": "Semilleros e Investigación UNAL Ingeniería",
+  "description": "Semilleros e Investigación UNAL Ingeniería y Afines",
   "type": "module",
   "scripts": {
     "dev": "astro dev",

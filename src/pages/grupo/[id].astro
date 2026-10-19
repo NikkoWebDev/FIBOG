@@ -17,14 +17,27 @@ const grupo = id ? await fetchApprovedGrupoById(id) : null;
 if (!grupo) {
   Astro.response.status = 404;
   return new Response(
-    `<!doctype html><html lang="es"><head><meta charset="utf-8"><title>Grupo no encontrado</title></head><body style="font-family:system-ui;background:#0f1115;color:#e6e8ee;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0"><main style="text-align:center;max-width:480px;padding:24px"><h1>El grupo no existe o está pendiente de aprobación</h1><p><a href="/" style="color:#7aa2ff">Volver al catálogo</a></p></main></body></html>`,
-    { status: 404, headers: { 'Content-Type': 'text/html; charset=utf-8' } }
+    `<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><title>Grupo no encontrado</title></head><body style="font-family:system-ui;background:#0f1115;color:#e6e8ee;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0"><main style="text-align:center;max-width:480px;padding:24px"><h1>El grupo no existe o está pendiente de aprobación</h1><p><a href="/" style="color:#7aa2ff">Volver al catálogo</a></p></main></body></html>`,
+    { status: 404, headers: { 'Content-Type': 'text/html; charset=utf-8', 'X-Robots-Tag': 'noindex, nofollow' } }
   );
 }
 
 // Solo se muestra el botón web si hay una URL real; el campo trae
 // texto libre histórico ("Instagram", "Página web", ...) que generaba href rotos.
 const webUrl = normalizeUrl(grupo.redes);
+
+// SEO: canonical + JSON-LD del grupo (solo si existe).
+const siteUrl = (Astro.site?.origin ?? 'https://semilleros.nikko.dev').replace(/\/+$/, '');
+const grupoCanonical = `${siteUrl}/grupo/${encodeURIComponent(grupo.id)}`;
+const grupoJsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  '@id': grupoCanonical,
+  name: grupo.nombre,
+  description: grupo.descripcion || grupo.enfoque || `${grupo.tipo} de la Facultad de Ingeniería y Afines, UNAL Bogotá.`,
+  url: grupoCanonical,
+  email: grupo.email || undefined,
+}).replace(/</g, '\\u003c');
 
 const tipoColors: Record<string, string> = {
   'Semillero': 'bg-accent/10 text-accent-light border-accent/20',
@@ -38,7 +51,10 @@ const tipoKey = Object.keys(tipoColors).find(k => normTipo(k) === normTipo(grupo
 const tipoBadge = (tipoKey && tipoColors[tipoKey]) || tipoColors['Semillero'];
 ---
 
-<Layout title={`${grupo.nombre} | Base de Datos Ingenieria`} description={grupo.descripcion || ''} activePage="grupos">
+<Layout title={`${grupo.nombre} | Base de Datos Ingeniería y Afines`} description={grupo.descripcion || ''} activePage="grupos" ogType="article">
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={grupoJsonLd} />
+  </Fragment>
   <main class="min-h-screen py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
     <!-- Back Button -->
     <div class="mb-8">

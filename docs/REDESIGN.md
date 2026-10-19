@@ -2,7 +2,7 @@
 
 ## Resumen
 
-Rediseño completo del sitio web de semilleros replicando la identidad visual de la Facultad de Ingeniería UNAL (ingenieria.bogota.unal.edu.co), incluyendo cabezote, footer, colores, tipografía y acceso a dashboards.
+Rediseño completo del sitio web de semilleros replicando la identidad visual de la Facultad de Ingeniería y Afines UNAL (ingenieria.bogota.unal.edu.co), incluyendo cabezote, footer, colores, tipografía y acceso a dashboards.
 
 ## Metodología
 
@@ -63,7 +63,7 @@ Réplica exacta del cabezote de ingeniería.bogota.unal.edu.co:
 
 ### Menú Principal (desktop)
 Items con enlaces reales FIBOG:
-- **La Facultad**: Facultad de Ingeniería UNAL, Decanatura, Vicedecanatura Académica, Vicedecanatura de Investigación y Extensión, Departamentos, Áreas Curriculares, Secretaría de Facultad, Unidad Administrativa, Preguntas Frecuentes
+- **La Facultad**: Facultad de Ingeniería y Afines UNAL, Decanatura, Vicedecanatura Académica, Vicedecanatura de Investigación y Extensión, Departamentos, Áreas Curriculares, Secretaría de Facultad, Unidad Administrativa, Preguntas Frecuentes
 - **Programas**: Programas Académicos
 - **Investigación**: Grupos de investigación – Hermes, Laboratorios Facultad, Semilleros y Grupos (este sitio)
 - **Extensión**: Instituto de Extensión e Investigación

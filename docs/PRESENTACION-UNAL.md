@@ -2,7 +2,7 @@
 
 ## Resumen Ejecutivo
 
-El sitio **Semilleros FIBOG** es un catálogo web de semilleros, grupos de investigación y comunidades estudiantiles de la Facultad de Ingeniería - Universidad Nacional de Colombia (Bogotá).
+El sitio **Semilleros FIBOG** es un catálogo web de semilleros, grupos de investigación y comunidades estudiantiles de la Facultad de Ingeniería y Afines - Universidad Nacional de Colombia (Bogotá).
 
 **Estado**: Implementado según plantilla web institucional UNAL.
 
@@ -106,7 +106,7 @@ El sitio utiliza **Supabase** como gestor de contenidos (CMS) headless:
 
 ## Contacto
 
-- **Desarrollador**: Facultad de Ingeniería - UNAL Bogotá
+- **Desarrollador**: Facultad de Ingeniería y Afines - UNAL Bogotá
 - **Correo**: semilleros.fibog@unal.edu.co
 - **URL**: semilleros.fibog.unal.edu.co
 

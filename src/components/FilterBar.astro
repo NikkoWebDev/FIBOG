@@ -1,19 +1,23 @@
 ---
+import { careerLabelShort, canonicalizeCarrera, norm } from '../data/grupos.types';
 import type { Metadata } from '../data/grupos.types';
 
 interface Props {
   metadata: Metadata;
+  /** Grupos que matchearían cada carrera canónica (se calcula en index.astro). */
+  counts?: Record<string, number>;
   activeTipo?: string;
   activeCarrera?: string;
   activeQuery?: string;
 }
 
-const { metadata, activeTipo, activeCarrera, activeQuery } = Astro.props;
+const { metadata, counts = {}, activeTipo, activeCarrera, activeQuery } = Astro.props;
 
 const tipos = ['Todos', 'Semillero', 'Grupo de Investigación', 'Grupo Estudiantil'];
 
-const norm = (s: string) =>
-  (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+// Acepta URLs viejas con alias/typos: se canonicaliza antes de marcar la opción activa.
+const activeCanonical = activeCarrera ? (canonicalizeCarrera(activeCarrera)[0] ?? '') : '';
+const carreras = metadata.carreras; // ya canónicas y ordenadas (buildMetadata)
 
 const qSuffix = activeQuery ? `&q=${encodeURIComponent(activeQuery)}` : '';
 ---
@@ -47,25 +51,42 @@ const qSuffix = activeQuery ? `&q=${encodeURIComponent(activeQuery)}` : '';
     </div>
 
     <!-- Carrera Filter -->
-    <div class="flex items-center gap-2">
+    <div class="flex flex-wrap items-center gap-2">
       <span class="text-text-muted text-sm font-medium">Carrera:</span>
+      <input
+        id="carrera-search"
+        type="search"
+        aria-label="Buscar carrera"
+        placeholder="Buscar carrera"
+        autocomplete="off"
+        class="bg-bg-input border border-border-default px-3 py-2 text-sm text-text-primary rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all w-44 sm:w-52"
+      />
       <select
         id="carrera-filter"
+        aria-label="Filtrar por carrera"
         class="bg-bg-input border border-border-default px-4 py-2 text-sm text-text-primary rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all cursor-pointer appearance-none"
         onchange="window.location.href=this.value"
       >
-        <option value={activeTipo ? `?tipo=${encodeURIComponent(activeTipo)}${qSuffix}` : (activeQuery ? `?q=${encodeURIComponent(activeQuery)}` : '/')}>
+        <option
+          value={activeTipo ? `?tipo=${encodeURIComponent(activeTipo)}${qSuffix}` : (activeQuery ? `?q=${encodeURIComponent(activeQuery)}` : '/')}
+          selected={!activeCanonical}
+        >
           Todas las carreras
         </option>
-        {metadata.carreras.map(carrera => {
+        {carreras.map(carrera => {
+          const short = careerLabelShort(carrera);
+          const total = counts[carrera] ?? 0;
           const value = activeTipo
             ? `?tipo=${encodeURIComponent(activeTipo)}&carrera=${encodeURIComponent(carrera)}${qSuffix}`
             : `?carrera=${encodeURIComponent(carrera)}${qSuffix}`;
-          const isSelected = activeCarrera === carrera;
 
           return (
-            <option value={value} selected={isSelected}>
-              {carrera}
+            <option
+              value={value}
+              selected={activeCanonical === carrera}
+              data-search={`${short} ${carrera}`}
+            >
+              {short} ({total})
             </option>
           );
         })}
@@ -78,3 +99,23 @@ const qSuffix = activeQuery ? `&q=${encodeURIComponent(activeQuery)}` : '';
     </div>
   </div>
 </div>
+
+<script is:inline>
+  // Filtra las opciones del select al escribir: sobrenombre o nombre completo.
+  (function () {
+    var search = document.getElementById('carrera-search');
+    var select = document.getElementById('carrera-filter');
+    if (!search || !select) return;
+    var norm = function (s) {
+      return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    };
+    var options = Array.prototype.slice.call(select.options);
+    search.addEventListener('input', function () {
+      var q = norm(search.value).trim();
+      for (var i = 0; i < options.length; i++) {
+        var hay = norm(options[i].getAttribute('data-search'));
+        options[i].hidden = q !== '' && hay.indexOf(q) === -1;
+      }
+    });
+  })();
+</script>

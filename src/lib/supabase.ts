@@ -1,9 +1,11 @@
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from './database.types';
 
-// Fallbacks para que el build/prerender no falle si faltan env vars en el host
-const supabaseUrl = import.meta.env.PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
-const supabaseAnonKey = import.meta.env.PUBLIC_SUPABASE_ANON_KEY || 'placeholder-anon-key';
+// Fallbacks para que el build/prerender no falle si faltan env vars en el host.
+// `import.meta.env` solo existe bajo Vite; en Node puro (tests de canonicalización) se usa process.env.
+const env = import.meta.env ?? (typeof process !== 'undefined' ? process.env : {});
+const supabaseUrl = env.PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
+const supabaseAnonKey = env.PUBLIC_SUPABASE_ANON_KEY || 'placeholder-anon-key';
 
 // Validate that real Supabase credentials are configured (not placeholders)
 if (!supabaseUrl || supabaseUrl === 'https://your-project.supabase.co') {

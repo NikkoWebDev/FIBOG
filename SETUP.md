@@ -1,6 +1,6 @@
 # FIBOG - Sistema de Gestión de Semilleros UNAL
 
-Sistema completo de gestión de semilleros, grupos de investigación y grupos estudiantiles de la Facultad de Ingeniería - Universidad Nacional de Colombia.
+Sistema completo de gestión de semilleros, grupos de investigación y grupos estudiantiles de la Facultad de Ingeniería y Afines - Universidad Nacional de Colombia.
 
 ## 🏗️ Arquitectura
 
@@ -142,7 +142,7 @@ ADMIN_EMAIL_2
 SITE_URL
 ```
 
-El dominio verificado actual es `nikko.dev`; use `Base de Datos Ingenieria <noreply@nikko.dev>` como remitente.
+El dominio verificado actual es `nikko.dev`; use `Base de Datos Ingeniería y Afines <noreply@nikko.dev>` como remitente.
 
 #### 5.3 API Routes Serverless (para IA y notificaciones)
 
@@ -266,7 +266,7 @@ Asegúrate de usar el Service Role Key para operaciones administrativas.
 
 - **Diseño**: Stitch Designs (Glassmorphism 2.0)
 - **Desarrollo**: Nikko para UNAL
-- **Facultad de Ingeniería - Universidad Nacional de Colombia**
+- **Facultad de Ingeniería y Afines - Universidad Nacional de Colombia**
 
 ## 📄 Licencia
 

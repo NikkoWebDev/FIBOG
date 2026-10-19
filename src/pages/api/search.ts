@@ -59,7 +59,7 @@ export const POST: APIRoute = async ({ request, site }) => {
     if (isIdentityQuestion(currentQuery)) {
       return new Response(
         JSON.stringify({
-          answer: 'Soy **Kala AI**, creada por [nikko.dev](https://nikko.dev). Te ayudo a encontrar semilleros y grupos de investigación de la Facultad de Ingeniería UNAL. ¿Qué te interesa?',
+          answer: 'Soy **Kala AI**, creada por [nikko.dev](https://nikko.dev). Te ayudo a encontrar semilleros y grupos de investigación de la Facultad de Ingeniería y Afines UNAL. ¿Qué te interesa?',
           query: currentQuery,
           grupos: [],
         }),
@@ -88,7 +88,7 @@ export const POST: APIRoute = async ({ request, site }) => {
       })
       .join('\n');
 
-    const systemPrompt = 'Eres Kala AI, el asistente de la Base de Datos de Semilleros de la Facultad de Ingeniería UNAL Bogotá, creada por nikko.dev. Conversas con naturalidad y libertad: respondes sobre semilleros, grupos de investigación, carreras de ingeniería y vida universitaria, y también puedes charlar de otros temas de forma breve. Cuando la pregunta sea sobre grupos, usa la siguiente lista y menciona nombres exactos. Prioriza los grupos cuyo enfoque y actividades coincidan con lo pedido, no solo los que compartan palabras con la pregunta. Responde en español, de forma clara y sin extenderte demasiado. Si te preguntan quién eres, di que eres Kala AI creada por nikko.dev e incluye este enlace en formato markdown: [nikko.dev](https://nikko.dev).';
+    const systemPrompt = 'Eres Kala AI, el asistente de la Base de Datos de Semilleros de la Facultad de Ingeniería y Afines UNAL Bogotá, creada por nikko.dev. Conversas con naturalidad y libertad: respondes sobre semilleros, grupos de investigación, carreras de ingeniería y vida universitaria, y también puedes charlar de otros temas de forma breve. Cuando la pregunta sea sobre grupos, usa la siguiente lista y menciona nombres exactos. Prioriza los grupos cuyo enfoque y actividades coincidan con lo pedido, no solo los que compartan palabras con la pregunta. Responde en español, de forma clara y sin extenderte demasiado. Si te preguntan quién eres, di que eres Kala AI creada por nikko.dev e incluye este enlace en formato markdown: [nikko.dev](https://nikko.dev).';
 
     const providerMessages =
       history.length > 0
@@ -202,7 +202,7 @@ async function askOpenRouter(apiKey: string, baseUrl: string, model: string, ref
         'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
         'HTTP-Referer': referer,
-        'X-Title': 'Base de Datos Ingenieria',
+        'X-Title': 'Base de Datos Ingeniería y Afines',
       },
       body: JSON.stringify({
         model,

@@ -9,14 +9,25 @@ interface Props {
   description?: string;
   activePage?: string;
   hideFooter?: boolean;
+  noindex?: boolean;
+  ogType?: 'website' | 'article';
 }
 
-const { 
-  title = "Base de Datos Ingenieria | Semilleros", 
-  description = "Catálogo de semilleros, grupos de investigación y comunidades estudiantiles de la Facultad de Ingeniería",
+const SITE_FALLBACK = 'https://semilleros.nikko.dev';
+
+const {
+  title = "Semilleros UNAL | Grupos de Investigación y Estudiantiles — Ingeniería y Afines",
+  description = "Catálogo actualizado de semilleros, grupos de investigación y estudiantiles UNAL Bogotá. Filtra por carrera (Sistemas, Civil, Química...) y únete.",
   activePage = 'inicio',
-  hideFooter = false
+  hideFooter = false,
+  noindex = false,
+  ogType = 'website'
 } = Astro.props;
+
+const siteUrl = (Astro.site?.origin ?? SITE_FALLBACK).replace(/\/+$/, '');
+const path = Astro.url.pathname === '/' ? '/' : Astro.url.pathname.replace(/\/+$/, '');
+const canonicalUrl = `${siteUrl}${path}`;
+const ogImageUrl = `${siteUrl}/logo.png`;
 ---
 
 <!DOCTYPE html>
@@ -36,11 +47,35 @@ const {
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content={description} />
+  <meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow'} />
+  <link rel="canonical" href={canonicalUrl} />
+  <link rel="alternate" hreflang="es" href={canonicalUrl} />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content={title} />
+  <meta property="og:description" content={description} />
+  <meta property="og:url" content={canonicalUrl} />
+  <meta property="og:type" content={ogType} />
+  <meta property="og:site_name" content="Semilleros UNAL — Base de Datos Ingeniería y Afines" />
+  <meta property="og:locale" content="es_CO" />
+  <meta property="og:image" content={ogImageUrl} />
+  <meta property="og:image:width" content="800" />
+  <meta property="og:image:height" content="800" />
+  <meta property="og:image:alt" content="Semilleros UNAL — Facultad de Ingeniería y Afines" />
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content={title} />
+  <meta name="twitter:description" content={description} />
+  <meta name="twitter:image" content={ogImageUrl} />
+
   <meta name="theme-color" content="#f0eff4" />
   <title>{title}</title>
   
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="apple-touch-icon" href="/logo.png" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/logo.png" />
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">

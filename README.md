@@ -2,9 +2,9 @@
 
 # UNAL | FIBOG
 
-### Facultad de Ingenieria BOGota
+### Facultad de Ingeniería y Afines BOGota
 
-**Plataforma web para descubrir semilleros, grupos de investigacion y comunidades estudiantiles de la Facultad de Ingenieria - Universidad Nacional de Colombia, Sede Bogota.**
+**Plataforma web para descubrir semilleros, grupos de investigacion y comunidades estudiantiles de la Facultad de Ingeniería y Afines - Universidad Nacional de Colombia, Sede Bogota.**
 
 [![Astro](https://img.shields.io/badge/Astro-4.x-BC52EE?style=for-the-badge&logo=astro&logoColor=white)](https://astro.build)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.x-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)](https://tailwindcss.com)
@@ -33,7 +33,7 @@
 
 ## Descripcion
 
-**FIBOG** es una plataforma web estatica construida con [Astro](https://astro.build) que centraliza y organiza la informacion de los grupos de investigacion, semilleros y comunidades estudiantiles de la Facultad de Ingenieria de la UNAL Bogota.
+**FIBOG** es una plataforma web estatica construida con [Astro](https://astro.build) que centraliza y organiza la informacion de los grupos de investigacion, semilleros y comunidades estudiantiles de la Facultad de Ingeniería y Afines de la UNAL Bogota.
 
 El objetivo es facilitar a los estudiantes la busqueda y exploracion de estos grupos, permitiendo filtrar por tipo (Semillero, Grupo de Investigacion, Grupo Estudiantil), por carrera, y por terminos de busqueda. Incluye tambien una funcionalidad de busqueda asistida por IA.
 

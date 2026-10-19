@@ -15,7 +15,7 @@ export const prerender = false;
 // This page requires SUPER_ADMIN role
 ---
 
-<Layout title="Panel de Administración | Base de Datos Ingenieria" description="Gestión de activos de investigación y monitoreo institucional." activePage="admin">
+<Layout title="Panel de Administración | Base de Datos Ingeniería y Afines" description="Gestión de activos de investigación y monitoreo institucional." activePage="admin" noindex>
   
   <main class="min-h-screen pt-32 pb-24 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
     <!-- Loading / Auth check -->
@@ -1138,16 +1138,16 @@ export const prerender = false;
 
   const correoTemplates = {
     bienvenida: {
-      subject: 'Acceso al panel de lideres — Base de Datos Ingenieria',
-      message: `Hola,\n\nYa puede ingresar al panel de lider de su grupo en la plataforma de Semilleros FIBOG.\n\nURL: ${(typeof window !== 'undefined' ? window.location.origin : '')}/login\nClave temporal (cambiela al entrar): Claveparacambiar123\n\nPasos:\n1. Inicie sesion con el correo de contacto del grupo\n2. Vaya a Mi perfil > Cambiar contraseña\n3. Actualice la informacion de su semillero/grupo en el panel Lider\n\nCualquier duda escriba a bgallo@unal.edu.co o ngutierrezga@unal.edu.co.\n\n— Base de Datos Ingenieria / correo nikko.dev`,
+      subject: 'Acceso al panel de lideres — Base de Datos Ingeniería y Afines',
+      message: `Hola,\n\nYa puede ingresar al panel de lider de su grupo en la plataforma de Semilleros FIBOG.\n\nURL: ${(typeof window !== 'undefined' ? window.location.origin : '')}/login\nClave temporal (cambiela al entrar): Claveparacambiar123\n\nPasos:\n1. Inicie sesion con el correo de contacto del grupo\n2. Vaya a Mi perfil > Cambiar contraseña\n3. Actualice la informacion de su semillero/grupo en el panel Lider\n\nCualquier duda escriba a bgallo@unal.edu.co o ngutierrezga@unal.edu.co.\n\n— Base de Datos Ingeniería y Afines / correo nikko.dev`,
     },
     actualizacion: {
       subject: 'Actualizar informacion de su grupo — Semilleros FIBOG',
-      message: `Hola,\n\nLes pedimos actualizar la ficha publica de su grupo (descripcion, enfoque, horarios, requisitos y contacto) en el panel de lider.\n\nIngreso: ${(typeof window !== 'undefined' ? window.location.origin : '')}/login\n\nGracias,\nBase de Datos Ingenieria`,
+      message: `Hola,\n\nLes pedimos actualizar la ficha publica de su grupo (descripcion, enfoque, horarios, requisitos y contacto) en el panel de lider.\n\nIngreso: ${(typeof window !== 'undefined' ? window.location.origin : '')}/login\n\nGracias,\nBase de Datos Ingeniería y Afines`,
     },
     aviso: {
-      subject: 'Aviso — Base de Datos Ingenieria FIBOG',
-      message: `Estimados lideres,\n\n[Escriba aqui el aviso]\n\nCordialmente,\nBase de Datos Ingenieria`,
+      subject: 'Aviso — Base de Datos Ingeniería y Afines FIBOG',
+      message: `Estimados lideres,\n\n[Escriba aqui el aviso]\n\nCordialmente,\nBase de Datos Ingeniería y Afines`,
     },
   };
 

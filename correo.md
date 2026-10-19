@@ -1,4 +1,4 @@
-# Borrador de correo — Facultad de Ingeniería
+# Borrador de correo — Facultad de Ingeniería y Afines
 
 ---
 
@@ -6,7 +6,7 @@
 
 ---
 
-Estimados(as) integrantes de la Facultad de Ingeniería,
+Estimados(as) integrantes de la Facultad de Ingeniería y Afines,
 
 Me dirijo a ustedes para presentarles el desarrollo de una plataforma web diseñada para centralizar, organizar y visibilizar los grupos de investigación, semilleros y comunidades estudiantiles de la facultad. El objetivo es que los estudiantes puedan explorar de manera sencilla las oportunidades académicas disponibles y que los líderes de grupo cuenten con un espacio para gestionar su información.
 
@@ -40,7 +40,7 @@ Me dirijo a ustedes para presentarles el desarrollo de una plataforma web diseñ
 
 ## Adaptación a la identidad de marca de la facultad
 
-La plataforma está construida con **Tailwind CSS**, lo que permite modificar de forma ágil y centralizada toda la paleta de colores, tipografías y estilos visuales para alinearlos con el manual de identidad de la Facultad de Ingeniería. La arquitectura separa claramente el contenido de la presentación, facilitando cualquier ajuste estético que se requiera.
+La plataforma está construida con **Tailwind CSS**, lo que permite modificar de forma ágil y centralizada toda la paleta de colores, tipografías y estilos visuales para alinearlos con el manual de identidad de la Facultad de Ingeniería y Afines. La arquitectura separa claramente el contenido de la presentación, facilitando cualquier ajuste estético que se requiera.
 
 Quedo atento a sus comentarios y sugerencias. Quedo a disposición para coordinar una reunión donde podamos revisar la plataforma en detalle y definir los pasos a seguir para su publicación y alineación con la imagen institucional.
 

@@ -1,0 +1,111 @@
+# Semilleros UNAL — Facultad de Ingeniería y Afines (Sede Bogotá)
+# https://semilleros.nikko.dev
+
+# Bots tradicionales
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /api/
+Disallow: /perfil
+Disallow: /lider
+Disallow: /login
+
+# Bots de IA — permitimos indexación para que citen el catálogo.
+# Las rutas privadas siguen bloqueadas para todos.
+User-agent: GPTBot
+Allow: /
+Disallow: /admin
+Disallow: /api/
+Disallow: /perfil
+Disallow: /lider
+Disallow: /login
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /admin
+Disallow: /api/
+Disallow: /perfil
+Disallow: /lider
+Disallow: /login
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /admin
+Disallow: /api/
+Disallow: /perfil
+Disallow: /lider
+Disallow: /login
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /admin
+Disallow: /api/
+Disallow: /perfil
+Disallow: /lider
+Disallow: /login
+
+User-agent: Claude-Web
+Allow: /
+Disallow: /admin
+Disallow: /api/
+Disallow: /perfil
+Disallow: /lider
+Disallow: /login
+
+User-agent: anthropic-ai
+Allow: /
+Disallow: /admin
+Disallow: /api/
+Disallow: /perfil
+Disallow: /lider
+Disallow: /login
+
+User-agent: Google-Extended
+Allow: /
+Disallow: /admin
+Disallow: /api/
+Disallow: /perfil
+Disallow: /lider
+Disallow: /login
+
+User-agent: Applebot-Extended
+Allow: /
+Disallow: /admin
+Disallow: /api/
+Disallow: /perfil
+Disallow: /lider
+Disallow: /login
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /admin
+Disallow: /api/
+Disallow: /perfil
+Disallow: /lider
+Disallow: /login
+
+User-agent: Amazonbot
+Allow: /
+Disallow: /admin
+Disallow: /api/
+Disallow: /perfil
+Disallow: /lider
+Disallow: /login
+
+User-agent: meta-externalagent
+Allow: /
+Disallow: /admin
+Disallow: /api/
+Disallow: /perfil
+Disallow: /lider
+Disallow: /login
+
+User-agent: Bytespider
+Allow: /
+Disallow: /admin
+Disallow: /api/
+Disallow: /perfil
+Disallow: /lider
+Disallow: /login
+
+Sitemap: https://semilleros.nikko.dev/sitemap.xml

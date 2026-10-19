@@ -240,7 +240,7 @@ export const POST: APIRoute = async ({ request, clientAddress }) => {
     });
 
     const siteUrl = import.meta.env.SITE_URL || 'https://semilleros-fibog.vercel.app';
-    const fromEmail = import.meta.env.RESEND_FROM_EMAIL || 'Base de Datos Ingenieria <noreply@nikko.dev>';
+    const fromEmail = import.meta.env.RESEND_FROM_EMAIL || 'Base de Datos Ingeniería y Afines <noreply@nikko.dev>';
     const nombre = String(body.nombre).trim();
 
     const emailSubject = `Nueva solicitud: ${nombre}`;
@@ -268,7 +268,7 @@ Acciones:
 Revisar solicitud: ${siteUrl}/admin
 
 ---
-Este es un mensaje automático del sistema Base de Datos Ingenieria.
+Este es un mensaje automático del sistema Base de Datos Ingeniería y Afines.
     `.trim();
 
     const resendApiKey = import.meta.env.RESEND_API_KEY;

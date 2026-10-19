@@ -99,7 +99,7 @@ Acciones:
 Revisar solicitud: ${Deno.env.get('SITE_URL') || 'https://semilleros-fibog.vercel.app'}/admin
 
 ---
-Este es un mensaje automático del sistema Base de Datos Ingenieria.
+Este es un mensaje automático del sistema Base de Datos Ingeniería y Afines.
     `;
 
     // Send emails using Supabase Auth API or external service
@@ -160,7 +160,7 @@ async function sendEmail(to: string, subject: string, body: string): Promise<boo
   //     'Content-Type': 'application/json',
   //   },
   //   body: JSON.stringify({
-  //     from: 'Base de Datos Ingenieria <noreply@nikko.dev>',
+  //     from: 'Base de Datos Ingeniería y Afines <noreply@nikko.dev>',
   //     to,
   //     subject,
   //     text: body,

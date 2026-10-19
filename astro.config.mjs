@@ -3,6 +3,7 @@ import tailwind from '@astrojs/tailwind';
 import vercel from '@astrojs/vercel/serverless';
 
 export default defineConfig({
+  site: 'https://semilleros.nikko.dev',
   integrations: [tailwind()],
   output: 'hybrid',
   adapter: vercel(),

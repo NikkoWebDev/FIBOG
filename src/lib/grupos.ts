@@ -1,5 +1,6 @@
-import { createServerClient, supabase } from './supabase';
+import { createServerClient, supabase } from './supabase.ts';
 import type { Database } from './database.types';
+import { canonicalizeCarrera } from '../data/grupos.types.ts';
 import type { Grupo, Metadata } from '../data/grupos.types';
 
 export type DbGrupo = Database['public']['Tables']['grupos']['Row'];
@@ -16,29 +17,36 @@ function text(value: string | null | undefined): string {
 }
 
 /** Mapea fila de Supabase al shape publico que usan cards/detalle/filtros. */
-export function mapDbGrupoToPublic(row: CatalogGrupo): Grupo {
-  const carreras = Array.isArray(row.carreras) ? row.carreras.filter(Boolean) : [];
+export function mapDbGrupoToPublic(row: CatalogGrupo | null | undefined): Grupo {
+  const source: Partial<CatalogGrupo> = row ?? {};
+  const raw = Array.isArray(source.carreras) ? source.carreras : [];
+  // Limpieza read-side: cada miembro crudo se canoniza y se deduplica el resultado.
+  const carreras = Array.from(new Set(
+    raw
+      .filter((c): c is string => typeof c === 'string')
+      .flatMap(c => canonicalizeCarrera(c))
+  ));
 
   return {
-    id: row.id,
-    tipo: (row.tipo as Grupo['tipo']) || 'Desconocido',
+    id: source.id ?? '',
+    tipo: (source.tipo as Grupo['tipo']) || 'Desconocido',
     carreras,
     carrera_str: carreras.join(', '),
-    nombre: text(row.nombre),
-    docente: text(row.docente_a_cargo),
-    lider: text(row.lider_o_representante),
-    email: text(row.email_contacto),
-    vinculacion: text(row.vinculacion),
-    enfoque: text(row.enfoque),
-    descripcion: text(row.descripcion),
-    actividades: text(row.actividades),
-    modalidad: text(row.modalidad),
-    horarios: text(row.horarios_habituales),
-    requisitos: text(row.requisitos_ingreso),
-    nivel_academico: text(row.nivel_academico_recomendado),
-    redes: text(row.redes_sociales),
-    comentarios: text(row.comentarios_adicionales),
-    imagen_url: text(row.imagen_url) || undefined,
+    nombre: text(source.nombre),
+    docente: text(source.docente_a_cargo),
+    lider: text(source.lider_o_representante),
+    email: text(source.email_contacto),
+    vinculacion: text(source.vinculacion),
+    enfoque: text(source.enfoque),
+    descripcion: text(source.descripcion),
+    actividades: text(source.actividades),
+    modalidad: text(source.modalidad),
+    horarios: text(source.horarios_habituales),
+    requisitos: text(source.requisitos_ingreso),
+    nivel_academico: text(source.nivel_academico_recomendado),
+    redes: text(source.redes_sociales),
+    comentarios: text(source.comentarios_adicionales),
+    imagen_url: text(source.imagen_url) || undefined,
   };
 }
 
@@ -48,7 +56,10 @@ export function buildMetadata(grupos: Grupo[]): Metadata {
 
   for (const g of grupos) {
     por_tipo[g.tipo] = (por_tipo[g.tipo] || 0) + 1;
-    g.carreras.forEach((c) => carrerasSet.add(c));
+    // metadata.carreras siempre sale del catálogo canónico, nunca del crudo.
+    for (const c of g.carreras || []) {
+      for (const canon of canonicalizeCarrera(c)) carrerasSet.add(canon);
+    }
   }
 
   return {

@@ -138,3 +138,24 @@
     </div>
   </div>
 </div>
+
+<script>
+  import { canonicalizeCarrera } from '../../data/grupos.types';
+
+  // Normaliza el campo de carreras justo antes de que saveGroup lea el FormData:
+  // solo se persisten canónicas, así la DB no vuelve a ensuciarse por esta vía.
+  const form = document.getElementById('group-form');
+  if (form instanceof HTMLFormElement) {
+    const onSubmit = form.onsubmit;
+    form.onsubmit = function (event: SubmitEvent) {
+      const input = form.elements.namedItem('carreras');
+      if (input instanceof HTMLInputElement) {
+        input.value = input.value
+          .split(',')
+          .flatMap((part) => canonicalizeCarrera(part))
+          .join(', ');
+      }
+      return onSubmit ? onSubmit.call(form, event) : undefined;
+    };
+  }
+</script>

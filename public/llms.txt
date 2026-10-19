@@ -1,0 +1,25 @@
+# Semilleros UNAL — Facultad de Ingeniería y Afines
+
+Catálogo público de semilleros, grupos de investigación y grupos estudiantiles de la Facultad de Ingeniería y Afines de la Universidad Nacional de Colombia, Sede Bogotá. Cada ficha incluye enfoque, actividades, modalidad, carreras afines y datos de contacto del grupo. Proyecto académico independiente mantenido por y para estudiantes; los datos provienen de los mismos grupos.
+
+## Páginas principales
+
+- [Catálogo con filtros](https://semilleros.nikko.dev/): índice completo con filtro por tipo (semillero, grupo de investigación, grupo estudiantil) y por carrera.
+- [Registro de grupos](https://semilleros.nikko.dev/registro): formulario para postular un semillero o grupo nuevo.
+- [Política de privacidad](https://semilleros.nikko.dev/privacidad): tratamiento de datos del sitio.
+- [Mapa del sitio](https://semilleros.nikko.dev/sitemap.xml): todas las URLs indexables en XML.
+
+## Grupos destacados
+
+- [ALGOS-UN — Grupo de Investigación](https://semilleros.nikko.dev/grupo/95ebeeba-7d0c-4783-8936-9e8da8c24d7b)
+- [COMPLEXUS — Grupo de Investigación](https://semilleros.nikko.dev/grupo/ab8b4d1a-3016-48af-9be8-21c44d448d36)
+- [EMC-UN, Compatibilidad electromagnética — Grupo de Investigación](https://semilleros.nikko.dev/grupo/ff7b01e4-c79f-4651-9326-86404016e723)
+- [GENKI, Geotechnical engineering knowledge and innovation — Grupo de Investigación](https://semilleros.nikko.dev/grupo/be05dda1-8240-47b0-a1da-0a01a4cf8476)
+- [GIES, Análisis, diseño y materiales — Grupo de Investigación](https://semilleros.nikko.dev/grupo/9c1a4ae7-590c-47c6-aa4f-3a400e4ca55b)
+- [ALIFE — Semillero](https://semilleros.nikko.dev/grupo/9a6c7aae-d7fe-46dd-b854-6272810b5473)
+- [Cúmulo Bogotá — Semillero](https://semilleros.nikko.dev/grupo/da828f72-6d1f-40ac-8b36-cb849a523f57)
+- [El Aleph — Semillero](https://semilleros.nikko.dev/grupo/25417efc-3538-4095-ae6b-0630e3c973ef)
+- [Capítulo Estudiantil AIChE — Grupo Estudiantil](https://semilleros.nikko.dev/grupo/d0897a29-b0e1-4939-8a0d-2d53edba1ffb)
+- [ENIQ — Grupo Estudiantil](https://semilleros.nikko.dev/grupo/fb2a1813-2477-455c-953b-0df89b75f32f)
+
+El listado completo de grupos está disponible en la página principal; cada detalle tiene la URL canónica `https://semilleros.nikko.dev/grupo/<id>`.
