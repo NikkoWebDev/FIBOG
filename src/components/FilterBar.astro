@@ -1,10 +1,10 @@
 ---
+// FilterBar.astro - Sistema de filtrado facetado avanzado de élite FIBOG
 import { careerLabelShort, canonicalizeCarrera, norm } from '../data/grupos.types';
 import type { Grupo, Metadata } from '../data/grupos.types';
 
 interface Props {
   metadata: Metadata;
-  /** Grupos que matchearían cada carrera canónica (se calcula en index.astro). */
   counts?: Record<string, number>;
   activeTipo?: string;
   activeCarrera?: string;
@@ -14,102 +14,303 @@ interface Props {
 
 const { metadata, counts = {}, activeTipo, activeCarrera, activeQuery, grupos = [] } = Astro.props;
 
-const tipos = ['Todos', 'Semillero', 'Grupo de Investigación', 'Grupo Estudiantil'];
+// Catálogo de tipos con conteos
+const totalCount = metadata.total;
+const semillerosCount = metadata.por_tipo['Semillero'] || 0;
+const investigacionCount = metadata.por_tipo['Grupo de Investigación'] || 0;
+const estudiantilCount = metadata.por_tipo['Grupo Estudiantil'] || 0;
 
-// Acepta URLs viejas con alias/typos: se canonicaliza antes de marcar la opción activa.
+const tipoChips = [
+  { label: 'Todos', value: 'Todos', count: totalCount },
+  { label: 'Semilleros', value: 'Semillero', count: semillerosCount },
+  { label: 'Grupos de Investigación', value: 'Grupo de Investigación', count: investigacionCount },
+  { label: 'Grupos Estudiantiles', value: 'Grupo Estudiantil', count: estudiantilCount },
+];
+
+// Ramas Principales de Ingeniería (Quick Chips)
+const BRANCH_CONFIGS = [
+  {
+    id: 'sistemas',
+    label: 'Sistemas e Informática',
+    shortLabel: 'Sistemas',
+    icon: 'terminal',
+    regex: /sistemas|computac|software|datos|inteligencia artificial|\bia\b|machine learning|algorit|ciberseg|computacional/i,
+    careers: ['Ingeniería de Sistemas']
+  },
+  {
+    id: 'mecanica',
+    label: 'Mecatrónica y Mecánica',
+    shortLabel: 'Mecatrónica & Mecánica',
+    icon: 'precision_manufacturing',
+    regex: /mecanic|mecatron|robot|aeroespac|automatiz|vehicul|manufactura|diseno mecan/i,
+    careers: ['Ingeniería Mecánica', 'Ingeniería Mecatrónica']
+  },
+  {
+    id: 'electrica',
+    label: 'Eléctrica y Electrónica',
+    shortLabel: 'Eléctrica & Electrónica',
+    icon: 'electric_bolt',
+    regex: /electr|telecom|potencia|senales|circuit|optica|alta tension/i,
+    careers: ['Ingeniería Eléctrica', 'Ingeniería Electrónica']
+  },
+  {
+    id: 'civil',
+    label: 'Civil y Agrícola',
+    shortLabel: 'Civil & Agrícola',
+    icon: 'foundation',
+    regex: /civil|agricol|estruct|geotec|hidraul|suelo|vias|transp|construc|topograf/i,
+    careers: ['Ingeniería Civil', 'Ingeniería Agrícola']
+  },
+  {
+    id: 'quimica',
+    label: 'Química y Ambiental',
+    shortLabel: 'Química & Ambiental',
+    icon: 'science',
+    regex: /quimic|ambient|alimento|bioproces|material|termodin|sostenib|biotec|polimer/i,
+    careers: ['Ingeniería Química']
+  }
+];
+
+function getGroupBranch(g: Grupo): string {
+  const combined = [
+    ...(g.carreras || []),
+    g.nombre || '',
+    g.enfoque || '',
+    g.descripcion || ''
+  ].map(norm).join(' ');
+
+  for (const b of BRANCH_CONFIGS) {
+    if (b.regex.test(combined) || (g.carreras || []).some(c => b.careers.includes(c))) {
+      return b.id;
+    }
+  }
+  return 'multidisciplinar';
+}
+
+// Conteo por ramas principales
+const branchCounts: Record<string, number> = {};
+for (const b of BRANCH_CONFIGS) {
+  branchCounts[b.id] = grupos.reduce((acc, g) => {
+    const combined = [...(g.carreras || []), g.nombre || '', g.enfoque || '', g.descripcion || ''].map(norm).join(' ');
+    const matchesRegex = b.regex.test(combined);
+    const matchesCareers = (g.carreras || []).some(c => b.careers.includes(c));
+    return (matchesRegex || matchesCareers) ? acc + 1 : acc;
+  }, 0);
+}
+
+// Carreras canónicas ordenadas alfabéticamente
 const activeCanonical = activeCarrera ? (canonicalizeCarrera(activeCarrera)[0] ?? '') : '';
-const carreras = metadata.carreras; // ya canónicas y ordenadas (buildMetadata)
+const carreras = [...metadata.carreras].sort((a, b) => a.localeCompare(b));
 
-const qSuffix = activeQuery ? `&q=${encodeURIComponent(activeQuery)}` : '';
-
-// Precompute minimal client-side index for instant (<10ms) zero-latency DOM filtering
-const catalogIndex = grupos.map((g) => ({
-  id: g.id,
-  tipo: g.tipo,
-  carreras: g.carreras || [],
-  search: norm(`${g.nombre} ${g.enfoque || ''} ${g.descripcion || ''} ${g.docente || ''} ${g.lider || ''} ${(g.carreras || []).join(' ')}`),
-}));
+// Precompute minimal client-side index for instant (<5ms) zero-latency DOM filtering & sorting
+const catalogIndex = grupos.map((g) => {
+  const branch = getGroupBranch(g);
+  return {
+    id: g.id,
+    nombre: g.nombre,
+    normNombre: norm(g.nombre),
+    tipo: g.tipo,
+    normTipo: norm(g.tipo),
+    branch,
+    carreras: (g.carreras || []).map(norm),
+    isMultidisciplinar: (g.carreras || []).map(norm).includes('toda la universidad'),
+    hasImage: Boolean(g.imagen_url),
+    search: norm(`${g.nombre} ${g.enfoque || ''} ${g.descripcion || ''} ${g.docente || ''} ${g.lider || ''} ${(g.carreras || []).join(' ')}`),
+  };
+});
 ---
 
-<div class="glass rounded-xl p-4 mb-8" id="filter-bar-root">
-  <div class="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
-    <!-- Tipo Filter -->
-    <div class="flex flex-wrap gap-2" id="tipo-filter-group" role="group" aria-label="Filtrar por tipo de grupo">
-      <span class="text-text-muted text-sm mr-2 self-center font-medium">Tipo:</span>
-      {tipos.map(tipo => {
-        const isActive = (tipo === 'Todos' && !activeTipo) ||
-                          (tipo !== 'Todos' && activeTipo && norm(activeTipo) === norm(tipo));
-        const href = tipo === 'Todos'
-          ? (activeCarrera ? `?carrera=${encodeURIComponent(activeCarrera)}${qSuffix}` : (activeQuery ? `?q=${encodeURIComponent(activeQuery)}` : '/'))
-          : `?tipo=${encodeURIComponent(tipo)}${activeCarrera ? `&carrera=${encodeURIComponent(activeCarrera)}` : ''}${qSuffix}`;
+<div class="glass rounded-2xl p-5 sm:p-6 mb-8 border border-border-default/80 shadow-card transition-all" id="filter-bar-root">
+  <!-- Fila 1: Chips de Tipo de Grupo + Contador Reactivo en Vivo -->
+  <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-border-subtle/80">
+    <div class="flex flex-wrap items-center gap-2" id="tipo-filter-group" role="group" aria-label="Filtrar por tipo de iniciativa">
+      <span class="text-xs font-bold uppercase tracking-wider text-text-muted mr-1.5 flex items-center gap-1">
+        <span class="material-symbols-outlined text-sm text-primary">category</span>
+        Tipo:
+      </span>
+      {tipoChips.map(chip => {
+        const isActive = (chip.value === 'Todos' && !activeTipo) ||
+                         (chip.value !== 'Todos' && activeTipo && norm(activeTipo) === norm(chip.value));
 
         return (
-          <a
-            href={href}
-            data-tipo-btn={tipo}
+          <button
+            type="button"
+            data-tipo-btn={chip.value}
             class:list={[
-              'tipo-filter-btn px-4 py-2 border text-sm font-medium rounded-lg transition-all',
+              'tipo-filter-btn inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-semibold transition-all border cursor-pointer select-none focus-visible:outline-2 focus-visible:outline-primary',
               isActive
                 ? 'bg-gradient-to-r from-primary to-primary-dark text-white border-primary shadow-glow-sm'
-                : 'bg-bg-hover text-text-secondary border-border-default hover:border-primary/40 hover:text-primary-light'
+                : 'bg-bg-raised text-text-secondary border-border-default hover:border-primary/40 hover:text-text-primary hover:bg-bg-hover'
             ]}
           >
-            {tipo}
-          </a>
+            <span>{chip.label}</span>
+            <span class:list={[
+              'tipo-count-pill text-[11px] px-1.5 py-0.2 rounded-full font-bold',
+              isActive
+                ? 'bg-white/20 text-white'
+                : 'bg-bg-hover text-text-muted border border-border-subtle'
+            ]}>
+              {chip.count}
+            </span>
+          </button>
         );
       })}
     </div>
 
-    <!-- Carrera Filter -->
-    <div class="flex flex-wrap items-center gap-2">
-      <span class="text-text-muted text-sm font-medium">Carrera:</span>
+    <!-- Contador Reactivo en Vivo -->
+    <div class="flex items-center gap-2 self-start lg:self-center bg-bg-raised px-3.5 py-2 rounded-xl border border-border-default shadow-sm shrink-0">
+      <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" aria-hidden="true"></span>
+      <div class="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-text-secondary" id="filter-live-counter" aria-live="polite">
+        <span>Mostrando</span>
+        <span class="font-bold text-primary-light dark:text-blue-300" id="filter-visible-count">{metadata.total}</span>
+        <span>de</span>
+        <span class="font-bold text-text-primary" id="filter-total-count">{metadata.total}</span>
+        <span>iniciativas</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Fila 2: Ramas Principales de Ingeniería (Quick Chips) + Selector Completo -->
+  <div class="py-4 border-b border-border-subtle/80">
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-base text-accent">hub</span>
+        <span class="text-xs font-bold uppercase tracking-wider text-text-muted">
+          Ramas Principales de Ingeniería:
+        </span>
+      </div>
+
+      <!-- Selector "Otras / Ver todas..." -->
+      <div class="relative w-full sm:w-auto">
+        <select
+          id="carrera-filter"
+          aria-label="Ver todas las carreras o seleccionar carrera específica"
+          class="w-full sm:w-64 bg-bg-raised text-text-primary text-xs font-semibold pl-3 pr-8 py-2 rounded-xl border border-border-default hover:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer appearance-none shadow-sm"
+        >
+          <option value="" data-carrera="" selected={!activeCanonical}>
+            Otras / Ver todas las carreras ({carreras.length})...
+          </option>
+          {carreras.map(carrera => {
+            const short = careerLabelShort(carrera);
+            const total = counts[carrera] ?? 0;
+            return (
+              <option
+                value={carrera}
+                data-carrera={carrera}
+                selected={activeCanonical === carrera}
+              >
+                {short} ({total})
+              </option>
+            );
+          })}
+        </select>
+        <span class="material-symbols-outlined text-sm text-text-muted absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true">
+          unfold_more
+        </span>
+      </div>
+    </div>
+
+    <!-- Quick Chips Flex -->
+    <div class="flex flex-wrap items-center gap-2" id="branch-quick-chips" role="group" aria-label="Ramas destacadas">
+      <!-- "Todas" chip -->
+      <button
+        type="button"
+        data-branch-btn="todas"
+        class="branch-filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all border cursor-pointer select-none bg-gradient-to-r from-primary to-primary-dark text-white border-primary shadow-glow-sm focus-visible:outline-2 focus-visible:outline-primary"
+      >
+        <span class="material-symbols-outlined text-sm">apps</span>
+        <span>Todas</span>
+      </button>
+
+      {BRANCH_CONFIGS.map(branch => {
+        const count = branchCounts[branch.id] || 0;
+        return (
+          <button
+            type="button"
+            data-branch-btn={branch.id}
+            class="branch-filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all border cursor-pointer select-none bg-bg-raised text-text-secondary border-border-default hover:border-primary/40 hover:text-text-primary hover:bg-bg-hover focus-visible:outline-2 focus-visible:outline-primary"
+          >
+            <span class="material-symbols-outlined text-sm text-text-muted group-hover:text-primary">{branch.icon}</span>
+            <span>{branch.label}</span>
+            <span class="branch-count-pill text-[10px] px-1.5 py-0.2 rounded-full font-bold bg-bg-hover text-text-muted border border-border-subtle">
+              {count}
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  </div>
+
+  <!-- Fila 3: Barra de Herramientas (Búsqueda Instantánea + Selector de Ordenamiento) -->
+  <div class="pt-4 flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
+    <!-- Búsqueda Instantánea Integrada -->
+    <div class="relative flex-1 max-w-xl">
+      <span class="material-symbols-outlined text-lg text-text-muted absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true">
+        search
+      </span>
       <input
         id="carrera-search"
         type="search"
-        aria-label="Buscar carrera o grupo"
-        placeholder="Buscar por carrera o nombre..."
+        aria-label="Buscar iniciativas por nombre, líneas o temas"
+        placeholder="Buscar por iniciativa, docente, línea o tecnología..."
         autocomplete="off"
         value={activeQuery || ''}
-        class="bg-bg-input border border-border-default px-3 py-2 text-sm text-text-primary rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all w-52 sm:w-60"
+        class="w-full bg-bg-input border border-border-default pl-10 pr-9 py-2.5 text-sm text-text-primary rounded-xl focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 placeholder:text-text-muted transition-all shadow-sm"
       />
-      <select
-        id="carrera-filter"
-        aria-label="Filtrar por carrera"
-        class="bg-bg-input border border-border-default px-4 py-2 text-sm text-text-primary rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all cursor-pointer appearance-none"
-        onchange="window.location.href=this.value"
+      <button
+        id="search-clear-btn"
+        type="button"
+        aria-label="Borrar búsqueda"
+        class:list={[
+          'absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary p-0.5 rounded-full hover:bg-bg-hover transition-colors',
+          activeQuery ? '' : 'hidden'
+        ]}
       >
-        <option
-          value={activeTipo ? `?tipo=${encodeURIComponent(activeTipo)}${qSuffix}` : (activeQuery ? `?q=${encodeURIComponent(activeQuery)}` : '/')}
-          data-carrera=""
-          selected={!activeCanonical}
+        <span class="material-symbols-outlined text-base">close</span>
+      </button>
+    </div>
+
+    <!-- Selector de Ordenamiento -->
+    <div class="flex items-center gap-2 shrink-0">
+      <label for="sort-select" class="text-xs font-bold uppercase tracking-wider text-text-muted shrink-0 flex items-center gap-1">
+        <span class="material-symbols-outlined text-sm">swap_vert</span>
+        Ordenar:
+      </label>
+      <div class="relative">
+        <select
+          id="sort-select"
+          aria-label="Ordenar resultados del catálogo"
+          class="bg-bg-raised text-text-primary text-xs font-semibold pl-3 pr-8 py-2.5 rounded-xl border border-border-default hover:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer appearance-none shadow-sm"
         >
-          Todas las carreras
-        </option>
-        {carreras.map(carrera => {
-          const short = careerLabelShort(carrera);
-          const total = counts[carrera] ?? 0;
-          const value = activeTipo
-            ? `?tipo=${encodeURIComponent(activeTipo)}&carrera=${encodeURIComponent(carrera)}${qSuffix}`
-            : `?carrera=${encodeURIComponent(carrera)}${qSuffix}`;
-
-          return (
-            <option
-              value={value}
-              data-carrera={carrera}
-              selected={activeCanonical === carrera}
-              data-search={`${short} ${carrera}`}
-            >
-              {short} ({total})
-            </option>
-          );
-        })}
-      </select>
+          <option value="az">Nombre (A-Z)</option>
+          <option value="za">Nombre (Z-A)</option>
+          <option value="tipo">Tipo de grupo</option>
+          <option value="imagen">Con imagen primero</option>
+        </select>
+        <span class="material-symbols-outlined text-sm text-text-muted absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true">
+          expand_more
+        </span>
+      </div>
     </div>
+  </div>
 
-    <!-- Results Count -->
-    <div id="filter-results-count" class="text-text-muted text-sm font-medium shrink-0">
-      {metadata.total} grupos
+  <!-- Fila 4: Filtros Activos (Active Pills Descartables con ✕ y Limpiar Todos) -->
+  <div id="active-pills-row" class="hidden mt-4 pt-3.5 border-t border-border-subtle/80 flex-wrap items-center gap-2">
+    <div class="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-text-muted mr-1">
+      <span class="material-symbols-outlined text-sm text-primary">filter_alt</span>
+      <span>Filtros activos:</span>
     </div>
+    <div id="active-pills-container" class="flex flex-wrap items-center gap-2">
+      <!-- Píldoras inyectadas reactivamente por JS -->
+    </div>
+    <button
+      id="clear-all-filters-btn"
+      type="button"
+      class="ml-auto text-xs font-semibold text-error hover:bg-error/10 border border-error/20 px-3 py-1.5 rounded-xl transition-all flex items-center gap-1 cursor-pointer focus-visible:outline-2 focus-visible:outline-error"
+    >
+      <span class="material-symbols-outlined text-sm">delete_sweep</span>
+      Limpiar todos
+    </button>
   </div>
 </div>
 
@@ -118,10 +319,24 @@ const catalogIndex = grupos.map((g) => ({
 <script>
   interface GroupIndexItem {
     id: string;
+    nombre: string;
+    normNombre: string;
     tipo: string;
+    normTipo: string;
+    branch: string;
     carreras: string[];
+    isMultidisciplinar: boolean;
+    hasImage: boolean;
     search: string;
   }
+
+  const BRANCH_DEFS = [
+    { id: 'sistemas', label: 'Sistemas e Informática', careers: ['ingenieria de sistemas'] },
+    { id: 'mecanica', label: 'Mecatrónica y Mecánica', careers: ['ingenieria mecanica', 'ingenieria mecatronica'] },
+    { id: 'electrica', label: 'Eléctrica y Electrónica', careers: ['ingenieria electrica', 'ingenieria electronica'] },
+    { id: 'civil', label: 'Civil y Agrícola', careers: ['ingenieria civil', 'ingenieria agricola'] },
+    { id: 'quimica', label: 'Química y Ambiental', careers: ['ingenieria quimica'] }
+  ];
 
   function norm(s: string): string {
     return (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -149,46 +364,58 @@ const catalogIndex = grupos.map((g) => ({
     });
 
     const searchInput = document.getElementById('carrera-search') as HTMLInputElement | null;
+    const searchClearBtn = document.getElementById('search-clear-btn');
     const select = document.getElementById('carrera-filter') as HTMLSelectElement | null;
-    const tipoBtns = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-tipo-btn]'));
-    const countEl = document.getElementById('filter-results-count');
-    const activeFiltersBar = document.getElementById('active-filters-bar');
-    const activeFiltersText = document.getElementById('active-filters-text');
-    const clearBtn = document.getElementById('clear-filters-btn');
-    const verTodoBtn = document.getElementById('ver-todo-btn');
+    const sortSelect = document.getElementById('sort-select') as HTMLSelectElement | null;
+    const tipoBtns = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-tipo-btn]'));
+    const branchBtns = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-branch-btn]'));
+
+    const visibleCountEl = document.getElementById('filter-visible-count');
+    const totalCountEl = document.getElementById('filter-total-count');
+    const activePillsRow = document.getElementById('active-pills-row');
+    const activePillsContainer = document.getElementById('active-pills-container');
+    const clearAllBtn = document.getElementById('clear-all-filters-btn');
+
     const noResultsEl = document.getElementById('no-results');
     const gridEl = document.getElementById('grupos-grid');
+    const verTodoBtn = document.getElementById('ver-todo-btn');
+
+    // Ocultar la barra externa de filtros si existe en la página para evitar duplicación visual
+    const externalActiveBar = document.getElementById('active-filters-bar');
+    if (externalActiveBar) {
+      externalActiveBar.style.display = 'none';
+    }
 
     const getUrlParams = () => {
       const sp = new URLSearchParams(window.location.search);
       return {
         tipo: sp.get('tipo') || '',
+        rama: sp.get('rama') || '',
         carrera: sp.get('carrera') || '',
         q: sp.get('q') || '',
+        sort: sp.get('sort') || 'az',
       };
     };
 
     const state = getUrlParams();
+
+    // Sincronizar input y clear button con URL inicial
     if (searchInput && state.q) {
       searchInput.value = state.q;
+      if (searchClearBtn) searchClearBtn.classList.remove('hidden');
     }
-
-    const filterSelectOptions = (query: string): void => {
-      if (!select) return;
-      const q = norm(query).trim();
-      const options = Array.from(select.options);
-      options.forEach((opt, idx) => {
-        if (idx === 0) return;
-        const hay = norm(opt.getAttribute('data-search') || opt.textContent || '');
-        opt.hidden = q !== '' && !hay.includes(q);
-      });
-    };
+    if (sortSelect && state.sort) {
+      sortSelect.value = state.sort;
+    }
 
     const updateUrl = (): void => {
       const sp = new URLSearchParams();
       if (state.tipo && state.tipo !== 'Todos') sp.set('tipo', state.tipo);
+      if (state.rama && state.rama !== 'todas') sp.set('rama', state.rama);
       if (state.carrera) sp.set('carrera', state.carrera);
       if (state.q) sp.set('q', state.q);
+      if (state.sort && state.sort !== 'az') sp.set('sort', state.sort);
+
       const qs = sp.toString();
       const newUrl = qs ? `/?${qs}` : '/';
       if (window.location.search !== (qs ? `?${qs}` : '')) {
@@ -196,52 +423,198 @@ const catalogIndex = grupos.map((g) => ({
       }
     };
 
+    const sortCatalogItems = (items: GroupIndexItem[], sortMode: string): GroupIndexItem[] => {
+      const copy = [...items];
+      switch (sortMode) {
+        case 'za':
+          copy.sort((a, b) => b.normNombre.localeCompare(a.normNombre));
+          break;
+        case 'tipo': {
+          const typeRank = (t: string) => {
+            const nt = norm(t);
+            if (nt.includes('semillero')) return 1;
+            if (nt.includes('investigacion')) return 2;
+            if (nt.includes('estudiantil')) return 3;
+            return 4;
+          };
+          copy.sort((a, b) => {
+            const diff = typeRank(a.tipo) - typeRank(b.tipo);
+            return diff !== 0 ? diff : a.normNombre.localeCompare(b.normNombre);
+          });
+          break;
+        }
+        case 'imagen':
+          copy.sort((a, b) => {
+            if (a.hasImage && !b.hasImage) return -1;
+            if (!a.hasImage && b.hasImage) return 1;
+            return a.normNombre.localeCompare(b.normNombre);
+          });
+          break;
+        case 'az':
+        default:
+          copy.sort((a, b) => a.normNombre.localeCompare(b.normNombre));
+          break;
+      }
+      return copy;
+    };
+
+    const renderActivePills = (): void => {
+      if (!activePillsRow || !activePillsContainer) return;
+      activePillsContainer.innerHTML = '';
+
+      const pills: { label: string; onRemove: () => void }[] = [];
+
+      if (state.tipo && state.tipo !== 'Todos') {
+        pills.push({
+          label: `Tipo: ${state.tipo}`,
+          onRemove: () => {
+            state.tipo = '';
+            applyFiltersAndSort(true);
+          }
+        });
+      }
+
+      if (state.rama && state.rama !== 'todas') {
+        const branchDef = BRANCH_DEFS.find(b => b.id === state.rama);
+        pills.push({
+          label: `Rama: ${branchDef ? branchDef.label : state.rama}`,
+          onRemove: () => {
+            state.rama = '';
+            applyFiltersAndSort(true);
+          }
+        });
+      }
+
+      if (state.carrera) {
+        pills.push({
+          label: `Carrera: ${state.carrera}`,
+          onRemove: () => {
+            state.carrera = '';
+            if (select) select.selectedIndex = 0;
+            applyFiltersAndSort(true);
+          }
+        });
+      }
+
+      if (state.q) {
+        pills.push({
+          label: `Búsqueda: "${state.q}"`,
+          onRemove: () => {
+            state.q = '';
+            if (searchInput) searchInput.value = '';
+            if (searchClearBtn) searchClearBtn.classList.add('hidden');
+            applyFiltersAndSort(true);
+          }
+        });
+      }
+
+      if (state.sort && state.sort !== 'az') {
+        const sortLabels: Record<string, string> = {
+          za: 'Nombre (Z-A)',
+          tipo: 'Tipo de grupo',
+          imagen: 'Con imagen primero'
+        };
+        pills.push({
+          label: `Orden: ${sortLabels[state.sort] || state.sort}`,
+          onRemove: () => {
+            state.sort = 'az';
+            if (sortSelect) sortSelect.value = 'az';
+            applyFiltersAndSort(true);
+          }
+        });
+      }
+
+      if (pills.length > 0) {
+        activePillsRow.classList.remove('hidden');
+        activePillsRow.classList.add('flex');
+        pills.forEach(p => {
+          const pillEl = document.createElement('span');
+          pillEl.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold bg-primary/10 text-primary-light dark:text-blue-300 border border-primary/25 shadow-sm';
+
+          const textSpan = document.createElement('span');
+          textSpan.textContent = p.label;
+          pillEl.appendChild(textSpan);
+
+          const closeBtn = document.createElement('button');
+          closeBtn.type = 'button';
+          closeBtn.setAttribute('aria-label', `Quitar ${p.label}`);
+          closeBtn.className = 'hover:bg-primary/20 rounded p-0.5 ml-0.5 text-text-muted hover:text-text-primary transition-colors flex items-center justify-center cursor-pointer';
+          closeBtn.innerHTML = '<span class="material-symbols-outlined text-[14px]">close</span>';
+          closeBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            p.onRemove();
+          });
+          pillEl.appendChild(closeBtn);
+
+          activePillsContainer.appendChild(pillEl);
+        });
+      } else {
+        activePillsRow.classList.add('hidden');
+        activePillsRow.classList.remove('flex');
+      }
+    };
+
     const updateUI = (visibleCount: number): void => {
-      // 1. Tipo buttons active styling
+      // 1. Tipo Buttons Styling
       tipoBtns.forEach((btn) => {
         const btnTipo = btn.getAttribute('data-tipo-btn') || '';
         const isActive = (btnTipo === 'Todos' && !state.tipo) ||
                          (btnTipo !== 'Todos' && state.tipo && norm(state.tipo) === norm(btnTipo));
+        const countPill = btn.querySelector('.tipo-count-pill');
+
         if (isActive) {
-          btn.className = 'tipo-filter-btn px-4 py-2 border text-sm font-medium rounded-lg transition-all bg-gradient-to-r from-primary to-primary-dark text-white border-primary shadow-glow-sm';
+          btn.className = 'tipo-filter-btn inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-semibold transition-all border cursor-pointer select-none bg-gradient-to-r from-primary to-primary-dark text-white border-primary shadow-glow-sm focus-visible:outline-2 focus-visible:outline-primary';
+          if (countPill) countPill.className = 'tipo-count-pill text-[11px] px-1.5 py-0.2 rounded-full font-bold bg-white/20 text-white';
         } else {
-          btn.className = 'tipo-filter-btn px-4 py-2 border text-sm font-medium rounded-lg transition-all bg-bg-hover text-text-secondary border-border-default hover:border-primary/40 hover:text-primary-light';
+          btn.className = 'tipo-filter-btn inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-semibold transition-all border cursor-pointer select-none bg-bg-raised text-text-secondary border-border-default hover:border-primary/40 hover:text-text-primary hover:bg-bg-hover focus-visible:outline-2 focus-visible:outline-primary';
+          if (countPill) countPill.className = 'tipo-count-pill text-[11px] px-1.5 py-0.2 rounded-full font-bold bg-bg-hover text-text-muted border border-border-subtle';
         }
       });
 
-      // 2. Select matching option
-      if (select) {
-        for (let i = 0; i < select.options.length; i++) {
-          const opt = select.options[i];
-          const optCarrera = opt.getAttribute('data-carrera') || '';
-          if (norm(optCarrera) === norm(state.carrera)) {
-            select.selectedIndex = i;
-            break;
-          }
-        }
-      }
+      // 2. Branch Quick Chips Styling
+      branchBtns.forEach((btn) => {
+        const btnBranch = btn.getAttribute('data-branch-btn') || '';
+        const isActive = (btnBranch === 'todas' && !state.rama) ||
+                         (btnBranch !== 'todas' && state.rama === btnBranch);
+        const countPill = btn.querySelector('.branch-count-pill');
 
-      // 3. Count indicator
-      if (countEl) {
-        countEl.textContent = `${visibleCount} ${visibleCount === 1 ? 'grupo' : 'grupos'}`;
-      }
-
-      // 4. Active filters bar
-      const hasActive = Boolean(state.tipo || state.carrera || state.q);
-      if (activeFiltersBar) {
-        if (hasActive) {
-          activeFiltersBar.classList.remove('hidden');
-          activeFiltersBar.classList.add('flex');
-          if (activeFiltersText) {
-            activeFiltersText.textContent = `Mostrando ${visibleCount} de ${catalog.length} grupos`;
-          }
+        if (isActive) {
+          btn.className = 'branch-filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all border cursor-pointer select-none bg-gradient-to-r from-primary to-primary-dark text-white border-primary shadow-glow-sm focus-visible:outline-2 focus-visible:outline-primary';
+          if (countPill) countPill.className = 'branch-count-pill text-[10px] px-1.5 py-0.2 rounded-full font-bold bg-white/20 text-white';
         } else {
-          activeFiltersBar.classList.add('hidden');
-          activeFiltersBar.classList.remove('flex');
+          btn.className = 'branch-filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all border cursor-pointer select-none bg-bg-raised text-text-secondary border-border-default hover:border-primary/40 hover:text-text-primary hover:bg-bg-hover focus-visible:outline-2 focus-visible:outline-primary';
+          if (countPill) countPill.className = 'branch-count-pill text-[10px] px-1.5 py-0.2 rounded-full font-bold bg-bg-hover text-text-muted border border-border-subtle';
+        }
+      });
+
+      // 3. Carrera Select Selection
+      if (select) {
+        if (!state.carrera) {
+          select.selectedIndex = 0;
+        } else {
+          for (let i = 0; i < select.options.length; i++) {
+            const opt = select.options[i];
+            const optCarrera = opt.getAttribute('data-carrera') || '';
+            if (norm(optCarrera) === norm(state.carrera)) {
+              select.selectedIndex = i;
+              break;
+            }
+          }
         }
       }
 
-      // 5. Empty state vs grid
+      // 4. Live Counter
+      if (visibleCountEl) {
+        visibleCountEl.textContent = String(visibleCount);
+      }
+      if (totalCountEl) {
+        totalCountEl.textContent = String(catalog.length);
+      }
+
+      // 5. Active Pills Row
+      renderActivePills();
+
+      // 6. Empty State vs Bento Grid
       if (noResultsEl && gridEl) {
         if (visibleCount === 0) {
           noResultsEl.classList.remove('hidden');
@@ -253,30 +626,45 @@ const catalogIndex = grupos.map((g) => ({
       }
     };
 
-    const applyFilters = (syncUrl = true): void => {
+    const applyFiltersAndSort = (syncUrl = true): void => {
       const qNorm = norm(state.q).trim();
       const tipoNorm = norm(state.tipo).trim();
+      const ramaNorm = (state.rama || '').trim();
       const carreraNorm = norm(state.carrera).trim();
+      const currentSort = state.sort || 'az';
 
       let visible = 0;
+      const matchedItems: GroupIndexItem[] = [];
+
       for (let i = 0; i < catalog.length; i++) {
         const item = catalog[i];
         let matches = true;
 
+        // Filtro por tipo
         if (tipoNorm && tipoNorm !== 'todos') {
           if (!norm(item.tipo).includes(tipoNorm)) {
             matches = false;
           }
         }
 
-        if (matches && carreraNorm) {
-          const itemCarreras = item.carreras.map(norm);
-          const isMultidisciplinar = itemCarreras.includes('toda la universidad');
-          if (!isMultidisciplinar && !itemCarreras.some((c) => c === carreraNorm)) {
+        // Filtro por rama
+        if (matches && ramaNorm && ramaNorm !== 'todas') {
+          const branchDef = BRANCH_DEFS.find(b => b.id === ramaNorm);
+          const branchMatches = item.branch === ramaNorm;
+          const careerMatches = branchDef ? branchDef.careers.some(c => item.carreras.includes(c)) : false;
+          if (!branchMatches && !careerMatches) {
             matches = false;
           }
         }
 
+        // Filtro por carrera específica
+        if (matches && carreraNorm) {
+          if (!item.isMultidisciplinar && !item.carreras.includes(carreraNorm)) {
+            matches = false;
+          }
+        }
+
+        // Filtro por texto de búsqueda
         if (matches && qNorm) {
           if (!item.search.includes(qNorm)) {
             matches = false;
@@ -287,7 +675,21 @@ const catalogIndex = grupos.map((g) => ({
         if (card) {
           card.style.display = matches ? '' : 'none';
         }
-        if (matches) visible++;
+        if (matches) {
+          visible++;
+          matchedItems.push(item);
+        }
+      }
+
+      // Reordenar DOM (<2ms vía DocumentFragment)
+      if (gridEl && visible > 0) {
+        const sorted = sortCatalogItems(matchedItems, currentSort);
+        const fragment = document.createDocumentFragment();
+        for (let i = 0; i < sorted.length; i++) {
+          const card = cardMap.get(sorted[i].id);
+          if (card) fragment.appendChild(card);
+        }
+        gridEl.appendChild(fragment);
       }
 
       if (syncUrl) {
@@ -296,64 +698,113 @@ const catalogIndex = grupos.map((g) => ({
       updateUI(visible);
     };
 
-    // Click on Tipo buttons
+    // Eventos: Tipo Buttons
     tipoBtns.forEach((btn) => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         const tipo = btn.getAttribute('data-tipo-btn') || '';
         state.tipo = tipo === 'Todos' ? '' : tipo;
-        applyFilters(true);
+        applyFiltersAndSort(true);
       });
     });
 
-    // Select change
+    // Eventos: Branch Quick Chips
+    branchBtns.forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const branch = btn.getAttribute('data-branch-btn') || '';
+        state.rama = branch === 'todas' ? '' : branch;
+        state.carrera = ''; // Limpiar carrera específica al elegir rama rápida
+        if (select) select.selectedIndex = 0;
+        applyFiltersAndSort(true);
+      });
+    });
+
+    // Eventos: Carrera Select Dropdown
     select?.addEventListener('change', (e) => {
       e.stopImmediatePropagation();
       const opt = select.options[select.selectedIndex];
       state.carrera = opt?.getAttribute('data-carrera') || '';
-      applyFilters(true);
+      state.rama = ''; // Limpiar rama rápida al elegir carrera puntual
+      applyFiltersAndSort(true);
     });
 
-    // Search input typing
+    // Eventos: Sort Select
+    sortSelect?.addEventListener('change', () => {
+      state.sort = sortSelect.value || 'az';
+      applyFiltersAndSort(true);
+    });
+
+    // Eventos: Búsqueda con debounce ultra reactivo (40ms)
     let searchDebounce: ReturnType<typeof setTimeout> | null = null;
     searchInput?.addEventListener('input', () => {
-      state.q = searchInput.value.trim();
-      filterSelectOptions(state.q);
+      state.q = (searchInput.value || '').trim();
+      if (searchClearBtn) {
+        if (state.q) {
+          searchClearBtn.classList.remove('hidden');
+        } else {
+          searchClearBtn.classList.add('hidden');
+        }
+      }
       if (searchDebounce) clearTimeout(searchDebounce);
       searchDebounce = setTimeout(() => {
-        applyFilters(true);
-      }, 50);
+        applyFiltersAndSort(true);
+      }, 40);
     });
 
-    // Reset handlers
+    searchClearBtn?.addEventListener('click', () => {
+      state.q = '';
+      if (searchInput) {
+        searchInput.value = '';
+        searchInput.focus();
+      }
+      searchClearBtn.classList.add('hidden');
+      applyFiltersAndSort(true);
+    });
+
+    // Eventos: Limpiar todos los filtros
     const resetAll = (e: Event): void => {
       e.preventDefault();
       state.tipo = '';
+      state.rama = '';
       state.carrera = '';
       state.q = '';
+      state.sort = 'az';
+
       if (searchInput) searchInput.value = '';
-      filterSelectOptions('');
-      applyFilters(true);
+      if (searchClearBtn) searchClearBtn.classList.add('hidden');
+      if (select) select.selectedIndex = 0;
+      if (sortSelect) sortSelect.value = 'az';
+
+      applyFiltersAndSort(true);
     };
 
-    clearBtn?.addEventListener('click', resetAll);
+    clearAllBtn?.addEventListener('click', resetAll);
     verTodoBtn?.addEventListener('click', resetAll);
 
-    // Browser back/forward navigation
+    // Navegación atrás / adelante del navegador
     window.addEventListener('popstate', () => {
       const current = getUrlParams();
       state.tipo = current.tipo;
+      state.rama = current.rama;
       state.carrera = current.carrera;
       state.q = current.q;
-      if (searchInput) searchInput.value = state.q;
-      filterSelectOptions(state.q);
-      applyFilters(false);
+      state.sort = current.sort;
+
+      if (searchInput) {
+        searchInput.value = state.q;
+        if (searchClearBtn) {
+          if (state.q) searchClearBtn.classList.remove('hidden');
+          else searchClearBtn.classList.add('hidden');
+        }
+      }
+      if (sortSelect) sortSelect.value = state.sort;
+      applyFiltersAndSort(false);
     });
 
-    // Initial filter execution if query params exist
-    if (state.tipo || state.carrera || state.q) {
-      filterSelectOptions(state.q);
-      applyFilters(false);
+    // Ejecución inicial si existen parámetros en URL
+    if (state.tipo || state.rama || state.carrera || state.q || (state.sort && state.sort !== 'az')) {
+      applyFiltersAndSort(false);
     }
   }
 

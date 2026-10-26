@@ -1,6 +1,6 @@
 import { createServerClient, supabase } from './supabase.ts';
 import type { Database } from './database.types';
-import { canonicalizeCarrera } from '../data/grupos.types.ts';
+import { canonicalizeCarrera, norm } from '../data/grupos.types.ts';
 import type { Grupo, Metadata } from '../data/grupos.types';
 import localGruposData from '../data/grupos.json';
 
@@ -17,12 +17,47 @@ function text(value: string | null | undefined): string {
   return (value || '').trim();
 }
 
+/** Calculates completeness score to pick the most informative duplicate record. */
+function getCompletenessScore(group: Grupo): number {
+  let score = 0;
+  for (const value of Object.values(group)) {
+    if (typeof value === 'string') {
+      score += value.trim().length;
+    } else if (Array.isArray(value)) {
+      score += value.length * 10;
+    }
+  }
+  return score;
+}
+
+/** Defensive deduplication by canonical name (norm(nombre)). */
+export function deduplicateGruposByCanonicalName(grupos: Grupo[]): Grupo[] {
+  const map = new Map<string, Grupo>();
+
+  for (const grupo of grupos) {
+    const key = norm(grupo.nombre).trim();
+    if (!key) {
+      map.set(grupo.id, grupo);
+      continue;
+    }
+
+    const existing = map.get(key);
+    if (!existing) {
+      map.set(key, grupo);
+    } else if (getCompletenessScore(grupo) > getCompletenessScore(existing)) {
+      map.set(key, grupo);
+    }
+  }
+
+  return Array.from(map.values());
+}
+
 /** Local JSON fallback loader ensuring zero-downtime resilience without 'any'. */
 function getLocalGrupos(): Grupo[] {
   const rawList = (localGruposData as { data?: unknown[] }).data;
   if (!Array.isArray(rawList)) return [];
 
-  return (rawList as Grupo[]).map((g) => {
+  const list = (rawList as Grupo[]).map((g) => {
     const carreras = Array.isArray(g.carreras)
       ? Array.from(new Set(g.carreras.flatMap((c) => canonicalizeCarrera(c))))
       : [];
@@ -32,6 +67,8 @@ function getLocalGrupos(): Grupo[] {
       carrera_str: carreras.join(', '),
     };
   });
+
+  return deduplicateGruposByCanonicalName(list);
 }
 
 function getLocalCatalogFallback(reason?: string): { grupos: Grupo[]; metadata: Metadata; error: string | null } {
@@ -51,7 +88,18 @@ function getLocalCatalogFallback(reason?: string): { grupos: Grupo[]; metadata: 
 
 function getLocalGrupoByIdFallback(id: string): Grupo | null {
   const grupos = getLocalGrupos();
-  return grupos.find((g) => g.id === id) || null;
+  const directMatch = grupos.find((g) => g.id === id);
+  if (directMatch) return directMatch;
+
+  const rawList = (localGruposData as { data?: unknown[] }).data;
+  if (Array.isArray(rawList)) {
+    const rawGroup = (rawList as Grupo[]).find((g) => g.id === id);
+    if (rawGroup) {
+      const canonicalKey = norm(rawGroup.nombre).trim();
+      return grupos.find((g) => norm(g.nombre).trim() === canonicalKey) || null;
+    }
+  }
+  return null;
 }
 
 /** Mapea fila de Supabase al shape publico que usan cards/detalle/filtros. */
@@ -89,10 +137,11 @@ export function mapDbGrupoToPublic(row: CatalogGrupo | null | undefined): Grupo 
 }
 
 export function buildMetadata(grupos: Grupo[]): Metadata {
+  const uniqueGrupos = deduplicateGruposByCanonicalName(grupos);
   const por_tipo: Record<string, number> = {};
   const carrerasSet = new Set<string>();
 
-  for (const g of grupos) {
+  for (const g of uniqueGrupos) {
     por_tipo[g.tipo] = (por_tipo[g.tipo] || 0) + 1;
     // metadata.carreras siempre sale del catálogo canónico, nunca del crudo.
     for (const c of g.carreras || []) {
@@ -101,7 +150,7 @@ export function buildMetadata(grupos: Grupo[]): Metadata {
   }
 
   return {
-    total: grupos.length,
+    total: uniqueGrupos.length,
     por_tipo,
     carreras: Array.from(carrerasSet).sort(),
     actualizado: new Date().toISOString(),
@@ -147,7 +196,8 @@ export async function fetchApprovedCatalog(): Promise<{ grupos: Grupo[]; metadat
       if (ts > latest) latest = ts;
     }
 
-    const grupos = rows.map(mapDbGrupoToPublic);
+    const mappedGrupos = rows.map(mapDbGrupoToPublic);
+    const grupos = deduplicateGruposByCanonicalName(mappedGrupos);
     return {
       grupos,
       metadata: {

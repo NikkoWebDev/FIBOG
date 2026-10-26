@@ -27,7 +27,7 @@ const {
 const siteUrl = (Astro.site?.origin ?? SITE_FALLBACK).replace(/\/+$/, '');
 const path = Astro.url.pathname === '/' ? '/' : Astro.url.pathname.replace(/\/+$/, '');
 const canonicalUrl = `${siteUrl}${path}`;
-const ogImageUrl = `${siteUrl}/logo.png`;
+const ogImageUrl = `${siteUrl}/favicon.svg`;
 ---
 
 <!DOCTYPE html>
@@ -74,8 +74,6 @@ const ogImageUrl = `${siteUrl}/logo.png`;
   
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link rel="apple-touch-icon" href="/logo.png" />
-  <link rel="icon" type="image/png" sizes="192x192" href="/logo.png" />
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">

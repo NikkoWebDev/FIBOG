@@ -1,8 +1,8 @@
 {
   "metadata": {
-    "total": 332,
+    "total": 309,
     "por_tipo": {
-      "Grupo de Investigación": 304,
+      "Grupo de Investigación": 281,
       "Semillero": 15,
       "Grupo Estudiantil": 13
     },
@@ -776,28 +776,6 @@
       "comentarios": "[Sede Manizales] Categoría Minciencias según DIB: C || Dependencia principal: 2- FACULTAD DE CIENCIAS || Tambien disponible en Bogotá (ficha principal); Hermes 'Otras Sedes': Manizales"
     },
     {
-      "id": "eb3563d9-c2c6-4652-8b62-f6d11abf0022",
-      "tipo": "Grupo de Investigación",
-      "carreras": [
-        "Ciencias Naturales"
-      ],
-      "carrera_str": "Ciencias Naturales",
-      "nombre": "Bioprospección y modelado molecular en el diseño",
-      "docente": "Oscar Javier Patiño Ladino",
-      "lider": "",
-      "email": "ojpatinol@unal.edu.co",
-      "vinculacion": "Grupo registrado en el listado oficial de grupos DIB-UNAL Sede Bogotá (C)",
-      "enfoque": "QUÍMICA MEDICINAL, ACTIVIDAD INSECTICIDA, PRODUCTOS NATURALES, BIOPROSPECCIÓN EN AGENTES FITOSANITARIOS Y TERAPEUTICOS, ETNOBOTÁNICA Y ETNOFARMACOLOGÍA, ACTIVIDAD ANTIFUNGICA, QUÍMICA COMPUTACIÓNAL",
-      "descripcion": "El grupo de investigación busca explorar el potencial de plantas presentes en la flora colombiana para ser aplicados a nivel farmacéutico y/o agrícola. En este sentido combina estudios fitoquímicos, ensayos in vitro, análisis informático y síntesis orgánica.",
-      "actividades": "",
-      "modalidad": "",
-      "horarios": "",
-      "requisitos": "",
-      "nivel_academico": "",
-      "redes": "Hermes: http://www.hermes.unal.edu.co/pages/Consultas/Grupo.jsf?idGrupo=2484 | GrupLAC: https://scienti.minciencias.gov.co/gruplac/jsp/visualiza/visualizagr.jsp?nro=00000000016408",
-      "comentarios": "[Sede Bogotá] Categoría Minciencias según DIB: C || Dependencia principal: 2- FACULTAD DE CIENCIAS"
-    },
-    {
       "id": "f0d5178d-4ea8-40f7-a404-6e80ee4a4be0",
       "tipo": "Grupo de Investigación",
       "carreras": [
@@ -1066,28 +1044,6 @@
       "nivel_academico": "",
       "redes": "Hermes: http://www.hermes.unal.edu.co/pages/Consultas/Grupo.jsf?idGrupo=1373 | GrupLAC: https://scienti.minciencias.gov.co/gruplac/jsp/visualiza/visualizagr.jsp?nro=00000000009554",
       "comentarios": "[Sede Bogotá] Categoría Minciencias según DIB: Registrado || Dependencia principal: 2- FACULTAD DE CIENCIAS / Otras dependencias /   /   / 2- INSTITUTO DE GENÉTICA /   / 2- FACULTAD DE CIENCIAS"
-    },
-    {
-      "id": "f956d4d7-4528-426a-94f1-5d27d3ee12b0",
-      "tipo": "Grupo de Investigación",
-      "carreras": [
-        "Ciencias Naturales"
-      ],
-      "carrera_str": "Ciencias Naturales",
-      "nombre": "Conexión de galois",
-      "docente": "Andres Villaveces Niño",
-      "lider": "",
-      "email": "avillavecesn@unal.edu.co",
-      "vinculacion": "Grupo registrado en el listado oficial de grupos DIB-UNAL Sede Bogotá (Registrado)",
-      "enfoque": "GEOMETRIA ÁLGEBRAICA, TEORÍA DE MODELOS CONTINUA, TEORÍA DE MODELOS, ECUACIÓNES DIFERENCIALES, ÁLGEBRA CONMUTATIVA Y GEOMETRIA ÁLGEBRAICA, LÓGICA MATEMÁTICA",
-      "descripcion": "El Grupo *Conexión de GALoiS* tiene carácter interdisciplinar. Durante las primeras dos décadas del siglo XXI, dos ramas de la matemática se han ido entrelazando de manera sorprendente y significativa: la geometría (geometría algebraica, geometría no conmutativa, geometría riemanniana) y la teoría de modelos (una rama de la lógica matemática con métodos poderosos como categoricidad y estabilidad, con herramientas tanto de primer orden como más generales). El grupo cuenta con la participación de geómetras y lógicos de la Universidad Nacional (Alexander Cruz, Leonardo Cano y Andrés Villaveces) y colegas de distintos lugares del mundo (Boris Zilber en Oxford), al igual que estudiantes de posgrado y pregrado. Adicionalmente, los integrantes del grupo tienen colaboración científica con varios otros matemáticos de otros lugares (por ejemplo, Thomas Scanlon en Berkeley, James Freitag en Illinoi",
-      "actividades": "",
-      "modalidad": "",
-      "horarios": "",
-      "requisitos": "",
-      "nivel_academico": "",
-      "redes": "Hermes: http://www.hermes.unal.edu.co/pages/Consultas/Grupo.jsf?idGrupo=2475 | GrupLAC: https://scienti.minciencias.gov.co/gruplac/jsp/visualiza/visualizagr.jsp?nro=00000000020673",
-      "comentarios": "[Sede Bogotá] Categoría Minciencias según DIB: Registrado || Dependencia principal: 2- FACULTAD DE CIENCIAS"
     },
     {
       "id": "8178cb00-1798-46f8-83e5-e8215175b1ac",
@@ -3789,28 +3745,6 @@
       "comentarios": "[Sede Bogotá] Categoría Minciencias según DIB: A || Dependencia principal: 2- FACULTAD DE CIENCIAS"
     },
     {
-      "id": "9c629acc-42ec-4178-bedb-b40dee0db959",
-      "tipo": "Grupo de Investigación",
-      "carreras": [
-        "Ciencias Naturales"
-      ],
-      "carrera_str": "Ciencias Naturales",
-      "nombre": "Grupo de superconductividad y nuevos materiales",
-      "docente": "Alvaro Mariño Camargo",
-      "lider": "",
-      "email": "amarinoca@unal.edu.co",
-      "vinculacion": "Grupo registrado en el listado oficial de grupos DIB-UNAL Sede Bogotá (B)",
-      "enfoque": "ESTUDIO DE TÉCNICAS DE COMPATIBILIZACIÓN DE LAS FIBRAS NATURALES COMO REFUERZO DE MATRICES POLIMÉRICAS, RECUBRIMIENTOS DUROS, SUPERCONDUCTIVIDAD DE ALTA TEMPERATURA CRITICA",
-      "descripcion": "El grupo de superconductividad y Nuevos Materiales inició labores de investigación y de formación de estudiantes en 1993. Inicialmente esta labor estuvo orientada basicamente al estudio de fenomenos de transporte en superconductores de alta Tc.Posteriormente las actividades del grupo se diversificaron con la adición de las áreas de investigación de materiales magnéticos y recubrimientos duros. Esta diversificación permitio al grupo una mayor covertura y acentuo su caracter interdisciplinario en beneficio de los estudiantes.En la actualidad en las labores de investigación del grupo participan estudiantes de Física, Química y del posgrado en Ingeniería de Procesos y manufacturas.",
-      "actividades": "",
-      "modalidad": "",
-      "horarios": "",
-      "requisitos": "",
-      "nivel_academico": "",
-      "redes": "Hermes: http://www.hermes.unal.edu.co/pages/Consultas/Grupo.jsf?idGrupo=252 | GrupLAC: https://scienti.minciencias.gov.co/gruplac/jsp/visualiza/visualizagr.jsp?nro=00000000000311",
-      "comentarios": "[Sede Bogotá] Categoría Minciencias según DIB: B || Dependencia principal: 2- FACULTAD DE CIENCIAS / Otras dependencias /   /   / 4- FACULTAD DE CIENCIAS EXACTAS Y NATURALES /   / 2- FACULTAD DE INGENIERÍA"
-    },
-    {
       "id": "d26723c6-81f4-415b-9eea-c11f9b96e77d",
       "tipo": "Grupo de Investigación",
       "carreras": [
@@ -3964,28 +3898,6 @@
       "nivel_academico": "",
       "redes": "Hermes: http://www.hermes.unal.edu.co/pages/Consultas/Grupo.jsf?idGrupo=704 | GrupLAC: https://scienti.minciencias.gov.co/gruplac/jsp/visualiza/visualizagr.jsp?nro=00000000000291",
       "comentarios": "[Sede Bogotá] Categoría Minciencias según DIB: B || Dependencia principal: 2- FACULTAD DE CIENCIAS"
-    },
-    {
-      "id": "486c44df-4031-4deb-a6b6-36677a33ccda",
-      "tipo": "Grupo de Investigación",
-      "carreras": [
-        "Ciencias Naturales"
-      ],
-      "carrera_str": "Ciencias Naturales",
-      "nombre": "Grupo geología médica y forense",
-      "docente": "Nivea Cristina Garzon Gomez",
-      "lider": "",
-      "email": "ncgarzong@unal.edu.co",
-      "vinculacion": "Grupo registrado en el listado oficial de grupos DIB-UNAL Sede Bogotá (Registrado)",
-      "enfoque": "RECURSOS HIDROGEOLOGICOS, AMBIENTE Y SALUD EN COLOMBIA, HISTORIA NATURAL Y APORTES A LA GEOLOGÍA MEDICA, LITOTECA MEDICA Y FORENSE, INFORMATICA Y GEOLOGÍA MEDICA, RECURSOS MINERALES Y ENERGÉTICOS, PATOGÉNESIS Y POTENCIAL MEDICINAL, GEOLOGÍA FORENSE: SUSTENTO DEL SISTEMA JURIDICO Y PENAL COLOMBIANO",
-      "descripcion": "El Grupo trabaja en el estudio y valoración del patrimonio natural, ambiental y sociocultural del territorio colombiano, con énfasis en los recursos geoambientales, en relación con el bienestar y salud de la naturaleza, la biota y el hombre, incluyendo el ámbito legal y jurídico. Contribuye a fortalecer y proyectar espacios de reflexión sobre modelos y tecnologías de uso y manejo de la naturaleza, en conjunto con los actores sociales, involucrados y afectados por la actividad geocientífica. Lineas de investigacion: Recursos hidrogeológicos, ambiente y salud en Colombia; Recursos minerales y energéticos, patogénesis y potencial medicinal; Historia natural y aportes a la Geología Médica.; Geología Forense. Soporte sistema jurídico; Litoteca y Colecciones científicas de referencia y Geoinformática",
-      "actividades": "",
-      "modalidad": "",
-      "horarios": "",
-      "requisitos": "",
-      "nivel_academico": "",
-      "redes": "Hermes: http://www.hermes.unal.edu.co/pages/Consultas/Grupo.jsf?idGrupo=1371 | GrupLAC: https://scienti.minciencias.gov.co/gruplac/jsp/visualiza/visualizagr.jsp?nro=00000000008927",
-      "comentarios": "[Sede Bogotá] Categoría Minciencias según DIB: Registrado || Dependencia principal: 2- FACULTAD DE CIENCIAS / Otras dependencias /   /   / 2- FACULTAD DE MEDICINA"
     },
     {
       "id": "8160a62f-d9b3-4d7f-ad26-d96653e236e3",
@@ -5457,50 +5369,6 @@
       "comentarios": "[Sede Bogotá] Categoría Minciencias según DIB: C || Dependencia principal: 2- FACULTAD DE CIENCIAS"
     },
     {
-      "id": "f70906ec-d6bd-44d6-b993-44ad56bcffea",
-      "tipo": "Grupo de Investigación",
-      "carreras": [
-        "Ciencias Naturales"
-      ],
-      "carrera_str": "Ciencias Naturales",
-      "nombre": "Observatorio colombiano de patrimonio geológico y geodiversidad -progeocol",
-      "docente": "Nivea Cristina Garzon Gomez",
-      "lider": "",
-      "email": "ncgarzong@unal.edu.co",
-      "vinculacion": "Grupo registrado en el listado oficial de grupos DIB-UNAL Sede Bogotá (Registrado)",
-      "enfoque": "IDENTIFICAR Y EVALUAR INDICADORES QUE PERMITAN VALORAR EL POTENCIAL CIENTÍFICO, SOCIOECONÓMICO Y CULTURAL DE ÁREAS DE INTERÉS GEOLÓGICO PARA SER CONSIDERADAS COMO PATRIMONIO NATURAL CON UN MANEJO SOSTENIBLE, GEOINFORMÁTICA APLICADA A MODELOS DE VALORACIÓN DE PATRIMONIO GEOLÓGICO Y PALEONTOLÓGICO COLOMBIANO, PEDAGOGÍA Y DIDÁCTICA PARA EL RECONOCIMIENTO DEL PATRIMONIO GEOLÓGICO EN COLOMBIA, VALORACIÓN DEL TERRITORIO COLOMBIANO, DESDE EL CONOCIMIENTO GEOLÓGICO Y LAS ALTERNATIVAS DE MANEJO SOSTENIBLE QUE PROMUEVE LOS NUEVOS MODELOS DE APROPIACIÓN Y GESTIÓN DE ESCENARIOS NATURALES DE INTERÉS EN PAT",
-      "descripcion": "El Observatorio Colombiano de Patrimonio Geológico y Geodiversidad -PROGEOCOL , es un espacio de reconocimiento, estudio, valoración y divulgación de paisajes, localidades tipo y áreas de interés geocientífico sobre el territorio nacional; liderado y orientado desde el Departamento de Geociencias de la Universidad Nacional de Colombia, con participación de diversos actores sociales e instituciones que trabajan en y sobre la historia geológica de Colombia.",
-      "actividades": "",
-      "modalidad": "",
-      "horarios": "",
-      "requisitos": "",
-      "nivel_academico": "",
-      "redes": "Hermes: http://www.hermes.unal.edu.co/pages/Consultas/Grupo.jsf?idGrupo=2326 | GrupLAC: https://scienti.minciencias.gov.co/gruplac/jsp/visualiza/visualizagr.jsp?nro=00000000018607",
-      "comentarios": "[Sede Caribe] Categoría Minciencias según DIB: Registrado || Dependencia principal: 2- FACULTAD DE CIENCIAS / Otras dependencias /   /   / 6- DIRECCIÓN DE SEDE AMAZONÍA || Tambien disponible en Bogotá (ficha principal); Hermes 'Otras Sedes': Amazonía, Orinoquía, Caribe, Tumaco"
-    },
-    {
-      "id": "3b113a21-f448-4d7a-9890-558985029b93",
-      "tipo": "Grupo de Investigación",
-      "carreras": [
-        "Ciencias Naturales"
-      ],
-      "carrera_str": "Ciencias Naturales",
-      "nombre": "Observatorio colombiano de patrimonio geológico y geodiversidad -progeocol",
-      "docente": "Nivea Cristina Garzon Gomez",
-      "lider": "",
-      "email": "ncgarzong@unal.edu.co",
-      "vinculacion": "Grupo registrado en el listado oficial de grupos DIB-UNAL Sede Bogotá (Registrado)",
-      "enfoque": "IDENTIFICAR Y EVALUAR INDICADORES QUE PERMITAN VALORAR EL POTENCIAL CIENTÍFICO, SOCIOECONÓMICO Y CULTURAL DE ÁREAS DE INTERÉS GEOLÓGICO PARA SER CONSIDERADAS COMO PATRIMONIO NATURAL CON UN MANEJO SOSTENIBLE, GEOINFORMÁTICA APLICADA A MODELOS DE VALORACIÓN DE PATRIMONIO GEOLÓGICO Y PALEONTOLÓGICO COLOMBIANO, PEDAGOGÍA Y DIDÁCTICA PARA EL RECONOCIMIENTO DEL PATRIMONIO GEOLÓGICO EN COLOMBIA, VALORACIÓN DEL TERRITORIO COLOMBIANO, DESDE EL CONOCIMIENTO GEOLÓGICO Y LAS ALTERNATIVAS DE MANEJO SOSTENIBLE QUE PROMUEVE LOS NUEVOS MODELOS DE APROPIACIÓN Y GESTIÓN DE ESCENARIOS NATURALES DE INTERÉS EN PAT",
-      "descripcion": "El Observatorio Colombiano de Patrimonio Geológico y Geodiversidad -PROGEOCOL , es un espacio de reconocimiento, estudio, valoración y divulgación de paisajes, localidades tipo y áreas de interés geocientífico sobre el territorio nacional; liderado y orientado desde el Departamento de Geociencias de la Universidad Nacional de Colombia, con participación de diversos actores sociales e instituciones que trabajan en y sobre la historia geológica de Colombia.",
-      "actividades": "",
-      "modalidad": "",
-      "horarios": "",
-      "requisitos": "",
-      "nivel_academico": "",
-      "redes": "Hermes: http://www.hermes.unal.edu.co/pages/Consultas/Grupo.jsf?idGrupo=2326 | GrupLAC: https://scienti.minciencias.gov.co/gruplac/jsp/visualiza/visualizagr.jsp?nro=00000000018607",
-      "comentarios": "[Sede Tumaco] Categoría Minciencias según DIB: Registrado || Dependencia principal: 2- FACULTAD DE CIENCIAS / Otras dependencias /   /   / 6- DIRECCIÓN DE SEDE AMAZONÍA || Tambien disponible en Bogotá (ficha principal); Hermes 'Otras Sedes': Amazonía, Orinoquía, Caribe, Tumaco"
-    },
-    {
       "id": "3da24494-edc5-4ada-8a3a-542f8189ba10",
       "tipo": "Grupo de Investigación",
       "carreras": [
@@ -5523,50 +5391,6 @@
       "comentarios": "[Sede Orinoquía] Categoría Minciencias según DIB: Registrado || Dependencia principal: 2- FACULTAD DE CIENCIAS / Otras dependencias /   /   / 6- DIRECCIÓN DE SEDE AMAZONÍA || Tambien disponible en Bogotá (ficha principal); Hermes 'Otras Sedes': Amazonía, Orinoquía, Caribe, Tumaco"
     },
     {
-      "id": "6c5205a4-3a92-49c2-b183-703538e2dab5",
-      "tipo": "Grupo de Investigación",
-      "carreras": [
-        "Ciencias Naturales"
-      ],
-      "carrera_str": "Ciencias Naturales",
-      "nombre": "Observatorio colombiano de patrimonio geológico y geodiversidad -progeocol",
-      "docente": "Nivea Cristina Garzon Gomez",
-      "lider": "",
-      "email": "ncgarzong@unal.edu.co",
-      "vinculacion": "Grupo registrado en el listado oficial de grupos DIB-UNAL Sede Bogotá (Registrado)",
-      "enfoque": "IDENTIFICAR Y EVALUAR INDICADORES QUE PERMITAN VALORAR EL POTENCIAL CIENTÍFICO, SOCIOECONÓMICO Y CULTURAL DE ÁREAS DE INTERÉS GEOLÓGICO PARA SER CONSIDERADAS COMO PATRIMONIO NATURAL CON UN MANEJO SOSTENIBLE, GEOINFORMÁTICA APLICADA A MODELOS DE VALORACIÓN DE PATRIMONIO GEOLÓGICO Y PALEONTOLÓGICO COLOMBIANO, PEDAGOGÍA Y DIDÁCTICA PARA EL RECONOCIMIENTO DEL PATRIMONIO GEOLÓGICO EN COLOMBIA, VALORACIÓN DEL TERRITORIO COLOMBIANO, DESDE EL CONOCIMIENTO GEOLÓGICO Y LAS ALTERNATIVAS DE MANEJO SOSTENIBLE QUE PROMUEVE LOS NUEVOS MODELOS DE APROPIACIÓN Y GESTIÓN DE ESCENARIOS NATURALES DE INTERÉS EN PAT",
-      "descripcion": "El Observatorio Colombiano de Patrimonio Geológico y Geodiversidad -PROGEOCOL , es un espacio de reconocimiento, estudio, valoración y divulgación de paisajes, localidades tipo y áreas de interés geocientífico sobre el territorio nacional; liderado y orientado desde el Departamento de Geociencias de la Universidad Nacional de Colombia, con participación de diversos actores sociales e instituciones que trabajan en y sobre la historia geológica de Colombia.",
-      "actividades": "",
-      "modalidad": "",
-      "horarios": "",
-      "requisitos": "",
-      "nivel_academico": "",
-      "redes": "Hermes: http://www.hermes.unal.edu.co/pages/Consultas/Grupo.jsf?idGrupo=2326 | GrupLAC: https://scienti.minciencias.gov.co/gruplac/jsp/visualiza/visualizagr.jsp?nro=00000000018607",
-      "comentarios": "[Sede Amazonía] Categoría Minciencias según DIB: Registrado || Dependencia principal: 2- FACULTAD DE CIENCIAS / Otras dependencias /   /   / 6- DIRECCIÓN DE SEDE AMAZONÍA || Tambien disponible en Bogotá (ficha principal); Hermes 'Otras Sedes': Amazonía, Orinoquía, Caribe, Tumaco"
-    },
-    {
-      "id": "f27c34c0-7c50-4f78-b782-b7480b412eed",
-      "tipo": "Grupo de Investigación",
-      "carreras": [
-        "Ciencias Naturales"
-      ],
-      "carrera_str": "Ciencias Naturales",
-      "nombre": "Observatorio colombiano de patrimonio geológico y geodiversidad -progeocol",
-      "docente": "Nivea Cristina Garzon Gomez",
-      "lider": "",
-      "email": "ncgarzong@unal.edu.co",
-      "vinculacion": "Grupo registrado en el listado oficial de grupos DIB-UNAL Sede Bogotá (Registrado)",
-      "enfoque": "IDENTIFICAR Y EVALUAR INDICADORES QUE PERMITAN VALORAR EL POTENCIAL CIENTÍFICO, SOCIOECONÓMICO Y CULTURAL DE ÁREAS DE INTERÉS GEOLÓGICO PARA SER CONSIDERADAS COMO PATRIMONIO NATURAL CON UN MANEJO SOSTENIBLE, GEOINFORMÁTICA APLICADA A MODELOS DE VALORACIÓN DE PATRIMONIO GEOLÓGICO Y PALEONTOLÓGICO COLOMBIANO, PEDAGOGÍA Y DIDÁCTICA PARA EL RECONOCIMIENTO DEL PATRIMONIO GEOLÓGICO EN COLOMBIA, VALORACIÓN DEL TERRITORIO COLOMBIANO, DESDE EL CONOCIMIENTO GEOLÓGICO Y LAS ALTERNATIVAS DE MANEJO SOSTENIBLE QUE PROMUEVE LOS NUEVOS MODELOS DE APROPIACIÓN Y GESTIÓN DE ESCENARIOS NATURALES DE INTERÉS EN PAT",
-      "descripcion": "El Observatorio Colombiano de Patrimonio Geológico y Geodiversidad -PROGEOCOL , es un espacio de reconocimiento, estudio, valoración y divulgación de paisajes, localidades tipo y áreas de interés geocientífico sobre el territorio nacional; liderado y orientado desde el Departamento de Geociencias de la Universidad Nacional de Colombia, con participación de diversos actores sociales e instituciones que trabajan en y sobre la historia geológica de Colombia.",
-      "actividades": "",
-      "modalidad": "",
-      "horarios": "",
-      "requisitos": "",
-      "nivel_academico": "",
-      "redes": "Hermes: http://www.hermes.unal.edu.co/pages/Consultas/Grupo.jsf?idGrupo=2326 | GrupLAC: https://scienti.minciencias.gov.co/gruplac/jsp/visualiza/visualizagr.jsp?nro=00000000018607",
-      "comentarios": "[Sede Bogotá] Categoría Minciencias según DIB: Registrado || Dependencia principal: 2- FACULTAD DE CIENCIAS / Otras dependencias /   /   / 6- DIRECCIÓN DE SEDE AMAZONÍA"
-    },
-    {
       "id": "5298dde8-d888-4566-b59a-7a3e98d34238",
       "tipo": "Grupo de Investigación",
       "carreras": [
@@ -5587,94 +5411,6 @@
       "nivel_academico": "",
       "redes": "Hermes: http://www.hermes.unal.edu.co/pages/Consultas/Grupo.jsf?idGrupo=2418 | GrupLAC: https://scienti.minciencias.gov.co/gruplac/jsp/visualiza/visualizagr.jsp?nro=00000000019278",
       "comentarios": "[Sede Orinoquía] Categoría Minciencias según DIB: Registrado || Dependencia principal: 2- FACULTAD DE CIENCIAS / Otras dependencias /   /   / 7- UNIDAD DE DOCENCIA Y FORMACIÓN /   / 2- INSTITUTO DE ESTUDIOS AMBIENTALES - IDEA - || Tambien disponible en Bogotá (ficha principal); Hermes 'Otras Sedes': Amazonía, Orinoquía, Caribe, Tumaco"
-    },
-    {
-      "id": "47b8f2a6-3036-4fb5-9ef5-c981c5db367d",
-      "tipo": "Grupo de Investigación",
-      "carreras": [
-        "Ciencias Naturales"
-      ],
-      "carrera_str": "Ciencias Naturales",
-      "nombre": "Observatorio del agua en ciencias y saberes – oacys©",
-      "docente": "Nivea Cristina Garzon Gomez",
-      "lider": "",
-      "email": "observagua_nal@unal.edu.co",
-      "vinculacion": "Grupo registrado en el listado oficial de grupos DIB-UNAL Sede Bogotá (Registrado)",
-      "enfoque": "OBSERVACIÓN DE MUNDOS DEL AGUA, DESDE LAS CIENCIAS Y LOS SABERES, EN LA UNIVERSIDAD, CON LA VINCULACIÓN A SEDES DE FRONTERA: AMAZONIA, CARIBE Y DE LA PAZ (SAN ANDRÉS ISLAS Y VALLEDUPAR), ORINOQUÍA Y TUMACO-PACÍFICO QUE TIENEN COMO MISIÓN CONSTRUIR NACIÓN, CONSOLIDAR UN PROGRAMA Y RED DE MONITOREO E INDICADORES DEL RECURSO AGUA, MEDIANTE EL SISTEMA DE INFORMACIÓN SIOACYS©, ENTRE LA POBLACIÓN LOCAL Y SU VINCULACIÓN AL OBSERVATORIO DEL AGUA - OACYS©, IDENTIFICACIÓN DE ESCENARIOS INTERINSTITUCIONALES Y GENERACIÓN DE INFORMACIÓN INTERSECTORIAL SOBRE EL AGUA, DESDE EL ÁMBITO REGIONAL Y NACIONAL, HAC",
-      "descripcion": "Un espacio académico de comunicación entre personas, instituciones y organizaciones que trabajan y orientan una línea de estudio en la caracterización, valoración y alternativas de potencial, uso y manejo del Agua en Colombia. Desde las ciencias en centros de investigación y los saberes locales de sociedades multiétnicas que habitan en las grandes y pequeñas cuencas hidrográficas y marítimas de nuestro país, se proyecta identificar, compilar, analizar y divulgar información multidisciplinar que permita la elaboración de indicadores. Un Observatorio al mundo del Agua, desde las miradas disciplinares, como recurso natural, hasta los orígenes míticos y los modelos de uso tradicionales, buscando apoyar redes de investigación y gestión desde la comunidad académica y la sociedad. Registro Colciencias código COL0190769.",
-      "actividades": "",
-      "modalidad": "",
-      "horarios": "",
-      "requisitos": "",
-      "nivel_academico": "",
-      "redes": "Hermes: http://www.hermes.unal.edu.co/pages/Consultas/Grupo.jsf?idGrupo=2418 | GrupLAC: https://scienti.minciencias.gov.co/gruplac/jsp/visualiza/visualizagr.jsp?nro=00000000019278",
-      "comentarios": "[Sede Tumaco] Categoría Minciencias según DIB: Registrado || Dependencia principal: 2- FACULTAD DE CIENCIAS / Otras dependencias /   /   / 7- UNIDAD DE DOCENCIA Y FORMACIÓN /   / 2- INSTITUTO DE ESTUDIOS AMBIENTALES - IDEA - || Tambien disponible en Bogotá (ficha principal); Hermes 'Otras Sedes': Amazonía, Orinoquía, Caribe, Tumaco"
-    },
-    {
-      "id": "8c14008e-c855-4a15-9810-4ae1e3e8aaa9",
-      "tipo": "Grupo de Investigación",
-      "carreras": [
-        "Ciencias Naturales"
-      ],
-      "carrera_str": "Ciencias Naturales",
-      "nombre": "Observatorio del agua en ciencias y saberes – oacys©",
-      "docente": "Nivea Cristina Garzon Gomez",
-      "lider": "",
-      "email": "observagua_nal@unal.edu.co",
-      "vinculacion": "Grupo registrado en el listado oficial de grupos DIB-UNAL Sede Bogotá (Registrado)",
-      "enfoque": "OBSERVACIÓN DE MUNDOS DEL AGUA, DESDE LAS CIENCIAS Y LOS SABERES, EN LA UNIVERSIDAD, CON LA VINCULACIÓN A SEDES DE FRONTERA: AMAZONIA, CARIBE Y DE LA PAZ (SAN ANDRÉS ISLAS Y VALLEDUPAR), ORINOQUÍA Y TUMACO-PACÍFICO QUE TIENEN COMO MISIÓN CONSTRUIR NACIÓN, CONSOLIDAR UN PROGRAMA Y RED DE MONITOREO E INDICADORES DEL RECURSO AGUA, MEDIANTE EL SISTEMA DE INFORMACIÓN SIOACYS©, ENTRE LA POBLACIÓN LOCAL Y SU VINCULACIÓN AL OBSERVATORIO DEL AGUA - OACYS©, IDENTIFICACIÓN DE ESCENARIOS INTERINSTITUCIONALES Y GENERACIÓN DE INFORMACIÓN INTERSECTORIAL SOBRE EL AGUA, DESDE EL ÁMBITO REGIONAL Y NACIONAL, HAC",
-      "descripcion": "Un espacio académico de comunicación entre personas, instituciones y organizaciones que trabajan y orientan una línea de estudio en la caracterización, valoración y alternativas de potencial, uso y manejo del Agua en Colombia. Desde las ciencias en centros de investigación y los saberes locales de sociedades multiétnicas que habitan en las grandes y pequeñas cuencas hidrográficas y marítimas de nuestro país, se proyecta identificar, compilar, analizar y divulgar información multidisciplinar que permita la elaboración de indicadores. Un Observatorio al mundo del Agua, desde las miradas disciplinares, como recurso natural, hasta los orígenes míticos y los modelos de uso tradicionales, buscando apoyar redes de investigación y gestión desde la comunidad académica y la sociedad. Registro Colciencias código COL0190769.",
-      "actividades": "",
-      "modalidad": "",
-      "horarios": "",
-      "requisitos": "",
-      "nivel_academico": "",
-      "redes": "Hermes: http://www.hermes.unal.edu.co/pages/Consultas/Grupo.jsf?idGrupo=2418 | GrupLAC: https://scienti.minciencias.gov.co/gruplac/jsp/visualiza/visualizagr.jsp?nro=00000000019278",
-      "comentarios": "[Sede Caribe] Categoría Minciencias según DIB: Registrado || Dependencia principal: 2- FACULTAD DE CIENCIAS / Otras dependencias /   /   / 7- UNIDAD DE DOCENCIA Y FORMACIÓN /   / 2- INSTITUTO DE ESTUDIOS AMBIENTALES - IDEA - || Tambien disponible en Bogotá (ficha principal); Hermes 'Otras Sedes': Amazonía, Orinoquía, Caribe, Tumaco"
-    },
-    {
-      "id": "9e68871f-65f7-4f3b-8f7d-724f7200672d",
-      "tipo": "Grupo de Investigación",
-      "carreras": [
-        "Ciencias Naturales"
-      ],
-      "carrera_str": "Ciencias Naturales",
-      "nombre": "Observatorio del agua en ciencias y saberes – oacys©",
-      "docente": "Nivea Cristina Garzon Gomez",
-      "lider": "",
-      "email": "observagua_nal@unal.edu.co",
-      "vinculacion": "Grupo registrado en el listado oficial de grupos DIB-UNAL Sede Bogotá (Registrado)",
-      "enfoque": "OBSERVACIÓN DE MUNDOS DEL AGUA, DESDE LAS CIENCIAS Y LOS SABERES, EN LA UNIVERSIDAD, CON LA VINCULACIÓN A SEDES DE FRONTERA: AMAZONIA, CARIBE Y DE LA PAZ (SAN ANDRÉS ISLAS Y VALLEDUPAR), ORINOQUÍA Y TUMACO-PACÍFICO QUE TIENEN COMO MISIÓN CONSTRUIR NACIÓN, CONSOLIDAR UN PROGRAMA Y RED DE MONITOREO E INDICADORES DEL RECURSO AGUA, MEDIANTE EL SISTEMA DE INFORMACIÓN SIOACYS©, ENTRE LA POBLACIÓN LOCAL Y SU VINCULACIÓN AL OBSERVATORIO DEL AGUA - OACYS©, IDENTIFICACIÓN DE ESCENARIOS INTERINSTITUCIONALES Y GENERACIÓN DE INFORMACIÓN INTERSECTORIAL SOBRE EL AGUA, DESDE EL ÁMBITO REGIONAL Y NACIONAL, HAC",
-      "descripcion": "Un espacio académico de comunicación entre personas, instituciones y organizaciones que trabajan y orientan una línea de estudio en la caracterización, valoración y alternativas de potencial, uso y manejo del Agua en Colombia. Desde las ciencias en centros de investigación y los saberes locales de sociedades multiétnicas que habitan en las grandes y pequeñas cuencas hidrográficas y marítimas de nuestro país, se proyecta identificar, compilar, analizar y divulgar información multidisciplinar que permita la elaboración de indicadores. Un Observatorio al mundo del Agua, desde las miradas disciplinares, como recurso natural, hasta los orígenes míticos y los modelos de uso tradicionales, buscando apoyar redes de investigación y gestión desde la comunidad académica y la sociedad. Registro Colciencias código COL0190769.",
-      "actividades": "",
-      "modalidad": "",
-      "horarios": "",
-      "requisitos": "",
-      "nivel_academico": "",
-      "redes": "Hermes: http://www.hermes.unal.edu.co/pages/Consultas/Grupo.jsf?idGrupo=2418 | GrupLAC: https://scienti.minciencias.gov.co/gruplac/jsp/visualiza/visualizagr.jsp?nro=00000000019278",
-      "comentarios": "[Sede Amazonía] Categoría Minciencias según DIB: Registrado || Dependencia principal: 2- FACULTAD DE CIENCIAS / Otras dependencias /   /   / 7- UNIDAD DE DOCENCIA Y FORMACIÓN /   / 2- INSTITUTO DE ESTUDIOS AMBIENTALES - IDEA - || Tambien disponible en Bogotá (ficha principal); Hermes 'Otras Sedes': Amazonía, Orinoquía, Caribe, Tumaco"
-    },
-    {
-      "id": "cfaf13d1-d7ff-4899-a919-bb5277f22e24",
-      "tipo": "Grupo de Investigación",
-      "carreras": [
-        "Ciencias Naturales"
-      ],
-      "carrera_str": "Ciencias Naturales",
-      "nombre": "Observatorio del agua en ciencias y saberes – oacys©",
-      "docente": "Nivea Cristina Garzon Gomez",
-      "lider": "",
-      "email": "observagua_nal@unal.edu.co",
-      "vinculacion": "Grupo registrado en el listado oficial de grupos DIB-UNAL Sede Bogotá (Registrado)",
-      "enfoque": "OBSERVACIÓN DE MUNDOS DEL AGUA, DESDE LAS CIENCIAS Y LOS SABERES, EN LA UNIVERSIDAD, CON LA VINCULACIÓN A SEDES DE FRONTERA: AMAZONIA, CARIBE Y DE LA PAZ (SAN ANDRÉS ISLAS Y VALLEDUPAR), ORINOQUÍA Y TUMACO-PACÍFICO QUE TIENEN COMO MISIÓN CONSTRUIR NACIÓN, CONSOLIDAR UN PROGRAMA Y RED DE MONITOREO E INDICADORES DEL RECURSO AGUA, MEDIANTE EL SISTEMA DE INFORMACIÓN SIOACYS©, ENTRE LA POBLACIÓN LOCAL Y SU VINCULACIÓN AL OBSERVATORIO DEL AGUA - OACYS©, IDENTIFICACIÓN DE ESCENARIOS INTERINSTITUCIONALES Y GENERACIÓN DE INFORMACIÓN INTERSECTORIAL SOBRE EL AGUA, DESDE EL ÁMBITO REGIONAL Y NACIONAL, HAC",
-      "descripcion": "Un espacio académico de comunicación entre personas, instituciones y organizaciones que trabajan y orientan una línea de estudio en la caracterización, valoración y alternativas de potencial, uso y manejo del Agua en Colombia. Desde las ciencias en centros de investigación y los saberes locales de sociedades multiétnicas que habitan en las grandes y pequeñas cuencas hidrográficas y marítimas de nuestro país, se proyecta identificar, compilar, analizar y divulgar información multidisciplinar que permita la elaboración de indicadores. Un Observatorio al mundo del Agua, desde las miradas disciplinares, como recurso natural, hasta los orígenes míticos y los modelos de uso tradicionales, buscando apoyar redes de investigación y gestión desde la comunidad académica y la sociedad. Registro Colciencias código COL0190769.",
-      "actividades": "",
-      "modalidad": "",
-      "horarios": "",
-      "requisitos": "",
-      "nivel_academico": "",
-      "redes": "Hermes: http://www.hermes.unal.edu.co/pages/Consultas/Grupo.jsf?idGrupo=2418 | GrupLAC: https://scienti.minciencias.gov.co/gruplac/jsp/visualiza/visualizagr.jsp?nro=00000000019278",
-      "comentarios": "[Sede Bogotá] Categoría Minciencias según DIB: Registrado || Dependencia principal: 2- FACULTAD DE CIENCIAS / Otras dependencias /   /   / 7- UNIDAD DE DOCENCIA Y FORMACIÓN /   / 2- INSTITUTO DE ESTUDIOS AMBIENTALES - IDEA -"
     },
     {
       "id": "d5947af4-7582-4b06-ac35-419032bb2f52",
@@ -5741,28 +5477,6 @@
       "nivel_academico": "",
       "redes": "Hermes: http://www.hermes.unal.edu.co/pages/Consultas/Grupo.jsf?idGrupo=663 | GrupLAC: https://scienti.minciencias.gov.co/gruplac/jsp/visualiza/visualizagr.jsp?nro=00000000003196",
       "comentarios": "[Sede La Paz] Categoría Minciencias según DIB: C || Dependencia principal: 2- FACULTAD DE CIENCIAS / Otras dependencias /   /   / 0- DIRECCIÓN ACADÉMICA || Tambien disponible en Bogotá (ficha principal); Hermes 'Otras Sedes': La Paz"
-    },
-    {
-      "id": "80ab63ed-70e5-4263-a2be-50c5190c1b11",
-      "tipo": "Grupo de Investigación",
-      "carreras": [
-        "Ciencias Naturales"
-      ],
-      "carrera_str": "Ciencias Naturales",
-      "nombre": "Ornis: evolución y ecología de aves",
-      "docente": "Andres Mauricio Cuervo Maya",
-      "lider": "",
-      "email": "amcuervom@unal.edu.co",
-      "vinculacion": "Grupo registrado en el listado oficial de grupos DIB-UNAL Sede Bogotá (C)",
-      "enfoque": "ECOMORFOLOGÍA Y ECOLOGÍA DE COLIBRIES, TAXONOMÍA Y DISTRIBUCIÓN DE AVES COLOMBIANAS, ESPECIES AMENAZADAS DE AVES COLOMBIANAS, BIODIVERSIDAD Y CONSERVACIÓN DE AVES DE HUMEDALES ALTOANDINOS",
-      "descripcion": "El grupo realiza y apoya investigaciones relacionadas con la evolución, ecología, biogeografía, sistemática filogenética, bioacústica, comportamiento, taxonomía y conservación de las aves tropicales combinando aproximaciones empíricas de campo, teóricas, estadísticas, de laboratorio molecular y de colecciones biológicas. El grupo basa buena parte de esta misión en la gestión y crecimiento de la Colección de Ornitología del Instituto de Ciencias Naturales. En sus actividades de investigación, docencia y extensión, el grupo facilita los proyectos del grupo estudiantil GOUN (Grupo Ornitológico de la Universidad Nacional - Sede Bogotá) y del Semillero de Ornitología de la Sede de La Paz, así como de la ACO (Asociación Colombiana de Ornitología). El grupo inició con dos líneas principales de investigación bajo el liderazgo de Gary Stiles y de Loreta Rosselli, las cuales continuan y se complem",
-      "actividades": "",
-      "modalidad": "",
-      "horarios": "",
-      "requisitos": "",
-      "nivel_academico": "",
-      "redes": "Hermes: http://www.hermes.unal.edu.co/pages/Consultas/Grupo.jsf?idGrupo=663 | GrupLAC: https://scienti.minciencias.gov.co/gruplac/jsp/visualiza/visualizagr.jsp?nro=00000000003196",
-      "comentarios": "[Sede Bogotá] Categoría Minciencias según DIB: C || Dependencia principal: 2- FACULTAD DE CIENCIAS / Otras dependencias /   /   / 0- DIRECCIÓN ACADÉMICA"
     },
     {
       "id": "29eb4b43-3b6d-4ce5-a757-19d760105fb7",
@@ -6008,50 +5722,6 @@
       "comentarios": "[Sede Bogotá] Categoría Minciencias según DIB: C || Dependencia principal: 2- FACULTAD DE CIENCIAS"
     },
     {
-      "id": "a949ba9a-ea04-4825-b01f-73fcdf606d56",
-      "tipo": "Grupo de Investigación",
-      "carreras": [
-        "Ciencias Naturales"
-      ],
-      "carrera_str": "Ciencias Naturales",
-      "nombre": "Programa botanica economica",
-      "docente": "Nivea Cristina Garzon Gomez",
-      "lider": "",
-      "email": "ncgarzong@unal.edu.co",
-      "vinculacion": "Grupo registrado en el listado oficial de grupos DIB-UNAL Sede Bogotá (Registrado)",
-      "enfoque": "INFORMATICA APLICADA AL ESTUDIO, VALORACIÓN Y MANEJO DE LA FLORA COLOMBIANA, BOTÁNICA ECONOMICA Y ETNOBOTÁNICA, CIENCIAS Y SABERES UNA ALTERNATIVA DE INVESTIGACIÓN DE LA FLORA",
-      "descripcion": "El Grupo y Programa de Investigación en Botánica Económica busca consolidar y aplicar fundamentos teóricos y metodológicos, que intentan conocer y evaluar la diversidad florística, considerando el potencial de uso de grupos taxonomicos y floras locales como aspecto fundamental, para proporcionar conocimientos y modelos alternativos de manejo, utilización y conservación de la flora en Colombia. El Grupo adelanta diferentes proyectos y actividades académicas en investigación, docencia y extensión. Cuenta con la participación activa de profesores, estudiantes y profesionales de diferentes Facultades de la Universidad, y de otras instituciones nacionales e internacionales. El Grupo orienta y consolida 3 líneas de trabajo: - Botánica Económica, Etnobotánica y Etnociencias, Modelos de valoracion socioeconómica de la flora, y como línea trasversal Informática aplicada al estudio interdisciplina",
-      "actividades": "",
-      "modalidad": "",
-      "horarios": "",
-      "requisitos": "",
-      "nivel_academico": "",
-      "redes": "Hermes: http://www.hermes.unal.edu.co/pages/Consultas/Grupo.jsf?idGrupo=772 | GrupLAC: https://scienti.minciencias.gov.co/gruplac/jsp/visualiza/visualizagr.jsp?nro=00000000000360",
-      "comentarios": "[Sede Tumaco] Categoría Minciencias según DIB: Registrado || Dependencia principal: 2- FACULTAD DE CIENCIAS / Otras dependencias /   /   / 9- INSTITUTO DE ESTUDIOS DEL PACIFICO - IEP /   / 2- FACULTAD DE CIENCIAS /   / 6- DI || Tambien disponible en Bogotá (ficha principal); Hermes 'Otras Sedes': Amazonía, Caribe, Tumaco"
-    },
-    {
-      "id": "f7f553a2-fa64-4e4b-a1ba-99da2e036cbb",
-      "tipo": "Grupo de Investigación",
-      "carreras": [
-        "Ciencias Naturales"
-      ],
-      "carrera_str": "Ciencias Naturales",
-      "nombre": "Programa botanica economica",
-      "docente": "Nivea Cristina Garzon Gomez",
-      "lider": "",
-      "email": "ncgarzong@unal.edu.co",
-      "vinculacion": "Grupo registrado en el listado oficial de grupos DIB-UNAL Sede Bogotá (Registrado)",
-      "enfoque": "INFORMATICA APLICADA AL ESTUDIO, VALORACIÓN Y MANEJO DE LA FLORA COLOMBIANA, BOTÁNICA ECONOMICA Y ETNOBOTÁNICA, CIENCIAS Y SABERES UNA ALTERNATIVA DE INVESTIGACIÓN DE LA FLORA",
-      "descripcion": "El Grupo y Programa de Investigación en Botánica Económica busca consolidar y aplicar fundamentos teóricos y metodológicos, que intentan conocer y evaluar la diversidad florística, considerando el potencial de uso de grupos taxonomicos y floras locales como aspecto fundamental, para proporcionar conocimientos y modelos alternativos de manejo, utilización y conservación de la flora en Colombia. El Grupo adelanta diferentes proyectos y actividades académicas en investigación, docencia y extensión. Cuenta con la participación activa de profesores, estudiantes y profesionales de diferentes Facultades de la Universidad, y de otras instituciones nacionales e internacionales. El Grupo orienta y consolida 3 líneas de trabajo: - Botánica Económica, Etnobotánica y Etnociencias, Modelos de valoracion socioeconómica de la flora, y como línea trasversal Informática aplicada al estudio interdisciplina",
-      "actividades": "",
-      "modalidad": "",
-      "horarios": "",
-      "requisitos": "",
-      "nivel_academico": "",
-      "redes": "Hermes: http://www.hermes.unal.edu.co/pages/Consultas/Grupo.jsf?idGrupo=772 | GrupLAC: https://scienti.minciencias.gov.co/gruplac/jsp/visualiza/visualizagr.jsp?nro=00000000000360",
-      "comentarios": "[Sede Bogotá] Categoría Minciencias según DIB: Registrado || Dependencia principal: 2- FACULTAD DE CIENCIAS / Otras dependencias /   /   / 9- INSTITUTO DE ESTUDIOS DEL PACIFICO - IEP /   / 2- FACULTAD DE CIENCIAS /   / 6- DI"
-    },
-    {
       "id": "fc16e6cc-88b0-48f6-9fe5-e13a33c72d8e",
       "tipo": "Grupo de Investigación",
       "carreras": [
@@ -6072,28 +5742,6 @@
       "nivel_academico": "",
       "redes": "Hermes: http://www.hermes.unal.edu.co/pages/Consultas/Grupo.jsf?idGrupo=772 | GrupLAC: https://scienti.minciencias.gov.co/gruplac/jsp/visualiza/visualizagr.jsp?nro=00000000000360",
       "comentarios": "[Sede Amazonía] Categoría Minciencias según DIB: Registrado || Dependencia principal: 2- FACULTAD DE CIENCIAS / Otras dependencias /   /   / 9- INSTITUTO DE ESTUDIOS DEL PACIFICO - IEP /   / 2- FACULTAD DE CIENCIAS /   / 6- DI || Tambien disponible en Bogotá (ficha principal); Hermes 'Otras Sedes': Amazonía, Caribe, Tumaco"
-    },
-    {
-      "id": "bf661fca-7d38-4963-8945-401cc9066562",
-      "tipo": "Grupo de Investigación",
-      "carreras": [
-        "Ciencias Naturales"
-      ],
-      "carrera_str": "Ciencias Naturales",
-      "nombre": "Programa botanica economica",
-      "docente": "Nivea Cristina Garzon Gomez",
-      "lider": "",
-      "email": "ncgarzong@unal.edu.co",
-      "vinculacion": "Grupo registrado en el listado oficial de grupos DIB-UNAL Sede Bogotá (Registrado)",
-      "enfoque": "INFORMATICA APLICADA AL ESTUDIO, VALORACIÓN Y MANEJO DE LA FLORA COLOMBIANA, BOTÁNICA ECONOMICA Y ETNOBOTÁNICA, CIENCIAS Y SABERES UNA ALTERNATIVA DE INVESTIGACIÓN DE LA FLORA",
-      "descripcion": "El Grupo y Programa de Investigación en Botánica Económica busca consolidar y aplicar fundamentos teóricos y metodológicos, que intentan conocer y evaluar la diversidad florística, considerando el potencial de uso de grupos taxonomicos y floras locales como aspecto fundamental, para proporcionar conocimientos y modelos alternativos de manejo, utilización y conservación de la flora en Colombia. El Grupo adelanta diferentes proyectos y actividades académicas en investigación, docencia y extensión. Cuenta con la participación activa de profesores, estudiantes y profesionales de diferentes Facultades de la Universidad, y de otras instituciones nacionales e internacionales. El Grupo orienta y consolida 3 líneas de trabajo: - Botánica Económica, Etnobotánica y Etnociencias, Modelos de valoracion socioeconómica de la flora, y como línea trasversal Informática aplicada al estudio interdisciplina",
-      "actividades": "",
-      "modalidad": "",
-      "horarios": "",
-      "requisitos": "",
-      "nivel_academico": "",
-      "redes": "Hermes: http://www.hermes.unal.edu.co/pages/Consultas/Grupo.jsf?idGrupo=772 | GrupLAC: https://scienti.minciencias.gov.co/gruplac/jsp/visualiza/visualizagr.jsp?nro=00000000000360",
-      "comentarios": "[Sede Caribe] Categoría Minciencias según DIB: Registrado || Dependencia principal: 2- FACULTAD DE CIENCIAS / Otras dependencias /   /   / 9- INSTITUTO DE ESTUDIOS DEL PACIFICO - IEP /   / 2- FACULTAD DE CIENCIAS /   / 6- DI || Tambien disponible en Bogotá (ficha principal); Hermes 'Otras Sedes': Amazonía, Caribe, Tumaco"
     },
     {
       "id": "98d4db26-3001-4c8e-942a-6f9de7571a04",
@@ -6139,28 +5787,6 @@
       "nivel_academico": "",
       "redes": "Hermes: http://www.hermes.unal.edu.co/pages/Consultas/Grupo.jsf?idGrupo=1487 | GrupLAC: https://scienti.minciencias.gov.co/gruplac/jsp/visualiza/visualizagr.jsp?nro=00000000012034",
       "comentarios": "[Sede Medellín] Categoría Minciencias según DIB: A1 || Dependencia principal: 2- FACULTAD DE CIENCIAS / Otras dependencias /   /   / 3- FACULTAD DE CIENCIAS /   / 2- FACULTAD DE CIENCIAS || Tambien disponible en Bogotá (ficha principal); Hermes 'Otras Sedes': Medellín"
-    },
-    {
-      "id": "d2f9c1f3-ea2f-4d7a-8ea7-673334f3db82",
-      "tipo": "Grupo de Investigación",
-      "carreras": [
-        "Ciencias Naturales"
-      ],
-      "carrera_str": "Ciencias Naturales",
-      "nombre": "Química cuántica y computacional",
-      "docente": "Andres Reyes Velasco",
-      "lider": "",
-      "email": "areyesv@unal.edu.co",
-      "vinculacion": "Grupo registrado en el listado oficial de grupos DIB-UNAL Sede Bogotá (A1)",
-      "enfoque": "QUÍMICA CUANTICA, FÍSICA MOLECULAR, QUÍMICA TEÓRICA, ESPECTROSCOPIA, FÍSICA ATOMICA, QUÍMICA FÍSICA, QUÍMICA COMPUTACIÓNAL",
-      "descripcion": "Nuestra investigación se concentra en el desarrollo teórico, implementación computacional y aplicación de métodos precisos y eficientes que permitan estudiar una amplia gama de fenómenos moleculares. Por ejemplo, estamos estudiando efectos cuánticos nucleares en la estructura y propiedades moleculares. Además, estamos explorando la dinámica cuántica y control cuántico molecular. También estamos desarrollando una descripción detallada de interacciones no covalentes y su incidencia sobre la estabilidad molecular.",
-      "actividades": "",
-      "modalidad": "",
-      "horarios": "",
-      "requisitos": "",
-      "nivel_academico": "",
-      "redes": "Hermes: http://www.hermes.unal.edu.co/pages/Consultas/Grupo.jsf?idGrupo=1487 | GrupLAC: https://scienti.minciencias.gov.co/gruplac/jsp/visualiza/visualizagr.jsp?nro=00000000012034",
-      "comentarios": "[Sede Bogotá] Categoría Minciencias según DIB: A1 || Dependencia principal: 2- FACULTAD DE CIENCIAS / Otras dependencias /   /   / 3- FACULTAD DE CIENCIAS /   / 2- FACULTAD DE CIENCIAS"
     },
     {
       "id": "6fb479ae-88fc-4882-ae51-5966cd0b2bc5",
@@ -6451,28 +6077,6 @@
       "nivel_academico": "",
       "redes": "Hermes: http://www.hermes.unal.edu.co/pages/Consultas/Grupo.jsf?idGrupo=366 | GrupLAC: https://scienti.minciencias.gov.co/gruplac/jsp/visualiza/visualizagr.jsp?nro=00000000000453",
       "comentarios": "[Sede Medellín] Categoría Minciencias según DIB: B || Dependencia principal: 2- FACULTAD DE CIENCIAS / Otras dependencias /   /   / 2- FACULTAD DE CIENCIAS ECONÓMICAS || Tambien disponible en Bogotá (ficha principal); Hermes 'Otras Sedes': Medellín"
-    },
-    {
-      "id": "e92a3359-fb78-4db7-b70f-09c661608657",
-      "tipo": "Grupo de Investigación",
-      "carreras": [
-        "Ciencias Naturales"
-      ],
-      "carrera_str": "Ciencias Naturales",
-      "nombre": "Series de tiempo",
-      "docente": "Sergio Alejandro Calderon Villanueva",
-      "lider": "",
-      "email": "fhnietos@unal.edu.co",
-      "vinculacion": "Grupo registrado en el listado oficial de grupos DIB-UNAL Sede Bogotá (B)",
-      "enfoque": "PREDICCIÓN DE PROCESOS ESTOCASTICOS LATENTES, PRUEBAS ESTADÍSTICAS PARA PROCESOS DE MEMORIA LARGA, PRONOSTICOS DE SERIES ECONOMICAS, MODELOS DE EQUILIBRIO GENERAL DINAMICO, MÉTODOS SEMI-PARAMETRICOS Y TÉCNICAS DE SUAVIZAMIENTO, ECONOMETRIA, MODELOS NO LÍNEALES DE SERIES DE TIEMPO, MODELOS GRAFICOS Y CAUSALIDAD EN MACROECONOMÍA, ESTADÍSTICA BAYESIANA, MODELOS MICRO-ECONOMETRICOS",
-      "descripcion": "AREA: Ciencias exactas y de la tierra Probabilidad y estadístic. Programas en colciencias: ciencias básicas.",
-      "actividades": "",
-      "modalidad": "",
-      "horarios": "",
-      "requisitos": "",
-      "nivel_academico": "",
-      "redes": "Hermes: http://www.hermes.unal.edu.co/pages/Consultas/Grupo.jsf?idGrupo=366 | GrupLAC: https://scienti.minciencias.gov.co/gruplac/jsp/visualiza/visualizagr.jsp?nro=00000000000453",
-      "comentarios": "[Sede Bogotá] Categoría Minciencias según DIB: B || Dependencia principal: 2- FACULTAD DE CIENCIAS / Otras dependencias /   /   / 2- FACULTAD DE CIENCIAS ECONÓMICAS"
     },
     {
       "id": "91e32231-a705-4ea1-ab99-ef7896630570",
@@ -7186,28 +6790,6 @@
       "comentarios": "[Sede Bogotá] Categoría Minciencias según DIB: A1 || Dependencia principal: 2- FACULTAD DE CIENCIAS"
     },
     {
-      "id": "01381789-f43a-45f4-b8c0-506770fb393f",
-      "tipo": "Grupo de Investigación",
-      "carreras": [
-        "Ciencias Naturales"
-      ],
-      "carrera_str": "Ciencias Naturales",
-      "nombre": "Unrecursohidrico en ciencias y saberes _unrhidricocys©",
-      "docente": "Nivea Cristina Garzon Gomez",
-      "lider": "",
-      "email": "unrecursoh_cys@gmail.com",
-      "vinculacion": "Grupo registrado en el listado oficial de grupos DIB-UNAL Sede Bogotá (Registrado)",
-      "enfoque": "ESTABLECER ESPACIOS DE REFLEXIÓN Y PROGRAMAS CURRICULARES PARA EDUCACIÓN FORMAL Y NO FORMAL PROYECTADOS A LAS SEDES DE FRONTERA, RELACIÓNADOS CON EL RECURSO AGUA, ESTUDIOS EN LA CARACTERIZACIÓN, VALORACIÓN Y ALTERNATIVAS DE MANEJO DEL RECURSO AGUA EN COLOMBIA, DESDE LAS CIENCIAS EN ESPACIOS ACADÉMICOS Y LOS SABERES LOCALES DE HABITANTES DE GRANDES Y PEQUEÑAS CUENCAS HIDROGRÁFICAS E HIDROGEOLÓGICAS, CONSTRUCCIÓN DE LÍNEA BASE DE INFORMACIÓN MULTIDISCIPLINARIA E INTERSECTORIAL DEL RECURSO HÍDRICO, PARTIENDO DE LOS REQUERIMIENTOS REGIONALES Y LOCALES, QUE DEBE ASUMIR LA UNIVERSIDAD, DESDE LAS SED",
-      "descripcion": "UN Grupo y Semilleros de investigación que trabaja en la caracterización, valoración y alternativas de manejo del recurso hídrico en Colombia, desde las ciencias en espacios académicos y los saberes locales de sociedades multiétnicas que habitan los territorios que comprenden las grandes y pequeñas cuencas hidrográficas de nuestro país. Un mundo del agua que se aborda desde las miradas disciplinares, como recurso natural, hasta los orígenes míticos y los modelos de uso tradicionales de nuestra sociedad. UNRecursohídrico en Ciencias y Saberes -UNRhídricoCyS©, es un espacio de conocimiento y divulgación entre personas, instituciones y organizaciones que trabajan en la valoración y problemas básicos del acceso a las fuentes y beneficios del agua, buscando consolidar redes de gestión y estudio desde la comunidad académica hacia la sociedad y el estado. Una iniciativa liderada desde la Facult",
-      "actividades": "",
-      "modalidad": "",
-      "horarios": "",
-      "requisitos": "",
-      "nivel_academico": "",
-      "redes": "Hermes: http://www.hermes.unal.edu.co/pages/Consultas/Grupo.jsf?idGrupo=2360",
-      "comentarios": "[Sede Tumaco] Categoría Minciencias según DIB: Registrado || Dependencia principal: 2- FACULTAD DE CIENCIAS / Otras dependencias /   /   / 2- FACULTAD DE DERECHO, CIENCIAS POLÍTICAS Y SOCIALES /   / 2- FACULTAD DE CIENCIAS H || Tambien disponible en Bogotá (ficha principal); Hermes 'Otras Sedes': Medellín, Amazonía, Orinoquía, Caribe, Tumaco"
-    },
-    {
       "id": "f5c85a87-41d9-438b-8192-9bfc5664b313",
       "tipo": "Grupo de Investigación",
       "carreras": [
@@ -7228,94 +6810,6 @@
       "nivel_academico": "",
       "redes": "Hermes: http://www.hermes.unal.edu.co/pages/Consultas/Grupo.jsf?idGrupo=2360",
       "comentarios": "[Sede Orinoquía] Categoría Minciencias según DIB: Registrado || Dependencia principal: 2- FACULTAD DE CIENCIAS / Otras dependencias /   /   / 2- FACULTAD DE DERECHO, CIENCIAS POLÍTICAS Y SOCIALES /   / 2- FACULTAD DE CIENCIAS H || Tambien disponible en Bogotá (ficha principal); Hermes 'Otras Sedes': Medellín, Amazonía, Orinoquía, Caribe, Tumaco"
-    },
-    {
-      "id": "f8094eaf-3b3f-4184-8ed6-11b05e534b1c",
-      "tipo": "Grupo de Investigación",
-      "carreras": [
-        "Ciencias Naturales"
-      ],
-      "carrera_str": "Ciencias Naturales",
-      "nombre": "Unrecursohidrico en ciencias y saberes _unrhidricocys©",
-      "docente": "Nivea Cristina Garzon Gomez",
-      "lider": "",
-      "email": "unrecursoh_cys@gmail.com",
-      "vinculacion": "Grupo registrado en el listado oficial de grupos DIB-UNAL Sede Bogotá (Registrado)",
-      "enfoque": "ESTABLECER ESPACIOS DE REFLEXIÓN Y PROGRAMAS CURRICULARES PARA EDUCACIÓN FORMAL Y NO FORMAL PROYECTADOS A LAS SEDES DE FRONTERA, RELACIÓNADOS CON EL RECURSO AGUA, ESTUDIOS EN LA CARACTERIZACIÓN, VALORACIÓN Y ALTERNATIVAS DE MANEJO DEL RECURSO AGUA EN COLOMBIA, DESDE LAS CIENCIAS EN ESPACIOS ACADÉMICOS Y LOS SABERES LOCALES DE HABITANTES DE GRANDES Y PEQUEÑAS CUENCAS HIDROGRÁFICAS E HIDROGEOLÓGICAS, CONSTRUCCIÓN DE LÍNEA BASE DE INFORMACIÓN MULTIDISCIPLINARIA E INTERSECTORIAL DEL RECURSO HÍDRICO, PARTIENDO DE LOS REQUERIMIENTOS REGIONALES Y LOCALES, QUE DEBE ASUMIR LA UNIVERSIDAD, DESDE LAS SED",
-      "descripcion": "UN Grupo y Semilleros de investigación que trabaja en la caracterización, valoración y alternativas de manejo del recurso hídrico en Colombia, desde las ciencias en espacios académicos y los saberes locales de sociedades multiétnicas que habitan los territorios que comprenden las grandes y pequeñas cuencas hidrográficas de nuestro país. Un mundo del agua que se aborda desde las miradas disciplinares, como recurso natural, hasta los orígenes míticos y los modelos de uso tradicionales de nuestra sociedad. UNRecursohídrico en Ciencias y Saberes -UNRhídricoCyS©, es un espacio de conocimiento y divulgación entre personas, instituciones y organizaciones que trabajan en la valoración y problemas básicos del acceso a las fuentes y beneficios del agua, buscando consolidar redes de gestión y estudio desde la comunidad académica hacia la sociedad y el estado. Una iniciativa liderada desde la Facult",
-      "actividades": "",
-      "modalidad": "",
-      "horarios": "",
-      "requisitos": "",
-      "nivel_academico": "",
-      "redes": "Hermes: http://www.hermes.unal.edu.co/pages/Consultas/Grupo.jsf?idGrupo=2360",
-      "comentarios": "[Sede Medellín] Categoría Minciencias según DIB: Registrado || Dependencia principal: 2- FACULTAD DE CIENCIAS / Otras dependencias /   /   / 2- FACULTAD DE DERECHO, CIENCIAS POLÍTICAS Y SOCIALES /   / 2- FACULTAD DE CIENCIAS H || Tambien disponible en Bogotá (ficha principal); Hermes 'Otras Sedes': Medellín, Amazonía, Orinoquía, Caribe, Tumaco"
-    },
-    {
-      "id": "389390d0-66b3-4a84-9e46-c0d038362d8c",
-      "tipo": "Grupo de Investigación",
-      "carreras": [
-        "Ciencias Naturales"
-      ],
-      "carrera_str": "Ciencias Naturales",
-      "nombre": "Unrecursohidrico en ciencias y saberes _unrhidricocys©",
-      "docente": "Nivea Cristina Garzon Gomez",
-      "lider": "",
-      "email": "unrecursoh_cys@gmail.com",
-      "vinculacion": "Grupo registrado en el listado oficial de grupos DIB-UNAL Sede Bogotá (Registrado)",
-      "enfoque": "ESTABLECER ESPACIOS DE REFLEXIÓN Y PROGRAMAS CURRICULARES PARA EDUCACIÓN FORMAL Y NO FORMAL PROYECTADOS A LAS SEDES DE FRONTERA, RELACIÓNADOS CON EL RECURSO AGUA, ESTUDIOS EN LA CARACTERIZACIÓN, VALORACIÓN Y ALTERNATIVAS DE MANEJO DEL RECURSO AGUA EN COLOMBIA, DESDE LAS CIENCIAS EN ESPACIOS ACADÉMICOS Y LOS SABERES LOCALES DE HABITANTES DE GRANDES Y PEQUEÑAS CUENCAS HIDROGRÁFICAS E HIDROGEOLÓGICAS, CONSTRUCCIÓN DE LÍNEA BASE DE INFORMACIÓN MULTIDISCIPLINARIA E INTERSECTORIAL DEL RECURSO HÍDRICO, PARTIENDO DE LOS REQUERIMIENTOS REGIONALES Y LOCALES, QUE DEBE ASUMIR LA UNIVERSIDAD, DESDE LAS SED",
-      "descripcion": "UN Grupo y Semilleros de investigación que trabaja en la caracterización, valoración y alternativas de manejo del recurso hídrico en Colombia, desde las ciencias en espacios académicos y los saberes locales de sociedades multiétnicas que habitan los territorios que comprenden las grandes y pequeñas cuencas hidrográficas de nuestro país. Un mundo del agua que se aborda desde las miradas disciplinares, como recurso natural, hasta los orígenes míticos y los modelos de uso tradicionales de nuestra sociedad. UNRecursohídrico en Ciencias y Saberes -UNRhídricoCyS©, es un espacio de conocimiento y divulgación entre personas, instituciones y organizaciones que trabajan en la valoración y problemas básicos del acceso a las fuentes y beneficios del agua, buscando consolidar redes de gestión y estudio desde la comunidad académica hacia la sociedad y el estado. Una iniciativa liderada desde la Facult",
-      "actividades": "",
-      "modalidad": "",
-      "horarios": "",
-      "requisitos": "",
-      "nivel_academico": "",
-      "redes": "Hermes: http://www.hermes.unal.edu.co/pages/Consultas/Grupo.jsf?idGrupo=2360",
-      "comentarios": "[Sede Amazonía] Categoría Minciencias según DIB: Registrado || Dependencia principal: 2- FACULTAD DE CIENCIAS / Otras dependencias /   /   / 2- FACULTAD DE DERECHO, CIENCIAS POLÍTICAS Y SOCIALES /   / 2- FACULTAD DE CIENCIAS H || Tambien disponible en Bogotá (ficha principal); Hermes 'Otras Sedes': Medellín, Amazonía, Orinoquía, Caribe, Tumaco"
-    },
-    {
-      "id": "4b0defff-18f8-432b-9a16-a17ab7d76bde",
-      "tipo": "Grupo de Investigación",
-      "carreras": [
-        "Ciencias Naturales"
-      ],
-      "carrera_str": "Ciencias Naturales",
-      "nombre": "Unrecursohidrico en ciencias y saberes _unrhidricocys©",
-      "docente": "Nivea Cristina Garzon Gomez",
-      "lider": "",
-      "email": "unrecursoh_cys@gmail.com",
-      "vinculacion": "Grupo registrado en el listado oficial de grupos DIB-UNAL Sede Bogotá (Registrado)",
-      "enfoque": "ESTABLECER ESPACIOS DE REFLEXIÓN Y PROGRAMAS CURRICULARES PARA EDUCACIÓN FORMAL Y NO FORMAL PROYECTADOS A LAS SEDES DE FRONTERA, RELACIÓNADOS CON EL RECURSO AGUA, ESTUDIOS EN LA CARACTERIZACIÓN, VALORACIÓN Y ALTERNATIVAS DE MANEJO DEL RECURSO AGUA EN COLOMBIA, DESDE LAS CIENCIAS EN ESPACIOS ACADÉMICOS Y LOS SABERES LOCALES DE HABITANTES DE GRANDES Y PEQUEÑAS CUENCAS HIDROGRÁFICAS E HIDROGEOLÓGICAS, CONSTRUCCIÓN DE LÍNEA BASE DE INFORMACIÓN MULTIDISCIPLINARIA E INTERSECTORIAL DEL RECURSO HÍDRICO, PARTIENDO DE LOS REQUERIMIENTOS REGIONALES Y LOCALES, QUE DEBE ASUMIR LA UNIVERSIDAD, DESDE LAS SED",
-      "descripcion": "UN Grupo y Semilleros de investigación que trabaja en la caracterización, valoración y alternativas de manejo del recurso hídrico en Colombia, desde las ciencias en espacios académicos y los saberes locales de sociedades multiétnicas que habitan los territorios que comprenden las grandes y pequeñas cuencas hidrográficas de nuestro país. Un mundo del agua que se aborda desde las miradas disciplinares, como recurso natural, hasta los orígenes míticos y los modelos de uso tradicionales de nuestra sociedad. UNRecursohídrico en Ciencias y Saberes -UNRhídricoCyS©, es un espacio de conocimiento y divulgación entre personas, instituciones y organizaciones que trabajan en la valoración y problemas básicos del acceso a las fuentes y beneficios del agua, buscando consolidar redes de gestión y estudio desde la comunidad académica hacia la sociedad y el estado. Una iniciativa liderada desde la Facult",
-      "actividades": "",
-      "modalidad": "",
-      "horarios": "",
-      "requisitos": "",
-      "nivel_academico": "",
-      "redes": "Hermes: http://www.hermes.unal.edu.co/pages/Consultas/Grupo.jsf?idGrupo=2360",
-      "comentarios": "[Sede Caribe] Categoría Minciencias según DIB: Registrado || Dependencia principal: 2- FACULTAD DE CIENCIAS / Otras dependencias /   /   / 2- FACULTAD DE DERECHO, CIENCIAS POLÍTICAS Y SOCIALES /   / 2- FACULTAD DE CIENCIAS H || Tambien disponible en Bogotá (ficha principal); Hermes 'Otras Sedes': Medellín, Amazonía, Orinoquía, Caribe, Tumaco"
-    },
-    {
-      "id": "457ecf6c-42d0-40fe-8ad2-705b40fe89e6",
-      "tipo": "Grupo de Investigación",
-      "carreras": [
-        "Ciencias Naturales"
-      ],
-      "carrera_str": "Ciencias Naturales",
-      "nombre": "Unrecursohidrico en ciencias y saberes _unrhidricocys©",
-      "docente": "Nivea Cristina Garzon Gomez",
-      "lider": "",
-      "email": "unrecursoh_cys@gmail.com",
-      "vinculacion": "Grupo registrado en el listado oficial de grupos DIB-UNAL Sede Bogotá (Registrado)",
-      "enfoque": "ESTABLECER ESPACIOS DE REFLEXIÓN Y PROGRAMAS CURRICULARES PARA EDUCACIÓN FORMAL Y NO FORMAL PROYECTADOS A LAS SEDES DE FRONTERA, RELACIÓNADOS CON EL RECURSO AGUA, ESTUDIOS EN LA CARACTERIZACIÓN, VALORACIÓN Y ALTERNATIVAS DE MANEJO DEL RECURSO AGUA EN COLOMBIA, DESDE LAS CIENCIAS EN ESPACIOS ACADÉMICOS Y LOS SABERES LOCALES DE HABITANTES DE GRANDES Y PEQUEÑAS CUENCAS HIDROGRÁFICAS E HIDROGEOLÓGICAS, CONSTRUCCIÓN DE LÍNEA BASE DE INFORMACIÓN MULTIDISCIPLINARIA E INTERSECTORIAL DEL RECURSO HÍDRICO, PARTIENDO DE LOS REQUERIMIENTOS REGIONALES Y LOCALES, QUE DEBE ASUMIR LA UNIVERSIDAD, DESDE LAS SED",
-      "descripcion": "UN Grupo y Semilleros de investigación que trabaja en la caracterización, valoración y alternativas de manejo del recurso hídrico en Colombia, desde las ciencias en espacios académicos y los saberes locales de sociedades multiétnicas que habitan los territorios que comprenden las grandes y pequeñas cuencas hidrográficas de nuestro país. Un mundo del agua que se aborda desde las miradas disciplinares, como recurso natural, hasta los orígenes míticos y los modelos de uso tradicionales de nuestra sociedad. UNRecursohídrico en Ciencias y Saberes -UNRhídricoCyS©, es un espacio de conocimiento y divulgación entre personas, instituciones y organizaciones que trabajan en la valoración y problemas básicos del acceso a las fuentes y beneficios del agua, buscando consolidar redes de gestión y estudio desde la comunidad académica hacia la sociedad y el estado. Una iniciativa liderada desde la Facult",
-      "actividades": "",
-      "modalidad": "",
-      "horarios": "",
-      "requisitos": "",
-      "nivel_academico": "",
-      "redes": "Hermes: http://www.hermes.unal.edu.co/pages/Consultas/Grupo.jsf?idGrupo=2360",
-      "comentarios": "[Sede Bogotá] Categoría Minciencias según DIB: Registrado || Dependencia principal: 2- FACULTAD DE CIENCIAS / Otras dependencias /   /   / 2- FACULTAD DE DERECHO, CIENCIAS POLÍTICAS Y SOCIALES /   / 2- FACULTAD DE CIENCIAS H"
     },
     {
       "id": "08bd18e6-03de-42db-812d-1c5b5e1ef29e",
