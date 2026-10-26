@@ -75,19 +75,20 @@ export default {
         'full': '9999px',
       },
       boxShadow: {
-        'glow-sm': '0 0 15px -3px rgba(139, 92, 246, 0.3)',
-        'glow': '0 0 30px -5px rgba(139, 92, 246, 0.4)',
-        'glow-lg': '0 0 50px -10px rgba(139, 92, 246, 0.5)',
-        'glow-accent': '0 0 30px -5px rgba(6, 182, 212, 0.4)',
-        'card': '0 4px 24px -4px rgba(0, 0, 0, 0.3)',
-        'card-hover': '0 8px 40px -8px rgba(139, 92, 246, 0.25)',
+        'glow-sm': '0 0 16px -2px rgba(13, 43, 83, 0.25)',
+        'glow': '0 0 28px -4px rgba(8, 133, 119, 0.28)',
+        'glow-lg': '0 0 48px -6px rgba(13, 43, 83, 0.35)',
+        'glow-accent': '0 0 28px -4px rgba(148, 180, 59, 0.3)',
+        'glow-lime': '0 0 24px -4px rgba(148, 180, 59, 0.35)',
+        'card': '0 4px 20px -2px rgba(15, 23, 42, 0.08)',
+        'card-hover': '0 12px 32px -4px rgba(13, 43, 83, 0.16)',
       },
       backdropBlur: {
         'glass': '16px',
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-mesh': 'radial-gradient(at 40% 20%, rgba(139, 92, 246, 0.15) 0, transparent 50%), radial-gradient(at 80% 0%, rgba(6, 182, 212, 0.1) 0, transparent 50%), radial-gradient(at 0% 50%, rgba(244, 114, 182, 0.08) 0, transparent 50%)',
+        'gradient-mesh': 'radial-gradient(at 40% 20%, rgba(25, 41, 80, 0.12) 0, transparent 55%), radial-gradient(at 80% 0%, rgba(8, 133, 119, 0.1) 0, transparent 50%), radial-gradient(at 0% 50%, rgba(148, 180, 59, 0.08) 0, transparent 50%)',
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-out',

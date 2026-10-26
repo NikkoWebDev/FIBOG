@@ -42,18 +42,36 @@ const grupoJsonLd = JSON.stringify({
 const tipoColors: Record<string, string> = {
   'Semillero': 'bg-accent/10 text-accent-light border-accent/20',
   'Grupo de Investigación': 'bg-primary/10 text-primary-light border-primary/20',
-  'Grupo Estudiantil': 'bg-neon/10 text-neon border-neon/20'
+  'Grupo Estudiantil': 'bg-neon/10 text-neon-light dark:text-neon border-neon/20'
 };
 
 const normTipo = (s: string) =>
   (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 const tipoKey = Object.keys(tipoColors).find(k => normTipo(k) === normTipo(grupo.tipo));
 const tipoBadge = (tipoKey && tipoColors[tipoKey]) || tipoColors['Semillero'];
+
+const liderName = grupo.lider || grupo.docente || 'Líder / Representante del grupo';
+const defaultSubject = `[Postulación UNAL] Interés en unirme a ${grupo.nombre}`;
+const defaultBody = `Estimado(a) ${liderName},
+
+Mi nombre es [Nombre del Estudiante], estudiante de [Carrera] en la Universidad Nacional de Colombia.
+
+Me comunico con el fin de manifestar mi interés en vincularme y participar en las actividades del grupo ${grupo.nombre} (${grupo.tipo}). Me gustaría conocer más sobre las líneas de trabajo actuales y el proceso de vinculación de nuevos miembros.
+
+Agradezco de antemano su orientación y quedo atento(a) a su respuesta.
+
+Cordialmente,
+[Nombre del Estudiante]
+Estudiante Universidad Nacional de Colombia`;
+
+const defaultMailto = grupo.email
+  ? `mailto:${encodeURIComponent(grupo.email)}?subject=${encodeURIComponent(defaultSubject)}&body=${encodeURIComponent(defaultBody)}`
+  : '#';
 ---
 
-<Layout title={`${grupo.nombre} | Base de Datos Ingeniería y Afines`} description={grupo.descripcion || ''} activePage="grupos" ogType="article">
+<Layout title={`${grupo.nombre} | Facultad de Ingeniería UNAL`} description={grupo.descripcion || ''} activePage="grupos" hideFooter={false} ogType="article">
   <Fragment slot="head">
-    <script type="application/ld+json" set:html={grupoJsonLd} />
+    <script is:inline type="application/ld+json" set:html={grupoJsonLd} />
   </Fragment>
   <main class="min-h-screen py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
     <!-- Back Button -->
@@ -109,18 +127,28 @@ const tipoBadge = (tipoKey && tipoColors[tipoKey]) || tipoColors['Semillero'];
         <!-- Quick Actions -->
         <div class="flex flex-wrap items-center gap-3">
           {grupo.email && (
+            <button
+              type="button"
+              id="open-apply-modal-btn"
+              class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white font-bold hover:shadow-glow hover:-translate-y-0.5 active:translate-y-0 transition-all text-sm shadow-glow-sm cursor-pointer"
+            >
+              <span class="material-symbols-outlined text-lg">outgoing_mail</span>
+              <span>Postularme al grupo / Contactar líder</span>
+            </button>
+          )}
+          {grupo.email && (
             <div class="flex items-center gap-2 pl-4 pr-2 py-2 rounded-xl border border-border-default bg-bg-hover max-w-full">
               <span class="material-symbols-outlined text-primary-light">email</span>
               <span class="text-text-primary text-sm font-medium break-all">{grupo.email}</span>
               <button
                 type="button"
                 data-copy-email={grupo.email}
-                class="shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-primary/10 text-primary-light text-sm font-semibold hover:bg-primary/20 transition-all focus-visible:outline-2 focus-visible:outline-primary"
+                class="shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-primary/10 text-primary-light text-sm font-semibold hover:bg-primary/20 transition-all focus-visible:outline-2 focus-visible:outline-primary cursor-pointer"
               >
                 <span class="material-symbols-outlined text-base">content_copy</span>
                 <span data-copy-label>Copiar</span>
               </button>
-              <a href={`mailto:${grupo.email}`} class="text-xs text-primary-light hover:underline shrink-0 pr-1">Abrir en tu correo</a>
+              <a href={defaultMailto} class="text-xs text-primary-light hover:underline shrink-0 pr-1">Abrir en tu correo</a>
             </div>
           )}
           {webUrl && (
@@ -248,50 +276,109 @@ const tipoBadge = (tipoKey && tipoColors[tipoKey]) || tipoColors['Semillero'];
           )}
         </div>
         {grupo.email && (
-          <div class="flex items-center gap-2 pl-4 pr-2 py-2 rounded-xl border border-border-default bg-bg-hover max-w-full">
-            <span class="material-symbols-outlined text-primary-light">email</span>
-            <span class="text-text-primary text-sm font-medium break-all">{grupo.email}</span>
+          <div class="flex flex-col sm:flex-row items-center gap-3">
             <button
               type="button"
-              data-copy-email={grupo.email}
-              class="shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-primary/10 text-primary-light text-sm font-semibold hover:bg-primary/20 transition-all focus-visible:outline-2 focus-visible:outline-primary"
+              id="open-apply-modal-btn-bottom"
+              class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white font-bold hover:shadow-glow hover:-translate-y-0.5 active:translate-y-0 transition-all text-sm shadow-glow-sm cursor-pointer"
             >
-              <span class="material-symbols-outlined text-base">content_copy</span>
-              <span data-copy-label>Copiar</span>
+              <span class="material-symbols-outlined text-base">outgoing_mail</span>
+              <span>Postularme / Contactar</span>
             </button>
-            <a href={`mailto:${grupo.email}`} class="text-xs text-primary-light hover:underline shrink-0 pr-1">Abrir en tu correo</a>
+            <div class="flex items-center gap-2 pl-4 pr-2 py-2 rounded-xl border border-border-default bg-bg-hover max-w-full">
+              <span class="material-symbols-outlined text-primary-light">email</span>
+              <span class="text-text-primary text-sm font-medium break-all">{grupo.email}</span>
+              <button
+                type="button"
+                data-copy-email={grupo.email}
+                class="shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-primary/10 text-primary-light text-sm font-semibold hover:bg-primary/20 transition-all focus-visible:outline-2 focus-visible:outline-primary cursor-pointer"
+              >
+                <span class="material-symbols-outlined text-base">content_copy</span>
+                <span data-copy-label>Copiar</span>
+              </button>
+              <a href={defaultMailto} class="text-xs text-primary-light hover:underline shrink-0 pr-1">Abrir en tu correo</a>
+            </div>
           </div>
         )}
       </div>
     </div>
+
+    <!-- Modal Interactivo de Postulacion / Contacto -->
+    <dialog id="modal-postulacion" class="backdrop:bg-black/75 backdrop:backdrop-blur-sm bg-transparent p-4 max-w-2xl w-full text-text-primary outline-none">
+      <div class="glass rounded-2xl border border-border-default p-6 md:p-8 bg-bg-card shadow-2xl relative">
+        <div class="flex items-center justify-between pb-4 border-b border-border-subtle mb-5">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary-light">
+              <span class="material-symbols-outlined">outgoing_mail</span>
+            </div>
+            <div>
+              <h2 class="text-lg sm:text-xl font-bold text-text-primary">Contactar a {grupo.nombre}</h2>
+              <p class="text-xs text-text-muted">Plantilla institucional de postulación para estudiantes UNAL</p>
+            </div>
+          </div>
+          <button type="button" id="close-modal-btn" aria-label="Cerrar modal" class="p-2 rounded-lg hover:bg-bg-hover text-text-secondary hover:text-text-primary transition-colors cursor-pointer">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+
+        <div class="space-y-4 mb-5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label for="post-nombre" class="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-1">Tu nombre completo</label>
+              <input id="post-nombre" type="text" placeholder="Ej: Valentina Gómez" class="w-full px-3 py-2 bg-bg-input border border-border-default rounded-lg text-sm text-text-primary focus:outline-none focus:border-primary transition-all" />
+            </div>
+            <div>
+              <label for="post-carrera" class="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-1">Tu carrera</label>
+              <input id="post-carrera" type="text" placeholder="Ej: Ingeniería de Sistemas" class="w-full px-3 py-2 bg-bg-input border border-border-default rounded-lg text-sm text-text-primary focus:outline-none focus:border-primary transition-all" />
+            </div>
+          </div>
+
+          <div>
+            <label for="post-mensaje" class="block text-xs font-semibold text-text-secondary uppercase tracking-wider mb-1">Motivación o consulta personal (opcional)</label>
+            <textarea id="post-mensaje" rows="2" placeholder="Describe brevemente tu interés o disponibilidad horaria..." class="w-full px-3 py-2 bg-bg-input border border-border-default rounded-lg text-sm text-text-primary focus:outline-none focus:border-primary transition-all resize-none"></textarea>
+          </div>
+
+          <div>
+            <div class="flex items-center justify-between mb-1.5">
+              <span class="text-xs font-semibold text-text-secondary uppercase tracking-wider">Vista previa del correo institucional:</span>
+              <span class="text-[11px] text-text-muted truncate max-w-[200px]">Para: {grupo.email}</span>
+            </div>
+            <pre id="preview-text" class="bg-bg-hover/80 border border-border-subtle rounded-xl p-3.5 text-xs font-mono text-text-secondary whitespace-pre-wrap max-h-48 overflow-y-auto leading-relaxed select-all"></pre>
+          </div>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3 justify-end pt-4 border-t border-border-subtle">
+          <button type="button" id="copy-template-btn" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl border border-border-default text-text-secondary hover:bg-bg-hover hover:text-text-primary transition-all text-sm cursor-pointer">
+            <span class="material-symbols-outlined text-base">content_copy</span>
+            <span id="copy-template-label">Copiar texto</span>
+          </button>
+          <a id="modal-mailto-link" href={defaultMailto} class="inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white font-bold hover:shadow-glow hover:-translate-y-0.5 active:translate-y-0 transition-all text-sm cursor-pointer shadow-glow-sm">
+            <span class="material-symbols-outlined text-base">outgoing_mail</span>
+            <span>Abrir en mi correo</span>
+          </a>
+        </div>
+      </div>
+    </dialog>
   </main>
 </Layout>
 
 <script>
-  document.querySelectorAll('[data-copy-email]').forEach((btn) => {
+  // Clipboard copy handler with navigator.clipboard (no deprecated execCommand)
+  document.querySelectorAll<HTMLButtonElement>('[data-copy-email]').forEach((btn) => {
     btn.addEventListener('click', async () => {
       const email = btn.getAttribute('data-copy-email') || '';
       if (!email) return;
+
       let ok = false;
       try {
         await navigator.clipboard.writeText(email);
         ok = true;
       } catch {
-        const ta = document.createElement('textarea');
-        ta.value = email;
-        ta.style.position = 'fixed';
-        ta.style.opacity = '0';
-        document.body.appendChild(ta);
-        ta.select();
-        try {
-          ok = document.execCommand('copy');
-        } catch {
-          ok = false;
-        }
-        ta.remove();
+        ok = false;
       }
-      const label = btn.querySelector('[data-copy-label]');
-      const icon = btn.querySelector('.material-symbols-outlined');
+
+      const label = btn.querySelector<HTMLElement>('[data-copy-label]');
+      const icon = btn.querySelector<HTMLElement>('.material-symbols-outlined');
       if (ok) {
         if (label) label.textContent = 'Copiado';
         if (icon) icon.textContent = 'check';
@@ -306,5 +393,91 @@ const tipoBadge = (tipoKey && tipoColors[tipoKey]) || tipoColors['Semillero'];
         }, 2000);
       }
     });
+  });
+
+  // Modal postulacion / contacto
+  const modal = document.getElementById('modal-postulacion') as HTMLDialogElement | null;
+  const openBtns = [
+    document.getElementById('open-apply-modal-btn'),
+    document.getElementById('open-apply-modal-btn-bottom')
+  ].filter((b): b is HTMLElement => b !== null);
+
+  const closeBtn = document.getElementById('close-modal-btn');
+  const postNombre = document.getElementById('post-nombre') as HTMLInputElement | null;
+  const postCarrera = document.getElementById('post-carrera') as HTMLInputElement | null;
+  const postMensaje = document.getElementById('post-mensaje') as HTMLTextAreaElement | null;
+  const previewText = document.getElementById('preview-text');
+  const modalMailtoLink = document.getElementById('modal-mailto-link') as HTMLAnchorElement | null;
+  const copyTemplateBtn = document.getElementById('copy-template-btn');
+  const copyTemplateLabel = document.getElementById('copy-template-label');
+
+  const rawRecipient = modalMailtoLink?.getAttribute('href')?.match(/mailto:([^?]+)/)?.[1] || '';
+  const grupoName = document.querySelector('h1')?.textContent?.trim() || 'el grupo';
+
+  function generateTemplate(): { subject: string; body: string } {
+    const nombre = postNombre?.value.trim() || '[Nombre del Estudiante]';
+    const carrera = postCarrera?.value.trim() || '[Carrera]';
+    const personal = postMensaje?.value.trim();
+
+    const subject = `[Postulación UNAL] Interés en unirme a ${grupoName} - ${nombre}`;
+    const extraMsg = personal
+      ? `\n\n${personal}\n`
+      : '\n\nMe pongo en contacto para manifestar mi interés en vincularme y participar en las actividades del grupo. Me gustaría conocer más sobre las líneas de trabajo actuales y el proceso de admisión para nuevos miembros.\n';
+
+    const body = `Estimado(a) líder / docente de ${grupoName},
+
+Mi nombre es ${nombre}, estudiante de ${carrera} en la Universidad Nacional de Colombia.${extraMsg}
+Agradezco de antemano su atención y quedo atento(a) a su respuesta.
+
+Cordialmente,
+${nombre}
+Estudiante Universidad Nacional de Colombia`;
+
+    return { subject, body };
+  }
+
+  function updatePreview(): void {
+    const { subject, body } = generateTemplate();
+    if (previewText) {
+      previewText.textContent = `Asunto: ${subject}\n\n${body}`;
+    }
+    if (modalMailtoLink && rawRecipient) {
+      modalMailtoLink.href = `mailto:${rawRecipient}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    }
+  }
+
+  openBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      updatePreview();
+      modal?.showModal();
+    });
+  });
+
+  closeBtn?.addEventListener('click', () => {
+    modal?.close();
+  });
+
+  modal?.addEventListener('click', (e) => {
+    if (e.target === modal) modal.close();
+  });
+
+  postNombre?.addEventListener('input', updatePreview);
+  postCarrera?.addEventListener('input', updatePreview);
+  postMensaje?.addEventListener('input', updatePreview);
+
+  copyTemplateBtn?.addEventListener('click', async () => {
+    const { subject, body } = generateTemplate();
+    const fullText = `Asunto: ${subject}\n\n${body}`;
+    try {
+      await navigator.clipboard.writeText(fullText);
+      if (copyTemplateLabel) {
+        copyTemplateLabel.textContent = '¡Copiado!';
+        setTimeout(() => {
+          copyTemplateLabel.textContent = 'Copiar texto';
+        }, 2000);
+      }
+    } catch {
+      if (copyTemplateLabel) copyTemplateLabel.textContent = 'Error al copiar';
+    }
   });
 </script>

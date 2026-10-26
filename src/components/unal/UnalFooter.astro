@@ -1,62 +1,121 @@
 ---
-// UnalFooter.astro - Modern footer for Base de Datos Ingeniería y Afines
+// UnalFooter.astro - Footer institucional de élite para FIBOG (Universidad Nacional de Colombia)
 
-const navLinks = [
+interface NavLink {
+  label: string;
+  url: string;
+  external?: boolean;
+}
+
+const platformLinks: NavLink[] = [
   { label: 'Inicio', url: '/' },
-  { label: 'Registro', url: '/registro' },
-  { label: 'Privacidad', url: '/privacidad' },
+  { label: 'Registro de Grupo', url: '/registro' },
+  { label: 'Política de Privacidad', url: '/privacidad' },
 ];
 
+const institutionalLinks: NavLink[] = [
+  { label: 'Portal UNAL', url: 'https://unal.edu.co', external: true },
+  { label: 'Facultad de Ingeniería (FIBOG)', url: 'https://ingenieria.bogota.unal.edu.co', external: true },
+  { label: 'Sistema de Investigación HERMES', url: 'https://hermes.unal.edu.co', external: true },
+];
 ---
 
-<footer class="relative mt-auto">
-  <!-- Gradient line -->
-  <div class="h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent"></div>
+<footer class="relative mt-auto border-t border-border-default/60">
+  <!-- Accent top border gradient FIBOG -->
+  <div class="h-1 bg-gradient-to-r from-primary via-accent to-neon opacity-80"></div>
 
-  <div class="bg-bg-raised/70 backdrop-blur-xl">
+  <div class="bg-bg-raised/80 backdrop-blur-xl">
     <div class="max-w-7xl mx-auto px-6 py-12 lg:py-16">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16">
-        <!-- Brand -->
-        <div>
-          <a href="/" class="flex items-center gap-3 mb-4" rel="home">
-            <img src="/logo.png" alt="Base de Datos Ingeniería y Afines — logo"
-                 class="w-9 h-9 rounded-lg object-cover shadow-glow-sm"
-                 width="36" height="36" loading="lazy" decoding="async" />
-            <span class="text-text-primary font-bold text-lg tracking-tight">
-              Base de Datos Ingeniería y Afines<span class="text-primary">.</span>
-            </span>
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-12">
+        <!-- Brand & Institutional identity (6 cols) -->
+        <div class="md:col-span-6 space-y-4">
+          <a href="/" class="inline-flex items-center gap-3.5 group" rel="home">
+            <img src="/logo.png" alt="Escudo Universidad Nacional de Colombia"
+                 class="w-11 h-11 rounded-xl object-cover ring-1 ring-border-default shadow-sm group-hover:ring-primary/40 transition-all"
+                 width="44" height="44" loading="lazy" decoding="async" />
+            <div class="flex flex-col">
+              <span class="text-xs uppercase font-bold tracking-wider text-text-muted">
+                Universidad Nacional de Colombia
+              </span>
+              <span class="text-base font-bold text-text-primary tracking-tight">
+                Facultad de Ingeniería <span class="text-primary-light font-medium text-sm">| FIBOG</span>
+              </span>
+            </div>
           </a>
-          <p class="text-text-secondary text-sm leading-relaxed max-w-xs">
-            Catalogo de semilleros, grupos de investigacion y comunidades estudiantiles de la Facultad de Ingeniería y Afines.
+          <p class="text-text-secondary text-sm leading-relaxed max-w-md">
+            Directorio oficial de semilleros, grupos de investigación y comunidades académicas de la Facultad de Ingeniería — Sede Bogotá. Fomentando la excelencia investigativa, innovación técnica y liderazgo estudiantil.
           </p>
+          <div class="flex items-center gap-2 pt-1 text-xs text-text-muted">
+            <span class="inline-block w-2 h-2 rounded-full bg-accent"></span>
+            <span>Sede Bogotá · Ciudad Universitaria</span>
+          </div>
         </div>
 
-        <!-- Navigation -->
-        <nav aria-label="Enlaces" class="md:text-right">
-          <h6 class="text-text-muted text-xs font-semibold uppercase tracking-widest mb-4">Navegacion</h6>
-          <ul class="list-none p-0 m-0 space-y-3">
-            {navLinks.map((l) => (
+        <!-- Platform Links (3 cols) -->
+        <div class="md:col-span-3">
+          <h2 class="text-text-primary text-xs font-bold uppercase tracking-widest mb-4">
+            Plataforma
+          </h2>
+          <ul class="list-none p-0 m-0 space-y-2.5">
+            {platformLinks.map((link) => (
               <li>
-                <a href={l.url} class="text-text-secondary text-sm no-underline hover:text-primary-light transition-colors">
-                  {l.label}
+                <a href={link.url} class="text-text-secondary text-sm hover:text-primary-light transition-colors inline-flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-sm text-text-muted">chevron_right</span>
+                  {link.label}
                 </a>
               </li>
             ))}
           </ul>
-        </nav>
+        </div>
+
+        <!-- Institutional Links & Contact (3 cols) -->
+        <div class="md:col-span-3">
+          <h2 class="text-text-primary text-xs font-bold uppercase tracking-widest mb-4">
+            Institucional
+          </h2>
+          <ul class="list-none p-0 m-0 space-y-2.5 mb-6">
+            {institutionalLinks.map((link) => (
+              <li>
+                <a
+                  href={link.url}
+                  target={link.external ? '_blank' : undefined}
+                  rel={link.external ? 'noopener noreferrer' : undefined}
+                  class="text-text-secondary text-sm hover:text-primary-light transition-colors inline-flex items-center gap-1"
+                >
+                  <span>{link.label}</span>
+                  {link.external && (
+                    <span class="material-symbols-outlined text-xs text-text-muted">open_in_new</span>
+                  )}
+                </a>
+              </li>
+            ))}
+          </ul>
+
+          <h2 class="text-text-primary text-xs font-bold uppercase tracking-widest mb-2">
+            Contacto y Soporte
+          </h2>
+          <div class="space-y-1.5 text-xs text-text-secondary">
+            <a href="mailto:bgallo@unal.edu.co" class="block hover:text-primary-light transition-colors font-mono">
+              bgallo@unal.edu.co
+            </a>
+            <a href="mailto:ngutierrezga@unal.edu.co" class="block hover:text-primary-light transition-colors font-mono">
+              ngutierrezga@unal.edu.co
+            </a>
+          </div>
+        </div>
       </div>
 
-      <!-- Bottom bar -->
-      <div class="mt-10 pt-8 border-t border-border-subtle flex flex-col sm:flex-row items-center justify-between gap-4">
-        <p class="text-text-muted text-xs">
-          &copy; {new Date().getFullYear()} Base de Datos Ingeniería y Afines &mdash; Facultad de Ingeniería y Afines, UNAL Bogota
+      <!-- Bottom Bar -->
+      <div class="mt-12 pt-8 border-t border-border-default/70 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-text-muted">
+        <p class="m-0 text-center sm:text-left">
+          &copy; {new Date().getFullYear()} Universidad Nacional de Colombia &mdash; Facultad de Ingeniería (FIBOG). Todos los derechos reservados.
         </p>
-        <div class="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-text-muted text-xs">
-          <a href="/privacidad" class="hover:text-text-secondary transition-colors">Privacidad</a>
-          <span class="text-border-default">|</span>
-          <a href="mailto:bgallo@unal.edu.co" class="hover:text-primary-light transition-colors">bgallo@unal.edu.co</a>
-          <span class="text-border-default">|</span>
-          <a href="mailto:ngutierrezga@unal.edu.co" class="hover:text-primary-light transition-colors">ngutierrezga@unal.edu.co</a>
+        <div class="flex items-center gap-4">
+          <a href="/privacidad" class="hover:text-text-secondary transition-colors">
+            Privacidad
+          </a>
+          <span class="text-border-default">·</span>
+          <span>Bogotá D.C., Colombia</span>
         </div>
       </div>
     </div>

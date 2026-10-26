@@ -74,7 +74,7 @@ const jsonLd = JSON.stringify([
 ]).replace(/</g, '\\u003c');
 ---
 
-<Layout activePage="inicio" hideFooter={true}>
+<Layout activePage="inicio" hideFooter={false} title="Semilleros e Investigación · Facultad de Ingeniería UNAL">
 
   <main class="pb-16">
     <!-- Última actualización - texto pequeño superior -->
@@ -92,7 +92,7 @@ const jsonLd = JSON.stringify([
         <div class="max-w-3xl">
           <div id="hero-tag" class="inline-flex items-center gap-2 mb-6 px-4 py-1.5 rounded-full glass">
             <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-            <span class="text-primary-light text-xs font-semibold uppercase tracking-widest">Base de Datos Ingeniería y Afines · Facultad de Ingeniería y Afines</span>
+            <span class="text-primary-light text-xs font-semibold uppercase tracking-widest">Facultad de Ingeniería · Universidad Nacional de Colombia</span>
           </div>
 
           <h1 id="hero-title" class="text-4xl sm:text-5xl font-extrabold mb-5 leading-[1.05]">
@@ -101,25 +101,15 @@ const jsonLd = JSON.stringify([
             <span class="block text-text-primary text-3xl sm:text-4xl mt-2 font-bold">Grupos de investigación y grupos estudiantiles · Bogotá</span>
           </h1>
 
-           <p class="text-text-secondary leading-relaxed mt-4 text-sm">
-            <em>Este es un proyecto creado por y para estudiantes.</em> ¿Tienes dudas o comentarios? Contáctanos en: <a href="mailto:bgallo@unal.edu.co" class="text-primary-light hover:underline font-medium">bgallo@unal.edu.co</a>, <a href="mailto:ngutierrezga@unal.edu.co" class="text-primary-light hover:underline font-medium">ngutierrezga@unal.edu.co</a>.
-            <em>   </em>
+          <p class="text-text-primary text-lg leading-relaxed mb-3">
+            Encuentra en un solo lugar los semilleros, grupos de investigación y grupos estudiantiles de la Facultad de Ingeniería de la Universidad Nacional de Colombia Sede Bogotá.
           </p>
-
-          <p class="text-text-primary leading-relaxed">
-            Encuentra en un solo lugar los semilleros de la Universidad Nacional de Colombia Sede Bogotá, más los grupos de investigación y grupos estudiantiles de la Facultad de Ingeniería y Afines.
+          <p class="text-text-secondary leading-relaxed mb-4 text-sm sm:text-base">
+            Explora cada iniciativa para conocer su enfoque, objetivos, requisitos, horarios y canales de contacto directo.
           </p>
-          <p class="text-text-secondary leading-relaxed mt-4">
-            Explora cada iniciativa para conocer su enfoque, objetivos, áreas de trabajo y datos de contacto.
+          <p class="text-text-secondary leading-relaxed mb-8 text-xs sm:text-sm">
+            <em>Proyecto creado por y para estudiantes.</em> ¿Tienes dudas o comentarios? Contáctanos en: <a href="mailto:bgallo@unal.edu.co" class="text-primary-light hover:underline font-medium">bgallo@unal.edu.co</a> o <a href="mailto:ngutierrezga@unal.edu.co" class="text-primary-light hover:underline font-medium">ngutierrezga@unal.edu.co</a>.
           </p>
-          <p class="text-text-secondary leading-relaxed mt-4 text-sm">
-                      </p>
-
-          <section class="max-w-7xl mx-auto px-6">
-      <div class="max-w-3xl mx-auto">
-        
-      </div>
-    </section>
 
           <div id="hero-cta" class="flex flex-col sm:flex-row gap-4">
             <a href="#catalogo" class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-primary to-primary-dark text-white font-semibold px-7 py-3.5 rounded-xl hover:shadow-glow hover:-translate-y-0.5 active:translate-y-0 transition-all text-sm">
@@ -165,22 +155,27 @@ const jsonLd = JSON.stringify([
       </div>
 
       <FilterBar
-        metadata={{...metadata, total: filteredGrupos.length}}
+        metadata={metadata}
         counts={carreraCounts}
         activeTipo={tipoFilter || undefined}
         activeCarrera={carreraFilter || undefined}
         activeQuery={searchQuery || undefined}
+        grupos={allGrupos}
       />
 
-      {(tipoFilter || carreraFilter || searchQuery) && (
-        <div class="flex items-center gap-2 mb-6">
-          <span class="text-text-secondary text-sm">Mostrando {filteredGrupos.length} de {metadata.total} grupos</span>
-          <a href="/" class="ml-4 px-3 py-1.5 bg-error/10 text-error text-sm rounded-lg hover:bg-error/20 transition-colors flex items-center gap-1">
-            <span class="material-symbols-outlined text-sm">close</span>
-            Limpiar filtros
-          </a>
-        </div>
-      )}
+      <div id="active-filters-bar" class={!(tipoFilter || carreraFilter || searchQuery) ? "hidden mb-6" : "flex items-center gap-2 mb-6"}>
+        <span id="active-filters-text" class="text-text-secondary text-sm">
+          Mostrando {filteredGrupos.length} de {allGrupos.length} grupos
+        </span>
+        <a
+          id="clear-filters-btn"
+          href="/"
+          class="ml-4 px-3 py-1.5 bg-error/10 text-error text-sm rounded-lg hover:bg-error/20 transition-colors flex items-center gap-1"
+        >
+          <span class="material-symbols-outlined text-sm">close</span>
+          Limpiar filtros
+        </a>
+      </div>
 
       {catalogError ? (
         <div class="text-center py-16">
@@ -190,26 +185,28 @@ const jsonLd = JSON.stringify([
             Reintentar
           </button>
         </div>
-      ) : filteredGrupos.length > 0 ? (
-        <BentoGrid grupos={filteredGrupos} />
       ) : (
-        <div class="text-center py-16">
-          <div class="w-16 h-16 mx-auto mb-4 bg-bg-card rounded-2xl flex items-center justify-center border border-border-default">
-            <span class="material-symbols-outlined text-3xl text-text-muted">search_off</span>
+        <div id="catalog-grid-wrapper">
+          <BentoGrid grupos={allGrupos} />
+
+          <div id="no-results" class="hidden text-center py-16">
+            <div class="w-16 h-16 mx-auto mb-4 bg-bg-card rounded-2xl flex items-center justify-center border border-border-default">
+              <span class="material-symbols-outlined text-3xl text-text-muted">search_off</span>
+            </div>
+            <h3 class="text-lg text-text-primary font-semibold mb-1">Sin resultados</h3>
+            <p class="text-text-secondary text-sm max-w-md mx-auto mb-6">Prueba con otros filtros o una búsqueda más amplia.</p>
+            <button id="ver-todo-btn" type="button" class="inline-flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-primary to-primary-dark text-white font-semibold rounded-xl hover:shadow-glow transition-all text-sm">
+              <span class="material-symbols-outlined text-base">refresh</span>
+              Ver todo el catálogo
+            </button>
           </div>
-          <h3 class="text-lg text-text-primary font-semibold mb-1">Sin resultados</h3>
-          <p class="text-text-secondary text-sm max-w-md mx-auto mb-6">Prueba con otros filtros o usa la búsqueda IA con una descripción más amplia.</p>
-          <a href="/" class="inline-flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-primary to-primary-dark text-white font-semibold rounded-xl hover:shadow-glow transition-all text-sm">
-            <span class="material-symbols-outlined text-base">refresh</span>
-            Ver todo
-          </a>
         </div>
       )}
     </div>
   </main>
 
   <Fragment slot="head">
-    <script type="application/ld+json" set:html={jsonLd} />
+    <script is:inline type="application/ld+json" set:html={jsonLd} />
     <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
   </Fragment>

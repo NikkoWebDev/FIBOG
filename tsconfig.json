@@ -22,5 +22,6 @@
       "@layouts/*": ["src/layouts/*"],
       "@data/*": ["src/data/*"]
     }
-  }
+  },
+  "exclude": ["dist", "supabase/functions", ".vercel", "node_modules"]
 }

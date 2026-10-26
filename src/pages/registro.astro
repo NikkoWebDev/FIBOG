@@ -12,7 +12,7 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
 });
 ---
 
-<Layout title="Registrar Grupo | Base de Datos Ingeniería y Afines" description="Postula tu semillero o grupo de investigación" activePage="registro" hideFooter={true}>
+<Layout title="Registrar Grupo | Facultad de Ingeniería UNAL" description="Postula tu semillero o grupo de investigación en la Facultad de Ingeniería UNAL" activePage="registro" hideFooter={false}>
   
   <main class="min-h-screen py-10 px-4 relative overflow-hidden">
     <div class="absolute inset-0 bg-gradient-mesh opacity-40"></div>
@@ -25,13 +25,13 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
       <div class="text-center mb-8" id="reg-header">
         <div class="inline-flex items-center gap-2 mb-4 px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
           <span class="material-symbols-outlined text-primary-light text-sm">workspace_premium</span>
-          <span class="text-primary-light text-xs font-semibold uppercase tracking-widest">Base de Datos Ingeniería y Afines · Registro</span>
+          <span class="text-primary-light text-xs font-semibold uppercase tracking-widest">Facultad de Ingeniería UNAL · Registro</span>
         </div>
         <h1 class="text-3xl sm:text-4xl font-extrabold text-text-primary mb-3">
           Registrar <span class="text-gradient">Nuevo Grupo</span>
         </h1>
         <p class="text-text-secondary text-base max-w-2xl mx-auto">
-          Completa el paso 1. Los campos marcados con * son obligatorios.
+          Ingresa la información básica de tu grupo. Los campos marcados con * son obligatorios.
         </p>
         <p class="text-xs text-text-secondary mt-3">
           Contacto: <a href="mailto:bgallo@unal.edu.co" class="text-primary-light hover:underline">bgallo@unal.edu.co</a> · <a href="mailto:ngutierrezga@unal.edu.co" class="text-primary-light hover:underline">ngutierrezga@unal.edu.co</a>
@@ -314,7 +314,7 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
               <textarea 
                 name="requisitos_ingreso"
                 rows="2"
-                placeholder="Qué requisitos deben cumplir los nuevos miembros?"
+                placeholder="¿Qué requisitos deben cumplir los nuevos miembros?"
                 required
                 class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all resize-none"
               ></textarea>
@@ -332,7 +332,7 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
                 autocomplete="url"
                 class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
               />
-              <p class="text-xs text-text-muted mt-2">Un solo enlace. Preferible la pagina web o el perfil principal del grupo.</p>
+              <p class="text-xs text-text-muted mt-2">Un solo enlace. Preferible la página web o el perfil principal del grupo.</p>
             </div>
             
             <div>
@@ -395,7 +395,7 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
       <div class="mt-8 text-center">
         <a href="/" class="text-text-secondary text-sm hover:text-primary-light transition-colors inline-flex items-center gap-1">
           <span class="material-symbols-outlined text-sm">arrow_back</span>
-          Volver al explorador
+          Volver al catálogo
         </a>
       </div>
     </div>
@@ -413,8 +413,8 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
   const submitText = document.getElementById('submit-text');
   const submitSpinner = document.getElementById('submit-spinner');
 
-  const imagenInput = document.getElementById('imagen_grupo') as HTMLInputElement;
-  const imagenPreview = document.getElementById('imagen-preview') as HTMLImageElement;
+  const imagenInput = document.getElementById('imagen_grupo') as HTMLInputElement | null;
+  const imagenPreview = document.getElementById('imagen-preview') as HTMLImageElement | null;
 
   imagenInput?.addEventListener('change', () => {
     const file = imagenInput.files?.[0];
@@ -440,9 +440,11 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
   const isUnalEmail = (email: string): boolean =>
     email.trim().toLowerCase().endsWith('@unal.edu.co');
 
-  const showError = (msg: string) => {
-    errorMessage!.textContent = msg;
-    errorMessage?.classList.remove('hidden');
+  const showError = (msg: string): void => {
+    if (errorMessage) {
+      errorMessage.textContent = msg;
+      errorMessage.classList.remove('hidden');
+    }
     successMessage?.classList.add('hidden');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -451,12 +453,12 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
     e.preventDefault();
 
     const formData = new FormData(form as HTMLFormElement);
-    const data: Record<string, any> = {};
+    const data: Record<string, unknown> = {};
 
     formData.forEach((value, key) => {
       if (key === 'imagen_grupo') return;
       if (key === 'carreras') {
-        data[key] = (value as string).split(',').map(c => c.trim()).filter(c => c);
+        data[key] = (value as string).split(',').map((c) => c.trim()).filter((c) => c);
       } else {
         data[key] = value || null;
       }
@@ -481,7 +483,7 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
     };
     for (const f of required) {
       const v = data[f];
-      const empty = v === null || v === '' || (Array.isArray(v) && v.length===0);
+      const empty = v === null || v === '' || (Array.isArray(v) && v.length === 0);
       if (empty) {
         showError(`Falta ${friendly[f] || 'un campo obligatorio'}. Por favor complétalo para continuar.`);
         return;
@@ -491,7 +493,7 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
     const normTipo = (s: string) =>
       (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
     const tiposValidos = ['Semillero', 'Grupo de Investigación', 'Grupo Estudiantil'];
-    const tipoMatch = tiposValidos.find(t => normTipo(t) === normTipo(String(data.tipo || '')));
+    const tipoMatch = tiposValidos.find((t) => normTipo(t) === normTipo(String(data.tipo || '')));
     if (!tipoMatch) {
       showError('El tipo de grupo no es válido. Elige Semillero, Grupo de Investigación o Grupo Estudiantil.');
       return;
@@ -507,7 +509,7 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
     }
 
     if (data.redes_sociales) {
-      const normalized = normalizeUrl(data.redes_sociales);
+      const normalized = normalizeUrl(String(data.redes_sociales));
       if (!normalized) {
         showError('El enlace web no es válido. Use una URL completa (ej: https://instagram.com/tu-grupo) o déjelo vacío.');
         return;
@@ -542,10 +544,12 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
       }
 
       const emailWarning = result.warning || (result.message?.includes('no enviada') ? result.message : '');
-      successMessage!.textContent = emailWarning
-        ? `Solicitud guardada. ${emailWarning}`
-        : 'Solicitud enviada exitosamente! Será notificado cuando sea revisada.';
-      successMessage?.classList.remove('hidden');
+      if (successMessage) {
+        successMessage.textContent = emailWarning
+          ? `Solicitud guardada. ${emailWarning}`
+          : '¡Solicitud enviada exitosamente! Será notificado cuando sea revisada.';
+        successMessage.classList.remove('hidden');
+      }
 
       (form as HTMLFormElement).reset();
       if (imagenPreview) {
@@ -555,9 +559,10 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
       }
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    } catch (error: any) {
-      console.error('Error:', error);
-      showError(error.message || 'Error al enviar la solicitud. Intenta de nuevo.');
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Error al enviar la solicitud. Intenta de nuevo.';
+      console.error('Error:', err);
+      showError(message);
     } finally {
       submitBtn?.removeAttribute('disabled');
       submitText?.classList.remove('hidden');

@@ -1,6 +1,6 @@
 ---
 import { careerLabelShort, canonicalizeCarrera, norm } from '../data/grupos.types';
-import type { Metadata } from '../data/grupos.types';
+import type { Grupo, Metadata } from '../data/grupos.types';
 
 interface Props {
   metadata: Metadata;
@@ -9,9 +9,10 @@ interface Props {
   activeTipo?: string;
   activeCarrera?: string;
   activeQuery?: string;
+  grupos?: Grupo[];
 }
 
-const { metadata, counts = {}, activeTipo, activeCarrera, activeQuery } = Astro.props;
+const { metadata, counts = {}, activeTipo, activeCarrera, activeQuery, grupos = [] } = Astro.props;
 
 const tipos = ['Todos', 'Semillero', 'Grupo de Investigación', 'Grupo Estudiantil'];
 
@@ -20,12 +21,20 @@ const activeCanonical = activeCarrera ? (canonicalizeCarrera(activeCarrera)[0] ?
 const carreras = metadata.carreras; // ya canónicas y ordenadas (buildMetadata)
 
 const qSuffix = activeQuery ? `&q=${encodeURIComponent(activeQuery)}` : '';
+
+// Precompute minimal client-side index for instant (<10ms) zero-latency DOM filtering
+const catalogIndex = grupos.map((g) => ({
+  id: g.id,
+  tipo: g.tipo,
+  carreras: g.carreras || [],
+  search: norm(`${g.nombre} ${g.enfoque || ''} ${g.descripcion || ''} ${g.docente || ''} ${g.lider || ''} ${(g.carreras || []).join(' ')}`),
+}));
 ---
 
-<div class="glass rounded-xl p-4 mb-8">
+<div class="glass rounded-xl p-4 mb-8" id="filter-bar-root">
   <div class="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
     <!-- Tipo Filter -->
-    <div class="flex flex-wrap gap-2">
+    <div class="flex flex-wrap gap-2" id="tipo-filter-group" role="group" aria-label="Filtrar por tipo de grupo">
       <span class="text-text-muted text-sm mr-2 self-center font-medium">Tipo:</span>
       {tipos.map(tipo => {
         const isActive = (tipo === 'Todos' && !activeTipo) ||
@@ -37,10 +46,11 @@ const qSuffix = activeQuery ? `&q=${encodeURIComponent(activeQuery)}` : '';
         return (
           <a
             href={href}
+            data-tipo-btn={tipo}
             class:list={[
-              'px-4 py-2 border text-sm font-medium rounded-lg transition-all',
+              'tipo-filter-btn px-4 py-2 border text-sm font-medium rounded-lg transition-all',
               isActive
-                ? 'bg-gradient-to-r from-primary to-primary-dark text-white border-primary'
+                ? 'bg-gradient-to-r from-primary to-primary-dark text-white border-primary shadow-glow-sm'
                 : 'bg-bg-hover text-text-secondary border-border-default hover:border-primary/40 hover:text-primary-light'
             ]}
           >
@@ -56,10 +66,11 @@ const qSuffix = activeQuery ? `&q=${encodeURIComponent(activeQuery)}` : '';
       <input
         id="carrera-search"
         type="search"
-        aria-label="Buscar carrera"
-        placeholder="Buscar carrera"
+        aria-label="Buscar carrera o grupo"
+        placeholder="Buscar por carrera o nombre..."
         autocomplete="off"
-        class="bg-bg-input border border-border-default px-3 py-2 text-sm text-text-primary rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all w-44 sm:w-52"
+        value={activeQuery || ''}
+        class="bg-bg-input border border-border-default px-3 py-2 text-sm text-text-primary rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all w-52 sm:w-60"
       />
       <select
         id="carrera-filter"
@@ -69,6 +80,7 @@ const qSuffix = activeQuery ? `&q=${encodeURIComponent(activeQuery)}` : '';
       >
         <option
           value={activeTipo ? `?tipo=${encodeURIComponent(activeTipo)}${qSuffix}` : (activeQuery ? `?q=${encodeURIComponent(activeQuery)}` : '/')}
+          data-carrera=""
           selected={!activeCanonical}
         >
           Todas las carreras
@@ -83,6 +95,7 @@ const qSuffix = activeQuery ? `&q=${encodeURIComponent(activeQuery)}` : '';
           return (
             <option
               value={value}
+              data-carrera={carrera}
               selected={activeCanonical === carrera}
               data-search={`${short} ${carrera}`}
             >
@@ -94,28 +107,259 @@ const qSuffix = activeQuery ? `&q=${encodeURIComponent(activeQuery)}` : '';
     </div>
 
     <!-- Results Count -->
-    <div class="text-text-muted text-sm font-medium">
+    <div id="filter-results-count" class="text-text-muted text-sm font-medium shrink-0">
       {metadata.total} grupos
     </div>
   </div>
 </div>
 
-<script is:inline>
-  // Filtra las opciones del select al escribir: sobrenombre o nombre completo.
-  (function () {
-    var search = document.getElementById('carrera-search');
-    var select = document.getElementById('carrera-filter');
-    if (!search || !select) return;
-    var norm = function (s) {
-      return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-    };
-    var options = Array.prototype.slice.call(select.options);
-    search.addEventListener('input', function () {
-      var q = norm(search.value).trim();
-      for (var i = 0; i < options.length; i++) {
-        var hay = norm(options[i].getAttribute('data-search'));
-        options[i].hidden = q !== '' && hay.indexOf(q) === -1;
+<script is:inline id="catalog-raw-data" type="application/json" set:html={JSON.stringify(catalogIndex)} />
+
+<script>
+  interface GroupIndexItem {
+    id: string;
+    tipo: string;
+    carreras: string[];
+    search: string;
+  }
+
+  function norm(s: string): string {
+    return (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  }
+
+  function initFilterBar(): void {
+    const rawDataEl = document.getElementById('catalog-raw-data');
+    if (!rawDataEl) return;
+
+    let catalog: GroupIndexItem[] = [];
+    try {
+      catalog = JSON.parse(rawDataEl.textContent || '[]') as GroupIndexItem[];
+    } catch {
+      catalog = [];
+    }
+
+    const cardMap = new Map<string, HTMLElement>();
+    document.querySelectorAll<HTMLElement>('.bento-card').forEach((card) => {
+      const a = card.querySelector<HTMLAnchorElement>('a[href^="/grupo/"]');
+      if (a) {
+        const href = a.getAttribute('href') || '';
+        const id = href.replace('/grupo/', '').trim();
+        if (id) cardMap.set(id, card);
       }
     });
-  })();
+
+    const searchInput = document.getElementById('carrera-search') as HTMLInputElement | null;
+    const select = document.getElementById('carrera-filter') as HTMLSelectElement | null;
+    const tipoBtns = Array.from(document.querySelectorAll<HTMLAnchorElement>('[data-tipo-btn]'));
+    const countEl = document.getElementById('filter-results-count');
+    const activeFiltersBar = document.getElementById('active-filters-bar');
+    const activeFiltersText = document.getElementById('active-filters-text');
+    const clearBtn = document.getElementById('clear-filters-btn');
+    const verTodoBtn = document.getElementById('ver-todo-btn');
+    const noResultsEl = document.getElementById('no-results');
+    const gridEl = document.getElementById('grupos-grid');
+
+    const getUrlParams = () => {
+      const sp = new URLSearchParams(window.location.search);
+      return {
+        tipo: sp.get('tipo') || '',
+        carrera: sp.get('carrera') || '',
+        q: sp.get('q') || '',
+      };
+    };
+
+    const state = getUrlParams();
+    if (searchInput && state.q) {
+      searchInput.value = state.q;
+    }
+
+    const filterSelectOptions = (query: string): void => {
+      if (!select) return;
+      const q = norm(query).trim();
+      const options = Array.from(select.options);
+      options.forEach((opt, idx) => {
+        if (idx === 0) return;
+        const hay = norm(opt.getAttribute('data-search') || opt.textContent || '');
+        opt.hidden = q !== '' && !hay.includes(q);
+      });
+    };
+
+    const updateUrl = (): void => {
+      const sp = new URLSearchParams();
+      if (state.tipo && state.tipo !== 'Todos') sp.set('tipo', state.tipo);
+      if (state.carrera) sp.set('carrera', state.carrera);
+      if (state.q) sp.set('q', state.q);
+      const qs = sp.toString();
+      const newUrl = qs ? `/?${qs}` : '/';
+      if (window.location.search !== (qs ? `?${qs}` : '')) {
+        window.history.replaceState(null, '', newUrl);
+      }
+    };
+
+    const updateUI = (visibleCount: number): void => {
+      // 1. Tipo buttons active styling
+      tipoBtns.forEach((btn) => {
+        const btnTipo = btn.getAttribute('data-tipo-btn') || '';
+        const isActive = (btnTipo === 'Todos' && !state.tipo) ||
+                         (btnTipo !== 'Todos' && state.tipo && norm(state.tipo) === norm(btnTipo));
+        if (isActive) {
+          btn.className = 'tipo-filter-btn px-4 py-2 border text-sm font-medium rounded-lg transition-all bg-gradient-to-r from-primary to-primary-dark text-white border-primary shadow-glow-sm';
+        } else {
+          btn.className = 'tipo-filter-btn px-4 py-2 border text-sm font-medium rounded-lg transition-all bg-bg-hover text-text-secondary border-border-default hover:border-primary/40 hover:text-primary-light';
+        }
+      });
+
+      // 2. Select matching option
+      if (select) {
+        for (let i = 0; i < select.options.length; i++) {
+          const opt = select.options[i];
+          const optCarrera = opt.getAttribute('data-carrera') || '';
+          if (norm(optCarrera) === norm(state.carrera)) {
+            select.selectedIndex = i;
+            break;
+          }
+        }
+      }
+
+      // 3. Count indicator
+      if (countEl) {
+        countEl.textContent = `${visibleCount} ${visibleCount === 1 ? 'grupo' : 'grupos'}`;
+      }
+
+      // 4. Active filters bar
+      const hasActive = Boolean(state.tipo || state.carrera || state.q);
+      if (activeFiltersBar) {
+        if (hasActive) {
+          activeFiltersBar.classList.remove('hidden');
+          activeFiltersBar.classList.add('flex');
+          if (activeFiltersText) {
+            activeFiltersText.textContent = `Mostrando ${visibleCount} de ${catalog.length} grupos`;
+          }
+        } else {
+          activeFiltersBar.classList.add('hidden');
+          activeFiltersBar.classList.remove('flex');
+        }
+      }
+
+      // 5. Empty state vs grid
+      if (noResultsEl && gridEl) {
+        if (visibleCount === 0) {
+          noResultsEl.classList.remove('hidden');
+          gridEl.classList.add('hidden');
+        } else {
+          noResultsEl.classList.add('hidden');
+          gridEl.classList.remove('hidden');
+        }
+      }
+    };
+
+    const applyFilters = (syncUrl = true): void => {
+      const qNorm = norm(state.q).trim();
+      const tipoNorm = norm(state.tipo).trim();
+      const carreraNorm = norm(state.carrera).trim();
+
+      let visible = 0;
+      for (let i = 0; i < catalog.length; i++) {
+        const item = catalog[i];
+        let matches = true;
+
+        if (tipoNorm && tipoNorm !== 'todos') {
+          if (!norm(item.tipo).includes(tipoNorm)) {
+            matches = false;
+          }
+        }
+
+        if (matches && carreraNorm) {
+          const itemCarreras = item.carreras.map(norm);
+          const isMultidisciplinar = itemCarreras.includes('toda la universidad');
+          if (!isMultidisciplinar && !itemCarreras.some((c) => c === carreraNorm)) {
+            matches = false;
+          }
+        }
+
+        if (matches && qNorm) {
+          if (!item.search.includes(qNorm)) {
+            matches = false;
+          }
+        }
+
+        const card = cardMap.get(item.id);
+        if (card) {
+          card.style.display = matches ? '' : 'none';
+        }
+        if (matches) visible++;
+      }
+
+      if (syncUrl) {
+        updateUrl();
+      }
+      updateUI(visible);
+    };
+
+    // Click on Tipo buttons
+    tipoBtns.forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const tipo = btn.getAttribute('data-tipo-btn') || '';
+        state.tipo = tipo === 'Todos' ? '' : tipo;
+        applyFilters(true);
+      });
+    });
+
+    // Select change
+    select?.addEventListener('change', (e) => {
+      e.stopImmediatePropagation();
+      const opt = select.options[select.selectedIndex];
+      state.carrera = opt?.getAttribute('data-carrera') || '';
+      applyFilters(true);
+    });
+
+    // Search input typing
+    let searchDebounce: ReturnType<typeof setTimeout> | null = null;
+    searchInput?.addEventListener('input', () => {
+      state.q = searchInput.value.trim();
+      filterSelectOptions(state.q);
+      if (searchDebounce) clearTimeout(searchDebounce);
+      searchDebounce = setTimeout(() => {
+        applyFilters(true);
+      }, 50);
+    });
+
+    // Reset handlers
+    const resetAll = (e: Event): void => {
+      e.preventDefault();
+      state.tipo = '';
+      state.carrera = '';
+      state.q = '';
+      if (searchInput) searchInput.value = '';
+      filterSelectOptions('');
+      applyFilters(true);
+    };
+
+    clearBtn?.addEventListener('click', resetAll);
+    verTodoBtn?.addEventListener('click', resetAll);
+
+    // Browser back/forward navigation
+    window.addEventListener('popstate', () => {
+      const current = getUrlParams();
+      state.tipo = current.tipo;
+      state.carrera = current.carrera;
+      state.q = current.q;
+      if (searchInput) searchInput.value = state.q;
+      filterSelectOptions(state.q);
+      applyFilters(false);
+    });
+
+    // Initial filter execution if query params exist
+    if (state.tipo || state.carrera || state.q) {
+      filterSelectOptions(state.q);
+      applyFilters(false);
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initFilterBar);
+  } else {
+    initFilterBar();
+  }
 </script>

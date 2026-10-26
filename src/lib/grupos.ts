@@ -2,6 +2,7 @@ import { createServerClient, supabase } from './supabase.ts';
 import type { Database } from './database.types';
 import { canonicalizeCarrera } from '../data/grupos.types.ts';
 import type { Grupo, Metadata } from '../data/grupos.types';
+import localGruposData from '../data/grupos.json';
 
 export type DbGrupo = Database['public']['Tables']['grupos']['Row'];
 type CatalogGrupo = Pick<DbGrupo,
@@ -14,6 +15,43 @@ type CatalogGrupo = Pick<DbGrupo,
 
 function text(value: string | null | undefined): string {
   return (value || '').trim();
+}
+
+/** Local JSON fallback loader ensuring zero-downtime resilience without 'any'. */
+function getLocalGrupos(): Grupo[] {
+  const rawList = (localGruposData as { data?: unknown[] }).data;
+  if (!Array.isArray(rawList)) return [];
+
+  return (rawList as Grupo[]).map((g) => {
+    const carreras = Array.isArray(g.carreras)
+      ? Array.from(new Set(g.carreras.flatMap((c) => canonicalizeCarrera(c))))
+      : [];
+    return {
+      ...g,
+      carreras,
+      carrera_str: carreras.join(', '),
+    };
+  });
+}
+
+function getLocalCatalogFallback(reason?: string): { grupos: Grupo[]; metadata: Metadata; error: string | null } {
+  console.warn(`[grupos] Using local grupos.json fallback. Reason: ${reason || 'unknown'}`);
+  const grupos = getLocalGrupos();
+  const rawMeta = (localGruposData as { metadata?: Partial<Metadata> }).metadata;
+  const builtMeta = buildMetadata(grupos);
+  return {
+    grupos,
+    metadata: {
+      ...builtMeta,
+      actualizado: rawMeta?.actualizado || new Date().toISOString(),
+    },
+    error: null,
+  };
+}
+
+function getLocalGrupoByIdFallback(id: string): Grupo | null {
+  const grupos = getLocalGrupos();
+  return grupos.find((g) => g.id === id) || null;
 }
 
 /** Mapea fila de Supabase al shape publico que usan cards/detalle/filtros. */
@@ -83,51 +121,70 @@ export async function fetchApprovedGrupos(): Promise<Grupo[]> {
   return grupos;
 }
 
-/** Catalogo + fecha real de ultima edicion en DB. */
+/** Catalogo + fecha real de ultima edicion en DB con fallback resiliente. */
 export async function fetchApprovedCatalog(): Promise<{ grupos: Grupo[]; metadata: Metadata; error: string | null }> {
-  const client = serverClient() || supabase;
-  const { data, error } = await client
-    .from('grupos')
-    .select('id,tipo,carreras,nombre,docente_a_cargo,lider_o_representante,email_contacto,vinculacion,enfoque,descripcion,actividades,modalidad,horarios_habituales,requisitos_ingreso,nivel_academico_recomendado,redes_sociales,comentarios_adicionales,imagen_url,fecha_actualizacion,fecha_creacion')
-    .eq('estado_aprobacion', 'aprobado')
-    .order('nombre');
+  try {
+    const client = serverClient() || supabase;
+    const { data, error } = await client
+      .from('grupos')
+      .select('id,tipo,carreras,nombre,docente_a_cargo,lider_o_representante,email_contacto,vinculacion,enfoque,descripcion,actividades,modalidad,horarios_habituales,requisitos_ingreso,nivel_academico_recomendado,redes_sociales,comentarios_adicionales,imagen_url,fecha_actualizacion,fecha_creacion')
+      .eq('estado_aprobacion', 'aprobado')
+      .order('nombre');
 
-  if (error) {
-    console.error('fetchApprovedCatalog:', error.message);
-    return { grupos: [], metadata: buildMetadata([]), error: error.message };
+    if (error) {
+      console.error('fetchApprovedCatalog Supabase error:', error.message);
+      return getLocalCatalogFallback(error.message);
+    }
+
+    const rows = data || [];
+    if (rows.length === 0) {
+      return getLocalCatalogFallback('Database returned empty catalogue');
+    }
+
+    let latest = '';
+    for (const row of rows) {
+      const ts = row.fecha_actualizacion || row.fecha_creacion || '';
+      if (ts > latest) latest = ts;
+    }
+
+    const grupos = rows.map(mapDbGrupoToPublic);
+    return {
+      grupos,
+      metadata: {
+        ...buildMetadata(grupos),
+        actualizado: latest || new Date().toISOString(),
+      },
+      error: null,
+    };
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.error('fetchApprovedCatalog exception:', message);
+    return getLocalCatalogFallback(message);
   }
-
-  const rows = data || [];
-  let latest = '';
-  for (const row of rows) {
-    const ts = row.fecha_actualizacion || row.fecha_creacion || '';
-    if (ts > latest) latest = ts;
-  }
-
-  const grupos = rows.map(mapDbGrupoToPublic);
-  return {
-    grupos,
-    metadata: {
-      ...buildMetadata(grupos),
-      actualizado: latest || new Date().toISOString(),
-    },
-    error: null,
-  };
 }
 
 export async function fetchApprovedGrupoById(id: string): Promise<Grupo | null> {
-  const client = serverClient() || supabase;
-  const { data, error } = await client
-    .from('grupos')
-    .select('id,tipo,carreras,nombre,docente_a_cargo,lider_o_representante,email_contacto,vinculacion,enfoque,descripcion,actividades,modalidad,horarios_habituales,requisitos_ingreso,nivel_academico_recomendado,redes_sociales,comentarios_adicionales,imagen_url,fecha_actualizacion,fecha_creacion')
-    .eq('id', id)
-    .eq('estado_aprobacion', 'aprobado')
-    .maybeSingle();
+  try {
+    const client = serverClient() || supabase;
+    const { data, error } = await client
+      .from('grupos')
+      .select('id,tipo,carreras,nombre,docente_a_cargo,lider_o_representante,email_contacto,vinculacion,enfoque,descripcion,actividades,modalidad,horarios_habituales,requisitos_ingreso,nivel_academico_recomendado,redes_sociales,comentarios_adicionales,imagen_url,fecha_actualizacion,fecha_creacion')
+      .eq('id', id)
+      .eq('estado_aprobacion', 'aprobado')
+      .maybeSingle();
 
-  if (error) {
-    console.error('fetchApprovedGrupoById:', error.message);
-    return null;
+    if (error) {
+      console.error('fetchApprovedGrupoById error:', error.message);
+      return getLocalGrupoByIdFallback(id);
+    }
+
+    if (data) {
+      return mapDbGrupoToPublic(data);
+    }
+
+    return getLocalGrupoByIdFallback(id);
+  } catch (err: unknown) {
+    console.error('fetchApprovedGrupoById exception:', err);
+    return getLocalGrupoByIdFallback(id);
   }
-
-  return data ? mapDbGrupoToPublic(data) : null;
 }
