@@ -97,36 +97,60 @@ const branch = getBranchConfig(grupo);
 interface BranchTheme {
   borderTop: string;
   glowGradient: string;
+  accentBorder: string;
+  cardGlow: string;
+  dotColor: string;
 }
 
 const branchThemes: Record<string, BranchTheme> = {
   ciencias: {
     borderTop: 'border-t-2 border-t-emerald-500/70 dark:border-t-emerald-400/70',
-    glowGradient: 'from-emerald-500/12 via-teal-500/5 to-transparent'
+    glowGradient: 'from-emerald-500/12 via-teal-500/5 to-transparent',
+    accentBorder: 'border-emerald-500/40 dark:border-emerald-400/40 hover:border-emerald-500/80 dark:hover:border-emerald-400/80',
+    cardGlow: 'shadow-emerald-500/10 hover:shadow-emerald-500/25 ring-1 ring-emerald-500/20 dark:ring-emerald-400/30',
+    dotColor: 'bg-emerald-400'
   },
   sistemas: {
     borderTop: 'border-t-2 border-t-cyan-500/60 dark:border-t-cyan-400/60',
-    glowGradient: 'from-cyan-500/10 via-cyan-500/5 to-transparent'
+    glowGradient: 'from-cyan-500/10 via-cyan-500/5 to-transparent',
+    accentBorder: 'border-cyan-500/40 dark:border-cyan-400/40 hover:border-cyan-500/80 dark:hover:border-cyan-400/80',
+    cardGlow: 'shadow-cyan-500/10 hover:shadow-cyan-500/25 ring-1 ring-cyan-500/20 dark:ring-cyan-400/30',
+    dotColor: 'bg-cyan-400'
   },
   mecanica: {
     borderTop: 'border-t-2 border-t-amber-500/60 dark:border-t-amber-400/60',
-    glowGradient: 'from-amber-500/10 via-amber-500/5 to-transparent'
+    glowGradient: 'from-amber-500/10 via-amber-500/5 to-transparent',
+    accentBorder: 'border-amber-500/40 dark:border-amber-400/40 hover:border-amber-500/80 dark:hover:border-amber-400/80',
+    cardGlow: 'shadow-amber-500/10 hover:shadow-amber-500/25 ring-1 ring-amber-500/20 dark:ring-amber-400/30',
+    dotColor: 'bg-amber-400'
   },
   electrica: {
     borderTop: 'border-t-2 border-t-teal-500/60 dark:border-t-teal-400/60',
-    glowGradient: 'from-teal-500/10 via-teal-500/5 to-transparent'
+    glowGradient: 'from-teal-500/10 via-teal-500/5 to-transparent',
+    accentBorder: 'border-teal-500/40 dark:border-teal-400/40 hover:border-teal-500/80 dark:hover:border-teal-400/80',
+    cardGlow: 'shadow-teal-500/10 hover:shadow-teal-500/25 ring-1 ring-teal-500/20 dark:ring-teal-400/30',
+    dotColor: 'bg-teal-400'
   },
   quimica: {
     borderTop: 'border-t-2 border-t-purple-500/60 dark:border-t-purple-400/60',
-    glowGradient: 'from-purple-500/10 via-purple-500/5 to-transparent'
+    glowGradient: 'from-purple-500/10 via-purple-500/5 to-transparent',
+    accentBorder: 'border-purple-500/40 dark:border-purple-400/40 hover:border-purple-500/80 dark:hover:border-purple-400/80',
+    cardGlow: 'shadow-purple-500/10 hover:shadow-purple-500/25 ring-1 ring-purple-500/20 dark:ring-purple-400/30',
+    dotColor: 'bg-purple-400'
   },
   civil: {
     borderTop: 'border-t-2 border-t-emerald-600/60 dark:border-t-emerald-500/60',
-    glowGradient: 'from-emerald-500/10 via-emerald-500/5 to-transparent'
+    glowGradient: 'from-emerald-500/10 via-emerald-500/5 to-transparent',
+    accentBorder: 'border-emerald-600/40 dark:border-emerald-500/40 hover:border-emerald-600/80 dark:hover:border-emerald-500/80',
+    cardGlow: 'shadow-emerald-600/10 hover:shadow-emerald-600/25 ring-1 ring-emerald-600/20 dark:ring-emerald-500/30',
+    dotColor: 'bg-emerald-400'
   },
   multidisciplinar: {
     borderTop: 'border-t-2 border-t-[#94B43B]/60 dark:border-t-[#94B43B]/60',
-    glowGradient: 'from-[#94B43B]/10 via-[#94B43B]/5 to-transparent'
+    glowGradient: 'from-[#94B43B]/10 via-[#94B43B]/5 to-transparent',
+    accentBorder: 'border-[#94B43B]/40 dark:border-[#94B43B]/40 hover:border-[#94B43B]/80 dark:hover:border-[#94B43B]/80',
+    cardGlow: 'shadow-[#94B43B]/10 hover:shadow-[#94B43B]/25 ring-1 ring-[#94B43B]/20 dark:ring-[#94B43B]/30',
+    dotColor: 'bg-[#94B43B]'
   }
 };
 
@@ -174,20 +198,30 @@ const searchAttr = normText(`${grupo.nombre} ${grupo.tipo} ${carreraPrincipal} $
 
 <article
   class:list={[
-    "bento-cell bento-card rounded-3xl bg-white dark:bg-[#111827] border border-border-default/60 dark:border-white/10 flex flex-col justify-between shadow-lg hover:shadow-xl relative overflow-hidden group transition-all",
+    "bento-cell bento-card rounded-3xl bg-white dark:bg-[#111827] flex flex-col justify-between shadow-lg relative overflow-hidden group transition-all",
     branchTheme.borderTop,
-    isFeatured ? "lg:col-span-2 p-7 sm:p-8 hover:border-[#94B43B]/60" : `p-7 ${tipoConfig.hoverBorder}`
+    grupo.imagen_url
+      ? `border ${branchTheme.accentBorder} ${branchTheme.cardGlow}`
+      : [
+          "border border-border-default/60 dark:border-white/10 hover:shadow-xl",
+          isFeatured ? "hover:border-[#94B43B]/60" : tipoConfig.hoverBorder
+        ],
+    isFeatured ? "lg:col-span-2 p-7 sm:p-8" : "p-7"
   ]}
   data-type={grupo.tipo}
   data-carreras={(grupo.carreras || []).join(',')}
   data-search={searchAttr}
   data-branch={branch.key}
   data-index={index}
+  data-has-image={grupo.imagen_url ? "true" : "false"}
 >
   <!-- Subtle discipline ambient gradient at the top -->
   <div
     class:list={[
-      "absolute top-0 inset-x-0 h-28 bg-gradient-to-b pointer-events-none opacity-40 dark:opacity-25 transition-opacity duration-300 group-hover:opacity-75 dark:group-hover:opacity-45",
+      "absolute top-0 inset-x-0 bg-gradient-to-b pointer-events-none transition-opacity duration-300",
+      grupo.imagen_url
+        ? "h-36 opacity-35 dark:opacity-25 group-hover:opacity-70 dark:group-hover:opacity-45"
+        : "h-28 opacity-40 dark:opacity-25 group-hover:opacity-75 dark:group-hover:opacity-45",
       branchTheme.glowGradient
     ]}
     aria-hidden="true"
@@ -198,17 +232,45 @@ const searchAttr = normText(`${grupo.nombre} ${grupo.tipo} ${carreraPrincipal} $
     {grupo.imagen_url && (
       <a
         href={`/grupo/${grupo.id}`}
-        class="block relative w-full h-40 overflow-hidden rounded-2xl bg-slate-100 dark:bg-slate-800 border border-border-default/50 dark:border-white/10 group/img focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#94B43B] transition-transform duration-300"
+        class:list={[
+          "block relative w-full overflow-hidden rounded-2xl bg-slate-900/10 dark:bg-slate-800/60 border border-white/10 shadow-md group/img focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#94B43B] transition-all duration-300",
+          isFeatured ? "h-48 sm:h-56" : "h-44"
+        ]}
         tabindex="-1"
         aria-hidden="true"
       >
         <img
           src={grupo.imagen_url}
-          alt={`Imagen ilustrativa de ${grupo.nombre}`}
+          alt={`Fotografía oficial de ${grupo.nombre}`}
           loading="lazy"
-          class="w-full h-40 object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+          width="640"
+          height={isFeatured ? 224 : 176}
+          class:list={[
+            "w-full object-cover rounded-2xl border border-white/10 shadow-md group-hover:scale-[1.02] transition-transform duration-500 ease-out",
+            isFeatured ? "h-48 sm:h-56" : "h-44"
+          ]}
         />
-        <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <!-- Atmospheric bottom vignette gradient -->
+        <div class="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent pointer-events-none"></div>
+
+        <!-- Floating Badge: micro-dot pulsante + Iniciativa Destacada -->
+        <div class="absolute top-3 left-3 z-10">
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold tracking-wide text-white bg-slate-950/80 backdrop-blur-md border border-white/20 shadow-md">
+            <span class="relative flex h-2 w-2 shrink-0">
+              <span class={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-80 ${branchTheme.dotColor}`}></span>
+              <span class={`relative inline-flex rounded-full h-2 w-2 ${branchTheme.dotColor}`}></span>
+            </span>
+            <span>Iniciativa Destacada</span>
+          </span>
+        </div>
+
+        <!-- Micro interactive hint on hover: Fotografía oficial -->
+        <div class="absolute bottom-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold text-white/95 bg-black/65 backdrop-blur-sm border border-white/20 shadow-xs">
+            <span class="material-symbols-outlined text-sm">photo_camera</span>
+            <span>Fotografía oficial</span>
+          </span>
+        </div>
       </a>
     )}
 

@@ -22,6 +22,14 @@ const filteredGrupos = filtrarGrupos(allGrupos, {
   busqueda: searchQuery || undefined
 });
 
+const catalogGrupos = [...filteredGrupos].sort((a, b) => {
+  const aImg = Boolean(a.imagen_url);
+  const bImg = Boolean(b.imagen_url);
+  if (aImg && !bImg) return -1;
+  if (!aImg && bImg) return 1;
+  return a.nombre.localeCompare(b.nombre, 'es');
+});
+
 // Recuentos por carrera canónica (incluye el auto-match multidisciplinar).
 const carreraCounts: Record<string, number> = {};
 for (const c of metadata.carreras) {
@@ -40,7 +48,7 @@ const totalSemilleros = metadata.por_tipo?.['Semillero'] ?? 15;
 const totalDIB = metadata.por_tipo?.['Grupo de Investigación'] ?? 281;
 // JSON-LD (SEO tecnico): WebSite + SearchAction, Organization institucional e ItemList top 25.
 const siteUrl = (Astro.site?.origin ?? 'https://semilleros.nikko.dev').replace(/\/+$/, '');
-const topGrupos = allGrupos.slice(0, 25);
+const topGrupos = catalogGrupos.slice(0, 25);
 const jsonLd = JSON.stringify([
   {
     '@context': 'https://schema.org',
@@ -185,7 +193,7 @@ const jsonLd = JSON.stringify([
         activeTipo={tipoFilter || undefined}
         activeCarrera={carreraFilter || undefined}
         activeQuery={searchQuery || undefined}
-        grupos={allGrupos}
+        grupos={catalogGrupos}
       />
 
       <div id="active-filters-bar" class={!(tipoFilter || carreraFilter || searchQuery) ? "hidden mb-6" : "flex items-center gap-2 mb-6"}>
@@ -212,7 +220,7 @@ const jsonLd = JSON.stringify([
         </div>
       ) : (
         <div id="catalog-grid-wrapper">
-          <BentoGrid grupos={allGrupos} />
+          <BentoGrid grupos={catalogGrupos} />
 
           <div id="no-results" class="hidden text-center py-16">
             <div class="w-16 h-16 mx-auto mb-4 bg-bg-card rounded-2xl flex items-center justify-center border border-border-default">

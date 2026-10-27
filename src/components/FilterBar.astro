@@ -109,6 +109,7 @@ for (const b of BRANCH_CONFIGS) {
 // Carreras canónicas ordenadas alfabéticamente
 const activeCanonical = activeCarrera ? (canonicalizeCarrera(activeCarrera)[0] ?? '') : '';
 const carreras = [...metadata.carreras].sort((a, b) => a.localeCompare(b));
+const imageCount = grupos.filter((g) => Boolean(g.imagen_url)).length;
 
 // Precompute minimal client-side index for instant (<5ms) zero-latency DOM filtering & sorting
 const catalogIndex = grupos.map((g) => {
@@ -236,7 +237,6 @@ const catalogIndex = grupos.map((g) => {
           <button
             type="button"
             data-branch-btn={branch.id}
-            data-branch={branch.id}
             class="branch-filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all border cursor-pointer select-none bg-bg-raised text-text-secondary border-border-default hover:border-primary/40 hover:text-text-primary hover:bg-bg-hover focus-visible:outline-2 focus-visible:outline-primary"
           >
             <span class="material-symbols-outlined text-sm text-text-muted group-hover:text-primary">{branch.icon}</span>
@@ -279,26 +279,42 @@ const catalogIndex = grupos.map((g) => {
       </button>
     </div>
 
-    <!-- Selector de Ordenamiento -->
-    <div class="flex items-center gap-2 shrink-0">
-      <label for="sort-select" class="text-xs font-bold uppercase tracking-wider text-text-muted shrink-0 flex items-center gap-1">
-        <span class="material-symbols-outlined text-sm">swap_vert</span>
-        Ordenar:
-      </label>
-      <div class="relative">
-        <select
-          id="sort-select"
-          aria-label="Ordenar resultados del catálogo"
-          class="bg-bg-raised text-text-primary text-xs font-semibold pl-3 pr-8 py-2.5 rounded-xl border border-border-default hover:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer appearance-none shadow-sm"
-        >
-          <option value="az">Nombre (A-Z)</option>
-          <option value="za">Nombre (Z-A)</option>
-          <option value="tipo">Tipo de grupo</option>
-          <option value="imagen">Con imagen primero</option>
-        </select>
-        <span class="material-symbols-outlined text-sm text-text-muted absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true">
-          expand_more
+    <!-- Selector de Ordenamiento y Filtro Visual -->
+    <div class="flex flex-wrap items-center gap-3 shrink-0">
+      <button
+        type="button"
+        id="foto-filter-btn"
+        data-foto-btn
+        aria-pressed="false"
+        class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all border cursor-pointer select-none bg-bg-raised text-text-secondary border-border-default hover:border-primary/40 hover:text-text-primary hover:bg-bg-hover focus-visible:outline-2 focus-visible:outline-primary shadow-sm"
+      >
+        <span class="material-symbols-outlined text-sm text-primary">photo_camera</span>
+        <span>Con Fotografía</span>
+        <span class="foto-count-pill text-[10px] px-1.5 py-0.2 rounded-full font-bold bg-bg-hover text-text-muted border border-border-subtle">
+          {imageCount}
         </span>
+      </button>
+
+      <div class="flex items-center gap-2 shrink-0">
+        <label for="sort-select" class="text-xs font-bold uppercase tracking-wider text-text-muted shrink-0 flex items-center gap-1">
+          <span class="material-symbols-outlined text-sm">swap_vert</span>
+          Ordenar:
+        </label>
+        <div class="relative">
+          <select
+            id="sort-select"
+            aria-label="Ordenar resultados del catálogo"
+            class="bg-bg-raised text-text-primary text-xs font-semibold pl-3 pr-8 py-2.5 rounded-xl border border-border-default hover:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer appearance-none shadow-sm"
+          >
+            <option value="imagen" selected>Con imagen primero</option>
+            <option value="az">Nombre (A-Z)</option>
+            <option value="za">Nombre (Z-A)</option>
+            <option value="tipo">Tipo de grupo</option>
+          </select>
+          <span class="material-symbols-outlined text-sm text-text-muted absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true">
+            expand_more
+          </span>
+        </div>
       </div>
     </div>
   </div>
@@ -377,8 +393,8 @@ const catalogIndex = grupos.map((g) => {
     const searchClearBtn = document.getElementById('search-clear-btn');
     const select = document.getElementById('carrera-filter') as HTMLSelectElement | null;
     const sortSelect = document.getElementById('sort-select') as HTMLSelectElement | null;
-    const tipoBtns = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-tipo-btn]'));
-    const branchBtns = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-branch-btn], [data-branch]'));
+    const tipoBtns = Array.from(document.querySelectorAll<HTMLButtonElement>('#tipo-filter-group [data-tipo-btn]'));
+    const branchBtns = Array.from(document.querySelectorAll<HTMLButtonElement>('#branch-quick-chips [data-branch-btn]'));
 
     const visibleCountEl = document.getElementById('filter-visible-count');
     const totalCountEl = document.getElementById('filter-total-count');
@@ -403,7 +419,8 @@ const catalogIndex = grupos.map((g) => {
         rama: sp.get('rama') || '',
         carrera: sp.get('carrera') || '',
         q: sp.get('q') || '',
-        sort: sp.get('sort') || 'az',
+        foto: sp.get('foto') === '1' || sp.get('foto') === 'true',
+        sort: sp.get('sort') || 'imagen',
       };
     };
 
@@ -424,7 +441,8 @@ const catalogIndex = grupos.map((g) => {
       if (state.rama && state.rama !== 'todas') sp.set('rama', state.rama);
       if (state.carrera) sp.set('carrera', state.carrera);
       if (state.q) sp.set('q', state.q);
-      if (state.sort && state.sort !== 'az') sp.set('sort', state.sort);
+      if (state.foto) sp.set('foto', '1');
+      if (state.sort && state.sort !== 'imagen') sp.set('sort', state.sort);
 
       const qs = sp.toString();
       const newUrl = qs ? `/?${qs}` : '/';
@@ -437,7 +455,7 @@ const catalogIndex = grupos.map((g) => {
       const copy = [...items];
       switch (sortMode) {
         case 'za':
-          copy.sort((a, b) => b.normNombre.localeCompare(a.normNombre));
+          copy.sort((a, b) => b.normNombre.localeCompare(a.normNombre, 'es'));
           break;
         case 'tipo': {
           const typeRank = (t: string) => {
@@ -449,20 +467,20 @@ const catalogIndex = grupos.map((g) => {
           };
           copy.sort((a, b) => {
             const diff = typeRank(a.tipo) - typeRank(b.tipo);
-            return diff !== 0 ? diff : a.normNombre.localeCompare(b.normNombre);
+            return diff !== 0 ? diff : a.normNombre.localeCompare(b.normNombre, 'es');
           });
           break;
         }
+        case 'az':
+          copy.sort((a, b) => a.normNombre.localeCompare(b.normNombre, 'es'));
+          break;
         case 'imagen':
+        default:
           copy.sort((a, b) => {
             if (a.hasImage && !b.hasImage) return -1;
             if (!a.hasImage && b.hasImage) return 1;
-            return a.normNombre.localeCompare(b.normNombre);
+            return a.normNombre.localeCompare(b.normNombre, 'es');
           });
-          break;
-        case 'az':
-        default:
-          copy.sort((a, b) => a.normNombre.localeCompare(b.normNombre));
           break;
       }
       return copy;
@@ -518,17 +536,28 @@ const catalogIndex = grupos.map((g) => {
         });
       }
 
-      if (state.sort && state.sort !== 'az') {
+      if (state.foto) {
+        pills.push({
+          label: 'Con Fotografía',
+          onRemove: () => {
+            state.foto = false;
+            applyFiltersAndSort(true);
+          }
+        });
+      }
+
+      if (state.sort && state.sort !== 'imagen') {
         const sortLabels: Record<string, string> = {
+          imagen: 'Con imagen primero',
+          az: 'Nombre (A-Z)',
           za: 'Nombre (Z-A)',
-          tipo: 'Tipo de grupo',
-          imagen: 'Con imagen primero'
+          tipo: 'Tipo de grupo'
         };
         pills.push({
           label: `Orden: ${sortLabels[state.sort] || state.sort}`,
           onRemove: () => {
-            state.sort = 'az';
-            if (sortSelect) sortSelect.value = 'az';
+            state.sort = 'imagen';
+            if (sortSelect) sortSelect.value = 'imagen';
             applyFiltersAndSort(true);
           }
         });
@@ -583,7 +612,7 @@ const catalogIndex = grupos.map((g) => {
 
       // 2. Branch Quick Chips Styling
       branchBtns.forEach((btn) => {
-        const btnBranch = btn.getAttribute('data-branch-btn') || btn.getAttribute('data-branch') || '';
+        const btnBranch = btn.getAttribute('data-branch-btn') || '';
         const isActive = (btnBranch === 'todas' && !state.rama) ||
                          (btnBranch !== 'todas' && state.rama === btnBranch);
         const countPill = btn.querySelector('.branch-count-pill');
@@ -613,7 +642,21 @@ const catalogIndex = grupos.map((g) => {
         }
       }
 
-      // 4. Live Counter
+      // 4. Foto Button Styling
+      const fotoBtn = document.getElementById('foto-filter-btn') as HTMLButtonElement | null;
+      if (fotoBtn) {
+        fotoBtn.setAttribute('aria-pressed', state.foto ? 'true' : 'false');
+        const countPill = fotoBtn.querySelector('.foto-count-pill');
+        if (state.foto) {
+          fotoBtn.className = 'inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all border cursor-pointer select-none bg-gradient-to-r from-primary to-primary-dark text-white border-primary shadow-glow-sm focus-visible:outline-2 focus-visible:outline-primary';
+          if (countPill) countPill.className = 'foto-count-pill text-[10px] px-1.5 py-0.2 rounded-full font-bold bg-white/20 text-white';
+        } else {
+          fotoBtn.className = 'inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all border cursor-pointer select-none bg-bg-raised text-text-secondary border-border-default hover:border-primary/40 hover:text-text-primary hover:bg-bg-hover focus-visible:outline-2 focus-visible:outline-primary shadow-sm';
+          if (countPill) countPill.className = 'foto-count-pill text-[10px] px-1.5 py-0.2 rounded-full font-bold bg-bg-hover text-text-muted border border-border-subtle';
+        }
+      }
+
+      // 5. Live Counter
       if (visibleCountEl) {
         visibleCountEl.textContent = String(visibleCount);
       }
@@ -625,10 +668,10 @@ const catalogIndex = grupos.map((g) => {
         heroLiveCount.textContent = String(visibleCount);
       }
 
-      // 5. Active Pills Row
+      // 6. Active Pills Row
       renderActivePills();
 
-      // 6. Empty State vs Bento Grid
+      // 7. Empty State vs Bento Grid
       if (noResultsEl && gridEl) {
         if (visibleCount === 0) {
           noResultsEl.classList.remove('hidden');
@@ -645,7 +688,7 @@ const catalogIndex = grupos.map((g) => {
       const tipoNorm = norm(state.tipo).trim();
       const ramaNorm = (state.rama || '').trim();
       const carreraNorm = norm(state.carrera).trim();
-      const currentSort = state.sort || 'az';
+      const currentSort = state.sort || 'imagen';
 
       let visible = 0;
       const matchedItems: GroupIndexItem[] = [];
@@ -654,8 +697,13 @@ const catalogIndex = grupos.map((g) => {
         const item = catalog[i];
         let matches = true;
 
+        // Filtro por solo con foto
+        if (state.foto && !item.hasImage) {
+          matches = false;
+        }
+
         // Filtro por tipo
-        if (tipoNorm && tipoNorm !== 'todos') {
+        if (matches && tipoNorm && tipoNorm !== 'todos') {
           if (!norm(item.tipo).includes(tipoNorm)) {
             matches = false;
           }
@@ -712,6 +760,14 @@ const catalogIndex = grupos.map((g) => {
       updateUI(visible);
     };
 
+    // Eventos: Foto Filter Button
+    const fotoBtn = document.getElementById('foto-filter-btn');
+    fotoBtn?.addEventListener('click', (e) => {
+      e.preventDefault();
+      state.foto = !state.foto;
+      applyFiltersAndSort(true);
+    });
+
     // Eventos: Tipo Buttons
     tipoBtns.forEach((btn) => {
       btn.addEventListener('click', (e) => {
@@ -726,7 +782,7 @@ const catalogIndex = grupos.map((g) => {
     branchBtns.forEach((btn) => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
-        const branch = btn.getAttribute('data-branch-btn') || btn.getAttribute('data-branch') || '';
+        const branch = btn.getAttribute('data-branch-btn') || '';
         state.rama = branch === 'todas' ? '' : branch;
         state.carrera = ''; // Limpiar carrera específica al elegir rama rápida
         if (select) select.selectedIndex = 0;
@@ -745,7 +801,7 @@ const catalogIndex = grupos.map((g) => {
 
     // Eventos: Sort Select
     sortSelect?.addEventListener('change', () => {
-      state.sort = sortSelect.value || 'az';
+      state.sort = sortSelect.value || 'imagen';
       applyFiltersAndSort(true);
     });
 
@@ -783,12 +839,13 @@ const catalogIndex = grupos.map((g) => {
       state.rama = '';
       state.carrera = '';
       state.q = '';
-      state.sort = 'az';
+      state.foto = false;
+      state.sort = 'imagen';
 
       if (searchInput) searchInput.value = '';
       if (searchClearBtn) searchClearBtn.classList.add('hidden');
       if (select) select.selectedIndex = 0;
-      if (sortSelect) sortSelect.value = 'az';
+      if (sortSelect) sortSelect.value = 'imagen';
 
       applyFiltersAndSort(true);
     };
@@ -803,6 +860,7 @@ const catalogIndex = grupos.map((g) => {
       state.rama = current.rama;
       state.carrera = current.carrera;
       state.q = current.q;
+      state.foto = current.foto;
       state.sort = current.sort;
 
       if (searchInput) {
@@ -817,7 +875,7 @@ const catalogIndex = grupos.map((g) => {
     });
 
     // Ejecución inicial si existen parámetros en URL
-    if (state.tipo || state.rama || state.carrera || state.q || (state.sort && state.sort !== 'az')) {
+    if (state.tipo || state.rama || state.carrera || state.q || state.foto || (state.sort && state.sort !== 'imagen')) {
       applyFiltersAndSort(false);
     }
   }
