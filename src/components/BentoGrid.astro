@@ -1,5 +1,5 @@
 ---
-// BentoGrid.astro - Cuadrícula Bento para catálogo FIBOG
+// BentoGrid.astro - Asymmetric Bento Grid layout
 import type { Grupo } from '../data/grupos.types';
 import BentoCard from './BentoCard.astro';
 
@@ -20,23 +20,24 @@ const { grupos = [] } = Astro.props;
         <BentoCard
           grupo={grupo}
           index={index}
+          featured={index === 0}
         />
       ))}
     </div>
   ) : (
-    <div class="glass rounded-2xl p-12 text-center max-w-xl mx-auto my-8 border border-border-default">
-      <div class="w-14 h-14 rounded-2xl bg-primary/10 text-primary-light flex items-center justify-center mx-auto mb-4">
+    <div class="rounded-3xl p-12 text-center max-w-xl mx-auto my-8 bg-white dark:bg-[#111827] border border-border-default/80 dark:border-white/10 shadow-lg">
+      <div class="w-14 h-14 rounded-2xl bg-[#94B43B]/10 text-[#4D6B18] dark:text-[#94B43B] flex items-center justify-center mx-auto mb-4 border border-[#94B43B]/20">
         <span class="material-symbols-outlined text-3xl">search_off</span>
       </div>
-      <h3 class="text-lg font-bold text-text-primary mb-2">
-        No se encontraron grupos
+      <h3 class="text-lg font-bold text-text-primary dark:text-[#E2E8F0] mb-2">
+        No se encontraron iniciativas
       </h3>
-      <p class="text-sm text-text-secondary leading-relaxed mb-6">
-        No hay semilleros o grupos de investigación que coincidan con los filtros seleccionados. Intenta restablecer los filtros de búsqueda o carrera.
+      <p class="text-sm text-text-secondary dark:text-slate-400 leading-relaxed mb-6">
+        No hay semilleros o grupos de investigación que coincidan con los criterios seleccionados. Prueba restableciendo los filtros o ampliando la búsqueda.
       </p>
       <a
         href="/"
-        class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold hover:opacity-95 transition-all shadow-sm"
+        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#94B43B] hover:bg-[#82A735] text-black text-sm font-bold transition-all shadow-md"
       >
         <span class="material-symbols-outlined text-base">restart_alt</span>
         Restablecer todos los filtros

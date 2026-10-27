@@ -354,7 +354,7 @@ const catalogIndex = grupos.map((g) => {
     }
 
     const cardMap = new Map<string, HTMLElement>();
-    document.querySelectorAll<HTMLElement>('.bento-card').forEach((card) => {
+    document.querySelectorAll<HTMLElement>('.bento-card, .bento-cell').forEach((card) => {
       const a = card.querySelector<HTMLAnchorElement>('a[href^="/grupo/"]');
       if (a) {
         const href = a.getAttribute('href') || '';
@@ -609,6 +609,10 @@ const catalogIndex = grupos.map((g) => {
       }
       if (totalCountEl) {
         totalCountEl.textContent = String(catalog.length);
+      }
+      const heroLiveCount = document.getElementById('live-count');
+      if (heroLiveCount) {
+        heroLiveCount.textContent = String(visibleCount);
       }
 
       // 5. Active Pills Row

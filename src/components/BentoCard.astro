@@ -1,41 +1,47 @@
 ---
-// BentoCard.astro - Tarjeta Bento de élite con identidad FIBOG y portadas generativas técnicas
+// BentoCard.astro - Asymmetric Bento Grid card with verified WCAG AA contrast and direct CTAs
 import type { Grupo } from '../data/grupos.types';
 
 interface Props {
   grupo: Grupo;
   size?: 'small' | 'medium' | 'large' | 'wide';
   index?: number;
+  featured?: boolean;
 }
 
-const { grupo, index = 0 } = Astro.props;
+const { grupo, index = 0, featured } = Astro.props;
+const isFeatured = featured !== undefined ? featured : index === 0;
 
-// Normalizador de texto para clasificaciones
+// Text normalization helper
 const normText = (s: string) =>
   (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
-// Badges de Tipo de Grupo con alto contraste WCAG AAA/AA
+// Type configuration with verified WCAG AA/AAA contrast tokens
 interface TipoConfig {
   label: string;
   badgeClass: string;
-  icon: string;
+  dotClass: string;
+  hoverBorder: string;
 }
 
 const tipoConfigs: Record<string, TipoConfig> = {
   'semillero': {
     label: 'Semillero',
-    badgeClass: 'bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border-emerald-500/25',
-    icon: 'eco'
+    badgeClass: 'bg-[#94B43B]/15 text-[#4D6B18] dark:text-[#94B43B] border-[#94B43B]/30',
+    dotClass: 'bg-[#94B43B]',
+    hoverBorder: 'hover:border-[#94B43B]/60'
   },
   'grupo de investigacion': {
-    label: 'Grupo de Investigación',
-    badgeClass: 'bg-primary/10 text-primary-light dark:text-blue-300 border-primary/25',
-    icon: 'biotech'
+    label: 'Grupo DIB',
+    badgeClass: 'bg-purple-500/15 text-purple-700 dark:text-purple-300 border-purple-500/30',
+    dotClass: 'bg-purple-500',
+    hoverBorder: 'hover:border-purple-400/60'
   },
   'grupo estudiantil': {
     label: 'Grupo Estudiantil',
-    badgeClass: 'bg-accent/10 text-accent-light dark:text-teal-300 border-accent/25',
-    icon: 'groups'
+    badgeClass: 'bg-amber-500/15 text-amber-800 dark:text-amber-300 border-amber-500/30',
+    dotClass: 'bg-amber-500',
+    hoverBorder: 'hover:border-amber-400/60'
   }
 };
 
@@ -43,16 +49,10 @@ const normT = normText(grupo.tipo);
 const tipoKey = Object.keys(tipoConfigs).find(k => normT.includes(k)) || 'semillero';
 const tipoConfig = tipoConfigs[tipoKey];
 
-// Clasificación de Ramas de Ingeniería y Portadas Generativas FIBOG
+// Engineering branch detector for category filtering
 interface BranchConfig {
   key: string;
   title: string;
-  shortLabel: string;
-  gradientClass: string;
-  borderAccent: string;
-  iconName: string;
-  svgPattern: 'circuits' | 'mechanical' | 'pcb' | 'molecular' | 'structural' | 'blueprint';
-  chipClass: string;
 }
 
 const getBranchConfig = (g: Grupo): BranchConfig => {
@@ -63,255 +63,165 @@ const getBranchConfig = (g: Grupo): BranchConfig => {
     g.descripcion || ''
   ].map(normText).join(' ');
 
-  // 1. Sistemas / Computación (cian / navy)
   if (/sistemas|computac|software|datos|inteligencia artificial|\bia\b|machine learning|algorit|ciberseg|computacional/i.test(combined)) {
-    return {
-      key: 'sistemas',
-      title: 'Ingeniería de Sistemas y Computación',
-      shortLabel: 'Sistemas & Computación',
-      gradientClass: 'from-cyan-950 via-[#0d223f] to-[#0a1426]',
-      borderAccent: 'border-cyan-500/50',
-      iconName: 'terminal',
-      svgPattern: 'circuits',
-      chipClass: 'bg-cyan-500/10 text-cyan-800 dark:text-cyan-300 border-cyan-500/20'
-    };
+    return { key: 'sistemas', title: 'Sistemas y Computación' };
   }
-
-  // 2. Mecánica / Mecatrónica (ámbar / navy)
   if (/mecanic|mecatron|robot|aeroespac|automatiz|vehicul|manufactura|diseno mecan/i.test(combined)) {
-    return {
-      key: 'mecanica',
-      title: 'Ingeniería Mecánica y Mecatrónica',
-      shortLabel: 'Mecánica & Mecatrónica',
-      gradientClass: 'from-amber-950/90 via-[#1e1e2d] to-[#0c1524]',
-      borderAccent: 'border-amber-500/50',
-      iconName: 'precision_manufacturing',
-      svgPattern: 'mechanical',
-      chipClass: 'bg-amber-500/10 text-amber-900 dark:text-amber-300 border-amber-500/20'
-    };
+    return { key: 'mecanica', title: 'Mecánica y Mecatrónica' };
   }
-
-  // 3. Eléctrica / Electrónica (teal / navy)
   if (/electr|telecom|potencia|senales|circuit|optica|alta tension/i.test(combined)) {
-    return {
-      key: 'electrica',
-      title: 'Ingeniería Eléctrica y Electrónica',
-      shortLabel: 'Eléctrica & Electrónica',
-      gradientClass: 'from-teal-950 via-[#0c2b3d] to-[#091524]',
-      borderAccent: 'border-teal-500/50',
-      iconName: 'electric_bolt',
-      svgPattern: 'pcb',
-      chipClass: 'bg-teal-500/10 text-teal-900 dark:text-teal-300 border-teal-500/20'
-    };
+    return { key: 'electrica', title: 'Eléctrica y Electrónica' };
   }
-
-  // 4. Química / Ambiental (esmeralda / navy)
   if (/quimic|ambient|alimento|bioproces|material|termodin|sostenib|biotec|polimer/i.test(combined)) {
-    return {
-      key: 'quimica',
-      title: 'Ingeniería Química y Ambiental',
-      shortLabel: 'Química & Ambiental',
-      gradientClass: 'from-emerald-950 via-[#0c272a] to-[#09141f]',
-      borderAccent: 'border-emerald-500/50',
-      iconName: 'science',
-      svgPattern: 'molecular',
-      chipClass: 'bg-emerald-500/10 text-emerald-900 dark:text-emerald-300 border-emerald-500/20'
-    };
+    return { key: 'quimica', title: 'Química y Ambiental' };
   }
-
-  // 5. Civil / Agrícola (ocre / navy)
   if (/civil|agricol|estruct|geotec|hidraul|suelo|vias|transp|construc|topograf/i.test(combined)) {
-    return {
-      key: 'civil',
-      title: 'Ingeniería Civil y Agrícola',
-      shortLabel: 'Civil & Agrícola',
-      gradientClass: 'from-orange-950/90 via-[#231b26] to-[#0d1627]',
-      borderAccent: 'border-orange-500/50',
-      iconName: 'foundation',
-      svgPattern: 'structural',
-      chipClass: 'bg-orange-500/10 text-orange-900 dark:text-orange-300 border-orange-500/20'
-    };
+    return { key: 'civil', title: 'Civil y Agrícola' };
   }
-
-  // 6. Fallback Institucional / Industrial / Multidisciplinar (Lime / Navy FIBOG)
-  return {
-    key: 'multidisciplinar',
-    title: 'Facultad de Ingeniería',
-    shortLabel: 'Ingeniería & Afines',
-    gradientClass: 'from-[#192950] via-[#0D2B53] to-[#081326]',
-    borderAccent: 'border-[#94B43B]/60',
-    iconName: 'engineering',
-    svgPattern: 'blueprint',
-    chipClass: 'bg-lime-500/10 text-lime-900 dark:text-lime-300 border-lime-500/20'
-  };
+  return { key: 'multidisciplinar', title: 'Facultad de Ingeniería' };
 };
 
 const branch = getBranchConfig(grupo);
+
+// Metadata resolution
+const carreraPrincipal = (grupo.carreras && grupo.carreras.length > 0)
+  ? grupo.carreras[0]
+  : (grupo.carrera_str || branch.title);
+
+const hasConvocatoria = isFeatured || (grupo.vinculacion && /abiert|convocator|vigente|semestral/i.test(grupo.vinculacion));
+
+const descripcion = grupo.descripcion || grupo.enfoque || 'Iniciativa enfocada en el desarrollo formativo y técnico de la Facultad de Ingeniería.';
+const enfoque = grupo.enfoque || (grupo.actividades ? grupo.actividades.slice(0, 90) + '...' : 'Investigación formativa e innovación aplicada');
+const tutorLider = grupo.docente || grupo.lider || 'Facultad de Ingeniería';
+const labelTutor = grupo.docente ? 'Docente a cargo' : (grupo.lider ? 'Líder estudiantil' : 'Coordinación');
+const modalidadText = grupo.modalidad || 'Presencial';
+const horarioText = grupo.horarios || 'Horario a convenir';
+
+const carrerasList = (grupo.carreras && grupo.carreras.length > 0)
+  ? (grupo.carreras.length > 2 ? `${grupo.carreras.slice(0, 2).join(', ')}...` : grupo.carreras.join(', '))
+  : 'Ingeniería y Afines';
+
+const searchAttr = normText(`${grupo.nombre} ${grupo.tipo} ${carreraPrincipal} ${(grupo.carreras || []).join(' ')} ${grupo.docente || ''} ${grupo.lider || ''} ${enfoque} ${descripcion}`);
 ---
 
 <article
-  class="bento-card group flex flex-col h-full rounded-2xl glass border border-border-default/80 hover:border-primary/40 hover:-translate-y-1 transition-all duration-300 overflow-hidden shadow-sm hover:shadow-card-hover"
-  data-index={index}
+  class:list={[
+    "bento-cell bento-card rounded-3xl bg-white dark:bg-[#111827] border border-border-default/60 dark:border-white/10 flex flex-col justify-between shadow-lg relative overflow-hidden group transition-all",
+    isFeatured ? "lg:col-span-2 p-7 sm:p-8 hover:border-[#94B43B]/60" : `p-7 ${tipoConfig.hoverBorder}`
+  ]}
+  data-type={grupo.tipo}
+  data-carreras={(grupo.carreras || []).join(',')}
+  data-search={searchAttr}
   data-branch={branch.key}
+  data-index={index}
 >
-  <!-- Portada: Imagen oficial o Portada Generativa Técnica FIBOG -->
-  {grupo.imagen_url ? (
-    <div class="relative h-44 w-full overflow-hidden bg-bg-hover border-b border-border-default/60">
-      <img
-        src={grupo.imagen_url}
-        alt={`Fotografía oficial de ${grupo.nombre}`}
-        loading="lazy"
-        decoding="async"
-        class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-      />
-      <!-- Gradient overlay for subtle contrast -->
-      <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent pointer-events-none"></div>
-      <!-- Branch indicator badge on top of image -->
-      <div class="absolute bottom-2.5 left-3">
-        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-black/60 backdrop-blur-md text-white border border-white/20">
-          <span class="material-symbols-outlined text-xs">{branch.iconName}</span>
-          {branch.shortLabel}
+  <div class="space-y-4">
+    <!-- Header: Type Badge, Dept/Branch, Open Call Indicator -->
+    <div class="flex items-center justify-between gap-3 flex-wrap">
+      <div class="flex items-center gap-2 flex-wrap">
+        <span class={`px-2.5 py-1 rounded-lg text-xs font-bold uppercase tracking-wider border ${tipoConfig.badgeClass} flex items-center gap-1.5`}>
+          <span class={`w-1.5 h-1.5 rounded-full ${tipoConfig.dotClass}`}></span>
+          {tipoConfig.label}
+        </span>
+        <span class="text-xs text-text-muted dark:text-slate-400 font-medium truncate max-w-[130px] sm:max-w-[200px]" title={carreraPrincipal}>
+          {carreraPrincipal}
         </span>
       </div>
+
+      {hasConvocatoria ? (
+        <span class="text-xs text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1.5 shrink-0">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          Convocatoria Abierta
+        </span>
+      ) : (
+        <span class="text-xs text-text-muted dark:text-slate-400 shrink-0 font-medium">
+          {modalidadText}
+        </span>
+      )}
     </div>
-  ) : (
-    <!-- Generative Technical Cover by Engineering Branch -->
-    <div class={`relative h-36 w-full bg-gradient-to-br ${branch.gradientClass} p-4 flex flex-col justify-between overflow-hidden border-b ${branch.borderAccent}`}>
-      <!-- Technical Vector Pattern Background -->
-      <div class="absolute inset-0 opacity-20 pointer-events-none" aria-hidden="true">
-        {branch.svgPattern === 'circuits' && (
-          <svg class="w-full h-full text-cyan-400" viewBox="0 0 200 100" preserveAspectRatio="none" fill="none" stroke="currentColor" stroke-width="0.8">
-            <path d="M0,20 H40 L60,40 H120 L140,20 H200 M20,60 H70 L90,80 H160 L180,60 H200 M50,0 V30 M150,50 V100" />
-            <circle cx="60" cy="40" r="2" fill="currentColor" />
-            <circle cx="140" cy="20" r="2" fill="currentColor" />
-            <circle cx="90" cy="80" r="2" fill="currentColor" />
-          </svg>
-        )}
-        {branch.svgPattern === 'mechanical' && (
-          <svg class="w-full h-full text-amber-400" viewBox="0 0 200 100" preserveAspectRatio="none" fill="none" stroke="currentColor" stroke-width="0.7">
-            <pattern id={`grid-mech-${index}`} width="20" height="20" patternUnits="userSpaceOnUse">
-              <path d="M 20 0 L 0 0 0 20" />
-            </pattern>
-            <rect width="100%" height="100%" fill={`url(#grid-mech-${index})`} />
-            <circle cx="160" cy="30" r="24" stroke-dasharray="4 2" />
-            <circle cx="160" cy="30" r="10" />
-          </svg>
-        )}
-        {branch.svgPattern === 'pcb' && (
-          <svg class="w-full h-full text-teal-400" viewBox="0 0 200 100" preserveAspectRatio="none" fill="none" stroke="currentColor" stroke-width="0.8">
-            <path d="M0,50 Q40,10 80,50 T160,50 T240,50 M0,70 Q40,30 80,70 T160,70" />
-            <circle cx="80" cy="50" r="2.5" fill="currentColor" />
-            <circle cx="160" cy="50" r="2.5" fill="currentColor" />
-          </svg>
-        )}
-        {branch.svgPattern === 'molecular' && (
-          <svg class="w-full h-full text-emerald-400" viewBox="0 0 200 100" preserveAspectRatio="none" fill="none" stroke="currentColor" stroke-width="0.8">
-            <polygon points="30,20 45,10 60,20 60,35 45,45 30,35" />
-            <polygon points="60,35 75,25 90,35 90,50 75,60 60,50" />
-            <polygon points="140,20 155,10 170,20 170,35 155,45 140,35" />
-            <line x1="60" y1="20" x2="75" y2="25" />
-            <line x1="90" y1="35" x2="105" y2="35" stroke-dasharray="2 2" />
-          </svg>
-        )}
-        {branch.svgPattern === 'structural' && (
-          <svg class="w-full h-full text-orange-400" viewBox="0 0 200 100" preserveAspectRatio="none" fill="none" stroke="currentColor" stroke-width="0.7">
-            <path d="M0,90 L40,30 L80,90 L120,30 L160,90 L200,30 M0,90 H200 M40,30 H200" />
-            <line x1="40" y1="30" x2="40" y2="90" stroke-dasharray="2 2" />
-            <line x1="80" y1="30" x2="80" y2="90" stroke-dasharray="2 2" />
-            <line x1="120" y1="30" x2="120" y2="90" stroke-dasharray="2 2" />
-          </svg>
-        )}
-        {branch.svgPattern === 'blueprint' && (
-          <svg class="w-full h-full text-lime-400" viewBox="0 0 200 100" preserveAspectRatio="none" fill="none" stroke="currentColor" stroke-width="0.6">
-            <pattern id={`grid-blue-${index}`} width="15" height="15" patternUnits="userSpaceOnUse">
-              <path d="M 15 0 L 0 0 0 15" />
-            </pattern>
-            <rect width="100%" height="100%" fill={`url(#grid-blue-${index})`} />
-            <circle cx="160" cy="50" r="30" stroke-width="0.8" />
-            <line x1="130" y1="50" x2="190" y2="50" />
-            <line x1="160" y1="20" x2="160" y2="80" />
-          </svg>
-        )}
-      </div>
 
-      <!-- Icon Capsule & Tag -->
-      <div class="relative z-10 flex items-center justify-between">
-        <div class="w-9 h-9 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white shadow-sm">
-          <span class="material-symbols-outlined text-lg">{branch.iconName}</span>
-        </div>
-        <span class="text-[10px] font-mono tracking-widest text-white/70 uppercase bg-black/30 px-2 py-0.5 rounded backdrop-blur-sm border border-white/10">
-          FIBOG · {branch.key.slice(0, 4)}
-        </span>
-      </div>
-
-      <!-- Branch Label on Card Header -->
-      <div class="relative z-10">
-        <span class="text-[11px] font-semibold text-white/90 tracking-wide flex items-center gap-1.5 drop-shadow-sm">
-          <span class="w-1.5 h-1.5 rounded-full bg-white/80"></span>
-          {branch.title}
-        </span>
-      </div>
-    </div>
-  )}
-
-  <!-- Card Body -->
-  <div class="p-5 flex flex-col flex-1 justify-between">
-    <div>
-      <!-- Badges row -->
-      <div class="flex items-center flex-wrap gap-2 mb-3">
-        <span class={`inline-flex items-center gap-1 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-md border ${tipoConfig.badgeClass}`}>
-          <span class="material-symbols-outlined text-xs">{tipoConfig.icon}</span>
-          {grupo.tipo}
-        </span>
-
-        {grupo.modalidad && (
-          <span class="px-2 py-0.5 text-[10px] font-medium rounded-md bg-bg-hover text-text-muted border border-border-default/60">
-            {grupo.modalidad}
-          </span>
-        )}
-      </div>
-
-      <!-- Group Title -->
-      <h3 class="text-base md:text-lg font-bold text-text-primary mb-2 group-hover:text-primary-light transition-colors line-clamp-2 leading-snug">
+    <!-- Title and Description -->
+    <div class={isFeatured ? "max-w-2xl mt-2" : "mt-1.5"}>
+      <h3 class:list={[
+        isFeatured ? "text-2xl sm:text-3xl" : "text-xl sm:text-2xl",
+        "font-extrabold text-text-primary dark:text-[#E2E8F0] group-hover:text-[#4D6B18] dark:group-hover:text-[#94B43B] transition-colors leading-tight"
+      ]}>
         <a href={`/grupo/${grupo.id}`} class="focus-visible:outline-none focus-visible:underline">
           {grupo.nombre}
         </a>
       </h3>
-
-      <!-- Description -->
-      <p class="text-xs md:text-sm text-text-secondary line-clamp-2 leading-relaxed mb-4">
-        {grupo.descripcion || grupo.enfoque || 'Grupo de investigación y formación técnica adscrito a la Facultad de Ingeniería.'}
+      <p class="text-text-secondary dark:text-slate-300 text-xs sm:text-sm mt-2.5 leading-relaxed line-clamp-3">
+        {descripcion}
       </p>
+    </div>
 
-      <!-- Metadata List -->
-      <div class="space-y-2 mb-4 pt-2 border-t border-border-default/50 text-xs">
-        {grupo.docente && (
-          <div class="flex items-center gap-2 text-text-secondary" title={`Docente tutor: ${grupo.docente}`}>
-            <span class="material-symbols-outlined text-text-muted text-sm flex-shrink-0">school</span>
-            <span class="truncate"><strong class="font-medium text-text-primary">Tutor:</strong> {grupo.docente}</span>
-          </div>
-        )}
-
-        {grupo.carreras && grupo.carreras.length > 0 && (
-          <div class="flex items-center gap-2 text-text-secondary" title={`Carreras: ${grupo.carreras.join(', ')}`}>
-            <span class="material-symbols-outlined text-text-muted text-sm flex-shrink-0">domain</span>
-            <span class="truncate">{grupo.carreras.slice(0, 2).join(', ')}{grupo.carreras.length > 2 ? '...' : ''}</span>
-          </div>
-        )}
+    <!-- Technical Specs: Asymmetric layout (grid on featured, list on standard) -->
+    {isFeatured ? (
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 py-4 border-y border-border-default/60 dark:border-white/10 text-xs my-4">
+        <div>
+          <span class="text-text-muted dark:text-slate-400 block font-medium">Líneas de trabajo</span>
+          <span class="text-text-primary dark:text-slate-200 font-semibold line-clamp-2 mt-0.5">{enfoque}</span>
+        </div>
+        <div>
+          <span class="text-text-muted dark:text-slate-400 block font-medium">Sede & Modalidad</span>
+          <span class="text-text-primary dark:text-slate-200 font-semibold line-clamp-2 mt-0.5">{modalidadText} · {horarioText}</span>
+        </div>
+        <div>
+          <span class="text-text-muted dark:text-slate-400 block font-medium">{labelTutor}</span>
+          <span class="text-text-primary dark:text-slate-200 font-semibold line-clamp-2 mt-0.5">{tutorLider}</span>
+        </div>
       </div>
-    </div>
+    ) : (
+      <div class="space-y-2 py-3 border-t border-border-default/60 dark:border-white/10 text-xs my-3">
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-text-muted dark:text-slate-400 shrink-0">{labelTutor}:</span>
+          <span class="text-text-primary dark:text-slate-200 font-medium truncate text-right max-w-[180px]">{tutorLider}</span>
+        </div>
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-text-muted dark:text-slate-400 shrink-0">Modalidad:</span>
+          <span class="text-text-primary dark:text-slate-200 font-medium truncate text-right">{modalidadText}</span>
+        </div>
+        <div class="flex items-center justify-between gap-2">
+          <span class="text-text-muted dark:text-slate-400 shrink-0">Carreras afines:</span>
+          <span class="text-text-primary dark:text-slate-200 font-medium truncate text-right max-w-[170px]" title={carrerasList}>{carrerasList}</span>
+        </div>
+      </div>
+    )}
+  </div>
 
-    <!-- Action Link -->
-    <div class="pt-3 border-t border-border-default/60">
-      <a
-        href={`/grupo/${grupo.id}`}
-        class="w-full flex items-center justify-between px-3.5 py-2 rounded-xl bg-bg-hover/80 hover:bg-primary/10 text-text-primary hover:text-primary-light text-xs font-semibold transition-all group/btn"
-      >
-        <span>Ver información completa</span>
-        <span class="material-symbols-outlined text-sm transition-transform group-hover/btn:translate-x-1">
-          arrow_forward
-        </span>
-      </a>
-    </div>
+  <!-- Bottom Action Bar: Detail link & Direct Apply Modal Trigger -->
+  <div class="pt-4 border-t border-border-default/60 dark:border-white/10 flex items-center justify-between gap-3 mt-4">
+    <a
+      href={`/grupo/${grupo.id}`}
+      class="inline-flex items-center gap-1 text-xs font-semibold text-text-secondary dark:text-slate-400 hover:text-[#4D6B18] dark:hover:text-[#94B43B] transition-colors group/link"
+    >
+      <span>Ver detalle</span>
+      <span class="material-symbols-outlined text-sm transition-transform group-hover/link:translate-x-0.5">arrow_forward</span>
+    </a>
+
+    <button
+      type="button"
+      data-apply-btn
+      data-group-name={grupo.nombre}
+      data-group-email={grupo.email || 'ingenieria_bog@unal.edu.co'}
+      data-group-dept={carreraPrincipal}
+      class:list={[
+        isFeatured
+          ? "px-4 py-2.5 bg-[#94B43B] hover:bg-[#82A735] text-black font-bold shadow-md"
+          : "px-3.5 py-2 bg-bg-hover dark:bg-white/5 hover:bg-[#94B43B] hover:text-black dark:hover:bg-[#94B43B] dark:hover:text-black text-text-primary dark:text-slate-200 font-semibold border border-border-default/40 dark:border-white/10 hover:border-transparent",
+        "rounded-xl text-xs transition-all flex items-center gap-1.5 cursor-pointer select-none active:scale-95"
+      ]}
+    >
+      <span>{isFeatured ? 'Postularme al equipo →' : 'Postularme ✉'}</span>
+    </button>
   </div>
 </article>
+
+<style>
+  .bento-cell {
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .bento-cell:hover {
+    transform: translateY(-2px);
+  }
+</style>
