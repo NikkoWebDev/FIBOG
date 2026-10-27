@@ -16,7 +16,7 @@ const isFeatured = featured !== undefined ? featured : index === 0;
 const normText = (s: string) =>
   (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
-// Type configuration with verified WCAG AA/AAA contrast tokens
+// Type configuration with verified WCAG AAA/AA contrast tokens
 interface TipoConfig {
   label: string;
   badgeClass: string;
@@ -27,19 +27,19 @@ interface TipoConfig {
 const tipoConfigs: Record<string, TipoConfig> = {
   'semillero': {
     label: 'Semillero',
-    badgeClass: 'bg-[#94B43B]/15 text-[#4D6B18] dark:text-[#94B43B] border-[#94B43B]/30',
+    badgeClass: 'bg-[#94B43B]/15 text-[#3D5613] dark:text-[#94B43B] border-[#94B43B]/30',
     dotClass: 'bg-[#94B43B]',
     hoverBorder: 'hover:border-[#94B43B]/60'
   },
   'grupo de investigacion': {
     label: 'Grupo DIB',
-    badgeClass: 'bg-purple-500/15 text-purple-700 dark:text-purple-300 border-purple-500/30',
+    badgeClass: 'bg-purple-500/15 text-purple-800 dark:text-purple-300 border-purple-500/30',
     dotClass: 'bg-purple-500',
     hoverBorder: 'hover:border-purple-400/60'
   },
   'grupo estudiantil': {
     label: 'Grupo Estudiantil',
-    badgeClass: 'bg-amber-500/15 text-amber-800 dark:text-amber-300 border-amber-500/30',
+    badgeClass: 'bg-amber-500/15 text-amber-900 dark:text-amber-300 border-amber-500/30',
     dotClass: 'bg-amber-500',
     hoverBorder: 'hover:border-amber-400/60'
   }
@@ -49,7 +49,7 @@ const normT = normText(grupo.tipo);
 const tipoKey = Object.keys(tipoConfigs).find(k => normT.includes(k)) || 'semillero';
 const tipoConfig = tipoConfigs[tipoKey];
 
-// Engineering branch detector for category filtering
+// Engineering branch detector for category filtering & chromatic accents
 interface BranchConfig {
   key: string;
   title: string;
@@ -63,8 +63,11 @@ const getBranchConfig = (g: Grupo): BranchConfig => {
     g.descripcion || ''
   ].map(normText).join(' ');
 
+  if (/ciencia|natural|fisic|biol|molecular|geolog|astron|matemat|farmac|bioquim/i.test(combined)) {
+    return { key: 'ciencias', title: 'Ciencias Naturales y Exactas' };
+  }
   if (/sistemas|computac|software|datos|inteligencia artificial|\bia\b|machine learning|algorit|ciberseg|computacional/i.test(combined)) {
-    return { key: 'sistemas', title: 'Sistemas y Computación' };
+    return { key: 'sistemas', title: 'Sistemas e IA' };
   }
   if (/mecanic|mecatron|robot|aeroespac|automatiz|vehicul|manufactura|diseno mecan/i.test(combined)) {
     return { key: 'mecanica', title: 'Mecánica y Mecatrónica' };
@@ -78,15 +81,80 @@ const getBranchConfig = (g: Grupo): BranchConfig => {
   if (/civil|agricol|estruct|geotec|hidraul|suelo|vias|transp|construc|topograf/i.test(combined)) {
     return { key: 'civil', title: 'Civil y Agrícola' };
   }
-  return { key: 'multidisciplinar', title: 'Facultad de Ingeniería' };
+  return { key: 'multidisciplinar', title: 'Facultad de Ingeniería y Afines' };
 };
 
 const branch = getBranchConfig(grupo);
 
-// Metadata resolution
-const carreraPrincipal = (grupo.carreras && grupo.carreras.length > 0)
-  ? grupo.carreras[0]
-  : (grupo.carrera_str || branch.title);
+// Chromatic accents by engineering & sciences branch:
+// - Ciencias Naturales: acento esmeralda/zafiro científico
+// - Sistemas e IA: acento cian sutil
+// - Mecánica y Mecatrónica: acento ámbar
+// - Eléctrica y Electrónica: acento teal
+// - Química y Ambiental: acento púrpura
+// - Civil y Agrícola: acento esmeralda
+// - Multidisciplinar / Facultad: acento verde lima institucional
+interface BranchTheme {
+  borderTop: string;
+  glowGradient: string;
+}
+
+const branchThemes: Record<string, BranchTheme> = {
+  ciencias: {
+    borderTop: 'border-t-2 border-t-emerald-500/70 dark:border-t-emerald-400/70',
+    glowGradient: 'from-emerald-500/12 via-teal-500/5 to-transparent'
+  },
+  sistemas: {
+    borderTop: 'border-t-2 border-t-cyan-500/60 dark:border-t-cyan-400/60',
+    glowGradient: 'from-cyan-500/10 via-cyan-500/5 to-transparent'
+  },
+  mecanica: {
+    borderTop: 'border-t-2 border-t-amber-500/60 dark:border-t-amber-400/60',
+    glowGradient: 'from-amber-500/10 via-amber-500/5 to-transparent'
+  },
+  electrica: {
+    borderTop: 'border-t-2 border-t-teal-500/60 dark:border-t-teal-400/60',
+    glowGradient: 'from-teal-500/10 via-teal-500/5 to-transparent'
+  },
+  quimica: {
+    borderTop: 'border-t-2 border-t-purple-500/60 dark:border-t-purple-400/60',
+    glowGradient: 'from-purple-500/10 via-purple-500/5 to-transparent'
+  },
+  civil: {
+    borderTop: 'border-t-2 border-t-emerald-600/60 dark:border-t-emerald-500/60',
+    glowGradient: 'from-emerald-500/10 via-emerald-500/5 to-transparent'
+  },
+  multidisciplinar: {
+    borderTop: 'border-t-2 border-t-[#94B43B]/60 dark:border-t-[#94B43B]/60',
+    glowGradient: 'from-[#94B43B]/10 via-[#94B43B]/5 to-transparent'
+  }
+};
+
+const branchTheme = branchThemes[branch.key] || branchThemes.multidisciplinar;
+
+// Detect specific science discipline to highlight with pride
+const findScienceDiscipline = (g: Grupo): string => {
+  const combined = [
+    ...(g.carreras || []),
+    g.carrera_str || '',
+    g.nombre || '',
+    g.enfoque || ''
+  ].join(' ');
+  if (/geolog/i.test(combined)) return 'Geología y Geociencias';
+  if (/farmac|farmaceut/i.test(combined)) return 'Ciencias Farmacéuticas';
+  if (/bioquim/i.test(combined)) return 'Bioquímica';
+  if (/biol|microbiol|molecular/i.test(combined)) return 'Ciencias Biológicas';
+  if (/fisic|astron/i.test(combined)) return 'Física y Astronomía';
+  if (/matemat|estadist/i.test(combined)) return 'Matemáticas y Estadística';
+  return 'Ciencias Naturales y Exactas';
+};
+
+// Metadata resolution: highlight specific sciences or main career
+const carreraPrincipal = branch.key === 'ciencias'
+  ? findScienceDiscipline(grupo)
+  : ((grupo.carreras && grupo.carreras.length > 0)
+      ? grupo.carreras[0]
+      : (grupo.carrera_str || branch.title));
 
 const hasConvocatoria = isFeatured || (grupo.vinculacion && /abiert|convocator|vigente|semestral/i.test(grupo.vinculacion));
 
@@ -106,7 +174,8 @@ const searchAttr = normText(`${grupo.nombre} ${grupo.tipo} ${carreraPrincipal} $
 
 <article
   class:list={[
-    "bento-cell bento-card rounded-3xl bg-white dark:bg-[#111827] border border-border-default/60 dark:border-white/10 flex flex-col justify-between shadow-lg relative overflow-hidden group transition-all",
+    "bento-cell bento-card rounded-3xl bg-white dark:bg-[#111827] border border-border-default/60 dark:border-white/10 flex flex-col justify-between shadow-lg hover:shadow-xl relative overflow-hidden group transition-all",
+    branchTheme.borderTop,
     isFeatured ? "lg:col-span-2 p-7 sm:p-8 hover:border-[#94B43B]/60" : `p-7 ${tipoConfig.hoverBorder}`
   ]}
   data-type={grupo.tipo}
@@ -115,22 +184,55 @@ const searchAttr = normText(`${grupo.nombre} ${grupo.tipo} ${carreraPrincipal} $
   data-branch={branch.key}
   data-index={index}
 >
-  <div class="space-y-4">
+  <!-- Subtle discipline ambient gradient at the top -->
+  <div
+    class:list={[
+      "absolute top-0 inset-x-0 h-28 bg-gradient-to-b pointer-events-none opacity-40 dark:opacity-25 transition-opacity duration-300 group-hover:opacity-75 dark:group-hover:opacity-45",
+      branchTheme.glowGradient
+    ]}
+    aria-hidden="true"
+  ></div>
+
+  <div class="space-y-4 relative z-10">
+    <!-- Visual Image Header (if grupo has imagen_url) -->
+    {grupo.imagen_url && (
+      <a
+        href={`/grupo/${grupo.id}`}
+        class="block relative w-full h-40 overflow-hidden rounded-2xl bg-slate-100 dark:bg-slate-800 border border-border-default/50 dark:border-white/10 group/img focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#94B43B] transition-transform duration-300"
+        tabindex="-1"
+        aria-hidden="true"
+      >
+        <img
+          src={grupo.imagen_url}
+          alt={`Imagen ilustrativa de ${grupo.nombre}`}
+          loading="lazy"
+          class="w-full h-40 object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+        />
+        <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+      </a>
+    )}
+
     <!-- Header: Type Badge, Dept/Branch, Open Call Indicator -->
     <div class="flex items-center justify-between gap-3 flex-wrap">
       <div class="flex items-center gap-2 flex-wrap">
-        <span class={`px-2.5 py-1 rounded-lg text-xs font-bold uppercase tracking-wider border ${tipoConfig.badgeClass} flex items-center gap-1.5`}>
-          <span class={`w-1.5 h-1.5 rounded-full ${tipoConfig.dotClass}`}></span>
+        <span class={`px-2.5 py-1 rounded-lg text-xs font-bold uppercase tracking-wider border ${tipoConfig.badgeClass} flex items-center gap-1.5 shadow-xs`}>
+          <span class="relative flex h-2 w-2 shrink-0">
+            <span class={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${tipoConfig.dotClass}`}></span>
+            <span class={`relative inline-flex rounded-full h-2 w-2 ${tipoConfig.dotClass}`}></span>
+          </span>
           {tipoConfig.label}
         </span>
-        <span class="text-xs text-text-muted dark:text-slate-400 font-medium truncate max-w-[130px] sm:max-w-[200px]" title={carreraPrincipal}>
+        <span class="text-xs text-text-secondary dark:text-slate-300 font-medium truncate max-w-[130px] sm:max-w-[200px]" title={carreraPrincipal}>
           {carreraPrincipal}
         </span>
       </div>
 
       {hasConvocatoria ? (
-        <span class="text-xs text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1.5 shrink-0">
-          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span class="text-xs text-emerald-700 dark:text-emerald-300 font-semibold flex items-center gap-1.5 shrink-0 bg-emerald-500/10 dark:bg-emerald-500/20 px-2.5 py-1 rounded-lg border border-emerald-500/20">
+          <span class="relative flex h-2 w-2 shrink-0">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </span>
           Convocatoria Abierta
         </span>
       ) : (
@@ -144,7 +246,7 @@ const searchAttr = normText(`${grupo.nombre} ${grupo.tipo} ${carreraPrincipal} $
     <div class={isFeatured ? "max-w-2xl mt-2" : "mt-1.5"}>
       <h3 class:list={[
         isFeatured ? "text-2xl sm:text-3xl" : "text-xl sm:text-2xl",
-        "font-extrabold text-text-primary dark:text-[#E2E8F0] group-hover:text-[#4D6B18] dark:group-hover:text-[#94B43B] transition-colors leading-tight"
+        "font-extrabold tracking-tight text-text-primary dark:text-[#E2E8F0] group-hover:text-[#4D6B18] dark:group-hover:text-[#94B43B] transition-colors leading-tight"
       ]}>
         <a href={`/grupo/${grupo.id}`} class="focus-visible:outline-none focus-visible:underline">
           {grupo.nombre}
@@ -189,39 +291,33 @@ const searchAttr = normText(`${grupo.nombre} ${grupo.tipo} ${carreraPrincipal} $
     )}
   </div>
 
-  <!-- Bottom Action Bar: Detail link & Direct Apply Modal Trigger -->
-  <div class="pt-4 border-t border-border-default/60 dark:border-white/10 flex items-center justify-between gap-3 mt-4">
+  <!-- Bottom Action Bar: Single clean primary action -->
+  <div class="pt-4 border-t border-border-default/60 dark:border-white/10 flex items-center justify-between gap-3 mt-4 relative z-10">
+    <span class="text-xs text-text-muted dark:text-slate-400 font-medium flex items-center gap-1">
+      <span class="material-symbols-outlined text-sm">visibility</span>
+      <span>Iniciativa UNAL</span>
+    </span>
+
     <a
       href={`/grupo/${grupo.id}`}
-      class="inline-flex items-center gap-1 text-xs font-semibold text-text-secondary dark:text-slate-400 hover:text-[#4D6B18] dark:hover:text-[#94B43B] transition-colors group/link"
-    >
-      <span>Ver detalle</span>
-      <span class="material-symbols-outlined text-sm transition-transform group-hover/link:translate-x-0.5">arrow_forward</span>
-    </a>
-
-    <button
-      type="button"
-      data-apply-btn
-      data-group-name={grupo.nombre}
-      data-group-email={grupo.email || 'ingenieria_bog@unal.edu.co'}
-      data-group-dept={carreraPrincipal}
       class:list={[
         isFeatured
-          ? "px-4 py-2.5 bg-[#94B43B] hover:bg-[#82A735] text-black font-bold shadow-md"
-          : "px-3.5 py-2 bg-bg-hover dark:bg-white/5 hover:bg-[#94B43B] hover:text-black dark:hover:bg-[#94B43B] dark:hover:text-black text-text-primary dark:text-slate-200 font-semibold border border-border-default/40 dark:border-white/10 hover:border-transparent",
-        "rounded-xl text-xs transition-all flex items-center gap-1.5 cursor-pointer select-none active:scale-95"
+          ? "px-5 py-2.5 bg-[#94B43B] hover:bg-[#82A735] text-[#0B132B] font-extrabold shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 active:scale-95 border border-[#82A735]/50"
+          : "px-4 py-2 bg-slate-100 hover:bg-[#94B43B] text-slate-800 hover:text-slate-950 dark:bg-white/10 dark:hover:bg-[#94B43B] dark:text-slate-100 dark:hover:text-slate-950 font-bold border border-slate-300/80 dark:border-white/20 hover:border-[#94B43B] dark:hover:border-[#94B43B] shadow-xs hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:scale-95",
+        "rounded-xl text-xs transition-all inline-flex items-center gap-1.5 cursor-pointer select-none group/btn focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#94B43B]"
       ]}
     >
-      <span>{isFeatured ? 'Postularme al equipo →' : 'Postularme ✉'}</span>
-    </button>
+      <span>Ver detalles</span>
+      <span class="material-symbols-outlined text-sm transition-transform group-hover/btn:translate-x-1" aria-hidden="true">arrow_forward</span>
+    </a>
   </div>
 </article>
 
 <style>
   .bento-cell {
-    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.2s ease;
   }
   .bento-cell:hover {
-    transform: translateY(-2px);
+    transform: translateY(-3px);
   }
 </style>

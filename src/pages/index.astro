@@ -33,6 +33,11 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
   month: 'long',
   year: 'numeric',
 });
+
+const totalColectivos = allGrupos.length || 309;
+const totalAreas = '12+';
+const totalSemilleros = metadata.por_tipo?.['Semillero'] ?? 15;
+const totalDIB = metadata.por_tipo?.['Grupo de Investigación'] ?? 281;
 // JSON-LD (SEO tecnico): WebSite + SearchAction, Organization institucional e ItemList top 25.
 const siteUrl = (Astro.site?.origin ?? 'https://semilleros.nikko.dev').replace(/\/+$/, '');
 const topGrupos = allGrupos.slice(0, 25);
@@ -74,71 +79,104 @@ const jsonLd = JSON.stringify([
 ]).replace(/</g, '\\u003c');
 ---
 
-<Layout activePage="inicio" hideFooter={false} title="Semilleros e Investigación · Facultad de Ingeniería UNAL">
+<Layout activePage="inicio" hideFooter={false} title="Semilleros e Investigación · Ingeniería, Ciencias y Afines | UNAL">
 
   <main class="pb-16">
-    <!-- Hero Limpio e Institucional -->
-    <header class="relative overflow-hidden border-b border-border-default/60">
-      <div class="absolute inset-0 bg-gradient-mesh opacity-40 pointer-events-none"></div>
-      <div class="absolute top-0 left-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[120px] pointer-events-none"></div>
+    <!-- Hero con Presencia Institucional y Métricas de Impacto -->
+    <header class="relative overflow-hidden border-b border-border-default/60 bg-gradient-to-b from-bg via-bg-raised/40 to-bg">
+      <div class="absolute inset-0 bg-gradient-mesh opacity-30 pointer-events-none"></div>
+      <div class="absolute -top-24 left-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[140px] pointer-events-none"></div>
+      <div class="absolute top-1/3 right-10 w-[350px] h-[350px] bg-accent/8 rounded-full blur-[120px] pointer-events-none"></div>
 
-      <div class="relative z-10 max-w-7xl mx-auto px-6 pt-6 pb-2">
-        <p class="text-[11px] tracking-widest uppercase text-text-muted/80 font-medium">Última actualización: {ultimaTexto}</p>
-      </div>
-
-      <div class="relative z-10 max-w-7xl mx-auto px-6 pt-2 pb-10 sm:pb-14 flex flex-col md:flex-row md:items-end justify-between gap-6">
-        <div class="space-y-3 max-w-3xl">
-          <!-- Rastro de jerarquía -->
-          <div id="hero-tag" class="flex items-center gap-2">
-            <span class="text-xs font-semibold uppercase tracking-wider text-text-muted">Universidad Nacional de Colombia</span>
-            <span class="text-text-muted/60">/</span>
-            <span class="text-xs font-semibold text-primary-light">Facultad de Ingeniería</span>
+      <div class="relative z-10 max-w-7xl mx-auto px-6 pt-8 pb-12 sm:pb-16 lg:pb-20">
+        <!-- Badge superior institucional -->
+        <div id="hero-tag" class="flex flex-wrap items-center justify-between gap-4 mb-6">
+          <div class="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-primary/10 border border-primary/25 text-primary-light text-xs sm:text-sm font-semibold tracking-wide backdrop-blur-sm shadow-xs">
+            <span class="w-2 h-2 rounded-full bg-primary animate-pulse" aria-hidden="true"></span>
+            <span>Universidad Nacional de Colombia · Facultad de Ingeniería y Afines</span>
           </div>
+          <p class="text-[11px] tracking-widest uppercase text-text-muted/80 font-medium">
+            Catálogo Oficial · Actualizado: {ultimaTexto}
+          </p>
+        </div>
 
-          <!-- Título -->
-          <h1 id="hero-title" class="text-3xl sm:text-5xl font-extrabold tracking-tight text-text-primary">
-            Semilleros y Grupos de Investigación
+        <!-- Título y Subtítulo de Autoridad -->
+        <div class="max-w-4xl space-y-4 sm:space-y-5">
+          <h1 id="hero-title" class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-text-primary leading-[1.12]">
+            Semilleros e Investigación · Ingeniería, Ciencias y Afines
           </h1>
 
-          <!-- Subtítulo limpio -->
-          <p id="hero-sub" class="text-text-secondary text-sm sm:text-base max-w-2xl leading-relaxed">
-            Catálogo oficial de los {allGrupos.length} colectivos de la Sede Bogotá. Encuentra proyectos afines a tu carrera, contacta a sus líderes y únete a los equipos de desarrollo.
+          <p id="hero-sub" class="text-text-secondary text-base sm:text-lg lg:text-xl max-w-3xl leading-relaxed font-normal">
+            Catálogo de los {totalColectivos} colectivos de la Sede Bogotá. Un ecosistema interdisciplinar donde convergen las ciencias exactas, las ciencias naturales y la ingeniería aplicada.
           </p>
 
-          <div id="hero-cta" class="flex flex-wrap items-center gap-3 pt-2">
-            <a href="#catalogo" class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-primary to-primary-dark text-white font-semibold px-5 py-2.5 rounded-xl hover:shadow-glow hover:-translate-y-0.5 active:translate-y-0 transition-all text-xs sm:text-sm">
-              <span class="material-symbols-outlined text-base">explore</span>
-              Explorar catálogo
+          <!-- Botones Principales de Acción -->
+          <div id="hero-cta" class="flex flex-wrap items-center gap-3.5 pt-3">
+            <a
+              href="#catalogo"
+              class="inline-flex items-center justify-center gap-2.5 bg-gradient-to-r from-primary to-primary-dark text-white font-semibold px-6 py-3 rounded-xl shadow-glow-sm hover:shadow-glow hover:-translate-y-0.5 active:translate-y-0 transition-all text-xs sm:text-sm md:text-base cursor-pointer"
+            >
+              <span class="material-symbols-outlined text-lg sm:text-xl">explore</span>
+              <span>Explorar catálogo</span>
             </a>
-            <a href="/registro" class="inline-flex items-center justify-center gap-2 bg-transparent text-primary-light font-semibold px-5 py-2.5 rounded-xl border border-primary/30 hover:bg-primary/10 hover:border-primary/50 hover:-translate-y-0.5 active:translate-y-0 transition-all text-xs sm:text-sm">
-              <span class="material-symbols-outlined text-base">group_add</span>
-              Registrar grupo
+            <a
+              href="/registro"
+              class="inline-flex items-center justify-center gap-2.5 bg-bg-card text-text-primary font-semibold px-6 py-3 rounded-xl border-2 border-primary/40 hover:border-primary hover:bg-primary/5 hover:text-primary-light hover:-translate-y-0.5 active:translate-y-0 transition-all text-xs sm:text-sm md:text-base cursor-pointer shadow-sm"
+            >
+              <span class="material-symbols-outlined text-lg sm:text-xl text-primary">add_circle</span>
+              <span>Postular mi grupo</span>
             </a>
           </div>
         </div>
 
-        <!-- Píldora de estado -->
-        <div class="flex items-center gap-3 self-start md:self-end" id="hero-stats">
-          <div class="px-4 py-2.5 rounded-xl bg-bg-raised border border-border-default text-xs font-medium text-text-secondary shadow-sm flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" aria-hidden="true"></span>
-            <span><strong class="font-bold text-text-primary text-sm" id="live-count">{allGrupos.length}</strong> iniciativas registradas</span>
+        <!-- Fila de métricas de impacto con diseño integrado -->
+        <div id="hero-stats" class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mt-10 sm:mt-14 pt-8 border-t border-border-default/70">
+          <div class="p-4 sm:p-5 rounded-2xl bg-bg-card/75 backdrop-blur-sm border border-border-default/80 hover:border-primary/40 hover:shadow-card transition-all">
+            <span class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-text-primary tabular-nums block" id="live-count">{totalColectivos}</span>
+            <span class="text-xs sm:text-sm font-semibold text-text-secondary mt-1 block">Colectivos de Investigación</span>
+          </div>
+
+          <div class="p-4 sm:p-5 rounded-2xl bg-bg-card/75 backdrop-blur-sm border border-border-default/80 hover:border-primary/40 hover:shadow-card transition-all">
+            <span class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-text-primary tabular-nums block">{totalAreas}</span>
+            <span class="text-xs sm:text-sm font-semibold text-text-secondary mt-1 block">Áreas en Ciencias e Ingeniería</span>
+          </div>
+
+          <div class="p-4 sm:p-5 rounded-2xl bg-bg-card/75 backdrop-blur-sm border border-border-default/80 hover:border-primary/40 hover:shadow-card transition-all">
+            <span class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-text-primary tabular-nums block">{totalDIB}</span>
+            <span class="text-xs sm:text-sm font-semibold text-text-secondary mt-1 block">Grupos DIB</span>
+          </div>
+
+          <div class="p-4 sm:p-5 rounded-2xl bg-bg-card/75 backdrop-blur-sm border border-border-default/80 hover:border-primary/40 hover:shadow-card transition-all">
+            <span class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-text-primary tabular-nums block">{totalSemilleros}</span>
+            <span class="text-xs sm:text-sm font-semibold text-text-secondary mt-1 block">Semilleros</span>
           </div>
         </div>
       </div>
     </header>
 
-    <!-- Catálogo -->
-    <div id="catalogo" class="max-w-7xl mx-auto px-6 pt-12">
-      <div class="mb-6">
-        <h2 class="text-2xl sm:text-3xl font-bold text-text-primary mb-2">Catálogo</h2>
-        <div class="h-1 w-20 bg-gradient-to-r from-primary to-accent rounded-full"></div>
-        <p class="text-text-muted text-sm mt-3">Filtra por tipo, carrera o usa la búsqueda inteligente.</p>
+    <!-- Coordinación de la sección del catálogo -->
+    <div id="catalogo" class="max-w-7xl mx-auto px-6 pt-12 sm:pt-16">
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 pb-6 border-b border-border-default/60">
+        <div>
+          <div class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary mb-2">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary" aria-hidden="true"></span>
+            <span>Exploración del Ecosistema</span>
+          </div>
+          <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-text-primary tracking-tight">Catálogo General</h2>
+          <p class="text-text-secondary text-sm sm:text-base mt-1.5">
+            Consulta iniciativas por departamento curricular, afinidad técnica o utiliza la búsqueda asistida para descubrir oportunidades de vinculación.
+          </p>
+        </div>
+        <div class="text-xs font-semibold text-text-muted shrink-0">
+          <span class="px-3 py-1.5 rounded-lg bg-bg-raised border border-border-default inline-block">
+            {allGrupos.length} iniciativas disponibles
+          </span>
+        </div>
       </div>
 
-      <!-- AI Search mejorada -->
-      <div class="mb-4">
+      <!-- Búsqueda Asistida por IA y Filtros Facetados -->
+      <div class="mb-6 space-y-4">
         <AISearch placeholder="Búsqueda IA: ej. 'grupos de robótica con enfoque en visión artificial y horarios flexibles'" />
-        <p class="text-[11px] text-text-muted mt-2">Potenciado por OpenRouter · entiende intención, no solo palabras clave</p>
       </div>
 
       <FilterBar
@@ -190,73 +228,6 @@ const jsonLd = JSON.stringify([
         </div>
       )}
     </div>
-
-    <!-- Modal de Postulación Interactivo (1-Click Apply) -->
-    <dialog
-      id="apply-dialog"
-      class="rounded-3xl bg-bg-card text-text-primary border border-border-default/80 p-6 sm:p-7 max-w-md w-[calc(100%-2rem)] backdrop:bg-black/75 backdrop:backdrop-blur-sm shadow-2xl m-auto outline-none"
-    >
-      <div class="space-y-4">
-        <div class="flex items-center justify-between pb-3 border-b border-border-subtle">
-          <div class="flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
-            <h4 class="font-bold text-base text-text-primary">Postularme al Colectivo</h4>
-          </div>
-          <button
-            type="button"
-            id="close-apply-dialog-btn"
-            class="p-1 rounded-lg text-text-muted hover:text-text-primary hover:bg-bg-hover transition-colors text-sm cursor-pointer"
-            aria-label="Cerrar modal"
-          >
-            ✕
-          </button>
-        </div>
-
-        <p class="text-xs text-text-secondary leading-relaxed">
-          Iniciativa: <strong id="dialog-group-name" class="text-primary-light font-bold"></strong>
-        </p>
-
-        <form id="apply-form" class="space-y-3.5 text-xs">
-          <div>
-            <label for="in-name" class="block font-semibold text-text-secondary mb-1">Nombre completo:</label>
-            <input
-              id="in-name"
-              type="text"
-              required
-              placeholder="Ej. Mariana Gómez"
-              class="w-full px-3.5 py-2.5 rounded-xl bg-bg-input border border-border-default text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary transition-colors text-xs sm:text-sm"
-            />
-          </div>
-          <div>
-            <label for="in-career" class="block font-semibold text-text-secondary mb-1">Carrera y semestre actual:</label>
-            <input
-              id="in-career"
-              type="text"
-              required
-              placeholder="Ej. Ing. Mecatrónica · 5° Semestre"
-              class="w-full px-3.5 py-2.5 rounded-xl bg-bg-input border border-border-default text-text-primary placeholder:text-text-muted focus:outline-none focus:border-primary transition-colors text-xs sm:text-sm"
-            />
-          </div>
-
-          <div class="pt-3 flex gap-3 text-xs">
-            <button
-              type="button"
-              id="cancel-apply-dialog-btn"
-              class="flex-1 py-2.5 rounded-xl border border-border-default/80 hover:bg-bg-hover text-text-secondary font-semibold transition-colors cursor-pointer"
-            >
-              Cancelar
-            </button>
-            <button
-              type="button"
-              id="submit-apply-dialog-btn"
-              class="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white font-bold hover:shadow-glow transition-all cursor-pointer shadow-md flex items-center justify-center gap-1.5"
-            >
-              <span>Abrir Correo UNAL ✉</span>
-            </button>
-          </div>
-        </form>
-      </div>
-    </dialog>
   </main>
 
   <Fragment slot="head">
@@ -282,86 +253,11 @@ const jsonLd = JSON.stringify([
         .fromTo('#hero-title', { opacity:0, y:12 }, { opacity:1, y:0, duration:0.6 }, 0.1)
         .fromTo('#hero-sub', { opacity:0, y:12 }, { opacity:1, y:0, duration:0.5 }, 0.25)
         .fromTo('#hero-cta', { opacity:0, y:10 }, { opacity:1, y:0, duration:0.5 }, 0.35)
-        .fromTo('#hero-stats', { opacity:0, y:10 }, { opacity:1, y:0, duration:0.5 }, 0.45)
-        .fromTo('#intro-text', { opacity:0, y:10 }, { opacity:1, y:0, duration:0.5 }, 0.55);
+        .fromTo('#hero-stats', { opacity:0, y:10 }, { opacity:1, y:0, duration:0.5 }, 0.45);
       const catalogo = document.getElementById('catalogo');
       if (catalogo) {
         gsap.from(catalogo, { opacity:0, y:16, duration:0.6, scrollTrigger:{ trigger:catalogo, start:'top 85%' }});
       }
-    })();
-  </script>
-
-  <script>
-    (function initApplyFlow(): void {
-      const dialog = document.getElementById('apply-dialog') as HTMLDialogElement | null;
-      if (!dialog) return;
-
-      const groupNameEl = document.getElementById('dialog-group-name');
-      const nameInput = document.getElementById('in-name') as HTMLInputElement | null;
-      const careerInput = document.getElementById('in-career') as HTMLInputElement | null;
-      const closeBtn = document.getElementById('close-apply-dialog-btn');
-      const cancelBtn = document.getElementById('cancel-apply-dialog-btn');
-      const submitBtn = document.getElementById('submit-apply-dialog-btn');
-      const form = document.getElementById('apply-form') as HTMLFormElement | null;
-
-      let currentEmail = '';
-      let currentGroupName = '';
-
-      const closeModal = (): void => {
-        dialog.close();
-      };
-
-      closeBtn?.addEventListener('click', closeModal);
-      cancelBtn?.addEventListener('click', closeModal);
-
-      dialog.addEventListener('click', (e: MouseEvent): void => {
-        if (e.target === dialog) {
-          closeModal();
-        }
-      });
-
-      const submitApply = (): void => {
-        const name = nameInput?.value?.trim() || 'Estudiante';
-        const career = careerInput?.value?.trim() || 'Facultad de Ingeniería';
-        const subject = encodeURIComponent(`Postulación a ${currentGroupName} — ${name}`);
-        const body = encodeURIComponent(
-          `Cordial saludo,\n\n` +
-          `Mi nombre es ${name}, estudiante de ${career} en la Universidad Nacional de Colombia (Sede Bogotá).\n\n` +
-          `Escribo para manifestar mi interés en vincularme y participar en las líneas de trabajo de ${currentGroupName}.\n\n` +
-          `Quedo atento(a) a la información sobre próximas reuniones o proceso de vinculación.\n\n` +
-          `Atentamente,\n${name}`
-        );
-        window.location.href = `mailto:${currentEmail}?subject=${subject}&body=${body}`;
-        closeModal();
-      };
-
-      submitBtn?.addEventListener('click', submitApply);
-      form?.addEventListener('submit', (e: SubmitEvent): void => {
-        e.preventDefault();
-        submitApply();
-      });
-
-      // Capturing click listener to handle data-apply-btn from all cards in the catalog
-      document.addEventListener(
-        'click',
-        (e: MouseEvent): void => {
-          const target = (e.target as HTMLElement)?.closest<HTMLElement>('[data-apply-btn]');
-          if (!target) return;
-
-          e.preventDefault();
-          e.stopImmediatePropagation();
-
-          currentGroupName = target.getAttribute('data-group-name') || 'Semillero UNAL';
-          currentEmail = target.getAttribute('data-group-email') || 'ingenieria_bog@unal.edu.co';
-
-          if (groupNameEl) {
-            groupNameEl.textContent = currentGroupName;
-          }
-
-          dialog.showModal();
-        },
-        true
-      );
     })();
   </script>
 </Layout>

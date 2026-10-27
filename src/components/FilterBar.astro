@@ -27,8 +27,16 @@ const tipoChips = [
   { label: 'Grupos Estudiantiles', value: 'Grupo Estudiantil', count: estudiantilCount },
 ];
 
-// Ramas Principales de Ingeniería (Quick Chips)
+// Ramas Principales de Ciencias e Ingeniería (Quick Chips)
 const BRANCH_CONFIGS = [
+  {
+    id: 'ciencias',
+    label: 'Ciencias Naturales y Exactas',
+    shortLabel: 'Ciencias Naturales y Exactas',
+    icon: 'biotech',
+    regex: /ciencias|naturales|exactas|biolog|fisic|matemat|geolog|astronom|bioquim|ecolog|genom|estadist/i,
+    careers: ['Ciencias Naturales']
+  },
   {
     id: 'sistemas',
     label: 'Sistemas e Informática',
@@ -170,13 +178,13 @@ const catalogIndex = grupos.map((g) => {
     </div>
   </div>
 
-  <!-- Fila 2: Ramas Principales de Ingeniería (Quick Chips) + Selector Completo -->
+  <!-- Fila 2: Ramas Principales de Ciencias e Ingeniería (Quick Chips) + Selector Completo -->
   <div class="py-4 border-b border-border-subtle/80">
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
       <div class="flex items-center gap-2">
         <span class="material-symbols-outlined text-base text-accent">hub</span>
         <span class="text-xs font-bold uppercase tracking-wider text-text-muted">
-          Ramas Principales de Ingeniería:
+          Ramas de Ciencias e Ingeniería:
         </span>
       </div>
 
@@ -228,6 +236,7 @@ const catalogIndex = grupos.map((g) => {
           <button
             type="button"
             data-branch-btn={branch.id}
+            data-branch={branch.id}
             class="branch-filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all border cursor-pointer select-none bg-bg-raised text-text-secondary border-border-default hover:border-primary/40 hover:text-text-primary hover:bg-bg-hover focus-visible:outline-2 focus-visible:outline-primary"
           >
             <span class="material-symbols-outlined text-sm text-text-muted group-hover:text-primary">{branch.icon}</span>
@@ -331,6 +340,7 @@ const catalogIndex = grupos.map((g) => {
   }
 
   const BRANCH_DEFS = [
+    { id: 'ciencias', label: 'Ciencias Naturales y Exactas', careers: ['ciencias naturales'] },
     { id: 'sistemas', label: 'Sistemas e Informática', careers: ['ingenieria de sistemas'] },
     { id: 'mecanica', label: 'Mecatrónica y Mecánica', careers: ['ingenieria mecanica', 'ingenieria mecatronica'] },
     { id: 'electrica', label: 'Eléctrica y Electrónica', careers: ['ingenieria electrica', 'ingenieria electronica'] },
@@ -368,7 +378,7 @@ const catalogIndex = grupos.map((g) => {
     const select = document.getElementById('carrera-filter') as HTMLSelectElement | null;
     const sortSelect = document.getElementById('sort-select') as HTMLSelectElement | null;
     const tipoBtns = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-tipo-btn]'));
-    const branchBtns = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-branch-btn]'));
+    const branchBtns = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-branch-btn], [data-branch]'));
 
     const visibleCountEl = document.getElementById('filter-visible-count');
     const totalCountEl = document.getElementById('filter-total-count');
@@ -573,7 +583,7 @@ const catalogIndex = grupos.map((g) => {
 
       // 2. Branch Quick Chips Styling
       branchBtns.forEach((btn) => {
-        const btnBranch = btn.getAttribute('data-branch-btn') || '';
+        const btnBranch = btn.getAttribute('data-branch-btn') || btn.getAttribute('data-branch') || '';
         const isActive = (btnBranch === 'todas' && !state.rama) ||
                          (btnBranch !== 'todas' && state.rama === btnBranch);
         const countPill = btn.querySelector('.branch-count-pill');
@@ -716,7 +726,7 @@ const catalogIndex = grupos.map((g) => {
     branchBtns.forEach((btn) => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
-        const branch = btn.getAttribute('data-branch-btn') || '';
+        const branch = btn.getAttribute('data-branch-btn') || btn.getAttribute('data-branch') || '';
         state.rama = branch === 'todas' ? '' : branch;
         state.carrera = ''; // Limpiar carrera específica al elegir rama rápida
         if (select) select.selectedIndex = 0;
