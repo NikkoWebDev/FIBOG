@@ -1,5 +1,6 @@
 ---
-// UnalHeader.astro - Modern header for Base de Datos Ingeniería y Afines
+import Icon from '../Icon.astro';
+// UnalHeader.astro - Franja institucional UNAL + barra de navegación fija (se oculta al bajar).
 
 interface Props {
   activePage?: string;
@@ -8,214 +9,248 @@ interface Props {
 const { activePage = 'inicio' } = Astro.props;
 
 const navItems = [
-  { label: 'Inicio', url: '/', page: 'inicio' },
-  { label: 'Registro', url: '/registro', page: 'registro' },
+  { label: 'Catálogo', url: '/#catalogo', page: 'inicio' },
+  { label: 'Postular grupo', url: '/registro', page: 'registro' },
 ];
+
+const menuItemClass = 'min-h-[44px] px-3 py-2.5 text-text-primary text-sm rounded-lg hover:bg-bg-hover flex items-center gap-2.5 transition-colors';
 ---
 
-<header class="fixed top-0 left-0 right-0 z-50" id="site-header">
-  <!-- Desktop -->
-  <div class="hidden md:block">
-    <div class="glass border-b border-border-subtle">
-      <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-        <!-- Marca Institucional -->
-        <a href="/" class="flex flex-col justify-center group rounded-xl py-1 px-1.5 -m-1 focus-visible:outline-2 focus-visible:outline-primary" rel="home" title="Universidad Nacional de Colombia — Facultad de Ingeniería y Afines · Directorio Oficial de Investigación">
-          <div class="flex items-center gap-2">
-            <span class="text-[11px] font-bold tracking-wider uppercase text-text-muted group-hover:text-text-primary transition-colors">
-              Universidad Nacional de Colombia
-            </span>
-            <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-primary/10 text-primary-light border border-primary/20">
-              FIBOG
-            </span>
-          </div>
-          <span class="text-sm font-semibold text-text-secondary group-hover:text-primary-light transition-colors tracking-tight">
-            Facultad de Ingeniería y Afines <span class="text-text-muted font-normal text-xs">· Directorio Oficial de Investigación · Ciencias e Ingeniería</span>
-          </span>
-        </a>
+<!-- Franja institucional -->
+<div class="bg-ink text-paper">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 h-10 flex items-center justify-between gap-4">
+    <a href="https://unal.edu.co" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 shrink-0 opacity-90 hover:opacity-100 transition-opacity" aria-label="Universidad Nacional de Colombia (abre en una pestaña nueva)">
+      <img src="/images/escudoUnal-white.svg" alt="" width="58" height="30" class="h-[22px] w-auto" />
+    </a>
+    <p class="hidden sm:block font-mono text-[10.5px] tracking-[0.08em] uppercase text-paper/70 truncate">
+      Facultad de Ingeniería y Afines · Sede Bogotá
+    </p>
+    <a href="https://ingenieria.bogota.unal.edu.co" target="_blank" rel="noopener noreferrer" class="font-mono text-[10.5px] tracking-[0.08em] uppercase text-paper/70 hover:text-paper transition-colors inline-flex items-center gap-1 shrink-0">
+      FIBOG <span aria-hidden="true">↗</span>
+    </a>
+  </div>
+</div>
 
-        <!-- Nav -->
-        <nav class="flex items-center gap-1" aria-label="Principal">
+<header class="sticky top-0 z-50 transition-transform duration-500 ease-out-expo" id="site-header" data-scrolled="false">
+  <div class="header-surface border-b border-transparent transition-[background-color,border-color] duration-300">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between gap-6">
+      <!-- Marca -->
+      <a href="/" class="group flex items-baseline gap-2 shrink-0" rel="home" title="Semilleros UNAL — Facultad de Ingeniería y Afines">
+        <span class="text-[1.15rem] font-semibold tracking-[-0.03em] text-text-primary">Semilleros</span>
+        <span class="font-serif-i text-[1.3rem] leading-none">UNAL</span>
+        <span class="hidden lg:inline font-mono text-[10px] tracking-[0.1em] uppercase text-text-muted ml-1 translate-y-[-1px]">Ingeniería y Afines</span>
+      </a>
+
+      <!-- Desktop -->
+      <div class="hidden md:flex items-center gap-1">
+        <nav class="flex items-center gap-1 mr-2" aria-label="Principal">
           {navItems.map((item) => (
             <a
               href={item.url}
               id={item.page === 'registro' ? 'nav-registro-desktop' : undefined}
               data-nav-registro={item.page === 'registro' ? 'true' : undefined}
+              aria-current={activePage === item.page ? 'page' : undefined}
               class:list={[
-                'px-4 py-2 rounded-lg text-sm font-medium transition-all',
+                'relative px-3.5 py-2 text-sm transition-colors rounded-full',
                 activePage === item.page
-                  ? 'bg-primary/10 text-primary-light'
-                  : 'text-text-secondary hover:text-text-primary hover:bg-bg-hover'
+                  ? 'text-text-primary font-medium'
+                  : 'text-text-secondary hover:text-text-primary'
               ]}
             >
-              {item.label}
+              <span data-nav-label>{item.label}</span>
+              {activePage === item.page && (
+                <span class="absolute left-1/2 -translate-x-1/2 bottom-0.5 w-1 h-1 rounded-full bg-accent" aria-hidden="true"></span>
+              )}
             </a>
           ))}
         </nav>
 
-        <!-- Right side -->
-        <div class="flex items-center gap-3">
-          <!-- Theme toggle -->
-          <button type="button" data-theme-toggle aria-label="Cambiar tema"
-                  class="w-9 h-9 rounded-lg glass flex items-center justify-center text-text-secondary hover:text-primary-light transition-colors">
-            <span class="material-symbols-outlined text-base icon-sun">light_mode</span>
-            <span class="material-symbols-outlined text-base icon-moon hidden">dark_mode</span>
-          </button>
+        <button type="button" data-theme-toggle aria-label="Cambiar tema"
+                class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:text-text-primary hover:bg-bg-hover transition-colors">
+          <Icon name="sun" class="icon-sun" />
+          <Icon name="moon" class="icon-moon hidden" />
+        </button>
 
-          <!-- Auth desktop -->
-          <div id="auth-desktop" class="relative" data-dropdown>
-            <a href="/login" id="auth-login-btn-desktop"
-               class="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/10 text-primary-light text-sm font-medium hover:bg-primary/20 transition-all">
-              <span class="material-symbols-outlined text-base">login</span>
-              Acceder
-            </a>
-            <div id="auth-user-menu-desktop" class="hidden">
-              <button data-dropdown-trigger type="button"
-                      class="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary/10 text-primary-light text-sm font-medium hover:bg-primary/20 transition-all focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-2"
-                      aria-expanded="false" aria-haspopup="true" aria-controls="user-menu-list-desktop">
-                <span class="material-symbols-outlined text-base">person</span>
-                <span id="auth-role-desktop"></span>
-                <svg data-dropdown-chevron class="w-3 h-3 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-              </button>
-              <div data-dropdown-menu class="hidden absolute right-0 top-full z-50 pt-2">
-              <ul id="user-menu-list-desktop" role="menu" class="glass rounded-xl min-w-[220px] list-none p-1.5 m-0">
-                <li role="none"><a role="menuitem" href="/lider" id="panel-link-desktop" class="hidden min-h-[44px] px-3 py-2.5 text-text-primary text-sm rounded-lg hover:bg-bg-hover focus-visible:outline-2 focus-visible:outline-primary flex items-center gap-2">
-                  <span class="material-symbols-outlined text-base text-primary">dashboard</span> Panel de mi grupo
+        <div id="auth-desktop" class="relative ml-1" data-dropdown>
+          <a href="/login" id="auth-login-btn-desktop" class="btn-ink h-10 px-5 text-sm">
+            Acceder
+          </a>
+          <div id="auth-user-menu-desktop" class="hidden">
+            <button data-dropdown-trigger type="button"
+                    class="h-10 flex items-center gap-2 pl-2 pr-3.5 rounded-full border border-border-default text-text-primary text-sm hover:border-text-primary/40 transition-colors"
+                    aria-expanded="false" aria-haspopup="true" aria-controls="user-menu-list-desktop">
+              <span class="w-7 h-7 rounded-full bg-accent text-[#151714] flex items-center justify-center">
+                <span class="material-symbols-outlined text-[18px]">person</span>
+              </span>
+              <span id="auth-role-desktop"></span>
+              <svg data-dropdown-chevron class="w-3 h-3 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div data-dropdown-menu class="hidden absolute right-0 top-full z-50 pt-2">
+              <ul id="user-menu-list-desktop" role="menu" class="bg-bg-card border border-border-default shadow-card-hover rounded-2xl min-w-[230px] list-none p-1.5 m-0 animate-slide-up">
+                <li role="none"><a role="menuitem" href="/lider" id="panel-link-desktop" class={`hidden ${menuItemClass}`}>
+                  <span class="material-symbols-outlined text-[18px] text-text-muted">dashboard</span> Panel de mi grupo
                 </a></li>
-                <li role="none"><a role="menuitem" href="/admin" id="admin-link-desktop" class="hidden min-h-[44px] px-3 py-2.5 text-text-primary text-sm rounded-lg hover:bg-bg-hover focus-visible:outline-2 focus-visible:outline-primary flex items-center gap-2">
-                  <span class="material-symbols-outlined text-base text-accent">admin_panel_settings</span> Administracion
+                <li role="none"><a role="menuitem" href="/admin" id="admin-link-desktop" class={`hidden ${menuItemClass}`}>
+                  <span class="material-symbols-outlined text-[18px] text-text-muted">admin_panel_settings</span> Administración
                 </a></li>
-                <li role="none"><a role="menuitem" href="/perfil" class="min-h-[44px] px-3 py-2.5 text-text-primary text-sm rounded-lg hover:bg-bg-hover focus-visible:outline-2 focus-visible:outline-primary flex items-center gap-2">
-                  <span class="material-symbols-outlined text-base text-text-secondary">person</span> Mi perfil
+                <li role="none"><a role="menuitem" href="/perfil" class={menuItemClass}>
+                  <span class="material-symbols-outlined text-[18px] text-text-muted">person</span> Mi perfil
                 </a></li>
-                <li role="none"><a role="menuitem" href="/perfil#seguridad" class="min-h-[44px] px-3 py-2.5 text-text-primary text-sm rounded-lg hover:bg-bg-hover focus-visible:outline-2 focus-visible:outline-primary flex items-center gap-2">
-                  <span class="material-symbols-outlined text-base text-text-secondary">lock</span> Cambiar contraseña
+                <li role="none"><a role="menuitem" href="/perfil#seguridad" class={menuItemClass}>
+                  <span class="material-symbols-outlined text-[18px] text-text-muted">lock</span> Cambiar contraseña
                 </a></li>
-                <li role="none" class="border-t border-border-subtle mt-1 pt-1"><button role="menuitem" id="logout-btn-desktop" class="min-h-[44px] w-full text-left px-3 py-2.5 text-error text-sm rounded-lg hover:bg-bg-hover focus-visible:outline-2 focus-visible:outline-error flex items-center gap-2">
-                  <span class="material-symbols-outlined text-base">logout</span> Cerrar sesion
+                <li role="none" class="border-t border-border-subtle mt-1 pt-1"><button role="menuitem" id="logout-btn-desktop" class="min-h-[44px] w-full text-left px-3 py-2.5 text-error text-sm rounded-lg hover:bg-bg-hover flex items-center gap-2.5">
+                  <span class="material-symbols-outlined text-[18px]">logout</span> Cerrar sesión
                 </button></li>
               </ul>
-              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </div>
 
-  <!-- Mobile -->
-  <div class="md:hidden">
-    <div class="glass border-b border-border-subtle">
-      <div class="flex items-center justify-between px-4 h-14">
-        <a href="/" class="flex flex-col justify-center group py-1 focus-visible:outline-2 focus-visible:outline-primary rounded-lg" rel="home" title="Universidad Nacional de Colombia — Facultad de Ingeniería y Afines · Directorio Oficial de Investigación">
-          <div class="flex items-center gap-1.5">
-            <span class="text-[10px] font-bold tracking-wider uppercase text-text-muted">
-              Universidad Nacional de Colombia
-            </span>
-            <span class="text-[9px] font-bold px-1 py-0.5 rounded bg-primary/10 text-primary-light border border-primary/20">FIBOG</span>
-          </div>
-          <span class="text-xs font-semibold text-text-secondary tracking-tight">
-            Facultad de Ingeniería y Afines <span class="text-text-muted font-normal text-[11px]">· Ciencias e Ingeniería</span>
-          </span>
-        </a>
+      <!-- Mobile -->
+      <div class="flex md:hidden items-center gap-1">
         <button type="button" data-theme-toggle aria-label="Cambiar tema"
-                class="w-9 h-9 rounded-lg glass flex items-center justify-center text-text-secondary hover:text-primary-light transition-colors">
-          <span class="material-symbols-outlined text-base icon-sun">light_mode</span>
-          <span class="material-symbols-outlined text-base icon-moon hidden">dark_mode</span>
+                class="w-10 h-10 rounded-full flex items-center justify-center text-text-secondary hover:bg-bg-hover transition-colors">
+          <Icon name="sun" class="icon-sun" />
+          <Icon name="moon" class="icon-moon hidden" />
         </button>
-        <button id="mobile-menu-btn" type="button" aria-label="Abrir menu" aria-expanded="false"
+        <button id="mobile-menu-btn" type="button" aria-label="Abrir menú" aria-expanded="false"
                 aria-controls="mobile-menu"
-                class="text-text-secondary p-2 rounded-lg hover:bg-bg-hover transition-colors">
-          <svg id="mobile-menu-icon-open" class="w-6 h-6" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 7h16M4 12h16M4 17h16"/></svg>
-          <svg id="mobile-menu-icon-close" class="w-6 h-6 hidden" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/></svg>
+                class="w-10 h-10 rounded-full flex items-center justify-center text-text-primary hover:bg-bg-hover transition-colors">
+          <svg id="mobile-menu-icon-open" class="w-5 h-5" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path stroke-linecap="round" d="M4 9h16M4 15h16"/></svg>
+          <svg id="mobile-menu-icon-close" class="w-5 h-5 hidden" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24"><path stroke-linecap="round" d="M6 6l12 12M18 6L6 18"/></svg>
         </button>
       </div>
     </div>
+  </div>
 
-    <!-- Mobile menu -->
-    <div id="mobile-menu" class="hidden glass border-b border-border-subtle max-h-[calc(100vh-3.5rem)] overflow-y-auto">
-      <div class="p-4 space-y-2">
-        <!-- Nav links -->
-        <nav aria-label="Principal movil" class="space-y-1">
-          {navItems.map((item) => (
-            <a href={item.url}
-               id={item.page === 'registro' ? 'nav-registro-mobile' : undefined}
-               data-nav-registro={item.page === 'registro' ? 'true' : undefined}
-               class:list={[
-                 'block px-4 py-3 rounded-lg text-sm font-medium transition-all',
-                 activePage === item.page
-                   ? 'bg-primary/10 text-primary-light'
-                   : 'text-text-secondary hover:text-text-primary hover:bg-bg-hover'
-               ]}>
-              {item.label}
-            </a>
-          ))}
-        </nav>
-
-        <!-- Auth mobile -->
-        <div class="border-t border-border-subtle pt-3 mt-3">
-          <a href="/login" id="login-btn-mobile"
-             class="flex items-center justify-center gap-2 bg-primary text-white rounded-xl py-3 px-4 font-semibold text-sm">
-            <span class="material-symbols-outlined text-base">login</span>
-            Acceder
+  <!-- Menú móvil a pantalla completa -->
+  <div id="mobile-menu" class="hidden md:hidden absolute top-full inset-x-0 h-[calc(100dvh-4rem)] bg-bg border-t border-border-default overflow-y-auto">
+    <div class="px-5 pt-8 pb-10 flex flex-col min-h-full">
+      <p class="kicker mb-4">Navegación</p>
+      <nav aria-label="Principal móvil" class="mobile-stagger flex flex-col">
+        {navItems.map((item) => (
+          <a href={item.url}
+             id={item.page === 'registro' ? 'nav-registro-mobile' : undefined}
+             data-nav-registro={item.page === 'registro' ? 'true' : undefined}
+             class="py-3 text-[2.25rem] leading-tight font-medium tracking-[-0.035em] text-text-primary border-b border-border-subtle flex items-center justify-between">
+            <span data-nav-label>{item.label}</span>
+            <span class="text-text-muted text-xl" aria-hidden="true">→</span>
           </a>
-          <div id="user-menu-mobile" class="hidden mt-3 glass rounded-xl overflow-hidden">
-            <div class="px-4 py-3 text-text-primary text-sm font-semibold border-b border-border-subtle" id="user-role-mobile">Mi cuenta</div>
-            <a href="/lider" id="panel-link-mobile" class="hidden px-4 py-3 text-text-primary text-sm border-b border-border-subtle flex items-center gap-2">
-              <span class="material-symbols-outlined text-base text-primary">dashboard</span> Panel de mi grupo
-            </a>
-            <a href="/admin" id="admin-link-mobile" class="hidden px-4 py-3 text-text-primary text-sm border-b border-border-subtle flex items-center gap-2">
-              <span class="material-symbols-outlined text-base text-accent">admin_panel_settings</span> Administracion
-            </a>
-            <a href="/perfil" class="px-4 py-3 text-text-primary text-sm border-b border-border-subtle flex items-center gap-2">
-              <span class="material-symbols-outlined text-base text-text-secondary">person</span> Mi perfil
-            </a>
-            <a href="/perfil#seguridad" class="px-4 py-3 text-text-primary text-sm border-b border-border-subtle flex items-center gap-2">
-              <span class="material-symbols-outlined text-base text-text-secondary">lock</span> Cambiar contraseña
-            </a>
-            <button id="logout-btn-mobile" class="w-full text-left px-4 py-3 text-error text-sm flex items-center gap-2">
-              <span class="material-symbols-outlined text-base">logout</span> Cerrar sesion
-            </button>
-          </div>
+        ))}
+      </nav>
+
+      <div class="mt-auto pt-10">
+        <a href="/login" id="login-btn-mobile" class="btn-ink w-full h-12 text-base">
+          Acceder
+        </a>
+        <div id="user-menu-mobile" class="hidden rounded-2xl border border-border-default overflow-hidden">
+          <div class="px-4 py-3 kicker border-b border-border-subtle" id="user-role-mobile">Mi cuenta</div>
+          <a href="/lider" id="panel-link-mobile" class="hidden px-4 py-3.5 text-text-primary text-sm border-b border-border-subtle flex items-center gap-2.5">
+            <span class="material-symbols-outlined text-[18px] text-text-muted">dashboard</span> Panel de mi grupo
+          </a>
+          <a href="/admin" id="admin-link-mobile" class="hidden px-4 py-3.5 text-text-primary text-sm border-b border-border-subtle flex items-center gap-2.5">
+            <span class="material-symbols-outlined text-[18px] text-text-muted">admin_panel_settings</span> Administración
+          </a>
+          <a href="/perfil" class="px-4 py-3.5 text-text-primary text-sm border-b border-border-subtle flex items-center gap-2.5">
+            <span class="material-symbols-outlined text-[18px] text-text-muted">person</span> Mi perfil
+          </a>
+          <a href="/perfil#seguridad" class="px-4 py-3.5 text-text-primary text-sm border-b border-border-subtle flex items-center gap-2.5">
+            <span class="material-symbols-outlined text-[18px] text-text-muted">lock</span> Cambiar contraseña
+          </a>
+          <button id="logout-btn-mobile" class="w-full text-left px-4 py-3.5 text-error text-sm flex items-center gap-2.5">
+            <span class="material-symbols-outlined text-[18px]">logout</span> Cerrar sesión
+          </button>
         </div>
+        <p class="kicker mt-8">Universidad Nacional de Colombia · Sede Bogotá</p>
       </div>
     </div>
   </div>
 </header>
 
-<!-- Spacer for fixed header -->
-<div class="h-16 md:h-16"></div>
+<style>
+  #site-header[data-scrolled="true"] .header-surface {
+    background-color: rgb(var(--c-bg) / 0.82);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border-bottom-color: rgb(var(--c-border-default));
+  }
+  #site-header[data-hidden="true"] { transform: translateY(-100%); }
+
+  @keyframes menu-in {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: none; }
+  }
+  #mobile-menu:not(.hidden) .mobile-stagger > * {
+    animation: menu-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  #mobile-menu:not(.hidden) .mobile-stagger > *:nth-child(2) { animation-delay: 70ms; }
+  #mobile-menu:not(.hidden) .mobile-stagger > *:nth-child(3) { animation-delay: 140ms; }
+</style>
 
 <script>
   import { supabase } from '../../lib/supabase';
 
-  // ---- Theme toggle ----
+  // ---- Tema ----
   const themeMeta = document.querySelector('meta[name="theme-color"]');
 
   function syncThemeUI() {
     const isDark = document.documentElement.classList.contains('dark');
     document.querySelectorAll('[data-theme-toggle]').forEach(btn => {
-      const sun = btn.querySelector('.icon-sun');
-      const moon = btn.querySelector('.icon-moon');
-      sun?.classList.toggle('hidden', isDark);
-      moon?.classList.toggle('hidden', !isDark);
+      btn.querySelector('.icon-sun')?.classList.toggle('hidden', isDark);
+      btn.querySelector('.icon-moon')?.classList.toggle('hidden', !isDark);
       btn.setAttribute('aria-label', isDark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro');
     });
-    themeMeta?.setAttribute('content', isDark ? '#0b132b' : '#f8fafc');
+    themeMeta?.setAttribute('content', isDark ? '#0e100d' : '#f3f1ea');
   }
 
   document.querySelectorAll('[data-theme-toggle]').forEach(btn => {
     btn.addEventListener('click', () => {
       const next = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
-      document.documentElement.classList.toggle('dark', next === 'dark');
-      try { localStorage.setItem('theme', next); } catch (e) {}
-      syncThemeUI();
+      const apply = () => {
+        document.documentElement.classList.toggle('dark', next === 'dark');
+        try { localStorage.setItem('theme', next); } catch (e) {}
+        syncThemeUI();
+      };
+      const doc = document as Document & { startViewTransition?: (cb: () => void) => unknown };
+      if (doc.startViewTransition && document.documentElement.classList.contains('motion')) {
+        doc.startViewTransition(apply);
+      } else {
+        apply();
+      }
     });
   });
   syncThemeUI();
 
-  // ---- Dropdowns (solo por click: el hover cerraba el menu al cruzar el hueco) ----
+  // ---- Header: fondo al hacer scroll, se oculta al bajar y vuelve al subir ----
   const header = document.getElementById('site-header');
+  const mobileMenu = document.getElementById('mobile-menu');
+  let lastY = window.scrollY;
+  let ticking = false;
 
+  function onScroll() {
+    const y = window.scrollY;
+    if (header) {
+      header.dataset.scrolled = y > 48 ? 'true' : 'false';
+      const menuOpen = mobileMenu && !mobileMenu.classList.contains('hidden');
+      const dropdownOpen = !!header.querySelector('[data-dropdown-menu]:not(.hidden)');
+      const goingDown = y > lastY + 4;
+      const goingUp = y < lastY - 4;
+      if (menuOpen || dropdownOpen || y < 240) header.dataset.hidden = 'false';
+      else if (goingDown) header.dataset.hidden = 'true';
+      else if (goingUp) header.dataset.hidden = 'false';
+    }
+    lastY = y;
+    ticking = false;
+  }
+  window.addEventListener('scroll', () => {
+    if (!ticking) { requestAnimationFrame(onScroll); ticking = true; }
+  }, { passive: true });
+  onScroll();
+  header?.addEventListener('focusin', () => { if (header) header.dataset.hidden = 'false'; });
+
+  // ---- Dropdowns (solo por click) ----
   function setDropdownOpen(dd: Element | null, open: boolean) {
     if (!dd) return;
     const menu = dd.querySelector('[data-dropdown-menu]');
@@ -255,7 +290,8 @@ const navItems = [
         if (!isDropdownOpen(dd)) {
           closeAllDropdowns();
           setDropdownOpen(dd, true);
-          const firstItem = dd?.querySelector('[data-dropdown-menu] a, [data-dropdown-menu] button') as HTMLElement | null;
+          const firstItem = Array.from(dd?.querySelectorAll('[data-dropdown-menu] a, [data-dropdown-menu] button') || [])
+            .find((el) => !(el as HTMLElement).classList.contains('hidden')) as HTMLElement | undefined;
           firstItem?.focus();
         } else {
           closeAllDropdowns();
@@ -264,16 +300,13 @@ const navItems = [
     });
   });
 
-  // Cerrar al elegir una opcion o al hacer click fuera
   document.querySelectorAll('#site-header [data-dropdown-menu] a, #site-header [data-dropdown-menu] button').forEach(item => {
     item.addEventListener('click', () => closeAllDropdowns());
   });
 
   document.addEventListener('click', (e) => {
     const target = e.target as HTMLElement;
-    if (!header?.contains(target)) {
-      closeAllDropdowns();
-    } else if (!target.closest('[data-dropdown]')) {
+    if (!header?.contains(target) || !target.closest('[data-dropdown]')) {
       closeAllDropdowns();
     }
   });
@@ -296,9 +329,8 @@ const navItems = [
     }
   });
 
-  // ---- Mobile menu ----
+  // ---- Menú móvil ----
   const menuBtn = document.getElementById('mobile-menu-btn');
-  const mobileMenu = document.getElementById('mobile-menu');
   const iconOpen = document.getElementById('mobile-menu-icon-open');
   const iconClose = document.getElementById('mobile-menu-icon-close');
 
@@ -309,6 +341,7 @@ const navItems = [
     menuBtn?.setAttribute('aria-expanded', 'true');
     menuBtn?.setAttribute('aria-label', 'Cerrar menú');
     document.body.classList.add('overflow-hidden');
+    if (header) header.dataset.hidden = 'false';
     if (fromKeyboard) {
       const firstFocusable = mobileMenu?.querySelector('a, button, input') as HTMLElement | null;
       firstFocusable?.focus();
@@ -332,13 +365,19 @@ const navItems = [
   });
 
   mobileMenu?.querySelectorAll('a').forEach(link => {
-    link.addEventListener('click', () => {
-      const href = link.getAttribute('href');
-      if (!href || !href.startsWith('#')) closeMobileMenu();
-    });
+    link.addEventListener('click', () => closeMobileMenu(false));
   });
 
-  // ---- Auth ----
+  // ---- Sesión ----
+  function setRegistroLinks(href: string, label: string) {
+    document.querySelectorAll('[data-nav-registro="true"]').forEach((el) => {
+      const link = el as HTMLAnchorElement;
+      link.href = href;
+      const labelEl = link.querySelector('[data-nav-label]');
+      if (labelEl) labelEl.textContent = label;
+    });
+  }
+
   let authSeq = 0;
   async function updateAuthState(currentUser?: { id: string } | null) {
     const my = ++authSeq;
@@ -359,12 +398,12 @@ const navItems = [
     const panelLinkM = document.getElementById('panel-link-mobile');
     const adminLinkM = document.getElementById('admin-link-mobile');
 
-    if (user) {
-      panelLinkD?.classList.add('hidden');
-      adminLinkD?.classList.add('hidden');
-      panelLinkM?.classList.add('hidden');
-      adminLinkM?.classList.add('hidden');
+    panelLinkD?.classList.add('hidden');
+    adminLinkD?.classList.add('hidden');
+    panelLinkM?.classList.add('hidden');
+    adminLinkM?.classList.add('hidden');
 
+    if (user) {
       const { data: profile } = await supabase
         .from('perfiles')
         .select('rol')
@@ -373,7 +412,7 @@ const navItems = [
       if (my !== authSeq) return;
 
       const role = profile?.rol || 'VISITANTE';
-      const label = role === 'SUPER_ADMIN' ? 'Admin' : role === 'ADMIN_GRUPO' ? 'Lider' : 'Mi cuenta';
+      const label = role === 'SUPER_ADMIN' ? 'Admin' : role === 'ADMIN_GRUPO' ? 'Líder' : 'Mi cuenta';
 
       loginBtnD?.classList.add('hidden');
       userMenuD?.classList.remove('hidden');
@@ -390,42 +429,18 @@ const navItems = [
       if (role === 'SUPER_ADMIN') {
         adminLinkD?.classList.remove('hidden');
         adminLinkM?.classList.remove('hidden');
-      }
-
-      if (role === 'SUPER_ADMIN') {
-        document.querySelectorAll('[data-nav-registro="true"]').forEach((el) => {
-          const link = el as HTMLAnchorElement;
-          link.href = '/admin';
-          link.textContent = 'Administrar';
-        });
+        setRegistroLinks('/admin', 'Administrar');
       } else if (role === 'ADMIN_GRUPO') {
-        document.querySelectorAll('[data-nav-registro="true"]').forEach((el) => {
-          const link = el as HTMLAnchorElement;
-          link.href = '/lider';
-          link.textContent = 'Administrar mi grupo';
-        });
+        setRegistroLinks('/lider', 'Mi grupo');
       } else {
-        document.querySelectorAll('[data-nav-registro="true"]').forEach((el) => {
-          const link = el as HTMLAnchorElement;
-          link.href = '/registro';
-          link.textContent = 'Registro';
-        });
+        setRegistroLinks('/registro', 'Postular grupo');
       }
     } else {
-      panelLinkD?.classList.add('hidden');
-      adminLinkD?.classList.add('hidden');
-      panelLinkM?.classList.add('hidden');
-      adminLinkM?.classList.add('hidden');
       loginBtnD?.classList.remove('hidden');
       userMenuD?.classList.add('hidden');
       loginBtnM?.classList.remove('hidden');
       userMenuM?.classList.add('hidden');
-
-      document.querySelectorAll('[data-nav-registro="true"]').forEach((el) => {
-        const link = el as HTMLAnchorElement;
-        link.href = '/registro';
-        link.textContent = 'Registro';
-      });
+      setRegistroLinks('/registro', 'Postular grupo');
     }
   }
 

@@ -1,222 +1,153 @@
 ---
-// AccessibilityPanel.astro - Accessibility panel (new palette)
+import Icon from '../Icon.astro';
+// AccessibilityPanel.astro - Panel flotante: tamaño de letra, contraste e inversión de colores.
+const btnBase = 'h-10 rounded-full border border-border-default flex items-center justify-center text-text-primary text-sm hover:border-text-primary/50 transition-colors';
 ---
 
-<button 
-  id="accessibility-toggle"
-  class="fixed right-0 top-1/4 z-[100] bg-primary text-white px-2 py-6 rounded-l-lg shadow-glow-sm hover:bg-primary-dark transition-colors"
-  aria-label="Panel de Accesibilidad"
-  title="Panel de Accesibilidad"
-  style="writing-mode: vertical-rl; text-orientation: mixed;"
->
-  <span class="material-symbols-outlined text-lg mb-2">accessibility_new</span>
-  <span class="text-xs font-bold tracking-wider">Accesibilidad</span>
-</button>
-
-<div 
-  id="accessibility-panel" 
-  class="fixed right-0 top-0 h-full z-[100] bg-bg-card border-l border-border-default shadow-xl transform translate-x-full transition-transform duration-300 w-80"
->
-  <div class="p-6">
-    <div class="flex items-center justify-between mb-6">
-      <h3 class="font-bold text-lg text-text-primary">Accesibilidad</h3>
-      <button 
-        id="accessibility-close" 
-        class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-bg-hover transition-colors text-text-secondary"
-        aria-label="Cerrar"
-      >
-        <span class="material-symbols-outlined">close</span>
-      </button>
-    </div>
-    
-    <!-- Font size -->
-    <div class="mb-6">
-      <label class="text-sm font-medium text-text-secondary mb-3 block">Tamanio de letra</label>
-      <div class="flex items-center gap-3">
-        <button 
-          id="font-decrease" 
-          class="w-10 h-10 rounded-lg border border-border-default flex items-center justify-center hover:bg-bg-hover transition-colors text-text-secondary text-sm font-bold"
-          aria-label="Reducir tamano"
-        >
-          A-
-        </button>
-        <span id="font-size-display" class="text-text-primary font-medium min-w-[50px] text-center">100%</span>
-        <button 
-          id="font-increase" 
-          class="w-10 h-10 rounded-lg border border-border-default flex items-center justify-center hover:bg-bg-hover transition-colors text-text-secondary text-sm font-bold"
-          aria-label="Aumentar tamano"
-        >
-          A+
-        </button>
-      </div>
-    </div>
-
-    <!-- Contrast -->
-    <div class="mb-6">
-      <label class="text-sm font-medium text-text-secondary mb-3 block">Cambiar contrastes</label>
-      <div class="flex gap-3">
-        <button 
-          id="contrast-default" 
-          class="w-10 h-10 rounded-lg border-2 border-primary bg-bg-card"
-          title="Contraste normal"
-          aria-label="Contraste normal"
-        ></button>
-        <button 
-          id="contrast-dark" 
-          class="w-10 h-10 rounded-lg border-2 border-border-default bg-black"
-          title="Contraste alto"
-          aria-label="Contraste alto"
-        ></button>
-        <button 
-          id="contrast-light" 
-          class="w-10 h-10 rounded-lg border-2 border-border-default bg-white"
-          title="Contraste bajo"
-          aria-label="Contraste bajo"
-        ></button>
-      </div>
-    </div>
-
-    <!-- Invert colors -->
-    <div class="mb-6">
-      <label class="text-sm font-medium text-text-secondary mb-3 block">Invertir colores</label>
-      <button 
-        id="invert-colors" 
-        class="w-full py-3 px-4 rounded-lg border border-border-default text-text-secondary text-sm font-medium hover:bg-bg-hover transition-colors"
-      >
-        Invertir
+<div class="fixed right-4 bottom-4 sm:right-6 sm:bottom-6 z-[100] flex flex-col items-end gap-3" id="a11y-root">
+  <div
+    id="accessibility-panel"
+    role="dialog"
+    aria-modal="false"
+    aria-labelledby="a11y-title"
+    class="a11y-panel is-closed w-[min(20rem,calc(100vw-2rem))] bg-bg-card border border-border-default rounded-3xl shadow-card-hover p-5"
+  >
+    <div class="flex items-center justify-between mb-5">
+      <h2 id="a11y-title" class="text-base font-medium text-text-primary">Accesibilidad</h2>
+      <button id="accessibility-close" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-bg-hover transition-colors text-text-secondary" aria-label="Cerrar panel de accesibilidad">
+        <Icon name="close" size={18} />
       </button>
     </div>
 
-    <!-- Reset -->
-    <button 
-      id="reset-accessibility" 
-      class="w-full py-3 px-4 rounded-lg bg-gradient-to-r from-primary to-primary-dark text-white text-sm font-bold hover:shadow-glow transition-all"
-    >
+    <p class="kicker mb-2.5">Tamaño de letra</p>
+    <div class="flex items-center gap-2 mb-5">
+      <button id="font-decrease" class={`${btnBase} w-10`} aria-label="Reducir tamaño de letra">A−</button>
+      <span id="font-size-display" class="flex-1 text-center font-mono text-sm text-text-primary" aria-live="polite">100%</span>
+      <button id="font-increase" class={`${btnBase} w-10`} aria-label="Aumentar tamaño de letra">A+</button>
+    </div>
+
+    <p class="kicker mb-2.5">Contraste</p>
+    <div class="grid grid-cols-3 gap-2 mb-5" role="group" aria-label="Contraste">
+      <button id="contrast-default" class={`${btnBase} a11y-opt is-on`} aria-pressed="true">Normal</button>
+      <button id="contrast-dark" class={`${btnBase} a11y-opt`} aria-pressed="false">Alto</button>
+      <button id="contrast-light" class={`${btnBase} a11y-opt`} aria-pressed="false">Suave</button>
+    </div>
+
+    <p class="kicker mb-2.5">Colores</p>
+    <button id="invert-colors" class={`${btnBase} w-full mb-5`} aria-pressed="false">Invertir colores</button>
+
+    <button id="reset-accessibility" class="w-full text-sm text-text-secondary hover:text-text-primary transition-colors underline underline-offset-4 decoration-border-default">
       Restablecer ajustes
     </button>
   </div>
+
+  <button
+    id="accessibility-toggle"
+    class="w-12 h-12 rounded-full bg-text-primary text-bg shadow-card-hover flex items-center justify-center hover:scale-105 active:scale-95 transition-transform duration-300"
+    aria-label="Abrir panel de accesibilidad"
+    aria-expanded="false"
+    aria-controls="accessibility-panel"
+    title="Accesibilidad"
+  >
+    <Icon name="a11y" size={24} />
+  </button>
 </div>
 
 <script>
   let fontSize = 100;
-  let contrastMode = 'default';
   let inverted = false;
 
   const toggle = document.getElementById('accessibility-toggle');
   const panel = document.getElementById('accessibility-panel');
   const closeBtn = document.getElementById('accessibility-close');
   const fontDisplay = document.getElementById('font-size-display');
-  const fontIncrease = document.getElementById('font-increase');
-  const fontDecrease = document.getElementById('font-decrease');
-  const contrastDefault = document.getElementById('contrast-default');
-  const contrastDark = document.getElementById('contrast-dark');
-  const contrastLight = document.getElementById('contrast-light');
   const invertBtn = document.getElementById('invert-colors');
-  const resetBtn = document.getElementById('reset-accessibility');
+  const contrastBtns: Record<string, HTMLElement | null> = {
+    default: document.getElementById('contrast-default'),
+    dark: document.getElementById('contrast-dark'),
+    light: document.getElementById('contrast-light'),
+  };
 
-  toggle?.addEventListener('click', () => {
-    panel?.classList.toggle('translate-x-full');
+  const isOpen = () => !panel?.classList.contains('is-closed');
+  function setOpen(open: boolean) {
+    panel?.classList.toggle('is-closed', !open);
+    toggle?.setAttribute('aria-expanded', String(open));
+    toggle?.setAttribute('aria-label', open ? 'Cerrar panel de accesibilidad' : 'Abrir panel de accesibilidad');
+  }
+
+  toggle?.addEventListener('click', () => setOpen(!isOpen()));
+  closeBtn?.addEventListener('click', () => { setOpen(false); toggle?.focus(); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && isOpen()) { setOpen(false); toggle?.focus(); }
   });
-
-  closeBtn?.addEventListener('click', () => {
-    panel?.classList.add('translate-x-full');
-  });
-
-  fontIncrease?.addEventListener('click', () => {
-    if (fontSize < 200) {
-      fontSize += 10;
-      updateFontSize();
-    }
-  });
-
-  fontDecrease?.addEventListener('click', () => {
-    if (fontSize > 50) {
-      fontSize -= 10;
-      updateFontSize();
-    }
+  document.addEventListener('click', (e) => {
+    const target = e.target as Node;
+    if (isOpen() && !panel?.contains(target) && !toggle?.contains(target)) setOpen(false);
   });
 
   function updateFontSize() {
-    document.documentElement.style.fontSize = `${fontSize}%`;
+    document.documentElement.style.fontSize = fontSize === 100 ? '' : `${fontSize}%`;
     if (fontDisplay) fontDisplay.textContent = `${fontSize}%`;
   }
-
-  contrastDefault?.addEventListener('click', () => {
-    contrastMode = 'default';
-    updateContrast();
+  document.getElementById('font-increase')?.addEventListener('click', () => {
+    if (fontSize < 200) { fontSize += 10; updateFontSize(); }
+  });
+  document.getElementById('font-decrease')?.addEventListener('click', () => {
+    if (fontSize > 70) { fontSize -= 10; updateFontSize(); }
   });
 
-  contrastDark?.addEventListener('click', () => {
-    contrastMode = 'dark';
-    updateContrast();
-  });
-
-  contrastLight?.addEventListener('click', () => {
-    contrastMode = 'light';
-    updateContrast();
-  });
-
-  function updateContrast() {
-    const body = document.body;
-    body.classList.remove('contrast-default', 'contrast-dark', 'contrast-light');
-    body.classList.add(`contrast-${contrastMode}`);
+  function setContrast(mode: string) {
+    document.body.classList.remove('contrast-dark', 'contrast-light');
+    if (mode !== 'default') document.body.classList.add(`contrast-${mode}`);
+    Object.entries(contrastBtns).forEach(([key, btn]) => {
+      btn?.classList.toggle('is-on', key === mode);
+      btn?.setAttribute('aria-pressed', String(key === mode));
+    });
   }
+  Object.entries(contrastBtns).forEach(([key, btn]) => btn?.addEventListener('click', () => setContrast(key)));
 
   invertBtn?.addEventListener('click', () => {
     inverted = !inverted;
     document.documentElement.classList.toggle('inverted', inverted);
+    invertBtn.setAttribute('aria-pressed', String(inverted));
+    invertBtn.classList.toggle('is-on', inverted);
   });
 
-  resetBtn?.addEventListener('click', () => {
+  document.getElementById('reset-accessibility')?.addEventListener('click', () => {
     fontSize = 100;
-    contrastMode = 'default';
     inverted = false;
-    
-    document.documentElement.style.fontSize = '';
+    updateFontSize();
+    setContrast('default');
     document.documentElement.classList.remove('inverted');
-    document.body.classList.remove('contrast-default', 'contrast-dark', 'contrast-light');
-    
-    if (fontDisplay) fontDisplay.textContent = '100%';
-  });
-
-  document.addEventListener('click', (e) => {
-    const target = e.target as HTMLElement;
-    if (!panel?.contains(target) && !toggle?.contains(target)) {
-      panel?.classList.add('translate-x-full');
-    }
+    invertBtn?.setAttribute('aria-pressed', 'false');
+    invertBtn?.classList.remove('is-on');
   });
 </script>
 
-<style>
-  body.contrast-default {
-    background-color: #0a0a0f;
-    color: #f0f0f5;
+<style is:global>
+  .a11y-panel {
+    transform-origin: bottom right;
+    transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.45s cubic-bezier(0.16, 1, 0.3, 1), visibility 0s linear 0s;
   }
-  
-  body.contrast-dark {
-    background-color: #000000;
-    color: #ffffff;
+  .a11y-panel.is-closed {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.3s ease, visibility 0s linear 0.3s;
   }
-  
-  body.contrast-dark .bg-bg-card {
-    background-color: #0a0a0f !important;
+  .a11y-opt.is-on,
+  #invert-colors.is-on {
+    background: rgb(var(--c-text-primary));
+    color: rgb(var(--c-bg));
+    border-color: rgb(var(--c-text-primary));
   }
-  
-  body.contrast-dark .text-text-secondary,
-  body.contrast-dark .text-text-muted {
-    color: #ffffff !important;
-  }
-  
-  body.contrast-light {
-    background-color: #ffffff;
-    color: #000000;
-  }
-  
-  html.inverted {
-    filter: invert(1) hue-rotate(180deg);
-  }
-  
-  html.inverted img {
-    filter: invert(1) hue-rotate(180deg);
-  }
+
+  /* Contraste alto: texto secundario a negro/blanco puro y bordes marcados */
+  body.contrast-dark { background-color: #000; color: #fff; --c-bg: 0 0 0; --c-bg-card: 0 0 0; --c-bg-raised: 10 10 10; --c-text-primary: 255 255 255; --c-text-secondary: 255 255 255; --c-text-muted: 235 235 235; --c-border-default: 255 255 255; --c-text-accent: 210 235 120; }
+  /* Contraste suave */
+  body.contrast-light { --c-text-primary: 60 64 58; --c-text-secondary: 92 96 88; }
+
+  html.inverted { filter: invert(1) hue-rotate(180deg); }
+  html.inverted img { filter: invert(1) hue-rotate(180deg); }
 </style>

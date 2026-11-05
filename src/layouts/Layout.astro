@@ -34,15 +34,18 @@ const ogImageUrl = `${siteUrl}/favicon.svg`;
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <!-- Tema antes del primer paint: sin flash -->
+  <!-- Tema y modo de movimiento antes del primer paint: sin flash -->
   <script is:inline>
     (function () {
+      var d = document.documentElement;
       var t = null;
       try { t = localStorage.getItem('theme'); } catch (e) {}
       if (t !== 'light' && t !== 'dark') {
         t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
       }
-      if (t === 'dark') document.documentElement.classList.add('dark');
+      if (t === 'dark') d.classList.add('dark');
+      d.classList.add('js');
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) d.classList.add('motion');
     })();
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -69,54 +72,126 @@ const ogImageUrl = `${siteUrl}/favicon.svg`;
   <meta name="twitter:description" content={description} />
   <meta name="twitter:image" content={ogImageUrl} />
 
-  <meta name="theme-color" content="#f0eff4" />
+  <meta name="theme-color" content="#f3f1ea" />
   <title>{title}</title>
-  
-  <!-- Favicon -->
+
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  
-  <!-- Fonts -->
+
+  <!-- Fuentes: Geist (UI), Geist Mono (metadatos), Instrument Serif (énfasis editorial) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,200..500,0..1,0&display=swap" rel="stylesheet">
 
-  <!-- Icon font: preload + ocultar ligaduras hasta que la fuente este lista -->
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-        href="https://fonts.gstatic.com/s/materialsymbolsoutlined/v367/kJEPBvYX7BgnkSrUwT8OhrdQw4oELdPIeeII9v6oDMzBwG-RpA6RzaxHMPdY40KH8nGzv3fzfVJO1Q.woff2" />
   <script is:inline>
-    document.documentElement.classList.add('js');
     (function () {
-      var ready = function () { document.documentElement.classList.add('icons-ready'); };
+      // Los iconos solo se muestran si la fuente cargó de verdad; si falla quedan ocultos (no se ve texto basura).
+      var d = document.documentElement;
+      var check = function () {
+        try {
+          var ok = false;
+          document.fonts.forEach(function (f) {
+            if (f.family.indexOf('Material Symbols') !== -1 && f.status === 'loaded') ok = true;
+          });
+          if (ok) d.classList.add('icons-ready');
+        } catch (e) { d.classList.add('icons-ready'); }
+      };
       if (document.fonts && document.fonts.load) {
-        document.fonts.load('24px "Material Symbols Outlined"').then(ready).catch(ready);
+        document.fonts.load('24px "Material Symbols Outlined"').then(check).catch(function () {});
+        setTimeout(check, 3000);
+      } else {
+        d.classList.add('icons-ready');
       }
-      setTimeout(ready, 2000);
     })();
   </script>
-  
+
   <slot name="head" />
 </head>
-<body class="bg-bg text-text-primary antialiased min-h-screen">
-  <!-- Blobs de fondo para el glass -->
-  <div class="bg-decor" aria-hidden="true">
-    <div class="blob-bg b1"></div>
-    <div class="blob-bg b2"></div>
-    <div class="blob-bg b3"></div>
-  </div>
+<body class="bg-bg text-text-primary antialiased min-h-screen flex flex-col">
+  <a href="#contenido" class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[200] focus:px-4 focus:py-2 focus:rounded-full focus:bg-text-primary focus:text-bg text-sm">
+    Saltar al contenido
+  </a>
 
-  <!-- Header -->
   <UnalHeader activePage={activePage} />
-  
-  <!-- Main content -->
-  <main class="min-h-screen">
+
+  <main id="contenido" class="flex-1">
     <slot />
   </main>
 
-  <!-- Footer -->
   {!hideFooter && <UnalFooter />}
-  
-  <!-- Accessibility panel -->
+
   <AccessibilityPanel />
-  
+
+  <script>
+    // Sistema de movimiento: revelado al entrar en viewport, contadores y nombres de view-transition.
+    const root = document.documentElement;
+    const motion = root.classList.contains('motion');
+
+    const reveal = (el: Element) => el.classList.add('is-in');
+
+    const targets = document.querySelectorAll('[data-reveal], [data-reveal-lines]');
+    if (!motion || !('IntersectionObserver' in window)) {
+      targets.forEach(reveal);
+    } else {
+      const io = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            reveal(entry.target);
+            io.unobserve(entry.target);
+          }
+        }
+      }, { rootMargin: '0px 0px -8% 0px', threshold: 0.08 });
+      targets.forEach((el) => io.observe(el));
+    }
+
+    // Contadores: el número real ya está en el HTML; solo se anima si hay movimiento.
+    const counters = document.querySelectorAll<HTMLElement>('[data-count]');
+    if (motion && counters.length && 'IntersectionObserver' in window) {
+      const easeOut = (t: number) => 1 - Math.pow(1 - t, 4);
+      const run = (el: HTMLElement) => {
+        const target = Number(el.dataset.count || '0');
+        if (!Number.isFinite(target) || target <= 0) return;
+        const start = performance.now();
+        const dur = 1600;
+        const tick = (now: number) => {
+          const p = Math.min(1, (now - start) / dur);
+          el.textContent = String(Math.round(target * easeOut(p)));
+          if (p < 1) requestAnimationFrame(tick);
+        };
+        el.textContent = '0';
+        requestAnimationFrame(tick);
+      };
+      const cio = new IntersectionObserver((entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            run(entry.target as HTMLElement);
+            cio.unobserve(entry.target);
+          }
+        }
+      }, { threshold: 0.6 });
+      counters.forEach((el) => cio.observe(el));
+    }
+
+    // View transitions entre catálogo y detalle: se nombra solo el elemento pulsado.
+    document.addEventListener('click', (e) => {
+      const link = (e.target as HTMLElement).closest('a[href^="/grupo/"]');
+      if (!link) return;
+      const card = link.closest('[data-vt-card]');
+      if (!card) return;
+      document.querySelectorAll<HTMLElement>('[style*="view-transition-name"]').forEach((el) => {
+        el.style.viewTransitionName = '';
+      });
+      const title = card.querySelector<HTMLElement>('[data-vt-title]');
+      const image = card.querySelector<HTMLElement>('[data-vt-image]');
+      if (title) title.style.viewTransitionName = 'vt-title';
+      if (image) image.style.viewTransitionName = 'vt-image';
+    });
+
+    // Al volver con el botón atrás (bfcache) se limpian los nombres.
+    window.addEventListener('pageshow', () => {
+      document.querySelectorAll<HTMLElement>('[data-vt-title], [data-vt-image]').forEach((el) => {
+        el.style.viewTransitionName = '';
+      });
+    });
+  </script>
 </body>
 </html>

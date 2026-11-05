@@ -5,7 +5,7 @@ import FilterBar from '../components/FilterBar.astro';
 import BentoGrid from '../components/BentoGrid.astro';
 
 import { fetchApprovedCatalog } from '../lib/grupos';
-import { filtrarGrupos, matchesCarrera, norm } from '../data/grupos.types';
+import { filtrarGrupos, matchesCarrera, norm, careerLabelShort } from '../data/grupos.types';
 
 export const prerender = false;
 
@@ -42,11 +42,35 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
   year: 'numeric',
 });
 
-const totalColectivos = allGrupos.length || 309;
-const totalAreas = '12+';
-const totalSemilleros = metadata.por_tipo?.['Semillero'] ?? 15;
-const totalDIB = metadata.por_tipo?.['Grupo de Investigación'] ?? 281;
-// JSON-LD (SEO tecnico): WebSite + SearchAction, Organization institucional e ItemList top 25.
+// Cifras reales del catálogo (sin valores inventados).
+const countTipo = (t: string) => allGrupos.filter((g) => norm(g.tipo) === norm(t)).length;
+const total = allGrupos.length;
+const stats = [
+  { value: total, label: 'Iniciativas activas' },
+  { value: metadata.por_tipo?.['Grupo de Investigación'] ?? countTipo('Grupo de Investigación'), label: 'Grupos de investigación' },
+  { value: metadata.por_tipo?.['Semillero'] ?? countTipo('Semillero'), label: 'Semilleros' },
+  { value: metadata.por_tipo?.['Grupo Estudiantil'] ?? countTipo('Grupo Estudiantil'), label: 'Grupos estudiantiles' },
+];
+
+// Cinta de disciplinas
+const disciplinas = metadata.carreras
+  .filter((c) => !/otras carreras|toda la universidad|ingenieria y afines/.test(norm(c)))
+  .map((c) => careerLabelShort(c));
+
+// Grupos con fotografía para el carrusel
+const conFoto = allGrupos
+  .filter((g) => g.imagen_url)
+  .sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'))
+  .slice(0, 10);
+
+const tipoLabel = (t: string) => {
+  const n = norm(t);
+  if (n.includes('semillero')) return 'Semillero';
+  if (n.includes('estudiantil')) return 'Grupo estudiantil';
+  return 'Grupo de investigación';
+};
+
+// JSON-LD (SEO técnico): WebSite + SearchAction, Organization institucional e ItemList top 25.
 const siteUrl = (Astro.site?.origin ?? 'https://semilleros.nikko.dev').replace(/\/+$/, '');
 const topGrupos = catalogGrupos.slice(0, 25);
 const jsonLd = JSON.stringify([
@@ -87,185 +111,252 @@ const jsonLd = JSON.stringify([
 ]).replace(/</g, '\\u003c');
 ---
 
-<Layout activePage="inicio" hideFooter={false} title="Semilleros e Investigación · Ingeniería, Ciencias y Afines | UNAL">
-
-  <main class="pb-16">
-    <!-- Hero con Presencia Institucional y Métricas de Impacto -->
-    <header class="relative overflow-hidden border-b border-border-default/60 bg-gradient-to-b from-bg via-bg-raised/40 to-bg">
-      <div class="absolute inset-0 bg-gradient-mesh opacity-30 pointer-events-none"></div>
-      <div class="absolute -top-24 left-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[140px] pointer-events-none"></div>
-      <div class="absolute top-1/3 right-10 w-[350px] h-[350px] bg-accent/8 rounded-full blur-[120px] pointer-events-none"></div>
-
-      <div class="relative z-10 max-w-7xl mx-auto px-6 pt-8 pb-12 sm:pb-16 lg:pb-20">
-        <!-- Badge superior institucional -->
-        <div id="hero-tag" class="flex flex-wrap items-center justify-between gap-4 mb-6">
-          <div class="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-primary/10 border border-primary/25 text-primary-light text-xs sm:text-sm font-semibold tracking-wide backdrop-blur-sm shadow-xs">
-            <span class="w-2 h-2 rounded-full bg-primary animate-pulse" aria-hidden="true"></span>
-            <span>Universidad Nacional de Colombia · Facultad de Ingeniería y Afines</span>
-          </div>
-          <p class="text-[11px] tracking-widest uppercase text-text-muted/80 font-medium">
-            Catálogo Oficial · Actualizado: {ultimaTexto}
-          </p>
-        </div>
-
-        <!-- Título y Subtítulo de Autoridad -->
-        <div class="max-w-4xl space-y-4 sm:space-y-5">
-          <h1 id="hero-title" class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-text-primary leading-[1.12]">
-            Semilleros e Investigación · Ingeniería, Ciencias y Afines
-          </h1>
-
-          <p id="hero-sub" class="text-text-secondary text-base sm:text-lg lg:text-xl max-w-3xl leading-relaxed font-normal">
-            Catálogo de los {totalColectivos} colectivos de la Sede Bogotá. Un ecosistema interdisciplinar donde convergen las ciencias exactas, las ciencias naturales y la ingeniería aplicada.
-          </p>
-
-          <!-- Botones Principales de Acción -->
-          <div id="hero-cta" class="flex flex-wrap items-center gap-3.5 pt-3">
-            <a
-              href="#catalogo"
-              class="inline-flex items-center justify-center gap-2.5 bg-gradient-to-r from-primary to-primary-dark text-white font-semibold px-6 py-3 rounded-xl shadow-glow-sm hover:shadow-glow hover:-translate-y-0.5 active:translate-y-0 transition-all text-xs sm:text-sm md:text-base cursor-pointer"
-            >
-              <span class="material-symbols-outlined text-lg sm:text-xl">explore</span>
-              <span>Explorar catálogo</span>
-            </a>
-            <a
-              href="/registro"
-              class="inline-flex items-center justify-center gap-2.5 bg-bg-card text-text-primary font-semibold px-6 py-3 rounded-xl border-2 border-primary/40 hover:border-primary hover:bg-primary/5 hover:text-primary-light hover:-translate-y-0.5 active:translate-y-0 transition-all text-xs sm:text-sm md:text-base cursor-pointer shadow-sm"
-            >
-              <span class="material-symbols-outlined text-lg sm:text-xl text-primary">add_circle</span>
-              <span>Postular mi grupo</span>
-            </a>
-          </div>
-        </div>
-
-        <!-- Fila de métricas de impacto con diseño integrado -->
-        <div id="hero-stats" class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mt-10 sm:mt-14 pt-8 border-t border-border-default/70">
-          <div class="p-4 sm:p-5 rounded-2xl bg-bg-card/75 backdrop-blur-sm border border-border-default/80 hover:border-primary/40 hover:shadow-card transition-all">
-            <span class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-text-primary tabular-nums block" id="live-count">{totalColectivos}</span>
-            <span class="text-xs sm:text-sm font-semibold text-text-secondary mt-1 block">Colectivos de Investigación</span>
-          </div>
-
-          <div class="p-4 sm:p-5 rounded-2xl bg-bg-card/75 backdrop-blur-sm border border-border-default/80 hover:border-primary/40 hover:shadow-card transition-all">
-            <span class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-text-primary tabular-nums block">{totalAreas}</span>
-            <span class="text-xs sm:text-sm font-semibold text-text-secondary mt-1 block">Áreas en Ciencias e Ingeniería</span>
-          </div>
-
-          <div class="p-4 sm:p-5 rounded-2xl bg-bg-card/75 backdrop-blur-sm border border-border-default/80 hover:border-primary/40 hover:shadow-card transition-all">
-            <span class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-text-primary tabular-nums block">{totalDIB}</span>
-            <span class="text-xs sm:text-sm font-semibold text-text-secondary mt-1 block">Grupos DIB</span>
-          </div>
-
-          <div class="p-4 sm:p-5 rounded-2xl bg-bg-card/75 backdrop-blur-sm border border-border-default/80 hover:border-primary/40 hover:shadow-card transition-all">
-            <span class="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-text-primary tabular-nums block">{totalSemilleros}</span>
-            <span class="text-xs sm:text-sm font-semibold text-text-secondary mt-1 block">Semilleros</span>
-          </div>
-        </div>
-      </div>
-    </header>
-
-    <!-- Coordinación de la sección del catálogo -->
-    <div id="catalogo" class="max-w-7xl mx-auto px-6 pt-12 sm:pt-16">
-      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 pb-6 border-b border-border-default/60">
-        <div>
-          <div class="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary mb-2">
-            <span class="w-1.5 h-1.5 rounded-full bg-primary" aria-hidden="true"></span>
-            <span>Exploración del Ecosistema</span>
-          </div>
-          <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-text-primary tracking-tight">Catálogo General</h2>
-          <p class="text-text-secondary text-sm sm:text-base mt-1.5">
-            Consulta iniciativas por departamento curricular, afinidad técnica o utiliza la búsqueda asistida para descubrir oportunidades de vinculación.
-          </p>
-        </div>
-        <div class="text-xs font-semibold text-text-muted shrink-0">
-          <span class="px-3 py-1.5 rounded-lg bg-bg-raised border border-border-default inline-block">
-            {allGrupos.length} iniciativas disponibles
-          </span>
-        </div>
-      </div>
-
-      <!-- Búsqueda Asistida por IA y Filtros Facetados -->
-      <div class="mb-6 space-y-4">
-        <AISearch placeholder="Búsqueda IA: ej. 'grupos de robótica con enfoque en visión artificial y horarios flexibles'" />
-      </div>
-
-      <FilterBar
-        metadata={metadata}
-        counts={carreraCounts}
-        activeTipo={tipoFilter || undefined}
-        activeCarrera={carreraFilter || undefined}
-        activeQuery={searchQuery || undefined}
-        grupos={catalogGrupos}
-      />
-
-      <div id="active-filters-bar" class={!(tipoFilter || carreraFilter || searchQuery) ? "hidden mb-6" : "flex items-center gap-2 mb-6"}>
-        <span id="active-filters-text" class="text-text-secondary text-sm">
-          Mostrando {filteredGrupos.length} de {allGrupos.length} grupos
-        </span>
-        <a
-          id="clear-filters-btn"
-          href="/"
-          class="ml-4 px-3 py-1.5 bg-error/10 text-error text-sm rounded-lg hover:bg-error/20 transition-colors flex items-center gap-1"
-        >
-          <span class="material-symbols-outlined text-sm">close</span>
-          Limpiar filtros
-        </a>
-      </div>
-
-      {catalogError ? (
-        <div class="text-center py-16">
-          <h3 class="text-lg text-text-primary font-semibold mb-1">No pudimos cargar el catálogo</h3>
-          <p class="text-text-secondary text-sm max-w-md mx-auto mb-6">Intenta recargar la página. Si el problema persiste, contáctanos.</p>
-          <button onclick="location.reload()" class="inline-flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-primary to-primary-dark text-white font-semibold rounded-xl hover:shadow-glow transition-all text-sm">
-            Reintentar
-          </button>
-        </div>
-      ) : (
-        <div id="catalog-grid-wrapper">
-          <BentoGrid grupos={catalogGrupos} />
-
-          <div id="no-results" class="hidden text-center py-16">
-            <div class="w-16 h-16 mx-auto mb-4 bg-bg-card rounded-2xl flex items-center justify-center border border-border-default">
-              <span class="material-symbols-outlined text-3xl text-text-muted">search_off</span>
-            </div>
-            <h3 class="text-lg text-text-primary font-semibold mb-1">Sin resultados</h3>
-            <p class="text-text-secondary text-sm max-w-md mx-auto mb-6">Prueba con otros filtros o una búsqueda más amplia.</p>
-            <button id="ver-todo-btn" type="button" class="inline-flex items-center gap-2 px-5 py-3 bg-gradient-to-r from-primary to-primary-dark text-white font-semibold rounded-xl hover:shadow-glow transition-all text-sm">
-              <span class="material-symbols-outlined text-base">refresh</span>
-              Ver todo el catálogo
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
-  </main>
-
+<Layout activePage="inicio" title="Semilleros e Investigación · Ingeniería, Ciencias y Afines | UNAL">
   <Fragment slot="head">
     <script is:inline type="application/ld+json" set:html={jsonLd} />
-    <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
   </Fragment>
 
-  <script is:inline>
-    // GSAP hero stagger + reduced motion guard + lazy reveal
-    (function(){
-      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (typeof gsap === 'undefined' || prefersReduced) {
-        ['hero-tag','hero-title','hero-sub','hero-cta','hero-stats','intro-text'].forEach(id=>{
-          const el=document.getElementById(id);
-          if(el) el.style.opacity='1';
-        });
-        return;
-      }
-      gsap.registerPlugin(ScrollTrigger);
-      const tl = gsap.timeline({ defaults:{ ease:'power2.out' }});
-      tl.to('#hero-tag', { opacity:1, y:0, duration:0.5 }, 0)
-        .fromTo('#hero-title', { opacity:0, y:12 }, { opacity:1, y:0, duration:0.6 }, 0.1)
-        .fromTo('#hero-sub', { opacity:0, y:12 }, { opacity:1, y:0, duration:0.5 }, 0.25)
-        .fromTo('#hero-cta', { opacity:0, y:10 }, { opacity:1, y:0, duration:0.5 }, 0.35)
-        .fromTo('#hero-stats', { opacity:0, y:10 }, { opacity:1, y:0, duration:0.5 }, 0.45);
-      const catalogo = document.getElementById('catalogo');
-      if (catalogo) {
-        gsap.from(catalogo, { opacity:0, y:16, duration:0.6, scrollTrigger:{ trigger:catalogo, start:'top 85%' }});
-      }
-    })();
-  </script>
+  <!-- ============ HERO ============ -->
+  <section class="relative overflow-hidden" aria-labelledby="hero-title">
+    <div class="absolute inset-0 bg-grid pointer-events-none" aria-hidden="true"></div>
+
+    <div class="relative max-w-7xl mx-auto px-5 sm:px-8 pt-12 sm:pt-20 pb-16 sm:pb-24">
+      <div class="flex items-center justify-between gap-6 kicker" data-reveal="fade">
+        <span class="inline-flex items-center gap-2.5">
+          <span class="w-1.5 h-1.5 rounded-full bg-accent" aria-hidden="true"></span>
+          Directorio de investigación · UNAL Bogotá
+        </span>
+        <span class="hidden sm:inline">Actualizado el {ultimaTexto}</span>
+      </div>
+
+      <h1 id="hero-title" class="hero-title mt-10 sm:mt-14 text-text-primary" data-reveal-lines>
+        <span class="line" style="--i: 0"><span>Aquí la investigación</span></span>
+        <span class="line" style="--i: 1"><span class="font-serif-i hero-serif">se siembra.</span></span>
+      </h1>
+
+      <div class="mt-14 sm:mt-20 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-end">
+        <div class="lg:col-span-5" data-reveal style="--d: 450ms">
+          <p class="text-[1.15rem] sm:text-[1.3rem] leading-[1.45] tracking-[-0.012em] text-text-secondary max-w-[30rem]">
+            Semilleros, grupos de investigación y grupos estudiantiles de la
+            <span class="text-text-primary">Facultad de Ingeniería y Afines</span>, en un solo lugar.
+            Encuentra el tuyo por carrera, tema o docente, y escríbele directo.
+          </p>
+          <div class="mt-9 flex flex-wrap items-center gap-x-7 gap-y-4">
+            <a href="#catalogo" class="btn-ink h-12 px-6 text-[15px]">
+              Explorar el catálogo <span aria-hidden="true">↓</span>
+            </a>
+            <a href="/registro" class="link-draw text-[15px] text-text-primary">Postular mi grupo</a>
+          </div>
+        </div>
+
+        <dl class="lg:col-span-6 lg:col-start-7 grid grid-cols-2 sm:grid-cols-4 border-t border-text-primary/80" data-reveal style="--d: 600ms">
+          {stats.map((s, i) => (
+            <div class:list={['pt-4 pb-1 pr-3', i > 0 && 'sm:border-l sm:border-border-default sm:pl-4', i % 2 === 1 && 'border-l border-border-default pl-4 sm:pl-4']}>
+              <dt class="kicker order-2 mt-2 leading-snug">{s.label}</dt>
+              <dd class="m-0 text-[2.6rem] sm:text-[3rem] leading-none font-medium tracking-[-0.05em] tabular-nums text-text-primary" data-count={s.value}>{s.value}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CINTA DE DISCIPLINAS ============ -->
+  {disciplinas.length > 0 && (
+    <div class="marquee border-y border-border-default overflow-hidden py-5 select-none" aria-hidden="true">
+      <div class="marquee-track">
+        {[0, 1].map(() => (
+          <div class="flex items-center shrink-0">
+            {disciplinas.concat(disciplinas).map((d) => (
+              <span class="flex items-center text-[1.6rem] sm:text-[2rem] tracking-[-0.03em] text-text-secondary whitespace-nowrap">
+                <span class="px-6 sm:px-8">{d}</span>
+                <span class="font-serif-i text-text-muted">✳</span>
+              </span>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  )}
+
+  <!-- ============ GRUPOS CON FOTOGRAFÍA ============ -->
+  {conFoto.length >= 3 && (
+    <section class="pt-24 sm:pt-32" aria-labelledby="destacados-title">
+      <div class="max-w-7xl mx-auto px-5 sm:px-8 flex items-end justify-between gap-6 mb-10">
+        <div data-reveal>
+          <p class="kicker mb-4">Destacados</p>
+          <h2 id="destacados-title" class="text-[2.25rem] sm:text-[3.25rem] leading-[1.02] font-medium tracking-[-0.045em] text-text-primary">
+            Grupos <span class="font-serif-i">en acción</span>
+          </h2>
+        </div>
+        <div class="hidden sm:flex items-center gap-2" data-reveal="fade">
+          <button type="button" data-rail-prev class="w-12 h-12 rounded-full border border-border-default hover:border-text-primary hover:bg-text-primary hover:text-bg transition-colors flex items-center justify-center" aria-label="Ver grupos anteriores">←</button>
+          <button type="button" data-rail-next class="w-12 h-12 rounded-full border border-border-default hover:border-text-primary hover:bg-text-primary hover:text-bg transition-colors flex items-center justify-center" aria-label="Ver más grupos">→</button>
+        </div>
+      </div>
+
+      <div data-rail class="rail flex gap-4 sm:gap-5 overflow-x-auto no-scrollbar snap-x snap-mandatory scroll-smooth px-5 sm:px-8 pb-4" tabindex="0" aria-label="Grupos con fotografía">
+        {conFoto.map((g, i) => (
+          <a href={`/grupo/${g.id}`} data-vt-card class="rail-item group snap-start shrink-0 w-[78vw] sm:w-[21rem] lg:w-[23rem]" data-reveal style={`--d: ${Math.min(i, 4) * 80}ms`}>
+            <div class="relative aspect-[4/5] rounded-2xl overflow-hidden bg-bg-hover" data-vt-image>
+              <img src={g.imagen_url} alt="" loading="lazy" decoding="async" width="600" height="750"
+                   class="absolute inset-0 w-full h-full object-cover transition-transform duration-[1.2s] ease-out-expo group-hover:scale-[1.05]"
+                   onerror="this.style.display='none'" />
+              <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 to-transparent pointer-events-none" aria-hidden="true"></div>
+              <span class="absolute left-4 bottom-4 font-mono text-[11px] tracking-[0.08em] uppercase text-white/85">{tipoLabel(g.tipo)}</span>
+              <span class="absolute right-4 bottom-3.5 w-9 h-9 rounded-full bg-white text-[#151714] flex items-center justify-center translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 ease-out-expo" aria-hidden="true">→</span>
+            </div>
+            <p class="mt-4 text-[1.1rem] leading-snug font-medium tracking-[-0.02em] text-text-primary line-clamp-2" data-vt-title>{g.nombre}</p>
+          </a>
+        ))}
+        <div class="shrink-0 w-1 sm:w-3" aria-hidden="true"></div>
+      </div>
+    </section>
+  )}
+
+  <!-- ============ CATÁLOGO ============ -->
+  <section id="catalogo" class="max-w-7xl mx-auto px-5 sm:px-8 pt-24 sm:pt-32 pb-24" aria-labelledby="catalogo-title">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-12 items-end">
+      <div class="lg:col-span-8" data-reveal>
+        <p class="kicker mb-4">El catálogo · {total} iniciativas</p>
+        <h2 id="catalogo-title" class="text-[2.25rem] sm:text-[3.25rem] leading-[1.02] font-medium tracking-[-0.045em] text-text-primary">
+          Filtra por tema y carrera, <span class="font-serif-i">o simplemente pregunta.</span>
+        </h2>
+      </div>
+      <p class="lg:col-span-4 text-text-secondary text-[15px] leading-relaxed" data-reveal style="--d: 120ms">
+        Kala conoce cada grupo del catálogo. Descríbele lo que te interesa y te sugiere por dónde empezar.
+      </p>
+    </div>
+
+    <div data-reveal style="--d: 160ms">
+      <AISearch />
+    </div>
+
+    <FilterBar
+      metadata={metadata}
+      counts={carreraCounts}
+      activeTipo={tipoFilter || undefined}
+      activeCarrera={carreraFilter || undefined}
+      activeQuery={searchQuery || undefined}
+      grupos={catalogGrupos}
+    />
+
+    {catalogError ? (
+      <div class="py-24 text-center max-w-md mx-auto">
+        <p class="kicker mb-4">Error de conexión</p>
+        <h3 class="text-3xl font-medium tracking-[-0.03em] text-text-primary mb-3">No pudimos cargar el catálogo</h3>
+        <p class="text-text-secondary mb-8">Intenta recargar la página. Si el problema persiste, escríbenos.</p>
+        <button onclick="location.reload()" class="btn-ink h-11 px-6 text-sm">Reintentar</button>
+      </div>
+    ) : (
+      <div id="catalog-grid-wrapper">
+        <BentoGrid grupos={catalogGrupos} />
+
+        <div id="no-results" class="hidden py-24 text-center max-w-md mx-auto">
+          <p class="kicker mb-4">Sin resultados</p>
+          <h3 class="text-3xl font-medium tracking-[-0.03em] text-text-primary mb-3">
+            Nada por aquí <span class="font-serif-i">todavía.</span>
+          </h3>
+          <p class="text-text-secondary mb-8">Prueba con otros filtros, o pregúntale a Kala con tus palabras.</p>
+          <button id="ver-todo-btn" type="button" class="btn-ink h-11 px-6 text-sm">Ver todo el catálogo</button>
+        </div>
+      </div>
+    )}
+  </section>
+
+  <!-- ============ LLAMADO A POSTULAR ============ -->
+  <section class="px-3 sm:px-5 pb-6" aria-labelledby="cta-title">
+    <div class="relative max-w-[90rem] mx-auto rounded-[2rem] bg-ink text-paper overflow-hidden border border-paper/10" data-reveal>
+      <div class="absolute inset-0 bg-grid-dark pointer-events-none" aria-hidden="true"></div>
+      <div class="relative max-w-7xl mx-auto px-6 sm:px-12 py-20 sm:py-28 grid grid-cols-1 lg:grid-cols-12 gap-10 items-end">
+        <div class="lg:col-span-8">
+          <p class="font-mono text-[11px] tracking-[0.08em] uppercase text-paper/55 mb-6">Para líderes y docentes</p>
+          <h2 id="cta-title" class="text-[2.5rem] sm:text-[4.25rem] leading-[0.98] font-medium tracking-[-0.05em]">
+            ¿Lideras un semillero o un grupo?
+            <span class="block font-serif-i !text-[#B5CF6B] mt-1">Súmalo al catálogo.</span>
+          </h2>
+        </div>
+        <div class="lg:col-span-4">
+          <p class="text-paper/70 text-[15px] leading-relaxed mb-8 max-w-sm">
+            Llena un formulario corto. El equipo de la Facultad revisa la solicitud y, al aprobarla, tu grupo aparece aquí con su propia página.
+          </p>
+          <a href="/registro" class="btn-lime h-12 px-7 text-[15px]">Postular mi grupo <span aria-hidden="true">→</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
 </Layout>
+
+<style>
+  .hero-title {
+    font-size: clamp(2.75rem, 8.4vw, 7.4rem);
+    line-height: 0.94;
+    letter-spacing: -0.055em;
+    font-weight: 500;
+  }
+  .hero-serif {
+    font-size: 1.14em;
+    letter-spacing: -0.035em;
+    line-height: 0.9;
+  }
+  .bg-grid-dark {
+    background-image:
+      linear-gradient(rgb(var(--c-paper) / 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(var(--c-paper) / 0.06) 1px, transparent 1px);
+    background-size: 56px 56px;
+    -webkit-mask-image: radial-gradient(ellipse 70% 90% at 85% 100%, #000 10%, transparent 70%);
+    mask-image: radial-gradient(ellipse 70% 90% at 85% 100%, #000 10%, transparent 70%);
+  }
+  dl > div { display: flex; flex-direction: column; }
+  dl > div > dd { order: 1; }
+  dl > div > dt { order: 2; }
+  .rail { scroll-padding-inline: 1.25rem; }
+  @media (min-width: 640px) { .rail { scroll-padding-inline: 2rem; } }
+  @media (min-width: 1280px) {
+    .rail { padding-inline: calc((100vw - 80rem) / 2 + 2rem); scroll-padding-inline: calc((100vw - 80rem) / 2 + 2rem); }
+  }
+</style>
+
+<script>
+  // Carrusel de destacados: flechas y arrastre con el ratón.
+  const rail = document.querySelector<HTMLElement>('[data-rail]');
+  if (rail) {
+    const step = () => (rail.querySelector<HTMLElement>('.rail-item')?.offsetWidth ?? 320) + 20;
+    document.querySelector('[data-rail-prev]')?.addEventListener('click', () => rail.scrollBy({ left: -step(), behavior: 'smooth' }));
+    document.querySelector('[data-rail-next]')?.addEventListener('click', () => rail.scrollBy({ left: step(), behavior: 'smooth' }));
+
+    let down = false;
+    let moved = false;
+    let startX = 0;
+    let startScroll = 0;
+    rail.addEventListener('pointerdown', (e) => {
+      if (e.pointerType !== 'mouse') return;
+      down = true; moved = false;
+      startX = e.clientX; startScroll = rail.scrollLeft;
+    });
+    window.addEventListener('pointermove', (e) => {
+      if (!down) return;
+      const dx = e.clientX - startX;
+      if (Math.abs(dx) > 4 && !moved) {
+        moved = true;
+        rail.classList.add('is-dragging');
+      }
+      if (moved) rail.scrollLeft = startScroll - dx;
+    });
+    window.addEventListener('pointerup', () => {
+      if (!down) return;
+      down = false;
+      rail.classList.remove('is-dragging');
+    });
+    // Evita abrir el grupo si el usuario estaba arrastrando
+    rail.addEventListener('click', (e) => {
+      if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; }
+    }, true);
+    rail.addEventListener('dragstart', (e) => e.preventDefault());
+  }
+</script>
+
+<style is:global>
+  .rail.is-dragging { scroll-snap-type: none; scroll-behavior: auto; cursor: grabbing; }
+  .rail.is-dragging * { pointer-events: none; }
+</style>

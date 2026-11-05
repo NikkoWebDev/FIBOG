@@ -6,12 +6,10 @@ export const prerender = false;
 
 <Layout title="Panel de Líder | Base de Datos Ingeniería y Afines" description="Gestiona tu grupo o semillero" activePage="lider" noindex>
   
-  <main class="min-h-screen py-8 px-4 relative overflow-hidden">
+  <div class="min-h-screen py-8 px-4 relative overflow-hidden">
     <!-- Background -->
     <div class="absolute inset-0 bg-bg"></div>
     <div class="absolute inset-0">
-      <div class="absolute top-0 right-0 w-[40%] h-[40%] bg-primary/10 rounded-full blur-[150px]"></div>
-      <div class="absolute bottom-0 left-0 w-[30%] h-[30%] bg-tertiary/10 rounded-full blur-[120px]"></div>
     </div>
 
     <div class="relative z-10 max-w-4xl mx-auto">
@@ -96,7 +94,7 @@ export const prerender = false;
           </label>
           <select
             id="group-selector"
-            class="w-full px-4 py-3 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all cursor-pointer"
+            class="w-full px-4 py-3 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-text-primary/50 focus:ring-1 focus:ring-accent/30 transition-all cursor-pointer"
           ></select>
         </div>
         <!-- Group Info Card -->
@@ -106,7 +104,7 @@ export const prerender = false;
           
           <div class="relative z-10">
             <div class="flex items-center gap-3 mb-6">
-              <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-lg shadow-primary/20">
+              <div class="w-12 h-12 rounded-2xl bg-primary flex items-center justify-center shadow-lg shadow-primary/20">
                 <span class="material-symbols-outlined text-white text-xl" id="group-type-icon">groups</span>
               </div>
               <div>
@@ -131,7 +129,7 @@ export const prerender = false;
                   id="field-nombre"
                   required
                   maxlength="120"
-                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-text-primary/50 focus:ring-1 focus:ring-accent/30 transition-all"
                 />
               </div>
               
@@ -145,7 +143,7 @@ export const prerender = false;
                     name="docente_a_cargo"
                     id="field-docente"
                     maxlength="255"
-                    class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all"
+                    class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-text-primary/50 focus:ring-1 focus:ring-accent/30 transition-all"
                   />
                 </div>
                 
@@ -158,7 +156,7 @@ export const prerender = false;
                     name="email_contacto"
                     id="field-email"
                     maxlength="255"
-                    class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all"
+                    class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-text-primary/50 focus:ring-1 focus:ring-accent/30 transition-all"
                   />
                 </div>
               </div>
@@ -172,7 +170,7 @@ export const prerender = false;
                   name="lider_o_representante"
                   id="field-lider"
                   maxlength="255"
-                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-text-primary/50 focus:ring-1 focus:ring-accent/30 transition-all"
                 />
               </div>
               
@@ -185,7 +183,7 @@ export const prerender = false;
                   name="enfoque"
                   id="field-enfoque"
                   maxlength="255"
-                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-text-primary/50 focus:ring-1 focus:ring-accent/30 transition-all"
                 />
               </div>
               
@@ -198,7 +196,7 @@ export const prerender = false;
                   id="field-descripcion"
                   rows="4"
                   maxlength="2000"
-                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all resize-none"
+                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-text-primary/50 focus:ring-1 focus:ring-accent/30 transition-all resize-none"
                 ></textarea>
               </div>
 
@@ -245,7 +243,7 @@ export const prerender = false;
                 <select 
                   name="modalidad"
                   id="field-modalidad"
-                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all appearance-none cursor-pointer"
+                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-text-primary/50 focus:ring-1 focus:ring-accent/30 transition-all appearance-none cursor-pointer"
                 >
                   <option value="">Selecciona</option>
                   <option value="Presencial">Presencial</option>
@@ -264,7 +262,7 @@ export const prerender = false;
                   id="field-horarios"
                   maxlength="255"
                   placeholder="Ej: Viernes 2:00pm - 6:00pm"
-                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-muted/60 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-muted/60 focus:outline-none focus:border-text-primary/50 focus:ring-1 focus:ring-accent/30 transition-all"
                 />
               </div>
             </div>
@@ -278,7 +276,7 @@ export const prerender = false;
                 id="field-actividades"
                 rows="3"
                 maxlength="2000"
-                class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all resize-none"
+                class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-text-primary/50 focus:ring-1 focus:ring-accent/30 transition-all resize-none"
               ></textarea>
             </div>
             
@@ -291,7 +289,7 @@ export const prerender = false;
                 id="field-requisitos"
                 rows="2"
                 maxlength="2000"
-                class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all resize-none"
+                class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-text-primary/50 focus:ring-1 focus:ring-accent/30 transition-all resize-none"
               ></textarea>
             </div>
             
@@ -307,7 +305,7 @@ export const prerender = false;
                 placeholder="https://instagram.com/tu-grupo"
                 inputmode="url"
                 autocomplete="url"
-                class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all"
+                class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-text-primary/50 focus:ring-1 focus:ring-accent/30 transition-all"
               />
               <p class="text-xs text-text-muted mt-2">Un solo enlace. Preferible la pagina web o el perfil principal del grupo.</p>
             </div>
@@ -321,7 +319,7 @@ export const prerender = false;
                 id="field-comentarios"
                 rows="2"
                 maxlength="2000"
-                class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/30 transition-all resize-none"
+                class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-text-primary/50 focus:ring-1 focus:ring-accent/30 transition-all resize-none"
               ></textarea>
             </div>
           </div>
@@ -340,7 +338,7 @@ export const prerender = false;
           <button 
             id="save-btn"
             type="submit"
-            class="flex-1 py-3.5 px-6 rounded-xl bg-gradient-to-r from-primary to-accent text-white font-bold hover:opacity-90 transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+            class="flex-1 py-3.5 px-6 rounded-xl bg-primary text-white font-bold hover:opacity-90 transition-all shadow-lg shadow-primary/20 flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
           >
             <span class="material-symbols-outlined">save</span>
             <span id="save-text">Guardar Cambios</span>
@@ -358,7 +356,7 @@ export const prerender = false;
       </div>
       </div>
     </div>
-  </main>
+  </div>
 </Layout>
 
 <script>

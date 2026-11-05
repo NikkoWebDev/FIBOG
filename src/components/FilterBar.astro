@@ -1,4 +1,5 @@
 ---
+import Icon from './Icon.astro';
 // FilterBar.astro - Sistema de filtrado facetado avanzado de élite FIBOG
 import { careerLabelShort, canonicalizeCarrera, norm } from '../data/grupos.types';
 import type { Grupo, Metadata } from '../data/grupos.types';
@@ -32,7 +33,7 @@ const BRANCH_CONFIGS = [
   {
     id: 'ciencias',
     label: 'Ciencias Naturales y Exactas',
-    shortLabel: 'Ciencias Naturales y Exactas',
+    shortLabel: 'Ciencias',
     icon: 'biotech',
     regex: /ciencias|naturales|exactas|biolog|fisic|matemat|geolog|astronom|bioquim|ecolog|genom|estadist/i,
     careers: ['Ciencias Naturales']
@@ -48,7 +49,7 @@ const BRANCH_CONFIGS = [
   {
     id: 'mecanica',
     label: 'Mecatrónica y Mecánica',
-    shortLabel: 'Mecatrónica & Mecánica',
+    shortLabel: 'Mecánica y Mecatrónica',
     icon: 'precision_manufacturing',
     regex: /mecanic|mecatron|robot|aeroespac|automatiz|vehicul|manufactura|diseno mecan/i,
     careers: ['Ingeniería Mecánica', 'Ingeniería Mecatrónica']
@@ -56,7 +57,7 @@ const BRANCH_CONFIGS = [
   {
     id: 'electrica',
     label: 'Eléctrica y Electrónica',
-    shortLabel: 'Eléctrica & Electrónica',
+    shortLabel: 'Eléctrica y Electrónica',
     icon: 'electric_bolt',
     regex: /electr|telecom|potencia|senales|circuit|optica|alta tension/i,
     careers: ['Ingeniería Eléctrica', 'Ingeniería Electrónica']
@@ -64,7 +65,7 @@ const BRANCH_CONFIGS = [
   {
     id: 'civil',
     label: 'Civil y Agrícola',
-    shortLabel: 'Civil & Agrícola',
+    shortLabel: 'Civil y Agrícola',
     icon: 'foundation',
     regex: /civil|agricol|estruct|geotec|hidraul|suelo|vias|transp|construc|topograf/i,
     careers: ['Ingeniería Civil', 'Ingeniería Agrícola']
@@ -72,7 +73,7 @@ const BRANCH_CONFIGS = [
   {
     id: 'quimica',
     label: 'Química y Ambiental',
-    shortLabel: 'Química & Ambiental',
+    shortLabel: 'Química y Ambiental',
     icon: 'science',
     regex: /quimic|ambient|alimento|bioproces|material|termodin|sostenib|biotec|polimer/i,
     careers: ['Ingeniería Química']
@@ -129,212 +130,122 @@ const catalogIndex = grupos.map((g) => {
 });
 ---
 
-<div class="glass rounded-2xl p-5 sm:p-6 mb-8 border border-border-default/80 shadow-card transition-all" id="filter-bar-root">
-  <!-- Fila 1: Chips de Tipo de Grupo + Contador Reactivo en Vivo -->
-  <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-border-subtle/80">
-    <div class="flex flex-wrap items-center gap-2" id="tipo-filter-group" role="group" aria-label="Filtrar por tipo de iniciativa">
-      <span class="text-xs font-bold uppercase tracking-wider text-text-muted mr-1.5 flex items-center gap-1">
-        <span class="material-symbols-outlined text-sm text-primary">category</span>
-        Tipo:
-      </span>
-      {tipoChips.map(chip => {
-        const isActive = (chip.value === 'Todos' && !activeTipo) ||
-                         (chip.value !== 'Todos' && activeTipo && norm(activeTipo) === norm(chip.value));
-
-        return (
-          <button
-            type="button"
-            data-tipo-btn={chip.value}
-            class:list={[
-              'tipo-filter-btn inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-semibold transition-all border cursor-pointer select-none focus-visible:outline-2 focus-visible:outline-primary',
-              isActive
-                ? 'bg-gradient-to-r from-primary to-primary-dark text-white border-primary shadow-glow-sm'
-                : 'bg-bg-raised text-text-secondary border-border-default hover:border-primary/40 hover:text-text-primary hover:bg-bg-hover'
-            ]}
-          >
-            <span>{chip.label}</span>
-            <span class:list={[
-              'tipo-count-pill text-[11px] px-1.5 py-0.2 rounded-full font-bold',
-              isActive
-                ? 'bg-white/20 text-white'
-                : 'bg-bg-hover text-text-muted border border-border-subtle'
-            ]}>
-              {chip.count}
-            </span>
-          </button>
-        );
-      })}
-    </div>
-
-    <!-- Contador Reactivo en Vivo -->
-    <div class="flex items-center gap-2 self-start lg:self-center bg-bg-raised px-3.5 py-2 rounded-xl border border-border-default shadow-sm shrink-0">
-      <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" aria-hidden="true"></span>
-      <div class="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-text-secondary" id="filter-live-counter" aria-live="polite">
-        <span>Mostrando</span>
-        <span class="font-bold text-primary-light dark:text-blue-300" id="filter-visible-count">{metadata.total}</span>
-        <span>de</span>
-        <span class="font-bold text-text-primary" id="filter-total-count">{metadata.total}</span>
-        <span>iniciativas</span>
-      </div>
-    </div>
-  </div>
-
-  <!-- Fila 2: Ramas Principales de Ciencias e Ingeniería (Quick Chips) + Selector Completo -->
-  <div class="py-4 border-b border-border-subtle/80">
-    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
-      <div class="flex items-center gap-2">
-        <span class="material-symbols-outlined text-base text-accent">hub</span>
-        <span class="text-xs font-bold uppercase tracking-wider text-text-muted">
-          Ramas de Ciencias e Ingeniería:
-        </span>
-      </div>
-
-      <!-- Selector "Otras / Ver todas..." -->
-      <div class="relative w-full sm:w-auto">
-        <select
-          id="carrera-filter"
-          aria-label="Ver todas las carreras o seleccionar carrera específica"
-          class="w-full sm:w-64 bg-bg-raised text-text-primary text-xs font-semibold pl-3 pr-8 py-2 rounded-xl border border-border-default hover:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer appearance-none shadow-sm"
-        >
-          <option value="" data-carrera="" selected={!activeCanonical}>
-            Otras / Ver todas las carreras ({carreras.length})...
-          </option>
-          {carreras.map(carrera => {
-            const short = careerLabelShort(carrera);
-            const total = counts[carrera] ?? 0;
-            return (
-              <option
-                value={carrera}
-                data-carrera={carrera}
-                selected={activeCanonical === carrera}
-              >
-                {short} ({total})
-              </option>
-            );
-          })}
-        </select>
-        <span class="material-symbols-outlined text-sm text-text-muted absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true">
-          unfold_more
-        </span>
-      </div>
-    </div>
-
-    <!-- Quick Chips Flex -->
-    <div class="flex flex-wrap items-center gap-2" id="branch-quick-chips" role="group" aria-label="Ramas destacadas">
-      <!-- "Todas" chip -->
-      <button
-        type="button"
-        data-branch-btn="todas"
-        class="branch-filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all border cursor-pointer select-none bg-gradient-to-r from-primary to-primary-dark text-white border-primary shadow-glow-sm focus-visible:outline-2 focus-visible:outline-primary"
-      >
-        <span class="material-symbols-outlined text-sm">apps</span>
-        <span>Todas</span>
-      </button>
-
-      {BRANCH_CONFIGS.map(branch => {
-        const count = branchCounts[branch.id] || 0;
-        return (
-          <button
-            type="button"
-            data-branch-btn={branch.id}
-            class="branch-filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all border cursor-pointer select-none bg-bg-raised text-text-secondary border-border-default hover:border-primary/40 hover:text-text-primary hover:bg-bg-hover focus-visible:outline-2 focus-visible:outline-primary"
-          >
-            <span class="material-symbols-outlined text-sm text-text-muted group-hover:text-primary">{branch.icon}</span>
-            <span>{branch.label}</span>
-            <span class="branch-count-pill text-[10px] px-1.5 py-0.2 rounded-full font-bold bg-bg-hover text-text-muted border border-border-subtle">
-              {count}
-            </span>
-          </button>
-        );
-      })}
-    </div>
-  </div>
-
-  <!-- Fila 3: Barra de Herramientas (Búsqueda Instantánea + Selector de Ordenamiento) -->
-  <div class="pt-4 flex flex-col md:flex-row gap-3 items-stretch md:items-center justify-between">
-    <!-- Búsqueda Instantánea Integrada -->
-    <div class="relative flex-1 max-w-xl">
-      <span class="material-symbols-outlined text-lg text-text-muted absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true">
-        search
-      </span>
+<div class="mb-10" id="filter-bar-root">
+  <!-- Fila 1: búsqueda instantánea + orden + fotografía -->
+  <div class="flex flex-col lg:flex-row gap-3 lg:items-center">
+    <div class="relative flex-1">
+      <Icon name="search" size={20} class="text-text-muted absolute left-5 top-1/2 -translate-y-1/2 pointer-events-none" />
       <input
         id="carrera-search"
         type="search"
-        aria-label="Buscar iniciativas por nombre, líneas o temas"
-        placeholder="Buscar por iniciativa, docente, línea o tecnología..."
+        aria-label="Buscar iniciativas por nombre, docente, línea o tema"
+        placeholder="Filtra por nombre, docente, línea o tecnología"
         autocomplete="off"
         value={activeQuery || ''}
-        class="w-full bg-bg-input border border-border-default pl-10 pr-9 py-2.5 text-sm text-text-primary rounded-xl focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 placeholder:text-text-muted transition-all shadow-sm"
+        class="w-full h-14 bg-bg-card border border-border-default pl-14 pr-12 text-[15px] text-text-primary rounded-full placeholder:text-text-muted transition-[border-color,box-shadow] duration-300 focus:border-text-primary focus:shadow-[0_0_0_4px_rgb(var(--c-accent)/0.22)]"
       />
       <button
         id="search-clear-btn"
         type="button"
         aria-label="Borrar búsqueda"
         class:list={[
-          'absolute right-3 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary p-0.5 rounded-full hover:bg-bg-hover transition-colors',
+          'absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full text-text-muted hover:text-text-primary hover:bg-bg-hover transition-colors flex items-center justify-center',
           activeQuery ? '' : 'hidden'
         ]}
       >
-        <span class="material-symbols-outlined text-base">close</span>
+        <Icon name="close" size={16} />
       </button>
     </div>
 
-    <!-- Selector de Ordenamiento y Filtro Visual -->
-    <div class="flex flex-wrap items-center gap-3 shrink-0">
-      <button
-        type="button"
-        id="foto-filter-btn"
-        data-foto-btn
-        aria-pressed="false"
-        class="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all border cursor-pointer select-none bg-bg-raised text-text-secondary border-border-default hover:border-primary/40 hover:text-text-primary hover:bg-bg-hover focus-visible:outline-2 focus-visible:outline-primary shadow-sm"
-      >
-        <span class="material-symbols-outlined text-sm text-primary">photo_camera</span>
-        <span>Con Fotografía</span>
-        <span class="foto-count-pill text-[10px] px-1.5 py-0.2 rounded-full font-bold bg-bg-hover text-text-muted border border-border-subtle">
-          {imageCount}
-        </span>
+    <div class="flex items-center gap-2 shrink-0">
+      <button type="button" id="foto-filter-btn" data-foto-btn aria-pressed="false" class="chip h-11 lg:h-14 px-4 lg:px-5">
+        <Icon name="camera" size={17} />
+        <span>Con foto</span>
+        <span class="chip-count foto-count-pill">{imageCount}</span>
       </button>
 
-      <div class="flex items-center gap-2 shrink-0">
-        <label for="sort-select" class="text-xs font-bold uppercase tracking-wider text-text-muted shrink-0 flex items-center gap-1">
-          <span class="material-symbols-outlined text-sm">swap_vert</span>
-          Ordenar:
-        </label>
-        <div class="relative">
-          <select
-            id="sort-select"
-            aria-label="Ordenar resultados del catálogo"
-            class="bg-bg-raised text-text-primary text-xs font-semibold pl-3 pr-8 py-2.5 rounded-xl border border-border-default hover:border-primary/40 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer appearance-none shadow-sm"
-          >
-            <option value="imagen" selected>Con imagen primero</option>
-            <option value="az">Nombre (A-Z)</option>
-            <option value="za">Nombre (Z-A)</option>
-            <option value="tipo">Tipo de grupo</option>
-          </select>
-          <span class="material-symbols-outlined text-sm text-text-muted absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none" aria-hidden="true">
-            expand_more
-          </span>
-        </div>
+      <div class="relative">
+        <label for="sort-select" class="sr-only">Ordenar resultados</label>
+        <select
+          id="sort-select"
+          aria-label="Ordenar resultados del catálogo"
+          class="h-11 lg:h-14 appearance-none bg-transparent text-text-primary text-[13px] font-medium pl-4 lg:pl-5 pr-10 rounded-full border border-border-default hover:border-text-primary/45 transition-colors cursor-pointer"
+        >
+          <option value="imagen" selected>Con foto primero</option>
+          <option value="az">Nombre A–Z</option>
+          <option value="za">Nombre Z–A</option>
+          <option value="tipo">Por tipo</option>
+        </select>
+        <Icon name="chevron-down" size={16} class="text-text-muted absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none" />
       </div>
     </div>
   </div>
 
-  <!-- Fila 4: Filtros Activos (Active Pills Descartables con ✕ y Limpiar Todos) -->
-  <div id="active-pills-row" class="hidden mt-4 pt-3.5 border-t border-border-subtle/80 flex-wrap items-center gap-2">
-    <div class="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-text-muted mr-1">
-      <span class="material-symbols-outlined text-sm text-primary">filter_alt</span>
-      <span>Filtros activos:</span>
+  <!-- Fila 2: tipo + contador -->
+  <div class="mt-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div class="flex items-center gap-2 overflow-x-auto no-scrollbar -mx-5 px-5 sm:mx-0 sm:px-0" id="tipo-filter-group" role="group" aria-label="Filtrar por tipo de iniciativa">
+      {tipoChips.map(chip => {
+        const isActive = (chip.value === 'Todos' && !activeTipo) ||
+                         (chip.value !== 'Todos' && activeTipo && norm(activeTipo) === norm(chip.value));
+        return (
+          <button
+            type="button"
+            data-tipo-btn={chip.value}
+            aria-pressed={isActive ? 'true' : 'false'}
+            class:list={['tipo-filter-btn chip', isActive && 'is-active']}
+          >
+            <span>{chip.label}</span>
+            <span class="chip-count tipo-count-pill">{chip.count}</span>
+          </button>
+        );
+      })}
     </div>
-    <div id="active-pills-container" class="flex flex-wrap items-center gap-2">
-      <!-- Píldoras inyectadas reactivamente por JS -->
+
+    <p class="font-mono text-[12px] tracking-[0.02em] text-text-muted shrink-0" id="filter-live-counter" aria-live="polite">
+      <span class="text-text-primary" id="filter-visible-count">{metadata.total}</span>
+      <span> / </span>
+      <span id="filter-total-count">{metadata.total}</span>
+      <span> iniciativas</span>
+    </p>
+  </div>
+
+  <!-- Fila 3: ramas + carrera -->
+  <div class="mt-3 flex flex-col md:flex-row md:items-center gap-3">
+    <div class="flex items-center gap-2 overflow-x-auto no-scrollbar -mx-5 px-5 sm:mx-0 sm:px-0 flex-1" id="branch-quick-chips" role="group" aria-label="Ramas de ciencias e ingeniería">
+      <button type="button" data-branch-btn="todas" aria-pressed="true" class="branch-filter-btn chip is-active">
+        <span>Todas las ramas</span>
+      </button>
+      {BRANCH_CONFIGS.map(branch => (
+        <button type="button" data-branch-btn={branch.id} aria-pressed="false" class="branch-filter-btn chip">
+          <span>{branch.shortLabel}</span>
+          <span class="chip-count branch-count-pill">{branchCounts[branch.id] || 0}</span>
+        </button>
+      ))}
     </div>
-    <button
-      id="clear-all-filters-btn"
-      type="button"
-      class="ml-auto text-xs font-semibold text-error hover:bg-error/10 border border-error/20 px-3 py-1.5 rounded-xl transition-all flex items-center gap-1 cursor-pointer focus-visible:outline-2 focus-visible:outline-error"
-    >
-      <span class="material-symbols-outlined text-sm">delete_sweep</span>
-      Limpiar todos
+
+    <div class="relative shrink-0">
+      <select
+        id="carrera-filter"
+        aria-label="Filtrar por carrera"
+        class="w-full md:w-60 h-9 appearance-none bg-transparent text-text-secondary text-[13px] font-medium pl-4 pr-10 rounded-full border border-border-default hover:border-text-primary/45 hover:text-text-primary transition-colors cursor-pointer"
+      >
+        <option value="" data-carrera="" selected={!activeCanonical}>Todas las carreras</option>
+        {carreras.map(carrera => (
+          <option value={carrera} data-carrera={carrera} selected={activeCanonical === carrera}>
+            {careerLabelShort(carrera)} ({counts[carrera] ?? 0})
+          </option>
+        ))}
+      </select>
+      <Icon name="chevron-down" size={15} class="text-text-muted absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+    </div>
+  </div>
+
+  <!-- Fila 4: filtros activos -->
+  <div id="active-pills-row" class="hidden mt-5 pt-5 border-t border-border-subtle flex-wrap items-center gap-2">
+    <span class="kicker mr-1">Filtros</span>
+    <div id="active-pills-container" class="flex flex-wrap items-center gap-2"></div>
+    <button id="clear-all-filters-btn" type="button" class="ml-auto text-[13px] text-text-secondary hover:text-text-primary underline underline-offset-4 decoration-border-default transition-colors">
+      Limpiar todo
     </button>
   </div>
 </div>
@@ -568,7 +479,7 @@ const catalogIndex = grupos.map((g) => {
         activePillsRow.classList.add('flex');
         pills.forEach(p => {
           const pillEl = document.createElement('span');
-          pillEl.className = 'inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-semibold bg-primary/10 text-primary-light dark:text-blue-300 border border-primary/25 shadow-sm';
+          pillEl.className = 'inline-flex items-center gap-1 h-8 pl-3.5 pr-1 rounded-full text-[13px] bg-bg-hover text-text-primary animate-fade-in';
 
           const textSpan = document.createElement('span');
           textSpan.textContent = p.label;
@@ -577,8 +488,8 @@ const catalogIndex = grupos.map((g) => {
           const closeBtn = document.createElement('button');
           closeBtn.type = 'button';
           closeBtn.setAttribute('aria-label', `Quitar ${p.label}`);
-          closeBtn.className = 'hover:bg-primary/20 rounded p-0.5 ml-0.5 text-text-muted hover:text-text-primary transition-colors flex items-center justify-center cursor-pointer';
-          closeBtn.innerHTML = '<span class="material-symbols-outlined text-[14px]">close</span>';
+          closeBtn.className = 'w-6 h-6 rounded-full text-text-muted hover:text-text-primary hover:bg-bg-card transition-colors flex items-center justify-center cursor-pointer';
+          closeBtn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>';
           closeBtn.addEventListener('click', (e) => {
             e.preventDefault();
             p.onRemove();
@@ -594,39 +505,25 @@ const catalogIndex = grupos.map((g) => {
     };
 
     const updateUI = (visibleCount: number): void => {
-      // 1. Tipo Buttons Styling
+      // 1. Tipo
       tipoBtns.forEach((btn) => {
         const btnTipo = btn.getAttribute('data-tipo-btn') || '';
-        const isActive = (btnTipo === 'Todos' && !state.tipo) ||
-                         (btnTipo !== 'Todos' && state.tipo && norm(state.tipo) === norm(btnTipo));
-        const countPill = btn.querySelector('.tipo-count-pill');
-
-        if (isActive) {
-          btn.className = 'tipo-filter-btn inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-semibold transition-all border cursor-pointer select-none bg-gradient-to-r from-primary to-primary-dark text-white border-primary shadow-glow-sm focus-visible:outline-2 focus-visible:outline-primary';
-          if (countPill) countPill.className = 'tipo-count-pill text-[11px] px-1.5 py-0.2 rounded-full font-bold bg-white/20 text-white';
-        } else {
-          btn.className = 'tipo-filter-btn inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs sm:text-sm font-semibold transition-all border cursor-pointer select-none bg-bg-raised text-text-secondary border-border-default hover:border-primary/40 hover:text-text-primary hover:bg-bg-hover focus-visible:outline-2 focus-visible:outline-primary';
-          if (countPill) countPill.className = 'tipo-count-pill text-[11px] px-1.5 py-0.2 rounded-full font-bold bg-bg-hover text-text-muted border border-border-subtle';
-        }
+        const isActive = Boolean((btnTipo === 'Todos' && !state.tipo) ||
+                         (btnTipo !== 'Todos' && state.tipo && norm(state.tipo) === norm(btnTipo)));
+        btn.classList.toggle('is-active', isActive);
+        btn.setAttribute('aria-pressed', String(isActive));
       });
 
-      // 2. Branch Quick Chips Styling
+      // 2. Ramas
       branchBtns.forEach((btn) => {
         const btnBranch = btn.getAttribute('data-branch-btn') || '';
         const isActive = (btnBranch === 'todas' && !state.rama) ||
                          (btnBranch !== 'todas' && state.rama === btnBranch);
-        const countPill = btn.querySelector('.branch-count-pill');
-
-        if (isActive) {
-          btn.className = 'branch-filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all border cursor-pointer select-none bg-gradient-to-r from-primary to-primary-dark text-white border-primary shadow-glow-sm focus-visible:outline-2 focus-visible:outline-primary';
-          if (countPill) countPill.className = 'branch-count-pill text-[10px] px-1.5 py-0.2 rounded-full font-bold bg-white/20 text-white';
-        } else {
-          btn.className = 'branch-filter-btn inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition-all border cursor-pointer select-none bg-bg-raised text-text-secondary border-border-default hover:border-primary/40 hover:text-text-primary hover:bg-bg-hover focus-visible:outline-2 focus-visible:outline-primary';
-          if (countPill) countPill.className = 'branch-count-pill text-[10px] px-1.5 py-0.2 rounded-full font-bold bg-bg-hover text-text-muted border border-border-subtle';
-        }
+        btn.classList.toggle('is-active', isActive);
+        btn.setAttribute('aria-pressed', String(isActive));
       });
 
-      // 3. Carrera Select Selection
+      // 3. Carrera
       if (select) {
         if (!state.carrera) {
           select.selectedIndex = 0;
@@ -640,20 +537,14 @@ const catalogIndex = grupos.map((g) => {
             }
           }
         }
+        select.classList.toggle('chip-select-on', Boolean(state.carrera));
       }
 
-      // 4. Foto Button Styling
+      // 4. Fotografía
       const fotoBtn = document.getElementById('foto-filter-btn') as HTMLButtonElement | null;
       if (fotoBtn) {
         fotoBtn.setAttribute('aria-pressed', state.foto ? 'true' : 'false');
-        const countPill = fotoBtn.querySelector('.foto-count-pill');
-        if (state.foto) {
-          fotoBtn.className = 'inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all border cursor-pointer select-none bg-gradient-to-r from-primary to-primary-dark text-white border-primary shadow-glow-sm focus-visible:outline-2 focus-visible:outline-primary';
-          if (countPill) countPill.className = 'foto-count-pill text-[10px] px-1.5 py-0.2 rounded-full font-bold bg-white/20 text-white';
-        } else {
-          fotoBtn.className = 'inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all border cursor-pointer select-none bg-bg-raised text-text-secondary border-border-default hover:border-primary/40 hover:text-text-primary hover:bg-bg-hover focus-visible:outline-2 focus-visible:outline-primary shadow-sm';
-          if (countPill) countPill.className = 'foto-count-pill text-[10px] px-1.5 py-0.2 rounded-full font-bold bg-bg-hover text-text-muted border border-border-subtle';
-        }
+        fotoBtn.classList.toggle('is-active', state.foto);
       }
 
       // 5. Live Counter
@@ -752,6 +643,14 @@ const catalogIndex = grupos.map((g) => {
           if (card) fragment.appendChild(card);
         }
         gridEl.appendChild(fragment);
+      }
+
+      // Transición suave del resultado cuando el usuario cambia un filtro
+      if (syncUrl && gridEl && document.documentElement.classList.contains('motion') && typeof gridEl.animate === 'function') {
+        gridEl.animate(
+          [{ opacity: 0.35, transform: 'translateY(10px)' }, { opacity: 1, transform: 'none' }],
+          { duration: 420, easing: 'cubic-bezier(0.16, 1, 0.3, 1)' }
+        );
       }
 
       if (syncUrl) {

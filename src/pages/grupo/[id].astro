@@ -17,7 +17,7 @@ const grupo = id ? await fetchApprovedGrupoById(id) : null;
 if (!grupo) {
   Astro.response.status = 404;
   return new Response(
-    `<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><title>Grupo no encontrado</title></head><body style="font-family:system-ui;background:#0f1115;color:#e6e8ee;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0"><main style="text-align:center;max-width:480px;padding:24px"><h1>El grupo no existe o está pendiente de aprobación</h1><p><a href="/" style="color:#7aa2ff">Volver al catálogo</a></p></main></body></html>`,
+    `<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex, nofollow"><title>Grupo no encontrado</title></head><body style="font-family:system-ui,sans-serif;background:#f3f1ea;color:#151714;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0"><main style="max-width:520px;padding:24px"><p style="font:12px ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#6b7065">Error 404</p><h1 style="font-size:40px;line-height:1.05;letter-spacing:-.03em;font-weight:500;margin:12px 0 16px">Este grupo no existe o está pendiente de aprobación.</h1><p><a href="/" style="color:#151714">← Volver al catálogo</a></p></main></body></html>`,
     { status: 404, headers: { 'Content-Type': 'text/html; charset=utf-8', 'X-Robots-Tag': 'noindex, nofollow' } }
   );
 }
@@ -26,7 +26,7 @@ if (!grupo) {
 // texto libre histórico ("Instagram", "Página web", ...) que generaba href rotos.
 const webUrl = normalizeUrl(grupo.redes);
 
-// SEO: canonical + JSON-LD del grupo (solo si existe).
+// SEO: canonical + JSON-LD del grupo.
 const siteUrl = (Astro.site?.origin ?? 'https://semilleros.nikko.dev').replace(/\/+$/, '');
 const grupoCanonical = `${siteUrl}/grupo/${encodeURIComponent(grupo.id)}`;
 const grupoJsonLd = JSON.stringify({
@@ -39,238 +39,164 @@ const grupoJsonLd = JSON.stringify({
   email: grupo.email || undefined,
 }).replace(/</g, '\\u003c');
 
-const tipoColors: Record<string, string> = {
-  'Semillero': 'bg-accent/10 text-accent-light border-accent/20',
-  'Grupo de Investigación': 'bg-primary/10 text-primary-light border-primary/20',
-  'Grupo Estudiantil': 'bg-neon/10 text-neon-light dark:text-neon border-neon/20'
-};
-
 const normTipo = (s: string) =>
   (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-const tipoKey = Object.keys(tipoColors).find(k => normTipo(k) === normTipo(grupo.tipo));
-const tipoBadge = (tipoKey && tipoColors[tipoKey]) || tipoColors['Semillero'];
+const nt = normTipo(grupo.tipo);
+const tipoDot = nt.includes('semillero') ? 'bg-accent' : nt.includes('estudiantil') ? 'bg-neon' : 'bg-primary-light';
+const tipoParam = nt.includes('semillero') ? 'Semillero' : nt.includes('estudiantil') ? 'Grupo Estudiantil' : 'Grupo de Investigación';
+
+const modalidadHorario = [grupo.modalidad, grupo.horarios].filter(Boolean).join(' · ');
+
+const secciones = [
+  { label: 'Enfoque', value: grupo.enfoque },
+  { label: 'Actividades', value: grupo.actividades },
+  { label: 'Modalidad y horarios', value: modalidadHorario },
+  { label: 'Requisitos de ingreso', value: grupo.requisitos },
+  { label: 'Nivel recomendado', value: grupo.nivel_academico },
+  { label: 'Vinculación', value: grupo.vinculacion },
+  { label: 'Comentarios', value: grupo.comentarios },
+].filter((s) => s.value && String(s.value).trim());
+
+const responsable = grupo.lider || grupo.docente || '';
+const rolResponsable = grupo.lider ? 'Líder o representante' : 'Docente a cargo';
 ---
 
-<Layout title={`${grupo.nombre} | Facultad de Ingeniería UNAL`} description={grupo.descripcion || ''} activePage="grupos" hideFooter={false} ogType="article">
+<Layout title={`${grupo.nombre} | Facultad de Ingeniería UNAL`} description={grupo.descripcion || ''} activePage="grupos" ogType="article">
   <Fragment slot="head">
     <script is:inline type="application/ld+json" set:html={grupoJsonLd} />
   </Fragment>
-  <main class="min-h-screen py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-    <!-- Back Button -->
-    <div class="mb-8">
-      <a href="/" class="inline-flex items-center gap-2 text-text-secondary hover:text-primary-light transition-colors">
-        <span class="material-symbols-outlined">arrow_back</span>
-        <span>Volver a grupos</span>
-      </a>
-    </div>
 
-    <!-- Header -->
-    <header class="mb-12">
-      <div class="flex items-center gap-2 mb-4">
-        <span class="h-1 w-12 bg-gradient-to-r from-primary to-accent rounded-full"></span>
-        <span class="text-text-muted text-xs font-semibold uppercase tracking-widest">Detalle del Grupo</span>
+  <article class="max-w-7xl mx-auto px-5 sm:px-8 pt-10 sm:pt-14 pb-24">
+    <!-- Migas de pan -->
+    <nav aria-label="Migas de pan" class="mb-12 sm:mb-16" data-reveal="fade">
+      <ol class="flex flex-wrap items-center gap-2 kicker list-none p-0 m-0">
+        <li><a href="/" class="hover:text-text-primary transition-colors">Inicio</a></li>
+        <li aria-hidden="true">/</li>
+        <li><a href={`/?tipo=${encodeURIComponent(tipoParam)}#catalogo`} class="hover:text-text-primary transition-colors">{grupo.tipo}</a></li>
+        <li aria-hidden="true">/</li>
+        <li class="text-text-primary truncate max-w-[16rem] sm:max-w-md" aria-current="page">{grupo.nombre}</li>
+      </ol>
+    </nav>
+
+    <!-- Encabezado -->
+    <header class="max-w-5xl">
+      <div class="flex flex-wrap items-center gap-x-5 gap-y-2 mb-7" data-reveal="fade">
+        <span class="inline-flex items-center gap-2 font-mono text-[12px] tracking-[0.06em] uppercase text-text-primary">
+          <span class={`w-2 h-2 rounded-full ${tipoDot}`} aria-hidden="true"></span>
+          {grupo.tipo}
+        </span>
+        {grupo.carreras?.map((carrera) => (
+          <span class="font-mono text-[12px] tracking-[0.04em] uppercase text-text-muted">{carrera}</span>
+        ))}
       </div>
-      
-      {grupo.imagen_url && (
-        <div class="mb-8 overflow-hidden rounded-2xl border border-border-subtle bg-bg-hover">
-          <img
-            src={grupo.imagen_url}
-            alt={`Imagen de ${grupo.nombre}`}
-            loading="eager"
-            decoding="async"
-            onerror="this.style.display='none'"
-            class="w-full max-h-[28rem] object-cover"
-          />
-        </div>
+
+      <h1 class="detail-title text-text-primary" style="view-transition-name: vt-title">
+        {grupo.nombre}
+      </h1>
+
+      {grupo.descripcion && (
+        <p class="mt-8 text-[1.2rem] sm:text-[1.4rem] leading-[1.45] tracking-[-0.012em] text-text-secondary max-w-3xl" data-reveal style="--d: 150ms">
+          {grupo.descripcion}
+        </p>
       )}
-
-      <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
-        <div class="flex-1">
-          <div class="flex items-center gap-2 mb-4 flex-wrap">
-            <span class={`px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider border ${tipoBadge}`}>
-              {grupo.tipo}
-            </span>
-            {grupo.carreras?.map(carrera => (
-              <span title={carrera} class="px-3 py-1 rounded-lg bg-bg-hover text-text-secondary text-[10px] font-medium border border-border-subtle">
-                {carrera}
-              </span>
-            ))}
-          </div>
-          
-          <h1 class="text-3xl sm:text-4xl md:text-display-lg font-extrabold text-text-primary mb-4">
-            {grupo.nombre}
-          </h1>
-          
-          <p class="text-text-secondary text-lg max-w-3xl leading-relaxed">
-            {grupo.descripcion || 'Sin descripcion disponible.'}
-          </p>
-        </div>
-        
-        <!-- Quick Actions -->
-        <div class="flex flex-wrap items-center gap-3">
-          {grupo.email && (
-            <div class="flex items-center gap-2 pl-4 pr-2 py-2 rounded-xl border border-border-default bg-bg-hover max-w-full">
-              <span class="material-symbols-outlined text-primary-light">email</span>
-              <a href={`mailto:${grupo.email}`} class="text-text-primary text-sm font-medium hover:text-primary-light hover:underline break-all">
-                {grupo.email}
-              </a>
-              <button
-                type="button"
-                data-copy-email={grupo.email}
-                class="shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-primary/10 text-primary-light text-sm font-semibold hover:bg-primary/20 transition-all focus-visible:outline-2 focus-visible:outline-primary cursor-pointer"
-              >
-                <span class="material-symbols-outlined text-base">content_copy</span>
-                <span data-copy-label>Copiar</span>
-              </button>
-            </div>
-          )}
-          {webUrl && (
-            <a 
-              href={webUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="px-6 py-3 rounded-xl border border-border-default text-text-secondary hover:bg-bg-hover transition-all flex items-center gap-2"
-            >
-              <span class="material-symbols-outlined">public</span>
-              Web / red social
-            </a>
-          )}
-        </div>
-      </div>
     </header>
 
-    <!-- Details Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
-      <!-- Enfoque -->
-      {grupo.enfoque && (
-        <div class="card rounded-2xl p-6">
-          <div class="flex items-center gap-2 mb-4">
-            <span class="material-symbols-outlined text-primary-light">center_focus_strong</span>
-            <h3 class="text-lg font-bold text-primary-light">Enfoque</h3>
-          </div>
-          <p class="text-text-secondary leading-relaxed">
-            {grupo.enfoque}
-          </p>
+    {grupo.imagen_url && (
+      <figure class="mt-14 sm:mt-20 m-0" data-reveal="clip">
+        <div class="relative overflow-hidden rounded-3xl bg-bg-hover aspect-[16/9] sm:aspect-[21/9]" style="view-transition-name: vt-image">
+          <img
+            src={grupo.imagen_url}
+            alt={`Fotografía de ${grupo.nombre}`}
+            loading="eager"
+            decoding="async"
+            onerror="this.closest('figure').style.display='none'"
+            class="absolute inset-0 w-full h-full object-cover"
+          />
         </div>
-      )}
+      </figure>
+    )}
 
-      <!-- Modalidad y Horarios -->
-      {(grupo.modalidad || grupo.horarios) && (
-      <div class="card rounded-2xl p-6">
-        <div class="flex items-center gap-2 mb-4">
-          <span class="material-symbols-outlined text-accent-light">schedule</span>
-          <h3 class="text-lg font-bold text-accent-light">Modalidad y Horarios</h3>
-        </div>
-        <div class="space-y-3">
-          {grupo.modalidad && (
-            <div class="flex items-center gap-2">
-              <span class="material-symbols-outlined text-text-muted text-base">laptop_mac</span>
-              <span class="text-text-secondary">{grupo.modalidad}</span>
-            </div>
-          )}
-          {grupo.horarios && (
-            <div class="flex items-center gap-2">
-              <span class="material-symbols-outlined text-text-muted text-base">event</span>
-              <span class="text-text-secondary">{grupo.horarios}</span>
-            </div>
-          )}
-        </div>
-      </div>
-      )}
-
-      <!-- Actividades -->
-      {grupo.actividades && (
-        <div class="card rounded-2xl p-6">
-          <div class="flex items-center gap-2 mb-4">
-            <span class="material-symbols-outlined text-neon">science</span>
-            <h3 class="text-lg font-bold text-neon">Actividades</h3>
-          </div>
-          <p class="text-text-secondary leading-relaxed">
-            {grupo.actividades}
-          </p>
-        </div>
-      )}
-
-      <!-- Requisitos -->
-      {grupo.requisitos && (
-        <div class="card rounded-2xl p-6">
-          <div class="flex items-center gap-2 mb-4">
-            <span class="material-symbols-outlined text-error">rule</span>
-            <h3 class="text-lg font-bold text-error">Requisitos</h3>
-          </div>
-          <p class="text-text-secondary leading-relaxed">
-            {grupo.requisitos}
-          </p>
-        </div>
-      )}
-
-      <!-- Nivel Academico -->
-      {grupo.nivel_academico && (
-        <div class="card rounded-2xl p-6">
-          <div class="flex items-center gap-2 mb-4">
-            <span class="material-symbols-outlined text-accent-light">school</span>
-            <h3 class="text-lg font-bold text-accent-light">Nivel Recomendado</h3>
-          </div>
-          <p class="text-text-secondary">
-            {grupo.nivel_academico}
-          </p>
-        </div>
-      )}
-
-      <!-- Ubicacion -->
-      {grupo.vinculacion && (
-        <div class="card rounded-2xl p-6">
-          <div class="flex items-center gap-2 mb-4">
-            <span class="material-symbols-outlined text-primary-light">location_on</span>
-            <h3 class="text-lg font-bold text-primary-light">Vinculacion</h3>
-          </div>
-          <p class="text-text-secondary">
-            {grupo.vinculacion}
-          </p>
-        </div>
-      )}
-    </div>
-
-    <!-- Lider -->
-    <div class="card rounded-2xl p-6 bg-bg-raised">
-      <div class="flex flex-col md:flex-row items-center gap-6">
-        <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shrink-0 shadow-glow-sm">
-          <span class="material-symbols-outlined text-white text-3xl">person</span>
-        </div>
-        <div class="flex-1 text-center md:text-left">
-          <h3 class="text-text-primary font-semibold text-xl mb-1">
-            {grupo.lider || grupo.docente || 'Lider del grupo'}
-          </h3>
-          <span class="text-primary-light text-xs font-semibold uppercase tracking-wider">
-            {grupo.lider ? 'Lider / Representante' : 'Docente a cargo'}
-          </span>
-          {grupo.docente && grupo.lider && (
-            <p class="text-text-secondary text-sm mt-2">Docente: {grupo.docente}</p>
-          )}
-        </div>
-        {grupo.email && (
-          <div class="flex items-center gap-2 pl-4 pr-2 py-2 rounded-xl border border-border-default bg-bg-hover max-w-full">
-            <span class="material-symbols-outlined text-primary-light">email</span>
-            <a href={`mailto:${grupo.email}`} class="text-text-primary text-sm font-medium hover:text-primary-light hover:underline break-all">
-              {grupo.email}
-            </a>
-            <button
-              type="button"
-              data-copy-email={grupo.email}
-              class="shrink-0 inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-primary/10 text-primary-light text-sm font-semibold hover:bg-primary/20 transition-all focus-visible:outline-2 focus-visible:outline-primary cursor-pointer"
-            >
-              <span class="material-symbols-outlined text-base">content_copy</span>
-              <span data-copy-label>Copiar</span>
-            </button>
-          </div>
+    <!-- Cuerpo -->
+    <div class="mt-16 sm:mt-24 grid grid-cols-1 lg:grid-cols-12 gap-14 lg:gap-10">
+      <div class="lg:col-span-8">
+        {secciones.length > 0 ? (
+          <dl class="m-0 border-t border-text-primary/80">
+            {secciones.map((s, i) => (
+              <div class="grid grid-cols-1 sm:grid-cols-[13rem,1fr] gap-2 sm:gap-8 py-7 border-b border-border-default" data-reveal style={`--d: ${Math.min(i, 3) * 60}ms`}>
+                <dt class="kicker pt-1">{s.label}</dt>
+                <dd class="m-0 text-[1.05rem] leading-[1.65] text-text-primary whitespace-pre-line">{s.value}</dd>
+              </div>
+            ))}
+          </dl>
+        ) : (
+          <p class="text-text-secondary">Este grupo aún no ha publicado más información. Escríbele directamente para conocer sus actividades.</p>
         )}
       </div>
+
+      <!-- Contacto -->
+      <aside class="lg:col-span-4" aria-label="Contacto del grupo">
+        <div class="lg:sticky lg:top-24 rounded-3xl bg-bg-card border border-border-default p-6 sm:p-7" data-reveal style="--d: 120ms">
+          <p class="kicker mb-5">Contacto</p>
+
+          {responsable && (
+            <div class="mb-6">
+              <p class="text-[1.35rem] leading-tight font-medium tracking-[-0.025em] text-text-primary">{responsable}</p>
+              <p class="text-sm text-text-muted mt-1">{rolResponsable}</p>
+              {grupo.docente && grupo.lider && (
+                <p class="text-sm text-text-secondary mt-3">Docente: <span class="text-text-primary">{grupo.docente}</span></p>
+              )}
+            </div>
+          )}
+
+          {grupo.email && (
+            <div class="space-y-3">
+              <a href={`mailto:${grupo.email}`} class="btn-ink w-full h-12 text-[15px]">
+                Escribir al grupo <span aria-hidden="true">→</span>
+              </a>
+              <div class="flex items-center gap-2 rounded-full border border-border-default pl-4 pr-1.5 h-12">
+                <span class="flex-1 min-w-0 truncate font-mono text-[12.5px] text-text-secondary" title={grupo.email}>{grupo.email}</span>
+                <button
+                  type="button"
+                  data-copy-email={grupo.email}
+                  class="shrink-0 inline-flex items-center gap-1.5 h-9 px-3.5 rounded-full bg-bg-hover text-text-primary text-[13px] hover:bg-text-primary hover:text-bg transition-colors"
+                >
+                  <span class="material-symbols-outlined text-[16px]">content_copy</span>
+                  <span data-copy-label>Copiar</span>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {webUrl && (
+            <a href={webUrl} target="_blank" rel="noopener noreferrer" class="btn-secondary w-full h-12 text-[15px] mt-3">
+              Web o red social <span aria-hidden="true">↗</span>
+            </a>
+          )}
+
+          {!grupo.email && !webUrl && (
+            <p class="text-sm text-text-secondary">Este grupo no ha publicado un canal de contacto.</p>
+          )}
+        </div>
+
+        <a href="/#catalogo" class="mt-6 inline-flex items-center gap-2 text-[15px] text-text-secondary hover:text-text-primary transition-colors">
+          <span aria-hidden="true">←</span> Volver al catálogo
+        </a>
+      </aside>
     </div>
-  </main>
+  </article>
 </Layout>
 
+<style>
+  .detail-title {
+    font-size: clamp(2.4rem, 6vw, 5.25rem);
+    line-height: 0.98;
+    letter-spacing: -0.05em;
+    font-weight: 500;
+  }
+</style>
+
 <script>
-  // Clipboard copy handler with navigator.clipboard (no deprecated execCommand)
+  // Copiar correo al portapapeles
   document.querySelectorAll<HTMLButtonElement>('[data-copy-email]').forEach((btn) => {
     btn.addEventListener('click', async () => {
       const email = btn.getAttribute('data-copy-email') || '';

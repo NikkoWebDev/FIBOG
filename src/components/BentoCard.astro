@@ -1,385 +1,140 @@
 ---
-// BentoCard.astro - Asymmetric Bento Grid card with verified WCAG AA contrast and direct CTAs
+// BentoCard.astro - Ficha editorial de un grupo. Toda la tarjeta es clicable (enlace estirado).
 import type { Grupo } from '../data/grupos.types';
+import { careerLabelShort } from '../data/grupos.types';
 
 interface Props {
   grupo: Grupo;
-  size?: 'small' | 'medium' | 'large' | 'wide';
   index?: number;
   featured?: boolean;
 }
 
-const { grupo, index = 0, featured } = Astro.props;
-const isFeatured = featured !== undefined ? featured : index === 0;
+const { grupo, index = 0, featured = false } = Astro.props;
+const isFeatured = featured && Boolean(grupo.imagen_url);
 
-// Text normalization helper
 const normText = (s: string) =>
   (s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
 
-// Type configuration with verified WCAG AAA/AA contrast tokens
-interface TipoConfig {
-  label: string;
-  badgeClass: string;
-  dotClass: string;
-  hoverBorder: string;
-}
-
-const tipoConfigs: Record<string, TipoConfig> = {
-  'semillero': {
-    label: 'Semillero',
-    badgeClass: 'bg-[#94B43B]/15 text-[#3D5613] dark:text-[#94B43B] border-[#94B43B]/30',
-    dotClass: 'bg-[#94B43B]',
-    hoverBorder: 'hover:border-[#94B43B]/60'
-  },
-  'grupo de investigacion': {
-    label: 'Grupo DIB',
-    badgeClass: 'bg-purple-500/15 text-purple-800 dark:text-purple-300 border-purple-500/30',
-    dotClass: 'bg-purple-500',
-    hoverBorder: 'hover:border-purple-400/60'
-  },
-  'grupo estudiantil': {
-    label: 'Grupo Estudiantil',
-    badgeClass: 'bg-amber-500/15 text-amber-900 dark:text-amber-300 border-amber-500/30',
-    dotClass: 'bg-amber-500',
-    hoverBorder: 'hover:border-amber-400/60'
-  }
+const tipoConfigs: Record<string, { label: string; dot: string }> = {
+  'semillero': { label: 'Semillero', dot: 'bg-accent' },
+  'grupo de investigacion': { label: 'Grupo de investigación', dot: 'bg-primary-light' },
+  'grupo estudiantil': { label: 'Grupo estudiantil', dot: 'bg-neon' },
 };
-
 const normT = normText(grupo.tipo);
-const tipoKey = Object.keys(tipoConfigs).find(k => normT.includes(k)) || 'semillero';
-const tipoConfig = tipoConfigs[tipoKey];
+const tipoKey = Object.keys(tipoConfigs).find((k) => normT.includes(k)) || 'semillero';
+const tipo = tipoConfigs[tipoKey];
 
-// Engineering branch detector for category filtering & chromatic accents
-interface BranchConfig {
-  key: string;
-  title: string;
-}
-
-const getBranchConfig = (g: Grupo): BranchConfig => {
-  const combined = [
-    ...(g.carreras || []),
-    g.nombre || '',
-    g.enfoque || '',
-    g.descripcion || ''
-  ].map(normText).join(' ');
-
-  if (/ciencia|natural|fisic|biol|molecular|geolog|astron|matemat|farmac|bioquim/i.test(combined)) {
-    return { key: 'ciencias', title: 'Ciencias Naturales y Exactas' };
-  }
-  if (/sistemas|computac|software|datos|inteligencia artificial|\bia\b|machine learning|algorit|ciberseg|computacional/i.test(combined)) {
-    return { key: 'sistemas', title: 'Sistemas e IA' };
-  }
-  if (/mecanic|mecatron|robot|aeroespac|automatiz|vehicul|manufactura|diseno mecan/i.test(combined)) {
-    return { key: 'mecanica', title: 'Mecánica y Mecatrónica' };
-  }
-  if (/electr|telecom|potencia|senales|circuit|optica|alta tension/i.test(combined)) {
-    return { key: 'electrica', title: 'Eléctrica y Electrónica' };
-  }
-  if (/quimic|ambient|alimento|bioproces|material|termodin|sostenib|biotec|polimer/i.test(combined)) {
-    return { key: 'quimica', title: 'Química y Ambiental' };
-  }
-  if (/civil|agricol|estruct|geotec|hidraul|suelo|vias|transp|construc|topograf/i.test(combined)) {
-    return { key: 'civil', title: 'Civil y Agrícola' };
-  }
-  return { key: 'multidisciplinar', title: 'Facultad de Ingeniería y Afines' };
+// Rama: la usa FilterBar (data-branch) para el filtro rápido.
+const branchOf = (g: Grupo): string => {
+  const combined = [...(g.carreras || []), g.nombre || '', g.enfoque || '', g.descripcion || ''].map(normText).join(' ');
+  if (/ciencia|natural|fisic|biol|molecular|geolog|astron|matemat|farmac|bioquim/.test(combined)) return 'ciencias';
+  if (/sistemas|computac|software|datos|inteligencia artificial|\bia\b|machine learning|algorit|ciberseg/.test(combined)) return 'sistemas';
+  if (/mecanic|mecatron|robot|aeroespac|automatiz|vehicul|manufactura/.test(combined)) return 'mecanica';
+  if (/electr|telecom|potencia|senales|circuit|optica|alta tension/.test(combined)) return 'electrica';
+  if (/quimic|ambient|alimento|bioproces|material|termodin|sostenib|biotec|polimer/.test(combined)) return 'quimica';
+  if (/civil|agricol|estruct|geotec|hidraul|suelo|vias|transp|construc|topograf/.test(combined)) return 'civil';
+  return 'multidisciplinar';
 };
+const branch = branchOf(grupo);
 
-const branch = getBranchConfig(grupo);
+const carreras = grupo.carreras || [];
+const area = carreras.length > 0
+  ? careerLabelShort(carreras[0]) + (carreras.length > 1 ? ` +${carreras.length - 1}` : '')
+  : (grupo.carrera_str || 'Ingeniería y Afines');
 
-// Chromatic accents by engineering & sciences branch:
-// - Ciencias Naturales: acento esmeralda/zafiro científico
-// - Sistemas e IA: acento cian sutil
-// - Mecánica y Mecatrónica: acento ámbar
-// - Eléctrica y Electrónica: acento teal
-// - Química y Ambiental: acento púrpura
-// - Civil y Agrícola: acento esmeralda
-// - Multidisciplinar / Facultad: acento verde lima institucional
-interface BranchTheme {
-  borderTop: string;
-  glowGradient: string;
-  accentBorder: string;
-  cardGlow: string;
-  dotColor: string;
-}
+const descripcion = grupo.descripcion || grupo.enfoque || '';
+const responsable = grupo.docente || grupo.lider || '';
+const labelResponsable = grupo.docente ? 'Docente' : 'Líder';
+const modalidad = grupo.modalidad || '';
+const convocatoriaAbierta = Boolean(grupo.vinculacion && /abiert|convocatori|vigente/i.test(grupo.vinculacion));
 
-const branchThemes: Record<string, BranchTheme> = {
-  ciencias: {
-    borderTop: 'border-t-2 border-t-emerald-500/70 dark:border-t-emerald-400/70',
-    glowGradient: 'from-emerald-500/12 via-teal-500/5 to-transparent',
-    accentBorder: 'border-emerald-500/40 dark:border-emerald-400/40 hover:border-emerald-500/80 dark:hover:border-emerald-400/80',
-    cardGlow: 'shadow-emerald-500/10 hover:shadow-emerald-500/25 ring-1 ring-emerald-500/20 dark:ring-emerald-400/30',
-    dotColor: 'bg-emerald-400'
-  },
-  sistemas: {
-    borderTop: 'border-t-2 border-t-cyan-500/60 dark:border-t-cyan-400/60',
-    glowGradient: 'from-cyan-500/10 via-cyan-500/5 to-transparent',
-    accentBorder: 'border-cyan-500/40 dark:border-cyan-400/40 hover:border-cyan-500/80 dark:hover:border-cyan-400/80',
-    cardGlow: 'shadow-cyan-500/10 hover:shadow-cyan-500/25 ring-1 ring-cyan-500/20 dark:ring-cyan-400/30',
-    dotColor: 'bg-cyan-400'
-  },
-  mecanica: {
-    borderTop: 'border-t-2 border-t-amber-500/60 dark:border-t-amber-400/60',
-    glowGradient: 'from-amber-500/10 via-amber-500/5 to-transparent',
-    accentBorder: 'border-amber-500/40 dark:border-amber-400/40 hover:border-amber-500/80 dark:hover:border-amber-400/80',
-    cardGlow: 'shadow-amber-500/10 hover:shadow-amber-500/25 ring-1 ring-amber-500/20 dark:ring-amber-400/30',
-    dotColor: 'bg-amber-400'
-  },
-  electrica: {
-    borderTop: 'border-t-2 border-t-teal-500/60 dark:border-t-teal-400/60',
-    glowGradient: 'from-teal-500/10 via-teal-500/5 to-transparent',
-    accentBorder: 'border-teal-500/40 dark:border-teal-400/40 hover:border-teal-500/80 dark:hover:border-teal-400/80',
-    cardGlow: 'shadow-teal-500/10 hover:shadow-teal-500/25 ring-1 ring-teal-500/20 dark:ring-teal-400/30',
-    dotColor: 'bg-teal-400'
-  },
-  quimica: {
-    borderTop: 'border-t-2 border-t-purple-500/60 dark:border-t-purple-400/60',
-    glowGradient: 'from-purple-500/10 via-purple-500/5 to-transparent',
-    accentBorder: 'border-purple-500/40 dark:border-purple-400/40 hover:border-purple-500/80 dark:hover:border-purple-400/80',
-    cardGlow: 'shadow-purple-500/10 hover:shadow-purple-500/25 ring-1 ring-purple-500/20 dark:ring-purple-400/30',
-    dotColor: 'bg-purple-400'
-  },
-  civil: {
-    borderTop: 'border-t-2 border-t-emerald-600/60 dark:border-t-emerald-500/60',
-    glowGradient: 'from-emerald-500/10 via-emerald-500/5 to-transparent',
-    accentBorder: 'border-emerald-600/40 dark:border-emerald-500/40 hover:border-emerald-600/80 dark:hover:border-emerald-500/80',
-    cardGlow: 'shadow-emerald-600/10 hover:shadow-emerald-600/25 ring-1 ring-emerald-600/20 dark:ring-emerald-500/30',
-    dotColor: 'bg-emerald-400'
-  },
-  multidisciplinar: {
-    borderTop: 'border-t-2 border-t-[#94B43B]/60 dark:border-t-[#94B43B]/60',
-    glowGradient: 'from-[#94B43B]/10 via-[#94B43B]/5 to-transparent',
-    accentBorder: 'border-[#94B43B]/40 dark:border-[#94B43B]/40 hover:border-[#94B43B]/80 dark:hover:border-[#94B43B]/80',
-    cardGlow: 'shadow-[#94B43B]/10 hover:shadow-[#94B43B]/25 ring-1 ring-[#94B43B]/20 dark:ring-[#94B43B]/30',
-    dotColor: 'bg-[#94B43B]'
-  }
-};
-
-const branchTheme = branchThemes[branch.key] || branchThemes.multidisciplinar;
-
-// Detect specific science discipline to highlight with pride
-const findScienceDiscipline = (g: Grupo): string => {
-  const combined = [
-    ...(g.carreras || []),
-    g.carrera_str || '',
-    g.nombre || '',
-    g.enfoque || ''
-  ].join(' ');
-  if (/geolog/i.test(combined)) return 'Geología y Geociencias';
-  if (/farmac|farmaceut/i.test(combined)) return 'Ciencias Farmacéuticas';
-  if (/bioquim/i.test(combined)) return 'Bioquímica';
-  if (/biol|microbiol|molecular/i.test(combined)) return 'Ciencias Biológicas';
-  if (/fisic|astron/i.test(combined)) return 'Física y Astronomía';
-  if (/matemat|estadist/i.test(combined)) return 'Matemáticas y Estadística';
-  return 'Ciencias Naturales y Exactas';
-};
-
-// Metadata resolution: highlight specific sciences or main career
-const carreraPrincipal = branch.key === 'ciencias'
-  ? findScienceDiscipline(grupo)
-  : ((grupo.carreras && grupo.carreras.length > 0)
-      ? grupo.carreras[0]
-      : (grupo.carrera_str || branch.title));
-
-const hasConvocatoria = isFeatured || (grupo.vinculacion && /abiert|convocator|vigente|semestral/i.test(grupo.vinculacion));
-
-const descripcion = grupo.descripcion || grupo.enfoque || 'Iniciativa enfocada en el desarrollo formativo y técnico de la Facultad de Ingeniería.';
-const enfoque = grupo.enfoque || (grupo.actividades ? grupo.actividades.slice(0, 90) + '...' : 'Investigación formativa e innovación aplicada');
-const tutorLider = grupo.docente || grupo.lider || 'Facultad de Ingeniería';
-const labelTutor = grupo.docente ? 'Docente a cargo' : (grupo.lider ? 'Líder estudiantil' : 'Coordinación');
-const modalidadText = grupo.modalidad || 'Presencial';
-const horarioText = grupo.horarios || 'Horario a convenir';
-
-const carrerasList = (grupo.carreras && grupo.carreras.length > 0)
-  ? (grupo.carreras.length > 2 ? `${grupo.carreras.slice(0, 2).join(', ')}...` : grupo.carreras.join(', '))
-  : 'Ingeniería y Afines';
-
-const searchAttr = normText(`${grupo.nombre} ${grupo.tipo} ${carreraPrincipal} ${(grupo.carreras || []).join(' ')} ${grupo.docente || ''} ${grupo.lider || ''} ${enfoque} ${descripcion}`);
+const searchAttr = normText(`${grupo.nombre} ${grupo.tipo} ${carreras.join(' ')} ${grupo.docente || ''} ${grupo.lider || ''} ${grupo.enfoque || ''} ${descripcion}`);
+const href = `/grupo/${grupo.id}`;
+const delay = `${(index % 3) * 90}ms`;
 ---
 
 <article
   class:list={[
-    "bento-cell bento-card rounded-3xl bg-white dark:bg-[#111827] flex flex-col justify-between shadow-lg relative overflow-hidden group transition-all",
-    branchTheme.borderTop,
-    grupo.imagen_url
-      ? `border ${branchTheme.accentBorder} ${branchTheme.cardGlow}`
-      : [
-          "border border-border-default/60 dark:border-white/10 hover:shadow-xl",
-          isFeatured ? "hover:border-[#94B43B]/60" : tipoConfig.hoverBorder
-        ],
-    isFeatured ? "lg:col-span-2 p-7 sm:p-8" : "p-7"
+    'bento-cell bento-card group relative flex rounded-2xl bg-bg-card border border-border-default hover:border-text-primary/25 hover:shadow-card-hover transition-[border-color,box-shadow] duration-500',
+    isFeatured ? 'md:col-span-2 flex-col sm:flex-row' : 'flex-col',
   ]}
+  data-vt-card
   data-type={grupo.tipo}
-  data-carreras={(grupo.carreras || []).join(',')}
+  data-carreras={carreras.join(',')}
   data-search={searchAttr}
-  data-branch={branch.key}
+  data-branch={branch}
   data-index={index}
-  data-has-image={grupo.imagen_url ? "true" : "false"}
+  data-has-image={grupo.imagen_url ? 'true' : 'false'}
+  data-reveal
+  style={`--d: ${delay}`}
 >
-  <!-- Subtle discipline ambient gradient at the top -->
-  <div
-    class:list={[
-      "absolute top-0 inset-x-0 bg-gradient-to-b pointer-events-none transition-opacity duration-300",
-      grupo.imagen_url
-        ? "h-36 opacity-35 dark:opacity-25 group-hover:opacity-70 dark:group-hover:opacity-45"
-        : "h-28 opacity-40 dark:opacity-25 group-hover:opacity-75 dark:group-hover:opacity-45",
-      branchTheme.glowGradient
-    ]}
-    aria-hidden="true"
-  ></div>
+  {grupo.imagen_url && (
+    <div
+      class:list={[
+        'card-media relative overflow-hidden bg-bg-hover shrink-0',
+        isFeatured ? 'sm:w-[55%] aspect-[4/3] sm:aspect-auto sm:min-h-[22rem] rounded-t-2xl sm:rounded-tr-none sm:rounded-l-2xl' : 'aspect-[16/10] rounded-t-2xl',
+      ]}
+      data-vt-image
+    >
+      <img
+        src={grupo.imagen_url}
+        alt=""
+        loading={index < 3 ? 'eager' : 'lazy'}
+        decoding="async"
+        width="800"
+        height="600"
+        class="absolute inset-0 w-full h-full object-cover"
+        onerror="this.closest('.card-media').style.display='none'"
+      />
+    </div>
+  )}
 
-  <div class="space-y-4 relative z-10">
-    <!-- Visual Image Header (if grupo has imagen_url) -->
-    {grupo.imagen_url && (
-      <a
-        href={`/grupo/${grupo.id}`}
-        class:list={[
-          "block relative w-full overflow-hidden rounded-2xl bg-slate-900/10 dark:bg-slate-800/60 border border-white/10 shadow-md group/img focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#94B43B] transition-all duration-300",
-          isFeatured ? "h-48 sm:h-56" : "h-44"
-        ]}
-        tabindex="-1"
-        aria-hidden="true"
-      >
-        <img
-          src={grupo.imagen_url}
-          alt={`Fotografía oficial de ${grupo.nombre}`}
-          loading="lazy"
-          width="640"
-          height={isFeatured ? 224 : 176}
-          class:list={[
-            "w-full object-cover rounded-2xl border border-white/10 shadow-md group-hover:scale-[1.02] transition-transform duration-500 ease-out",
-            isFeatured ? "h-48 sm:h-56" : "h-44"
-          ]}
-        />
-        <!-- Atmospheric bottom vignette gradient -->
-        <div class="absolute inset-0 bg-gradient-to-t from-black/65 via-black/20 to-transparent pointer-events-none"></div>
-
-        <!-- Floating Badge: micro-dot pulsante + Iniciativa Destacada -->
-        <div class="absolute top-3 left-3 z-10">
-          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold tracking-wide text-white bg-slate-950/80 backdrop-blur-md border border-white/20 shadow-md">
-            <span class="relative flex h-2 w-2 shrink-0">
-              <span class={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-80 ${branchTheme.dotColor}`}></span>
-              <span class={`relative inline-flex rounded-full h-2 w-2 ${branchTheme.dotColor}`}></span>
-            </span>
-            <span>Iniciativa Destacada</span>
-          </span>
-        </div>
-
-        <!-- Micro interactive hint on hover: Fotografía oficial -->
-        <div class="absolute bottom-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold text-white/95 bg-black/65 backdrop-blur-sm border border-white/20 shadow-xs">
-            <span class="material-symbols-outlined text-sm">photo_camera</span>
-            <span>Fotografía oficial</span>
-          </span>
-        </div>
-      </a>
-    )}
-
-    <!-- Header: Type Badge, Dept/Branch, Open Call Indicator -->
-    <div class="flex items-center justify-between gap-3 flex-wrap">
-      <div class="flex items-center gap-2 flex-wrap">
-        <span class={`px-2.5 py-1 rounded-lg text-xs font-bold uppercase tracking-wider border ${tipoConfig.badgeClass} flex items-center gap-1.5 shadow-xs`}>
-          <span class="relative flex h-2 w-2 shrink-0">
-            <span class={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${tipoConfig.dotClass}`}></span>
-            <span class={`relative inline-flex rounded-full h-2 w-2 ${tipoConfig.dotClass}`}></span>
-          </span>
-          {tipoConfig.label}
-        </span>
-        <span class="text-xs text-text-secondary dark:text-slate-300 font-medium truncate max-w-[130px] sm:max-w-[200px]" title={carreraPrincipal}>
-          {carreraPrincipal}
-        </span>
-      </div>
-
-      {hasConvocatoria ? (
-        <span class="text-xs text-emerald-700 dark:text-emerald-300 font-semibold flex items-center gap-1.5 shrink-0 bg-emerald-500/10 dark:bg-emerald-500/20 px-2.5 py-1 rounded-lg border border-emerald-500/20">
-          <span class="relative flex h-2 w-2 shrink-0">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-          </span>
-          Convocatoria Abierta
-        </span>
-      ) : (
-        <span class="text-xs text-text-muted dark:text-slate-400 shrink-0 font-medium">
-          {modalidadText}
-        </span>
+  <div class:list={['flex flex-col flex-1 min-w-0', isFeatured ? 'p-6 sm:p-8' : 'p-6']}>
+    <div class="flex items-center justify-between gap-3 mb-5">
+      <span class="inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.06em] uppercase text-text-secondary">
+        <span class={`w-1.5 h-1.5 rounded-full ${tipo.dot}`} aria-hidden="true"></span>
+        {tipo.label}
+      </span>
+      {convocatoriaAbierta ? (
+        <span class="font-mono text-[11px] tracking-[0.04em] uppercase text-text-accent">Convocatoria abierta</span>
+      ) : modalidad && (
+        <span class="font-mono text-[11px] tracking-[0.04em] uppercase text-text-muted truncate">{modalidad}</span>
       )}
     </div>
 
-    <!-- Title and Description -->
-    <div class={isFeatured ? "max-w-2xl mt-2" : "mt-1.5"}>
-      <h3 class:list={[
-        isFeatured ? "text-2xl sm:text-3xl" : "text-xl sm:text-2xl",
-        "font-extrabold tracking-tight text-text-primary dark:text-[#E2E8F0] group-hover:text-[#4D6B18] dark:group-hover:text-[#94B43B] transition-colors leading-tight"
+    <h3 class:list={[
+      'font-medium tracking-[-0.025em] text-text-primary leading-[1.15]',
+      isFeatured ? 'text-[1.75rem] sm:text-[2.1rem]' : 'text-[1.3rem]',
+    ]}>
+      <a href={href} class="stretched focus-visible:outline-none">
+        <span class="card-title" data-vt-title>{grupo.nombre}</span>
+      </a>
+    </h3>
+
+    {descripcion && (
+      <p class:list={[
+        'text-text-secondary mt-3 leading-relaxed',
+        isFeatured ? 'text-[15px] line-clamp-4' : 'text-[14.5px] line-clamp-3',
       ]}>
-        <a href={`/grupo/${grupo.id}`} class="focus-visible:outline-none focus-visible:underline">
-          {grupo.nombre}
-        </a>
-      </h3>
-      <p class="text-text-secondary dark:text-slate-300 text-xs sm:text-sm mt-2.5 leading-relaxed line-clamp-3">
         {descripcion}
       </p>
-    </div>
-
-    <!-- Technical Specs: Asymmetric layout (grid on featured, list on standard) -->
-    {isFeatured ? (
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 py-4 border-y border-border-default/60 dark:border-white/10 text-xs my-4">
-        <div>
-          <span class="text-text-muted dark:text-slate-400 block font-medium">Líneas de trabajo</span>
-          <span class="text-text-primary dark:text-slate-200 font-semibold line-clamp-2 mt-0.5">{enfoque}</span>
-        </div>
-        <div>
-          <span class="text-text-muted dark:text-slate-400 block font-medium">Sede & Modalidad</span>
-          <span class="text-text-primary dark:text-slate-200 font-semibold line-clamp-2 mt-0.5">{modalidadText} · {horarioText}</span>
-        </div>
-        <div>
-          <span class="text-text-muted dark:text-slate-400 block font-medium">{labelTutor}</span>
-          <span class="text-text-primary dark:text-slate-200 font-semibold line-clamp-2 mt-0.5">{tutorLider}</span>
-        </div>
-      </div>
-    ) : (
-      <div class="space-y-2 py-3 border-t border-border-default/60 dark:border-white/10 text-xs my-3">
-        <div class="flex items-center justify-between gap-2">
-          <span class="text-text-muted dark:text-slate-400 shrink-0">{labelTutor}:</span>
-          <span class="text-text-primary dark:text-slate-200 font-medium truncate text-right max-w-[180px]">{tutorLider}</span>
-        </div>
-        <div class="flex items-center justify-between gap-2">
-          <span class="text-text-muted dark:text-slate-400 shrink-0">Modalidad:</span>
-          <span class="text-text-primary dark:text-slate-200 font-medium truncate text-right">{modalidadText}</span>
-        </div>
-        <div class="flex items-center justify-between gap-2">
-          <span class="text-text-muted dark:text-slate-400 shrink-0">Carreras afines:</span>
-          <span class="text-text-primary dark:text-slate-200 font-medium truncate text-right max-w-[170px]" title={carrerasList}>{carrerasList}</span>
-        </div>
-      </div>
     )}
-  </div>
 
-  <!-- Bottom Action Bar: Single clean primary action -->
-  <div class="pt-4 border-t border-border-default/60 dark:border-white/10 flex items-center justify-between gap-3 mt-4 relative z-10">
-    <span class="text-xs text-text-muted dark:text-slate-400 font-medium flex items-center gap-1">
-      <span class="material-symbols-outlined text-sm">visibility</span>
-      <span>Iniciativa UNAL</span>
-    </span>
-
-    <a
-      href={`/grupo/${grupo.id}`}
-      class:list={[
-        isFeatured
-          ? "px-5 py-2.5 bg-[#94B43B] hover:bg-[#82A735] text-[#0B132B] font-extrabold shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 active:scale-95 border border-[#82A735]/50"
-          : "px-4 py-2 bg-slate-100 hover:bg-[#94B43B] text-slate-800 hover:text-slate-950 dark:bg-white/10 dark:hover:bg-[#94B43B] dark:text-slate-100 dark:hover:text-slate-950 font-bold border border-slate-300/80 dark:border-white/20 hover:border-[#94B43B] dark:hover:border-[#94B43B] shadow-xs hover:shadow-md hover:-translate-y-0.5 active:translate-y-0 active:scale-95",
-        "rounded-xl text-xs transition-all inline-flex items-center gap-1.5 cursor-pointer select-none group/btn focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#94B43B]"
-      ]}
-    >
-      <span>Ver detalles</span>
-      <span class="material-symbols-outlined text-sm transition-transform group-hover/btn:translate-x-1" aria-hidden="true">arrow_forward</span>
-    </a>
+    <div class="mt-auto pt-6">
+      <dl class="grid grid-cols-[auto,1fr] gap-x-4 gap-y-1.5 text-[13px] border-t border-border-subtle pt-4">
+        {responsable && (
+          <>
+            <dt class="text-text-muted">{labelResponsable}</dt>
+            <dd class="text-text-primary truncate m-0" title={responsable}>{responsable}</dd>
+          </>
+        )}
+        <dt class="text-text-muted">Área</dt>
+        <dd class="text-text-primary truncate m-0" title={carreras.join(', ')}>{area}</dd>
+      </dl>
+      <div class="flex items-center justify-between mt-5 text-sm">
+        <span class="text-text-primary font-medium">Ver grupo</span>
+        <span class="card-arrow w-9 h-9 rounded-full border border-border-default group-hover:bg-text-primary group-hover:text-bg group-hover:border-text-primary flex items-center justify-center transition-colors duration-300" aria-hidden="true">→</span>
+      </div>
+    </div>
   </div>
 </article>
-
-<style>
-  .bento-cell {
-    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, border-color 0.2s ease;
-  }
-  .bento-cell:hover {
-    transform: translateY(-3px);
-  }
-</style>

@@ -1,5 +1,5 @@
 ---
-// BentoGrid.astro - Asymmetric Bento Grid layout
+// BentoGrid.astro - Rejilla del catálogo. Las tres primeras fichas con fotografía ocupan dos columnas.
 import type { Grupo } from '../data/grupos.types';
 import BentoCard from './BentoCard.astro';
 
@@ -9,57 +9,24 @@ interface Props {
 
 const { grupos = [] } = Astro.props;
 
-// Editorial bento hierarchy:
-// Grant lg:col-span-2 to the hero collective (index 0) and the leading photographic collectives
-// to create an asymmetric, dynamic editorial flow without layout holes.
-let imageCardCounter = 0;
-const featuredImageGroupIds = new Set<string>();
-
-for (const grupo of grupos) {
-  if (grupo.imagen_url) {
-    if (imageCardCounter < 3) {
-      featuredImageGroupIds.add(grupo.id);
-    }
-    imageCardCounter++;
-  }
-}
+const featuredIds = new Set(grupos.filter((g) => g.imagen_url).slice(0, 3).map((g) => g.id));
 ---
 
-<div class="w-full">
-  {grupos.length > 0 ? (
-    <div
-      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr grid-flow-row-dense"
-      id="grupos-grid"
-    >
-      {grupos.map((grupo, index) => {
-        const isFeatured = index === 0 || featuredImageGroupIds.has(grupo.id);
-        return (
-          <BentoCard
-            grupo={grupo}
-            index={index}
-            featured={isFeatured}
-          />
-        );
-      })}
-    </div>
-  ) : (
-    <div class="rounded-3xl p-12 text-center max-w-xl mx-auto my-8 bg-white dark:bg-[#111827] border border-border-default/80 dark:border-white/10 shadow-lg">
-      <div class="w-14 h-14 rounded-2xl bg-[#94B43B]/10 text-[#4D6B18] dark:text-[#94B43B] flex items-center justify-center mx-auto mb-4 border border-[#94B43B]/20">
-        <span class="material-symbols-outlined text-3xl">search_off</span>
-      </div>
-      <h3 class="text-lg font-bold text-text-primary dark:text-[#E2E8F0] mb-2">
-        No se encontraron iniciativas
-      </h3>
-      <p class="text-sm text-text-secondary dark:text-slate-400 leading-relaxed mb-6">
-        No hay semilleros o grupos de investigación que coincidan con los criterios seleccionados. Prueba restableciendo los filtros o ampliando la búsqueda.
-      </p>
-      <a
-        href="/"
-        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#94B43B] hover:bg-[#82A735] text-black text-sm font-bold transition-all shadow-md"
-      >
-        <span class="material-symbols-outlined text-base">restart_alt</span>
-        Restablecer todos los filtros
-      </a>
-    </div>
-  )}
-</div>
+{grupos.length > 0 ? (
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 grid-flow-row-dense" id="grupos-grid">
+    {grupos.map((grupo, index) => (
+      <BentoCard grupo={grupo} index={index} featured={featuredIds.has(grupo.id)} />
+    ))}
+  </div>
+) : (
+  <div class="py-24 text-center max-w-md mx-auto">
+    <p class="kicker mb-4">Sin resultados</p>
+    <h3 class="text-3xl font-medium tracking-[-0.03em] text-text-primary mb-3">
+      Nada por aquí <span class="font-serif-i">todavía.</span>
+    </h3>
+    <p class="text-text-secondary mb-8">
+      Ningún grupo coincide con esos criterios. Prueba con una búsqueda más amplia.
+    </p>
+    <a href="/" class="btn-ink h-11 px-6 text-sm">Ver todo el catálogo</a>
+  </div>
+)}

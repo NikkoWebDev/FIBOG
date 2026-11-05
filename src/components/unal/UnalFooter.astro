@@ -1,5 +1,5 @@
 ---
-// UnalFooter.astro - Footer institucional de élite para FIBOG (Universidad Nacional de Colombia)
+// UnalFooter.astro - Footer institucional en tinta oscura con wordmark tipográfico.
 
 interface NavLink {
   label: string;
@@ -8,116 +8,84 @@ interface NavLink {
 }
 
 const platformLinks: NavLink[] = [
-  { label: 'Inicio', url: '/' },
-  { label: 'Registro de Grupo', url: '/registro' },
-  { label: 'Política de Privacidad', url: '/privacidad' },
+  { label: 'Catálogo', url: '/#catalogo' },
+  { label: 'Postular un grupo', url: '/registro' },
+  { label: 'Acceso de líderes', url: '/login' },
+  { label: 'Política de privacidad', url: '/privacidad' },
 ];
 
 const institutionalLinks: NavLink[] = [
-  { label: 'Portal UNAL', url: 'https://unal.edu.co', external: true },
-  { label: 'Facultad de Ingeniería (FIBOG)', url: 'https://ingenieria.bogota.unal.edu.co', external: true },
+  { label: 'Universidad Nacional de Colombia', url: 'https://unal.edu.co', external: true },
+  { label: 'Facultad de Ingeniería y Afines', url: 'https://ingenieria.bogota.unal.edu.co', external: true },
   { label: 'Sistema de Investigación HERMES', url: 'https://hermes.unal.edu.co', external: true },
 ];
+
+const year = new Date().getFullYear();
 ---
 
-<footer class="relative mt-auto border-t border-border-default/60">
-  <!-- Accent top border gradient FIBOG -->
-  <div class="h-1 bg-gradient-to-r from-primary via-accent to-neon opacity-80"></div>
-
-  <div class="bg-bg-raised/80 backdrop-blur-xl">
-    <div class="max-w-7xl mx-auto px-6 py-12 lg:py-16">
-      <div class="grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-12">
-        <!-- Brand & Institutional identity (6 cols) -->
-        <div class="md:col-span-6 space-y-4">
-          <a href="/" class="inline-flex flex-col group" rel="home" title="Universidad Nacional de Colombia — Facultad de Ingeniería y Afines · Directorio Oficial de Investigación">
-            <div class="flex items-center gap-2 mb-1">
-              <span class="text-xs uppercase font-bold tracking-wider text-text-muted group-hover:text-text-primary transition-colors">
-                Universidad Nacional de Colombia
-              </span>
-              <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-primary/10 text-primary-light border border-primary/20">
-                FIBOG
-              </span>
-            </div>
-            <span class="text-lg font-bold text-text-primary tracking-tight group-hover:text-primary-light transition-colors">
-              Facultad de Ingeniería y Afines <span class="text-text-muted font-normal text-sm block sm:inline">· Directorio Oficial de Investigación · Ciencias e Ingeniería</span>
-            </span>
-          </a>
-          <p class="text-text-secondary text-sm leading-relaxed max-w-md">
-            Directorio oficial de investigación, semilleros formativos y grupos DIB de la Facultad de Ingeniería y Afines — Sede Bogotá. Impulsando la convergencia interdisciplinar entre las ciencias exactas, naturales y la ingeniería aplicada.
-          </p>
-          <div class="flex items-center gap-2 pt-1 text-xs text-text-muted">
-            <span class="inline-block w-2 h-2 rounded-full bg-accent"></span>
-            <span>Sede Bogotá · Ciudad Universitaria</span>
-          </div>
-        </div>
-
-        <!-- Platform Links (3 cols) -->
-        <div class="md:col-span-3">
-          <h2 class="text-text-primary text-xs font-bold uppercase tracking-widest mb-4">
-            Plataforma
-          </h2>
-          <ul class="list-none p-0 m-0 space-y-2.5">
-            {platformLinks.map((link) => (
-              <li>
-                <a href={link.url} class="text-text-secondary text-sm hover:text-primary-light transition-colors inline-flex items-center gap-1.5">
-                  <span class="material-symbols-outlined text-sm text-text-muted">chevron_right</span>
-                  {link.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        <!-- Institutional Links & Contact (3 cols) -->
-        <div class="md:col-span-3">
-          <h2 class="text-text-primary text-xs font-bold uppercase tracking-widest mb-4">
-            Institucional
-          </h2>
-          <ul class="list-none p-0 m-0 space-y-2.5 mb-6">
-            {institutionalLinks.map((link) => (
-              <li>
-                <a
-                  href={link.url}
-                  target={link.external ? '_blank' : undefined}
-                  rel={link.external ? 'noopener noreferrer' : undefined}
-                  class="text-text-secondary text-sm hover:text-primary-light transition-colors inline-flex items-center gap-1"
-                >
-                  <span>{link.label}</span>
-                  {link.external && (
-                    <span class="material-symbols-outlined text-xs text-text-muted">open_in_new</span>
-                  )}
-                </a>
-              </li>
-            ))}
-          </ul>
-
-          <h2 class="text-text-primary text-xs font-bold uppercase tracking-widest mb-2">
-            Contacto y Soporte
-          </h2>
-          <div class="space-y-1.5 text-xs text-text-secondary">
-            <a href="mailto:bgallo@unal.edu.co" class="block hover:text-primary-light transition-colors font-mono">
-              bgallo@unal.edu.co
-            </a>
-            <a href="mailto:ngutierrezga@unal.edu.co" class="block hover:text-primary-light transition-colors font-mono">
-              ngutierrezga@unal.edu.co
-            </a>
-          </div>
-        </div>
+<footer class="relative bg-ink text-paper overflow-hidden">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 pt-20 pb-10">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-12">
+      <div class="md:col-span-4" data-reveal>
+        <img src="/images/escudoUnal-white.svg" alt="Universidad Nacional de Colombia" width="120" height="63" class="h-12 w-auto mb-8 opacity-90" loading="lazy" />
+        <p class="text-[1.5rem] leading-[1.22] tracking-[-0.03em] max-w-md text-paper">
+          El directorio de semilleros y grupos de la Facultad de Ingeniería y Afines,
+          <span class="font-serif-i !text-[#B5CF6B]">hecho para encontrarse.</span>
+        </p>
       </div>
 
-      <!-- Bottom Bar -->
-      <div class="mt-12 pt-8 border-t border-border-default/70 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-text-muted">
-        <p class="m-0 text-center sm:text-left">
-          &copy; {new Date().getFullYear()} Universidad Nacional de Colombia &mdash; Facultad de Ingeniería y Afines (FIBOG) · Ciencias e Ingeniería. Todos los derechos reservados.
-        </p>
-        <div class="flex items-center gap-4">
-          <a href="/privacidad" class="hover:text-text-secondary transition-colors">
-            Privacidad
-          </a>
-          <span class="text-border-default">·</span>
-          <span>Bogotá D.C., Colombia</span>
-        </div>
+      <nav class="md:col-span-2 md:col-start-5" aria-label="Plataforma" data-reveal style="--d: 80ms">
+        <h2 class="font-mono text-[11px] tracking-[0.08em] uppercase text-paper/50 mb-5">Plataforma</h2>
+        <ul class="list-none p-0 m-0 space-y-3">
+          {platformLinks.map((link) => (
+            <li><a href={link.url} class="text-[15px] text-paper/80 hover:text-paper transition-colors">{link.label}</a></li>
+          ))}
+        </ul>
+      </nav>
+
+      <nav class="md:col-span-3" aria-label="Institucional" data-reveal style="--d: 160ms">
+        <h2 class="font-mono text-[11px] tracking-[0.08em] uppercase text-paper/50 mb-5">Institucional</h2>
+        <ul class="list-none p-0 m-0 space-y-3">
+          {institutionalLinks.map((link) => (
+            <li>
+              <a href={link.url} target="_blank" rel="noopener noreferrer" class="text-[15px] text-paper/80 hover:text-paper transition-colors inline-flex items-baseline gap-1.5">
+                {link.label} <span class="text-paper/40 text-xs" aria-hidden="true">↗</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <div class="md:col-span-3" data-reveal style="--d: 240ms">
+        <h2 class="font-mono text-[11px] tracking-[0.08em] uppercase text-paper/50 mb-5">Contacto</h2>
+        <ul class="list-none p-0 m-0 space-y-3 text-[14px]">
+          <li><a href="mailto:bgallo@unal.edu.co" class="text-paper/80 hover:text-paper transition-colors [overflow-wrap:anywhere]">bgallo@unal.edu.co</a></li>
+          <li><a href="mailto:ngutierrezga@unal.edu.co" class="text-paper/80 hover:text-paper transition-colors [overflow-wrap:anywhere]">ngutierrezga@unal.edu.co</a></li>
+        </ul>
       </div>
     </div>
   </div>
+
+  <!-- Wordmark -->
+  <div class="relative select-none pointer-events-none" aria-hidden="true">
+    <p class="footer-wordmark text-center font-semibold tracking-[-0.06em] leading-[0.78] whitespace-nowrap">
+      Semilleros<span class="font-serif-i font-normal tracking-[-0.02em]"> UNAL</span>
+    </p>
+  </div>
+
+  <div class="relative border-t border-paper/10">
+    <div class="max-w-7xl mx-auto px-5 sm:px-8 py-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-mono text-[11px] tracking-[0.04em] text-paper/50">
+      <p class="m-0">© {year} Universidad Nacional de Colombia · Algunos derechos reservados.</p>
+      <p class="m-0">Bogotá D.C., Colombia · Ciudad Universitaria</p>
+    </div>
+  </div>
 </footer>
+
+<style>
+  .footer-wordmark {
+    font-size: clamp(3.25rem, 12.6vw, 13.5rem);
+    color: rgb(var(--c-paper) / 0.07);
+    margin-bottom: -0.06em;
+  }
+  .footer-wordmark :global(.font-serif-i) { color: rgb(181 207 107 / 0.16) !important; }
+</style>

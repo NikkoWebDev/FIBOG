@@ -2,119 +2,101 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout title="Iniciar Sesion | Base de Datos Ingeniería y Afines" description="Accede al portal de gestion de semilleros" activePage="login" noindex>
+<Layout title="Iniciar sesión | Semilleros UNAL" description="Accede al panel de gestión de semilleros y grupos" activePage="login" noindex hideFooter>
 
-  <main class="min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
-    <!-- Background effects -->
-    <div class="absolute inset-0 bg-gradient-mesh opacity-40"></div>
-    <div class="absolute top-1/4 left-1/4 w-72 h-72 bg-primary/10 rounded-full blur-[100px]"></div>
-    <div class="absolute bottom-1/4 right-1/4 w-64 h-64 bg-accent/10 rounded-full blur-[80px]"></div>
-
-    <!-- Login Card -->
-    <div class="relative w-full max-w-md z-10">
-      <div class="bg-bg-card border border-border-default rounded-2xl p-8 md:p-10 shadow-card relative overflow-hidden">
-
-        <div class="relative z-10">
-          <!-- Header -->
-          <div class="text-center mb-8">
-            <div class="w-16 h-16 mx-auto mb-5 rounded-2xl bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-glow-sm">
-              <span class="material-symbols-outlined text-white text-3xl" data-icon="login">login</span>
-            </div>
-            <h1 class="text-2xl font-bold text-text-primary mb-2">
-              Bienvenido a <span class="text-gradient">Base de Datos Ingeniería y Afines</span>
-            </h1>
-            <p class="text-text-secondary text-sm">
-              Accede al portal de gestion de semilleros y grupos de investigacion
-            </p>
-          </div>
-
-          <!-- Login Form -->
-          <form id="login-form" class="space-y-5">
-            <div>
-              <label class="block text-text-secondary text-sm font-medium mb-2">
-                Correo Institucional
-              </label>
-              <div class="relative">
-                <span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-text-muted text-lg">email</span>
-                <input
-                  type="email"
-                  id="email"
-                  placeholder="nombre@unal.edu.co"
-                  class="w-full pl-12 pr-4 py-3.5 bg-bg-input border border-border-default text-text-primary placeholder-text-muted rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all"
-                  required
-                />
-              </div>
-            </div>
-
-            <div>
-              <label class="block text-text-secondary text-sm font-medium mb-2">
-                Contrasena
-              </label>
-              <div class="relative">
-                <span class="absolute left-4 top-1/2 -translate-y-1/2 material-symbols-outlined text-text-muted text-lg">lock</span>
-                <input
-                  type="password"
-                  id="password"
-                  placeholder="••••••••"
-                  class="w-full pl-12 pr-12 py-3.5 bg-bg-input border border-border-default text-text-primary placeholder-text-muted rounded-xl focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/30 transition-all"
-                  required
-                />
-                <button
-                  type="button"
-                  id="toggle-password"
-                  class="absolute right-4 top-1/2 -translate-y-1/2 text-text-muted hover:text-text-primary transition-colors"
-                >
-                  <span class="material-symbols-outlined" data-icon="visibility_off">visibility_off</span>
-                </button>
-              </div>
-            </div>
-
-            <!-- Error message -->
-            <div id="error-message" class="hidden p-3 bg-error/10 border border-error/30 text-error text-sm text-center rounded-xl">
-            </div>
-
-            <!-- Email restriction notice -->
-            <div class="p-3 bg-accent/10 border border-accent/30 text-accent-light text-sm text-center rounded-xl">
-              Preferimos correos @unal.edu.co. Cuentas de lider ya dadas de alta tambien pueden entrar.
-            </div>
-
-            <button
-              type="submit"
-              id="login-btn"
-              class="w-full py-4 px-6 bg-gradient-to-r from-primary to-primary-dark text-white font-bold text-base rounded-xl hover:shadow-glow transition-all flex items-center justify-center gap-2"
-            >
-              <span class="material-symbols-outlined">login</span>
-              <span id="login-text">Iniciar Sesion</span>
-              <div id="login-spinner" class="hidden w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-            </button>
-          </form>
-
-          <!-- Links -->
-          <div class="mt-6 pt-6 border-t border-border-subtle space-y-3">
-            <p class="text-center text-text-secondary text-sm">
-              No tienes una cuenta de grupo?
-            </p>
-            <a
-              href="/registro"
-              class="block w-full py-3 px-4 border border-border-default text-text-secondary text-center rounded-xl hover:bg-bg-hover transition-all flex items-center justify-center gap-2"
-            >
-              <span class="material-symbols-outlined text-sm">how_to_reg</span>
-              Registrar Nuevo Grupo
-            </a>
-          </div>
-
-          <!-- Back to home -->
-          <div class="mt-6 text-center">
-            <a href="/" class="text-text-muted text-sm hover:text-primary-light transition-colors inline-flex items-center gap-1">
-              <span class="material-symbols-outlined text-sm">arrow_back</span>
-              Volver al explorador
-            </a>
-          </div>
-        </div>
+  <div class="relative min-h-[calc(100dvh-6.5rem)] grid grid-cols-1 lg:grid-cols-2">
+    <!-- Columna editorial -->
+    <section class="relative hidden lg:flex flex-col justify-between bg-ink text-paper p-12 xl:p-16 overflow-hidden">
+      <div class="absolute inset-0 login-grid pointer-events-none" aria-hidden="true"></div>
+      <p class="relative font-mono text-[11px] tracking-[0.08em] uppercase text-paper/55">Panel de gestión</p>
+      <div class="relative" data-reveal-lines>
+        <h1 class="text-[4rem] xl:text-[5rem] leading-[0.95] font-medium tracking-[-0.05em]">
+          <span class="line" style="--i: 0"><span>Tu grupo,</span></span>
+          <span class="line" style="--i: 1"><span class="font-serif-i !text-[#B5CF6B]">al día.</span></span>
+        </h1>
+        <p class="mt-8 text-paper/70 text-[16px] leading-relaxed max-w-sm">
+          Líderes y administradores actualizan aquí la información que ven cientos de estudiantes de la Facultad.
+        </p>
       </div>
-    </div>
-  </main>
+      <img src="/images/escudoUnal-white.svg" alt="" width="120" height="63" class="relative h-11 w-auto opacity-80" />
+    </section>
+
+    <!-- Formulario -->
+    <section class="flex items-center justify-center px-5 sm:px-8 py-16">
+      <div class="w-full max-w-[25rem]" data-reveal>
+        <p class="kicker mb-4">Acceso</p>
+        <h2 class="text-[2.25rem] leading-[1.05] font-medium tracking-[-0.04em] text-text-primary mb-3">
+          Inicia sesión
+        </h2>
+        <p class="text-text-secondary text-[15px] mb-10">
+          Usa el correo con el que registraste tu grupo. Preferimos cuentas <span class="font-mono text-[13px] text-text-primary">@unal.edu.co</span>.
+        </p>
+
+        <form id="login-form" class="space-y-5" novalidate>
+          <div>
+            <label for="email" class="block kicker mb-2">Correo</label>
+            <input
+              type="email"
+              id="email"
+              autocomplete="email"
+              placeholder="nombre@unal.edu.co"
+              class="input-field w-full h-12 px-4 text-[15px]"
+              required
+            />
+          </div>
+
+          <div>
+            <label for="password" class="block kicker mb-2">Contraseña</label>
+            <div class="relative">
+              <input
+                type="password"
+                id="password"
+                autocomplete="current-password"
+                placeholder="••••••••"
+                class="input-field w-full h-12 pl-4 pr-12 text-[15px]"
+                required
+              />
+              <button
+                type="button"
+                id="toggle-password"
+                aria-label="Mostrar u ocultar contraseña"
+                class="absolute right-2 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full flex items-center justify-center text-text-muted hover:text-text-primary hover:bg-bg-hover transition-colors"
+              >
+                <span class="material-symbols-outlined text-[20px]" data-icon="visibility_off">visibility_off</span>
+              </button>
+            </div>
+          </div>
+
+          <div id="error-message" role="alert" class="hidden px-4 py-3 rounded-xl border border-error/30 bg-error/5 text-error text-sm"></div>
+
+          <button type="submit" id="login-btn" class="btn-ink w-full h-12 text-[15px] disabled:opacity-60">
+            <span id="login-text">Entrar</span>
+            <div id="login-spinner" class="hidden w-5 h-5 border-2 border-bg/30 border-t-bg rounded-full animate-spin"></div>
+          </button>
+        </form>
+
+        <div class="mt-10 pt-8 border-t border-border-default flex flex-wrap items-center justify-between gap-4 text-[15px]">
+          <span class="text-text-secondary">¿Tu grupo aún no está?</span>
+          <a href="/registro" class="link-draw text-text-primary">Postularlo</a>
+        </div>
+        <a href="/" class="mt-6 inline-flex items-center gap-2 text-sm text-text-muted hover:text-text-primary transition-colors">
+          <span aria-hidden="true">←</span> Volver al catálogo
+        </a>
+      </div>
+    </section>
+  </div>
 </Layout>
+
+<style>
+  .login-grid {
+    background-image:
+      linear-gradient(rgb(var(--c-paper) / 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(var(--c-paper) / 0.06) 1px, transparent 1px);
+    background-size: 56px 56px;
+    -webkit-mask-image: radial-gradient(ellipse 90% 70% at 20% 100%, #000 10%, transparent 70%);
+    mask-image: radial-gradient(ellipse 90% 70% at 20% 100%, #000 10%, transparent 70%);
+  }
+</style>
 
 <script>
   import { supabase, getUserRole } from '../lib/supabase';
@@ -151,7 +133,7 @@ import Layout from '../layouts/Layout.astro';
     const emailNorm = email.trim().toLowerCase();
     // Preferimos @unal.edu.co; permitimos excepciones ya dadas de alta (ej. grupos legacy).
     if (!emailNorm.includes('@')) {
-      errorMessage!.textContent = 'Correo invalido.';
+      errorMessage!.textContent = 'Correo inválido.';
       errorMessage?.classList.remove('hidden');
       return;
     }
@@ -190,8 +172,8 @@ import Layout from '../layouts/Layout.astro';
     } catch (error: any) {
       console.error('Login error:', error);
       errorMessage!.textContent = error.message === 'Invalid login credentials'
-        ? 'Credenciales incorrectas. Verifica tu correo y contrasena.'
-        : 'Error al iniciar sesion. Intenta de nuevo.';
+        ? 'Credenciales incorrectas. Verifica tu correo y contraseña.'
+        : 'Error al iniciar sesión. Intenta de nuevo.';
       errorMessage?.classList.remove('hidden');
     } finally {
       loginBtn?.removeAttribute('disabled');

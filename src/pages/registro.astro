@@ -14,36 +14,36 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
 
 <Layout title="Registrar Grupo | Facultad de Ingeniería UNAL" description="Postula tu semillero o grupo de investigación en la Facultad de Ingeniería UNAL" activePage="registro" hideFooter={false}>
   
-  <main class="min-h-screen py-10 px-4 relative overflow-hidden">
-    <div class="absolute inset-0 bg-gradient-mesh opacity-40"></div>
-    <div class="absolute top-0 right-0 w-[60%] h-[60%] bg-primary/5 rounded-full blur-[150px] will-change-transform blob"></div>
-    <div class="absolute bottom-0 left-0 w-[40%] h-[40%] bg-accent/5 rounded-full blur-[120px] will-change-transform blob"></div>
-    
-    <div class="relative z-10 max-w-4xl mx-auto">
-      <p class="text-[11px] tracking-widest uppercase text-text-secondary/80 font-medium mb-4" id="last-update">Última actualización: {ultimaTexto}</p>
+  <div class="px-5 sm:px-8 pt-12 sm:pt-20 pb-24">
+    <div class="relative max-w-4xl mx-auto">
       <!-- Header -->
-      <div class="text-center mb-8" id="reg-header">
-        <div class="inline-flex items-center gap-2 mb-4 px-4 py-2 rounded-full bg-primary/10 border border-primary/20">
-          <span class="material-symbols-outlined text-primary-light text-sm">workspace_premium</span>
-          <span class="text-primary-light text-xs font-semibold uppercase tracking-widest">Facultad de Ingeniería UNAL · Registro</span>
-        </div>
-        <h1 class="text-3xl sm:text-4xl font-extrabold text-text-primary mb-3">
-          Registrar <span class="text-gradient">Nuevo Grupo</span>
+      <nav aria-label="Migas de pan" class="mb-12">
+        <ol class="flex items-center gap-2 kicker list-none p-0 m-0">
+          <li><a href="/" class="hover:text-text-primary transition-colors">Inicio</a></li>
+          <li aria-hidden="true">/</li>
+          <li class="text-text-primary" aria-current="page">Postular grupo</li>
+        </ol>
+      </nav>
+      <div class="mb-14" id="reg-header">
+        <p class="kicker mb-5" id="last-update">Catálogo actualizado el {ultimaTexto}</p>
+        <h1 class="text-[2.6rem] sm:text-[4.25rem] leading-[0.98] font-medium tracking-[-0.05em] text-text-primary mb-6" data-reveal-lines>
+          <span class="line" style="--i: 0"><span>Postula tu grupo</span></span>
+          <span class="line" style="--i: 1"><span class="font-serif-i">al catálogo.</span></span>
         </h1>
-        <p class="text-text-secondary text-base max-w-2xl mx-auto">
-          Ingresa la información básica de tu grupo. Los campos marcados con * son obligatorios.
+        <p class="text-text-secondary text-[1.1rem] leading-relaxed max-w-2xl" data-reveal style="--d: 200ms">
+          Cuéntanos lo básico de tu semillero o grupo. Los campos con * son obligatorios. Un administrador de la Facultad revisa cada solicitud antes de publicarla.
         </p>
-        <p class="text-xs text-text-secondary mt-3">
-          Contacto: <a href="mailto:bgallo@unal.edu.co" class="text-primary-light hover:underline">bgallo@unal.edu.co</a> · <a href="mailto:ngutierrezga@unal.edu.co" class="text-primary-light hover:underline">ngutierrezga@unal.edu.co</a>
+        <p class="text-sm text-text-muted mt-4" data-reveal style="--d: 260ms">
+          ¿Dudas? Escribe a <a href="mailto:bgallo@unal.edu.co" class="text-text-primary underline underline-offset-4 decoration-border-default hover:decoration-text-primary">bgallo@unal.edu.co</a> o <a href="mailto:ngutierrezga@unal.edu.co" class="text-text-primary underline underline-offset-4 decoration-border-default hover:decoration-text-primary">ngutierrezga@unal.edu.co</a>
         </p>
       </div>
-      
+
       <!-- Progress - solo paso 1 activo -->
-      <div class="flex justify-center mb-8" id="reg-steps">
+      <div class="flex justify-start mb-8" id="reg-steps">
         <div class="flex flex-wrap justify-center items-center gap-y-2 gap-x-3 sm:gap-x-6 max-w-full">
           <div class="flex items-center gap-2">
-            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-primary-dark text-white flex items-center justify-center font-bold text-sm">1</div>
-            <span class="text-primary-light font-medium text-xs sm:text-sm">Información</span>
+            <div class="w-8 h-8 rounded-full bg-text-primary text-bg flex items-center justify-center font-bold text-sm">1</div>
+            <span class="text-text-primary font-medium text-xs sm:text-sm">Información</span>
           </div>
           <div class="w-8 sm:w-14 h-[2px] bg-border-default"></div>
           <div class="flex items-center gap-2 opacity-60">
@@ -60,7 +60,7 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
 
       <!-- Form Card -->
       <div id="reg-card" class="card rounded-2xl sm:rounded-3xl p-5 sm:p-6 md:p-10 relative overflow-hidden ">
-        <div class="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r from-primary via-accent to-neon"></div>
+        <div class="absolute top-0 left-0 right-0 h-[3px] bg-accent"></div>
         
         <form id="registro-form" class="relative z-10 space-y-8">
           <input type="text" name="website" class="hidden" tabindex="-1" autocomplete="off" aria-hidden="true" />
@@ -81,7 +81,7 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
                 <select 
                   name="tipo" 
                   required
-                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all appearance-none cursor-pointer"
+                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-text-primary focus:ring-2 focus:ring-accent/30 transition-all appearance-none cursor-pointer"
                 >
                   <option value="">Selecciona el tipo</option>
                   <option value="Semillero">Semillero</option>
@@ -99,7 +99,7 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
                   name="nombre"
                   placeholder="Ej: Semillero de Robótica"
                   required
-                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-text-primary focus:ring-2 focus:ring-accent/30 transition-all"
                 />
               </div>
               
@@ -112,7 +112,7 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
                   name="carreras"
                   placeholder="Ej: Ingeniería de Sistemas, Ingeniería Electrónica"
                   required
-                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-text-primary focus:ring-2 focus:ring-accent/30 transition-all"
                 />
               </div>
               
@@ -125,7 +125,7 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
                   name="email_contacto"
                   placeholder="grupo@unal.edu.co"
                   required
-                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-text-primary focus:ring-2 focus:ring-accent/30 transition-all"
                 />
               </div>
 
@@ -138,7 +138,7 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
                   name="enfoque"
                   placeholder="Ej: IA, Robótica, Energías Renovables"
                   required
-                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-text-primary focus:ring-2 focus:ring-accent/30 transition-all"
                 />
               </div>
             </div>
@@ -152,7 +152,7 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
                 rows="4"
                 placeholder="Describe objetivos, actividades y propósito..."
                 required
-                class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all resize-none"
+                class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-text-primary focus:ring-2 focus:ring-accent/30 transition-all resize-none"
               ></textarea>
             </div>
           </div>
@@ -176,7 +176,7 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
                   name="lider_o_representante"
                   placeholder="Nombre completo"
                   required
-                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-text-primary focus:ring-2 focus:ring-accent/30 transition-all"
                 />
               </div>
               
@@ -189,7 +189,7 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
                   name="nombre_solicitante"
                   placeholder="Tu nombre completo"
                   required
-                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-text-primary focus:ring-2 focus:ring-accent/30 transition-all"
                 />
               </div>
               
@@ -202,7 +202,7 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
                   name="email_solicitante"
                   placeholder="tuemail@unal.edu.co"
                   required
-                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-text-primary focus:ring-2 focus:ring-accent/30 transition-all"
                 />
               </div>
               
@@ -214,7 +214,7 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
                   type="tel" 
                   name="telefono_solicitante"
                   placeholder="300 123 4567"
-                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-text-primary focus:ring-2 focus:ring-accent/30 transition-all"
                 />
               </div>
               
@@ -226,7 +226,7 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
                   type="text" 
                   name="carrera_solicitante"
                   placeholder="Ej: Ingeniería de Sistemas"
-                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-text-primary focus:ring-2 focus:ring-accent/30 transition-all"
                 />
               </div>
               
@@ -236,7 +236,7 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
                 </label>
                 <select 
                   name="semestre_solicitante"
-                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all appearance-none cursor-pointer"
+                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-text-primary focus:ring-2 focus:ring-accent/30 transition-all appearance-none cursor-pointer"
                 >
                   <option value="">Selecciona</option>
                   <option value="1">1° Semestre</option>
@@ -271,7 +271,7 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
                 <select 
                   name="modalidad"
                   required
-                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all appearance-none cursor-pointer"
+                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary focus:outline-none focus:border-text-primary focus:ring-2 focus:ring-accent/30 transition-all appearance-none cursor-pointer"
                 >
                   <option value="">Selecciona</option>
                   <option value="Presencial">Presencial</option>
@@ -289,7 +289,7 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
                   name="horarios_habituales"
                   placeholder="Ej: Viernes 2:00pm - 6:00pm"
                   required
-                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
+                  class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-text-primary focus:ring-2 focus:ring-accent/30 transition-all"
                 />
               </div>
             </div>
@@ -303,7 +303,7 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
                 rows="3"
                 placeholder="Describe las actividades que realiza el grupo..."
                 required
-                class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all resize-none"
+                class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-text-primary focus:ring-2 focus:ring-accent/30 transition-all resize-none"
               ></textarea>
             </div>
             
@@ -316,7 +316,7 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
                 rows="2"
                 placeholder="¿Qué requisitos deben cumplir los nuevos miembros?"
                 required
-                class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all resize-none"
+                class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-text-primary focus:ring-2 focus:ring-accent/30 transition-all resize-none"
               ></textarea>
             </div>
             
@@ -330,7 +330,7 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
                 placeholder="https://instagram.com/tu-grupo"
                 inputmode="url"
                 autocomplete="url"
-                class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all"
+                class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-text-primary focus:ring-2 focus:ring-accent/30 transition-all"
               />
               <p class="text-xs text-text-muted mt-2">Un solo enlace. Preferible la página web o el perfil principal del grupo.</p>
             </div>
@@ -343,7 +343,7 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
                 name="comentarios_adicionales"
                 rows="2"
                 placeholder="Cualquier información adicional..."
-                class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/25 transition-all resize-none"
+                class="w-full px-4 py-3.5 bg-bg-input/60 border border-border-default rounded-xl text-text-primary placeholder-text-secondary/70 focus:outline-none focus:border-text-primary focus:ring-2 focus:ring-accent/30 transition-all resize-none"
               ></textarea>
             </div>
 
@@ -382,7 +382,7 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
             <button 
               type="submit"
               id="submit-btn"
-              class="flex-1 py-3.5 px-6 rounded-xl bg-gradient-to-r from-primary to-primary-dark text-white font-bold hover:shadow-glow hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2"
+              class="flex-1 py-3.5 px-6 rounded-xl bg-text-primary text-bg font-bold hover:opacity-90 hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2"
             >
               <span class="material-symbols-outlined">send</span>
               <span id="submit-text">Enviar Solicitud</span>
@@ -399,7 +399,7 @@ const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
         </a>
       </div>
     </div>
-  </main>
+  </div>
 </Layout>
 
 <script>
