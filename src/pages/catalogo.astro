@@ -1,0 +1,130 @@
+---
+import Layout from '../layouts/Layout.astro';
+import FilterBar from '../components/FilterBar.astro';
+import BentoGrid from '../components/BentoGrid.astro';
+
+import { fetchApprovedCatalog } from '../lib/grupos';
+import { filtrarGrupos, matchesCarrera, norm } from '../data/grupos.types';
+
+export const prerender = false;
+
+const { grupos: allGrupos, metadata, error: catalogError } = await fetchApprovedCatalog();
+
+const url = Astro.url;
+const tipoFilter = url.searchParams.get('tipo');
+const carreraFilter = url.searchParams.get('carrera');
+const searchQuery = url.searchParams.get('q');
+
+const filteredGrupos = filtrarGrupos(allGrupos, {
+  tipo: tipoFilter || undefined,
+  carrera: carreraFilter || undefined,
+  busqueda: searchQuery || undefined
+});
+
+const catalogGrupos = [...filteredGrupos].sort((a, b) => {
+  const aImg = Boolean(a.imagen_url);
+  const bImg = Boolean(b.imagen_url);
+  if (aImg && !bImg) return -1;
+  if (!aImg && bImg) return 1;
+  return a.nombre.localeCompare(b.nombre, 'es');
+});
+
+// Recuentos por carrera canónica (incluye el auto-match multidisciplinar).
+const carreraCounts: Record<string, number> = {};
+for (const c of metadata.carreras) {
+  carreraCounts[c] = allGrupos.reduce((n, g) => (matchesCarrera(g, norm(c)) ? n + 1 : n), 0);
+}
+
+const total = allGrupos.length;
+
+const siteUrl = (Astro.site?.origin ?? 'https://semilleros.nikko.dev').replace(/\/+$/, '');
+const topGrupos = catalogGrupos.slice(0, 25);
+const jsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'Catálogo de semilleros, grupos de investigación y grupos estudiantiles — Ingeniería y Afines',
+  numberOfItems: topGrupos.length,
+  itemListElement: topGrupos.map((g, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: g.nombre,
+    url: `${siteUrl}/grupo/${g.id}`,
+  })),
+}).replace(/</g, '\\u003c');
+---
+
+<Layout
+  activePage="catalogo"
+  title="Catálogo de semilleros y grupos | Ingeniería y Afines · UNAL"
+  description="Explora los 309 semilleros, grupos de investigación y grupos estudiantiles de la Facultad de Ingeniería y Afines, UNAL Bogotá. Filtra por tipo, rama, carrera y tema."
+>
+  <Fragment slot="head">
+    <script is:inline type="application/ld+json" set:html={jsonLd} />
+  </Fragment>
+
+  <section class="max-w-7xl mx-auto px-5 sm:px-8 pt-10 sm:pt-14 pb-24">
+    <!-- Migas de pan -->
+    <nav aria-label="Migas de pan" class="mb-12 sm:mb-16" data-reveal="fade">
+      <ol class="flex flex-wrap items-center gap-2 kicker list-none p-0 m-0">
+        <li><a href="/" class="hover:text-text-primary transition-colors">Inicio</a></li>
+        <li aria-hidden="true">/</li>
+        <li class="text-text-primary" aria-current="page">Catálogo</li>
+      </ol>
+    </nav>
+
+    <!-- Encabezado -->
+    <header class="max-w-4xl mb-12 sm:mb-16">
+      <p class="kicker mb-5" data-reveal="fade">El catálogo · {total} iniciativas</p>
+      <h1 class="catalog-title text-text-primary" data-reveal-lines>
+        <span class="line" style="--i: 0"><span>Todos los grupos,</span></span>
+        <span class="line" style="--i: 1"><span class="font-serif-i">filtrables al instante.</span></span>
+      </h1>
+      <p class="mt-7 text-text-secondary text-[1.1rem] leading-relaxed max-w-2xl" data-reveal style="--d: 180ms">
+        Filtra por tipo, rama de ingeniería, carrera o busca por nombre, docente y línea de trabajo.
+        ¿Prefieres describir lo que buscas con tus palabras? <a href="/" class="link-draw text-text-primary">Pregúntale a Kala en el inicio</a>.
+      </p>
+    </header>
+
+    <div data-reveal style="--d: 120ms">
+      <FilterBar
+        metadata={metadata}
+        counts={carreraCounts}
+        activeTipo={tipoFilter || undefined}
+        activeCarrera={carreraFilter || undefined}
+        activeQuery={searchQuery || undefined}
+        grupos={catalogGrupos}
+      />
+    </div>
+
+    {catalogError ? (
+      <div class="py-24 text-center max-w-md mx-auto">
+        <p class="kicker mb-4">Error de conexión</p>
+        <h2 class="text-3xl font-medium tracking-[-0.03em] text-text-primary mb-3">No pudimos cargar el catálogo</h2>
+        <p class="text-text-secondary mb-8">Intenta recargar la página. Si el problema persiste, escríbenos.</p>
+        <button onclick="location.reload()" class="btn-ink h-11 px-6 text-sm">Reintentar</button>
+      </div>
+    ) : (
+      <div id="catalog-grid-wrapper">
+        <BentoGrid grupos={catalogGrupos} />
+
+        <div id="no-results" class="hidden py-24 text-center max-w-md mx-auto">
+          <p class="kicker mb-4">Sin resultados</p>
+          <h2 class="text-3xl font-medium tracking-[-0.03em] text-text-primary mb-3">
+            Nada por aquí <span class="font-serif-i">todavía.</span>
+          </h2>
+          <p class="text-text-secondary mb-8">Prueba con otros filtros, o pregúntale a Kala desde el inicio.</p>
+          <button id="ver-todo-btn" type="button" class="btn-ink h-11 px-6 text-sm">Ver todo el catálogo</button>
+        </div>
+      </div>
+    )}
+  </section>
+</Layout>
+
+<style>
+  .catalog-title {
+    font-size: clamp(2.4rem, 6vw, 5rem);
+    line-height: 0.98;
+    letter-spacing: -0.05em;
+    font-weight: 500;
+  }
+</style>

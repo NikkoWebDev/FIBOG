@@ -356,7 +356,8 @@ const catalogIndex = grupos.map((g) => {
       if (state.sort && state.sort !== 'imagen') sp.set('sort', state.sort);
 
       const qs = sp.toString();
-      const newUrl = qs ? `/?${qs}` : '/';
+      const path = window.location.pathname;
+      const newUrl = qs ? `${path}?${qs}` : path;
       if (window.location.search !== (qs ? `?${qs}` : '')) {
         window.history.replaceState(null, '', newUrl);
       }

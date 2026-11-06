@@ -72,7 +72,7 @@ const rolResponsable = grupo.lider ? 'Líder o representante' : 'Docente a cargo
       <ol class="flex flex-wrap items-center gap-2 kicker list-none p-0 m-0">
         <li><a href="/" class="hover:text-text-primary transition-colors">Inicio</a></li>
         <li aria-hidden="true">/</li>
-        <li><a href={`/?tipo=${encodeURIComponent(tipoParam)}#catalogo`} class="hover:text-text-primary transition-colors">{grupo.tipo}</a></li>
+        <li><a href={`/catalogo?tipo=${encodeURIComponent(tipoParam)}`} class="hover:text-text-primary transition-colors">{grupo.tipo}</a></li>
         <li aria-hidden="true">/</li>
         <li class="text-text-primary truncate max-w-[16rem] sm:max-w-md" aria-current="page">{grupo.nombre}</li>
       </ol>
@@ -178,7 +178,7 @@ const rolResponsable = grupo.lider ? 'Líder o representante' : 'Docente a cargo
           )}
         </div>
 
-        <a href="/#catalogo" class="mt-6 inline-flex items-center gap-2 text-[15px] text-text-secondary hover:text-text-primary transition-colors">
+        <a href="/catalogo" class="mt-6 inline-flex items-center gap-2 text-[15px] text-text-secondary hover:text-text-primary transition-colors">
           <span aria-hidden="true">←</span> Volver al catálogo
         </a>
       </aside>

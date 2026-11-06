@@ -1,40 +1,15 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import AISearch from '../components/AISearch.astro';
-import FilterBar from '../components/FilterBar.astro';
 import BentoGrid from '../components/BentoGrid.astro';
+import GruposRail from '../components/GruposRail.astro';
 
 import { fetchApprovedCatalog } from '../lib/grupos';
-import { filtrarGrupos, matchesCarrera, norm, careerLabelShort } from '../data/grupos.types';
+import { norm, careerLabelShort } from '../data/grupos.types';
 
 export const prerender = false;
 
 const { grupos: allGrupos, metadata, error: catalogError } = await fetchApprovedCatalog();
-
-const url = Astro.url;
-const tipoFilter = url.searchParams.get('tipo');
-const carreraFilter = url.searchParams.get('carrera');
-const searchQuery = url.searchParams.get('q');
-
-const filteredGrupos = filtrarGrupos(allGrupos, {
-  tipo: tipoFilter || undefined,
-  carrera: carreraFilter || undefined,
-  busqueda: searchQuery || undefined
-});
-
-const catalogGrupos = [...filteredGrupos].sort((a, b) => {
-  const aImg = Boolean(a.imagen_url);
-  const bImg = Boolean(b.imagen_url);
-  if (aImg && !bImg) return -1;
-  if (!aImg && bImg) return 1;
-  return a.nombre.localeCompare(b.nombre, 'es');
-});
-
-// Recuentos por carrera canónica (incluye el auto-match multidisciplinar).
-const carreraCounts: Record<string, number> = {};
-for (const c of metadata.carreras) {
-  carreraCounts[c] = allGrupos.reduce((n, g) => (matchesCarrera(g, norm(c)) ? n + 1 : n), 0);
-}
 
 const ultimaTexto = new Date(metadata.actualizado).toLocaleDateString('es-CO', {
   day: 'numeric',
@@ -63,16 +38,17 @@ const conFoto = allGrupos
   .sort((a, b) => a.nombre.localeCompare(b.nombre, 'es'))
   .slice(0, 10);
 
-const tipoLabel = (t: string) => {
-  const n = norm(t);
-  if (n.includes('semillero')) return 'Semillero';
-  if (n.includes('estudiantil')) return 'Grupo estudiantil';
-  return 'Grupo de investigación';
-};
+// Vistazo del catálogo: foto primero, luego alfabético; solo las primeras 6 tarjetas.
+const vistazo = [...allGrupos].sort((a, b) => {
+  const aImg = Boolean(a.imagen_url);
+  const bImg = Boolean(b.imagen_url);
+  if (aImg && !bImg) return -1;
+  if (!aImg && bImg) return 1;
+  return a.nombre.localeCompare(b.nombre, 'es');
+}).slice(0, 6);
 
-// JSON-LD (SEO técnico): WebSite + SearchAction, Organization institucional e ItemList top 25.
+// JSON-LD (SEO técnico): WebSite + SearchAction y Organization institucional.
 const siteUrl = (Astro.site?.origin ?? 'https://semilleros.nikko.dev').replace(/\/+$/, '');
-const topGrupos = catalogGrupos.slice(0, 25);
 const jsonLd = JSON.stringify([
   {
     '@context': 'https://schema.org',
@@ -84,7 +60,7 @@ const jsonLd = JSON.stringify([
       '@type': 'SearchAction',
       target: {
         '@type': 'EntryPoint',
-        urlTemplate: `${siteUrl}/?q={search_term_string}`,
+        urlTemplate: `${siteUrl}/catalogo?q={search_term_string}`,
       },
       'query-input': 'required name=search_term_string',
     },
@@ -95,18 +71,6 @@ const jsonLd = JSON.stringify([
     name: 'Universidad Nacional de Colombia — Facultad de Ingeniería y Afines (Sede Bogotá)',
     url: `${siteUrl}/`,
     logo: `${siteUrl}/favicon.svg`,
-  },
-  {
-    '@context': 'https://schema.org',
-    '@type': 'ItemList',
-    name: 'Semilleros, grupos de investigación y grupos estudiantiles — Ingeniería y Afines',
-    numberOfItems: topGrupos.length,
-    itemListElement: topGrupos.map((g, i) => ({
-      '@type': 'ListItem',
-      position: i + 1,
-      name: g.nombre,
-      url: `${siteUrl}/grupo/${g.id}`,
-    })),
   },
 ]).replace(/</g, '\\u003c');
 ---
@@ -134,30 +98,36 @@ const jsonLd = JSON.stringify([
         <span class="line" style="--i: 1"><span class="font-serif-i hero-serif">se siembra.</span></span>
       </h1>
 
-      <div class="mt-14 sm:mt-20 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-end">
-        <div class="lg:col-span-5" data-reveal style="--d: 450ms">
-          <p class="text-[1.15rem] sm:text-[1.3rem] leading-[1.45] tracking-[-0.012em] text-text-secondary max-w-[30rem]">
+      <div class="mt-12 sm:mt-16 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-8">
+        <div class="lg:col-span-7" data-reveal style="--d: 400ms">
+          <p class="text-[1.15rem] sm:text-[1.3rem] leading-[1.45] tracking-[-0.012em] text-text-secondary max-w-[34rem]">
             Semilleros, grupos de investigación y grupos estudiantiles de la
             <span class="text-text-primary">Facultad de Ingeniería y Afines</span>, en un solo lugar.
-            Encuentra el tuyo por carrera, tema o docente, y escríbele directo.
+            Describe lo que te interesa y deja que Kala te oriente.
           </p>
-          <div class="mt-9 flex flex-wrap items-center gap-x-7 gap-y-4">
-            <a href="#catalogo" class="btn-ink h-12 px-6 text-[15px]">
-              Explorar el catálogo <span aria-hidden="true">↓</span>
-            </a>
-            <a href="/registro" class="link-draw text-[15px] text-text-primary">Postular mi grupo</a>
-          </div>
         </div>
-
-        <dl class="lg:col-span-6 lg:col-start-7 grid grid-cols-2 sm:grid-cols-4 border-t border-text-primary/80" data-reveal style="--d: 600ms">
-          {stats.map((s, i) => (
-            <div class:list={['pt-4 pb-1 pr-3', i > 0 && 'sm:border-l sm:border-border-default sm:pl-4', i % 2 === 1 && 'border-l border-border-default pl-4 sm:pl-4']}>
-              <dt class="kicker order-2 mt-2 leading-snug">{s.label}</dt>
-              <dd class="m-0 text-[2.6rem] sm:text-[3rem] leading-none font-medium tracking-[-0.05em] tabular-nums text-text-primary" data-count={s.value}>{s.value}</dd>
-            </div>
-          ))}
-        </dl>
       </div>
+
+      <!-- Buscador Kala: protagonista de la portada -->
+      <div class="mt-8 sm:mt-10" data-reveal style="--d: 500ms">
+        <AISearch />
+      </div>
+
+      <div class="mt-4 flex flex-wrap items-center gap-x-7 gap-y-3" data-reveal style="--d: 620ms">
+        <a href="/catalogo" class="btn-ink h-12 px-6 text-[15px]">
+          Ver todo el catálogo <span aria-hidden="true">→</span>
+        </a>
+        <a href="/registro" class="link-draw text-[15px] text-text-primary">Postular mi grupo</a>
+      </div>
+
+      <dl class="mt-16 sm:mt-20 grid grid-cols-2 sm:grid-cols-4 border-t border-text-primary/80" data-reveal style="--d: 700ms">
+        {stats.map((s, i) => (
+          <div class:list={['pt-4 pb-1 pr-3', i > 0 && 'sm:border-l sm:border-border-default sm:pl-4', i % 2 === 1 && 'border-l border-border-default pl-4 sm:pl-4']}>
+            <dt class="kicker order-2 mt-2 leading-snug">{s.label}</dt>
+            <dd class="m-0 text-[2.6rem] sm:text-[3rem] leading-none font-medium tracking-[-0.05em] tabular-nums text-text-primary" data-count={s.value}>{s.value}</dd>
+          </div>
+        ))}
+      </dl>
     </div>
   </section>
 
@@ -182,90 +152,37 @@ const jsonLd = JSON.stringify([
   <!-- ============ GRUPOS CON FOTOGRAFÍA ============ -->
   {conFoto.length >= 3 && (
     <section class="pt-24 sm:pt-32" aria-labelledby="destacados-title">
-      <div class="max-w-7xl mx-auto px-5 sm:px-8 flex items-end justify-between gap-6 mb-10">
+      <GruposRail grupos={conFoto} />
+    </section>
+  )}
+
+  <!-- ============ VISTAZO DEL CATÁLOGO ============ -->
+  {!catalogError && vistazo.length > 0 && (
+    <section class="max-w-7xl mx-auto px-5 sm:px-8 pt-24 sm:pt-32" aria-labelledby="vistazo-title">
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
         <div data-reveal>
-          <p class="kicker mb-4">Destacados</p>
-          <h2 id="destacados-title" class="text-[2.25rem] sm:text-[3.25rem] leading-[1.02] font-medium tracking-[-0.045em] text-text-primary">
-            Grupos <span class="font-serif-i">en acción</span>
+          <p class="kicker mb-4">Un vistazo · {total} en total</p>
+          <h2 id="vistazo-title" class="text-[2.25rem] sm:text-[3.25rem] leading-[1.02] font-medium tracking-[-0.045em] text-text-primary">
+            Explora el <span class="font-serif-i">catálogo completo</span>
           </h2>
         </div>
-        <div class="hidden sm:flex items-center gap-2" data-reveal="fade">
-          <button type="button" data-rail-prev class="w-12 h-12 rounded-full border border-border-default hover:border-text-primary hover:bg-text-primary hover:text-bg transition-colors flex items-center justify-center" aria-label="Ver grupos anteriores">←</button>
-          <button type="button" data-rail-next class="w-12 h-12 rounded-full border border-border-default hover:border-text-primary hover:bg-text-primary hover:text-bg transition-colors flex items-center justify-center" aria-label="Ver más grupos">→</button>
-        </div>
+        <a href="/catalogo" class="btn-secondary h-12 px-6 text-[15px] shrink-0 self-start sm:self-auto" data-reveal="fade">
+          Ver los {total} grupos <span aria-hidden="true">→</span>
+        </a>
       </div>
 
-      <div data-rail class="rail flex gap-4 sm:gap-5 overflow-x-auto no-scrollbar snap-x snap-mandatory scroll-smooth px-5 sm:px-8 pb-4" tabindex="0" aria-label="Grupos con fotografía">
-        {conFoto.map((g, i) => (
-          <a href={`/grupo/${g.id}`} data-vt-card class="rail-item group snap-start shrink-0 w-[78vw] sm:w-[21rem] lg:w-[23rem]" data-reveal style={`--d: ${Math.min(i, 4) * 80}ms`}>
-            <div class="relative aspect-[4/5] rounded-2xl overflow-hidden bg-bg-hover" data-vt-image>
-              <img src={g.imagen_url} alt="" loading="lazy" decoding="async" width="600" height="750"
-                   class="absolute inset-0 w-full h-full object-cover transition-transform duration-[1.2s] ease-out-expo group-hover:scale-[1.05]"
-                   onerror="this.style.display='none'" />
-              <div class="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/55 to-transparent pointer-events-none" aria-hidden="true"></div>
-              <span class="absolute left-4 bottom-4 font-mono text-[11px] tracking-[0.08em] uppercase text-white/85">{tipoLabel(g.tipo)}</span>
-              <span class="absolute right-4 bottom-3.5 w-9 h-9 rounded-full bg-white text-[#151714] flex items-center justify-center translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500 ease-out-expo" aria-hidden="true">→</span>
-            </div>
-            <p class="mt-4 text-[1.1rem] leading-snug font-medium tracking-[-0.02em] text-text-primary line-clamp-2" data-vt-title>{g.nombre}</p>
-          </a>
-        ))}
-        <div class="shrink-0 w-1 sm:w-3" aria-hidden="true"></div>
+      <BentoGrid grupos={vistazo} />
+
+      <div class="mt-12 flex justify-center" data-reveal="fade">
+        <a href="/catalogo" class="btn-ink h-12 px-7 text-[15px]">
+          Ir al catálogo y filtrar <span aria-hidden="true">→</span>
+        </a>
       </div>
     </section>
   )}
 
-  <!-- ============ CATÁLOGO ============ -->
-  <section id="catalogo" class="max-w-7xl mx-auto px-5 sm:px-8 pt-24 sm:pt-32 pb-24" aria-labelledby="catalogo-title">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-12 items-end">
-      <div class="lg:col-span-8" data-reveal>
-        <p class="kicker mb-4">El catálogo · {total} iniciativas</p>
-        <h2 id="catalogo-title" class="text-[2.25rem] sm:text-[3.25rem] leading-[1.02] font-medium tracking-[-0.045em] text-text-primary">
-          Filtra por tema y carrera, <span class="font-serif-i">o simplemente pregunta.</span>
-        </h2>
-      </div>
-      <p class="lg:col-span-4 text-text-secondary text-[15px] leading-relaxed" data-reveal style="--d: 120ms">
-        Kala conoce cada grupo del catálogo. Descríbele lo que te interesa y te sugiere por dónde empezar.
-      </p>
-    </div>
-
-    <div data-reveal style="--d: 160ms">
-      <AISearch />
-    </div>
-
-    <FilterBar
-      metadata={metadata}
-      counts={carreraCounts}
-      activeTipo={tipoFilter || undefined}
-      activeCarrera={carreraFilter || undefined}
-      activeQuery={searchQuery || undefined}
-      grupos={catalogGrupos}
-    />
-
-    {catalogError ? (
-      <div class="py-24 text-center max-w-md mx-auto">
-        <p class="kicker mb-4">Error de conexión</p>
-        <h3 class="text-3xl font-medium tracking-[-0.03em] text-text-primary mb-3">No pudimos cargar el catálogo</h3>
-        <p class="text-text-secondary mb-8">Intenta recargar la página. Si el problema persiste, escríbenos.</p>
-        <button onclick="location.reload()" class="btn-ink h-11 px-6 text-sm">Reintentar</button>
-      </div>
-    ) : (
-      <div id="catalog-grid-wrapper">
-        <BentoGrid grupos={catalogGrupos} />
-
-        <div id="no-results" class="hidden py-24 text-center max-w-md mx-auto">
-          <p class="kicker mb-4">Sin resultados</p>
-          <h3 class="text-3xl font-medium tracking-[-0.03em] text-text-primary mb-3">
-            Nada por aquí <span class="font-serif-i">todavía.</span>
-          </h3>
-          <p class="text-text-secondary mb-8">Prueba con otros filtros, o pregúntale a Kala con tus palabras.</p>
-          <button id="ver-todo-btn" type="button" class="btn-ink h-11 px-6 text-sm">Ver todo el catálogo</button>
-        </div>
-      </div>
-    )}
-  </section>
-
   <!-- ============ LLAMADO A POSTULAR ============ -->
-  <section class="px-3 sm:px-5 pb-6" aria-labelledby="cta-title">
+  <section class="px-3 sm:px-5 pt-24 sm:pt-32 pb-6" aria-labelledby="cta-title">
     <div class="relative max-w-[90rem] mx-auto rounded-[2rem] bg-ink text-paper overflow-hidden border border-paper/10" data-reveal>
       <div class="absolute inset-0 bg-grid-dark pointer-events-none" aria-hidden="true"></div>
       <div class="relative max-w-7xl mx-auto px-6 sm:px-12 py-20 sm:py-28 grid grid-cols-1 lg:grid-cols-12 gap-10 items-end">
@@ -310,53 +227,4 @@ const jsonLd = JSON.stringify([
   dl > div { display: flex; flex-direction: column; }
   dl > div > dd { order: 1; }
   dl > div > dt { order: 2; }
-  .rail { scroll-padding-inline: 1.25rem; }
-  @media (min-width: 640px) { .rail { scroll-padding-inline: 2rem; } }
-  @media (min-width: 1280px) {
-    .rail { padding-inline: calc((100vw - 80rem) / 2 + 2rem); scroll-padding-inline: calc((100vw - 80rem) / 2 + 2rem); }
-  }
-</style>
-
-<script>
-  // Carrusel de destacados: flechas y arrastre con el ratón.
-  const rail = document.querySelector<HTMLElement>('[data-rail]');
-  if (rail) {
-    const step = () => (rail.querySelector<HTMLElement>('.rail-item')?.offsetWidth ?? 320) + 20;
-    document.querySelector('[data-rail-prev]')?.addEventListener('click', () => rail.scrollBy({ left: -step(), behavior: 'smooth' }));
-    document.querySelector('[data-rail-next]')?.addEventListener('click', () => rail.scrollBy({ left: step(), behavior: 'smooth' }));
-
-    let down = false;
-    let moved = false;
-    let startX = 0;
-    let startScroll = 0;
-    rail.addEventListener('pointerdown', (e) => {
-      if (e.pointerType !== 'mouse') return;
-      down = true; moved = false;
-      startX = e.clientX; startScroll = rail.scrollLeft;
-    });
-    window.addEventListener('pointermove', (e) => {
-      if (!down) return;
-      const dx = e.clientX - startX;
-      if (Math.abs(dx) > 4 && !moved) {
-        moved = true;
-        rail.classList.add('is-dragging');
-      }
-      if (moved) rail.scrollLeft = startScroll - dx;
-    });
-    window.addEventListener('pointerup', () => {
-      if (!down) return;
-      down = false;
-      rail.classList.remove('is-dragging');
-    });
-    // Evita abrir el grupo si el usuario estaba arrastrando
-    rail.addEventListener('click', (e) => {
-      if (moved) { e.preventDefault(); e.stopPropagation(); moved = false; }
-    }, true);
-    rail.addEventListener('dragstart', (e) => e.preventDefault());
-  }
-</script>
-
-<style is:global>
-  .rail.is-dragging { scroll-snap-type: none; scroll-behavior: auto; cursor: grabbing; }
-  .rail.is-dragging * { pointer-events: none; }
 </style>
